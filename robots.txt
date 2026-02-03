@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /wiki/
+Disallow: /documentation-admin
+
+# Sitemap
+Sitemap: https://www.cips-tech.ga/sitemap.xml
+
+# Crawl-delay pour éviter la surcharge
+Crawl-delay: 1
+
+
+
+
+
+
+
+

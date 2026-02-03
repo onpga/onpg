@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Fond bleu institutionnel -->
+  <rect width="100" height="100" fill="#002F6C" rx="12"/>
+  
+  <!-- Logo CIPS simplifié : C stylisé avec accent orange -->
+  <circle cx="50" cy="50" r="30" fill="none" stroke="#FF8C42" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 35 30 Q 25 50 35 70" stroke="#FF8C42" stroke-width="8" stroke-linecap="round" fill="none"/>
+  
+  <!-- Point accent orange -->
+  <circle cx="65" cy="40" r="5" fill="#FF8C42"/>
+</svg>

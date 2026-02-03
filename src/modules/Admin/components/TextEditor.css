@@ -1,0 +1,74 @@
+.text-editor-wrapper {
+  width: 100%;
+}
+
+.text-editor-wrapper .quill {
+  background: white;
+  border-radius: 4px;
+}
+
+.text-editor-wrapper .ql-container {
+  min-height: 250px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.text-editor-wrapper .ql-editor {
+  min-height: 250px;
+}
+
+.text-editor-wrapper .ql-editor.ql-blank::before {
+  font-style: normal;
+  color: #999;
+}
+
+.text-editor-wrapper .ql-toolbar {
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  background: #fafafa;
+}
+
+.text-editor-wrapper .ql-container {
+  border-bottom: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+
+.text-editor-wrapper .ql-toolbar .ql-stroke {
+  stroke: #444;
+}
+
+.text-editor-wrapper .ql-toolbar .ql-fill {
+  fill: #444;
+}
+
+.text-editor-wrapper .ql-toolbar button:hover,
+.text-editor-wrapper .ql-toolbar button.ql-active {
+  color: #0066cc;
+}
+
+.text-editor-wrapper .ql-toolbar button:hover .ql-stroke,
+.text-editor-wrapper .ql-toolbar button.ql-active .ql-stroke {
+  stroke: #0066cc;
+}
+
+.text-editor-wrapper .ql-toolbar button:hover .ql-fill,
+.text-editor-wrapper .ql-toolbar button.ql-active .ql-fill {
+  fill: #0066cc;
+}
+
+
+
+
+
+
+
+
+
+
+

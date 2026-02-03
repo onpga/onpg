@@ -1,0 +1,196 @@
+/* ============================================
+   OPTIONS DE DESIGN HERO - PÔLE SÉCURITÉ NUMÉRIQUE
+   ============================================
+   Pour activer une option, ajouter la classe correspondante au <section className="securite-hero">
+   Exemple: <section className="securite-hero option-1">
+*/
+
+/* ============================================
+   OPTION 1 : CARROUSEL D'IMAGES (3 images qui changent automatiquement)
+   ============================================ */
+
+/* Animation zoom/pan du layout 20 (légèrement dézoomée pour voir toute l'image) */
+@keyframes zoomPan {
+  0% {
+    transform: scale(1.08) translateX(-2%);
+  }
+  100% {
+    transform: scale(1) translateX(0);
+  }
+}
+
+.securite-hero.option-1 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.75) 0%, rgba(0, 61, 143, 0.70) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.securite-hero.option-1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559430/cips/poles/securite/securite-cybersecurite-1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  animation: securiteCarousel 15s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.securite-hero.option-1::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559432/cips/poles/securite/securite-cybersecurite-2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  opacity: 0;
+  animation: securiteCarousel2 15s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes securiteCarousel {
+  0%, 33% { opacity: 1; }
+  34%, 66% { opacity: 0; }
+  67%, 100% { opacity: 1; }
+}
+
+@keyframes securiteCarousel2 {
+  0%, 33% { opacity: 0; }
+  34%, 66% { opacity: 1; }
+  67%, 100% { opacity: 0; }
+}
+
+.securite-hero.option-1 .securite-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   OPTION 2 : GRILLE DE 3 IMAGES CÔTE À CÔTE
+   ============================================ */
+.securite-hero.option-2 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.85) 0%, rgba(0, 61, 143, 0.80) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.securite-hero.option-2 .hero-images-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.securite-hero.option-2 .hero-image-item {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.securite-hero.option-2 .hero-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.securite-hero.option-2 .hero-image-item:hover {
+  transform: scale(1.1);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.securite-hero.option-2 .securite-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   OPTION 3 : IMAGE PRINCIPALE + 2 VIGNETTES EN OVERLAY
+   ============================================ */
+.securite-hero.option-3 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.75) 0%, rgba(0, 61, 143, 0.70) 100%),
+              url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559430/cips/poles/securite/securite-cybersecurite-1.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-attachment: fixed;
+  position: relative;
+  overflow: visible;
+}
+
+.securite-hero.option-3 .hero-vignettes {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 3;
+  width: 200px;
+}
+
+.securite-hero.option-3 .hero-vignette {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.securite-hero.option-3 .hero-vignette:hover {
+  transform: scale(1.1);
+  border-color: var(--cips-orange);
+  z-index: 4;
+}
+
+.securite-hero.option-3 .hero-vignette img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.securite-hero.option-3 .securite-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 60%;
+}
+
+@media (max-width: 991px) {
+  .securite-hero.option-3 .hero-vignettes {
+    display: none;
+  }
+  
+  .securite-hero.option-3 .securite-hero-content {
+    max-width: 100%;
+  }
+  
+  .securite-hero.option-2 .hero-images-grid {
+    grid-template-columns: 1fr;
+    opacity: 0.3;
+  }
+}
+
+

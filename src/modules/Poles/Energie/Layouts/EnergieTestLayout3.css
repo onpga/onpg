@@ -1,0 +1,850 @@
+/* Layout 3 : Morphing Shapes + Effets de Lumière Dynamiques - Inspiré Apple/Modern Energy - RESPECT CHARTE CIPS */
+.energie-test-layout3 {
+  min-height: 100vh;
+  background: var(--cips-white);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.morph-bg-shapes {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.morph-shape {
+  position: absolute;
+  border-radius: 50% 40% 60% 30%;
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.08) 0%, rgba(255, 140, 66, 0.05) 100%);
+  filter: blur(60px);
+  animation: morphShape 20s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.morph-shape-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  left: -200px;
+  animation-duration: 25s;
+}
+
+.morph-shape-2 {
+  width: 500px;
+  height: 500px;
+  top: 50%;
+  right: -150px;
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.morph-shape-3 {
+  width: 700px;
+  height: 700px;
+  bottom: -300px;
+  left: 20%;
+  animation-duration: 35s;
+  animation-delay: -10s;
+}
+
+@keyframes morphShape {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    border-radius: 50% 40% 60% 30%;
+  }
+  25% {
+    transform: translate(50px, -50px) rotate(90deg) scale(1.1);
+    border-radius: 30% 60% 40% 50%;
+  }
+  50% {
+    transform: translate(-30px, 30px) rotate(180deg) scale(0.9);
+    border-radius: 60% 30% 50% 40%;
+  }
+  75% {
+    transform: translate(30px, 50px) rotate(270deg) scale(1.05);
+    border-radius: 40% 50% 30% 60%;
+  }
+}
+
+.morph-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.morph-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.3) contrast(1.2);
+  opacity: 0.6;
+}
+
+.morph-hero-lights {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.morph-light {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 140, 66, 0.4) 0%, transparent 70%);
+  filter: blur(50px);
+  animation: lightMove 15s ease-in-out infinite;
+}
+
+.morph-light-1 {
+  top: 20%;
+  left: 10%;
+  animation-duration: 20s;
+}
+
+.morph-light-2 {
+  top: 60%;
+  right: 15%;
+  animation-duration: 25s;
+  animation-delay: -5s;
+}
+
+.morph-light-3 {
+  bottom: 20%;
+  left: 50%;
+  animation-duration: 18s;
+  animation-delay: -10s;
+}
+
+@keyframes lightMove {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(100px, -100px) scale(1.2);
+    opacity: 0.9;
+  }
+}
+
+.morph-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--cips-white);
+  max-width: 900px;
+  padding: 0 2rem;
+  animation: fadeInUp 1s ease-out;
+}
+
+.morph-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.morph-badge-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--cips-orange);
+  border-radius: 50%;
+  box-shadow: 0 0 25px rgba(255, 140, 66, 1);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(255, 140, 66, 1);
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+    box-shadow: 0 0 40px rgba(255, 140, 66, 0.8);
+  }
+}
+
+.morph-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(3.5rem, 10vw, 7rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0 0 2rem 0;
+  letter-spacing: -0.03em;
+}
+
+.morph-title-word {
+  display: block;
+  position: relative;
+  animation: slideInUp 1s ease-out 0.3s both;
+  background: linear-gradient(135deg, var(--cips-white) 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.5));
+}
+
+.morph-accent {
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 50px rgba(255, 140, 66, 0.8));
+  animation: slideInUp 1s ease-out 0.5s both;
+}
+
+.morph-subtitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 0 0 4rem 0;
+  opacity: 0.95;
+  animation: fadeInUp 1s ease-out 0.7s both;
+}
+
+.morph-stats {
+  display: flex;
+  gap: 4rem;
+  justify-content: center;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 0.9s both;
+}
+
+.morph-stat {
+  text-align: center;
+}
+
+.morph-stat-value {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: var(--cips-orange);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 30px rgba(255, 140, 66, 0.6);
+}
+
+.morph-stat-label {
+  font-size: 0.95rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.morph-cta {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 1.1s both;
+}
+
+.morph-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 3rem;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.morph-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.morph-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.morph-btn-primary {
+  background: var(--cips-orange);
+  color: var(--cips-white);
+  box-shadow: 0 4px 20px rgba(255, 140, 66, 0.4);
+}
+
+.morph-btn-primary:hover {
+  background: #ff7a2e;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(255, 140, 66, 0.6);
+}
+
+.morph-btn-secondary {
+  background: transparent;
+  color: var(--cips-white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.morph-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--cips-white);
+}
+
+.morph-btn-large {
+  padding: 1.5rem 4rem;
+  font-size: 1.15rem;
+}
+
+.morph-solutions,
+.morph-advantages,
+.morph-gallery {
+  padding: 8rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.morph-solutions {
+  background: var(--cips-white);
+}
+
+.morph-advantages {
+  background: var(--cips-gray-light);
+}
+
+.morph-gallery {
+  background: var(--cips-white);
+}
+
+.morph-section-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  color: var(--cips-blue);
+  margin: 0 0 5rem 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.morph-solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+.morph-solution-card {
+  position: relative;
+  padding: 3rem;
+  background: var(--cips-white);
+  border: 2px solid #e0e0e0;
+  border-radius: 32px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.morph-card-morph {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.1) 0%, rgba(255, 140, 66, 0.1) 100%);
+  border-radius: 50% 40% 60% 30%;
+  opacity: 0;
+  transition: all 0.6s ease;
+  pointer-events: none;
+  z-index: 0;
+  animation: cardMorph 8s ease-in-out infinite;
+}
+
+@keyframes cardMorph {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+    border-radius: 50% 40% 60% 30%;
+  }
+  50% {
+    transform: translate(20px, -20px) rotate(180deg);
+    border-radius: 30% 60% 40% 50%;
+  }
+}
+
+.morph-card-light {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 140, 66, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.morph-solution-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  border-color: var(--cips-blue);
+  box-shadow: 0 24px 80px rgba(0, 47, 108, 0.2);
+}
+
+.morph-solution-card:hover .morph-card-morph {
+  opacity: 1;
+  transform: translate(0, 0) rotate(0deg);
+}
+
+.morph-solution-card:hover .morph-card-light {
+  width: 300px;
+  height: 300px;
+}
+
+.morph-solution-icon {
+  font-size: 4.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1));
+}
+
+.morph-solution-card:hover .morph-solution-icon {
+  transform: scale(1.2) rotate(10deg);
+}
+
+.morph-solution-stat {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--cips-gray-light);
+  border-radius: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.morph-solution-stat span:first-child {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--cips-blue);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.morph-solution-stat span:last-child {
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.morph-solution-card h3 {
+  font-family: var(--font-poppins);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cips-blue);
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.morph-solution-card p {
+  font-size: 1rem;
+  color: var(--cips-black);
+  line-height: 1.7;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.morph-simulateur {
+  position: relative;
+  padding: 8rem 0;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  overflow: hidden;
+}
+
+.morph-simulateur-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  filter: blur(40px);
+}
+
+.morph-simulateur-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--cips-white);
+  padding: 5rem 4rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.morph-simulateur-header {
+  margin-bottom: 3rem;
+}
+
+.morph-simulateur-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 140, 66, 0.15);
+  border: 2px solid rgba(255, 140, 66, 0.3);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}
+
+.morph-simulateur-icon-wrapper svg {
+  color: var(--cips-orange);
+}
+
+.morph-simulateur-content h2 {
+  font-family: var(--font-poppins);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  color: var(--cips-white);
+  line-height: 1.2;
+}
+
+.morph-simulateur-content p {
+  font-size: 1.15rem;
+  opacity: 0.95;
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.morph-simulateur-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.morph-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.morph-feature-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 140, 66, 0.4);
+  transform: translateX(5px);
+}
+
+.morph-feature-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--cips-orange);
+  border-radius: 8px;
+  flex-shrink: 0;
+  color: var(--cips-white);
+}
+
+.morph-feature-item span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cips-white);
+}
+
+.morph-simulateur-cta-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.morph-simulateur-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.morph-badge-icon {
+  font-size: 1.1rem;
+}
+
+.morph-advantages-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.morph-advantage-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2.5rem;
+  background: var(--cips-white);
+  border-radius: 24px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.morph-advantage-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--cips-orange) 0%, var(--cips-blue) 100%);
+  transform: scaleY(0);
+  transition: transform 0.4s ease;
+}
+
+.morph-advantage-item:hover {
+  transform: translateX(15px);
+  box-shadow: 0 15px 40px rgba(0, 47, 108, 0.15);
+}
+
+.morph-advantage-item:hover::before {
+  transform: scaleY(1);
+}
+
+.morph-advantage-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  color: var(--cips-white);
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 47, 108, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.morph-advantage-item:hover .morph-advantage-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.morph-advantage-item span:last-child {
+  font-size: 1.1rem;
+  color: var(--cips-black);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.morph-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.morph-gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 24px;
+  cursor: pointer;
+  animation: fadeInUp 0.8s ease-out both;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.morph-gallery-item:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 47, 108, 0.25);
+}
+
+.morph-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.morph-gallery-item:hover img {
+  transform: scale(1.2) rotate(2deg);
+}
+
+.morph-gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 47, 108, 0.9) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.morph-gallery-item:hover .morph-gallery-overlay {
+  opacity: 1;
+}
+
+.morph-gallery-overlay span {
+  color: var(--cips-white);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.morph-testimonials {
+  padding: 8rem 0;
+  background: var(--cips-gray-light);
+}
+
+.morph-cta-final {
+  padding: 8rem 0;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  text-align: center;
+  color: var(--cips-white);
+}
+
+.morph-cta-final h2 {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  margin: 0 0 3rem 0;
+}
+
+.morph-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 2rem;
+}
+
+.morph-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+}
+
+.morph-modal-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.morph-modal-close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--cips-white);
+  font-size: 3.5rem;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.morph-modal-close:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .morph-stats {
+    gap: 2rem;
+  }
+  
+  .morph-solutions-grid,
+  .morph-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}

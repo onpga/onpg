@@ -1,0 +1,296 @@
+/* Animation shimmer pour effet brillant */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Skeleton pour article */
+.skeleton-article {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skeleton-article-image {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-article-content {
+  padding: 1.5rem;
+}
+
+.skeleton-article-category {
+  width: 100px;
+  height: 24px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-article-title {
+  width: 90%;
+  height: 28px;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+
+.skeleton-article-title-short {
+  width: 60%;
+  height: 28px;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+
+.skeleton-article-excerpt {
+  width: 100%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-article-excerpt-short {
+  width: 80%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-article-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.skeleton-article-meta-item {
+  width: 80px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+/* Skeleton pour projet */
+.skeleton-project {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skeleton-project-image {
+  width: 100%;
+  height: 250px;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 50%,
+    #f0f0f0 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-project-content {
+  padding: 1.5rem;
+}
+
+.skeleton-project-badge {
+  width: 120px;
+  height: 28px;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-project-title {
+  width: 85%;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+
+.skeleton-project-title-short {
+  width: 70%;
+  height: 32px;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+}
+
+.skeleton-project-description {
+  width: 100%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-project-description-short {
+  width: 75%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-project-meta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.skeleton-project-meta-item {
+  width: 100px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+/* Skeleton pour offre d'emploi */
+.skeleton-job {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skeleton-job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+
+.skeleton-job-title {
+  width: 60%;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.skeleton-job-badge {
+  width: 100px;
+  height: 28px;
+  border-radius: 14px;
+}
+
+.skeleton-job-meta {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.skeleton-job-meta-item {
+  width: 120px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.skeleton-job-description {
+  width: 100%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-job-description-short {
+  width: 70%;
+  height: 16px;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.skeleton-job-competences {
+  margin-top: 1.5rem;
+}
+
+.skeleton-job-competences-label {
+  width: 150px;
+  height: 20px;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.skeleton-job-competences-list {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.skeleton-job-competence-tag {
+  width: 100px;
+  height: 32px;
+  border-radius: 16px;
+}
+
+/* Grid pour plusieurs skeletons */
+.skeleton-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.skeleton-grid-articles {
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.skeleton-grid-projects {
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.skeleton-grid-jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Transition fade-in pour le contenu réel */
+.content-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skeleton-grid-articles,
+  .skeleton-grid-projects {
+    grid-template-columns: 1fr;
+  }
+  
+  .skeleton-article-image,
+  .skeleton-project-image {
+    height: 180px;
+  }
+}
+

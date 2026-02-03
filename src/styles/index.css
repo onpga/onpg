@@ -1,0 +1,315 @@
+/* Import des améliorations UX pour les boutons */
+@import './button-enhancements.css';
+
+/* Variables CSS - Charte graphique CIPS */
+:root {
+  /* Couleurs */
+  --cips-blue: #002F6C;
+  --cips-gray-light: #F5F5F5;
+  --cips-white: #FFFFFF;
+  --cips-black: #222222;
+  --cips-orange: #FF8C42;
+
+  --onpg-primary: #00A651;
+  --onpg-primary-dark: #008F45;
+  --onpg-primary-soft: #B8E6D3;
+  --onpg-ink: #1A252F;
+  --onpg-muted: #6C757D;
+  --onpg-surface: #FFFFFF;
+  --onpg-surface-2: #F8F9FA;
+  --onpg-border: rgba(26, 37, 47, 0.10);
+  --onpg-shadow-sm: 0 6px 18px rgba(26, 37, 47, 0.08);
+  --onpg-shadow-md: 0 14px 40px rgba(26, 37, 47, 0.12);
+  --onpg-radius-sm: 10px;
+  --onpg-radius-md: 16px;
+  --onpg-radius-lg: 24px;
+  --onpg-container: 1240px;
+  --onpg-container-wide: 1400px;
+  --onpg-page-gutter: 20px;
+  --onpg-section-y: 72px;
+
+  /* Typographie - Poppins */
+  --font-poppins: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  
+  /* Typographie - OCR A Extended (pour le logo) */
+  --font-ocr: 'OCR A Extended', 'OCR A Std', 'Courier New', monospace;
+
+  /* Espacements */
+  --spacing-mobile: 20px;
+  --spacing-desktop: 80px;
+  --section-spacing-mobile: 60px;
+  --section-spacing-desktop: 120px;
+  --title-paragraph-spacing: 24px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --onpg-page-gutter: 32px;
+    --onpg-section-y: 96px;
+  }
+}
+
+/* Reset et base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Respect des préférences d'accessibilité pour les animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-poppins);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  color: var(--cips-black);
+  background-color: var(--cips-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Typographie */
+h1 {
+  font-family: var(--font-poppins);
+  font-weight: 700;
+  font-size: 42px;
+  line-height: 120%;
+  letter-spacing: 0.5px;
+  color: var(--cips-blue);
+  margin-bottom: var(--title-paragraph-spacing);
+}
+
+h2 {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: var(--cips-blue);
+  margin-bottom: var(--title-paragraph-spacing);
+}
+
+/* H2 peut aussi être en noir anthracite selon contexte */
+h2.text-dark {
+  color: var(--cips-black);
+}
+
+h3 {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 130%;
+  letter-spacing: 0px;
+  color: var(--cips-black);
+  margin-bottom: var(--title-paragraph-spacing);
+}
+
+/* H3 peut aussi être en bleu selon contexte */
+h3.text-blue {
+  color: var(--cips-blue);
+}
+
+p {
+  font-family: var(--font-poppins);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0px;
+  color: var(--cips-black);
+  margin-bottom: 1rem;
+}
+
+/* Boutons CTA */
+.btn {
+  font-family: var(--font-poppins);
+  font-weight: 600; /* Poppins SemiBold */
+  font-size: 16px;
+  line-height: 120%;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: var(--cips-orange);
+  color: var(--cips-white);
+}
+
+.btn-primary:hover {
+  background-color: #e67a35;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--cips-white);
+  color: var(--cips-blue);
+  border: 2px solid var(--cips-white);
+}
+
+.btn-secondary:hover {
+  background-color: var(--cips-blue);
+  color: var(--cips-white);
+  border-color: var(--cips-white);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-mobile);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-desktop);
+  }
+}
+
+/* Sections */
+.section {
+  padding: var(--section-spacing-mobile) 0;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: var(--section-spacing-desktop) 0;
+  }
+}
+
+/* Responsive Typography */
+@media (max-width: 767px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .container {
+    padding: 0 var(--spacing-mobile);
+  }
+}
+
+.onpg-layout {
+  color: var(--onpg-ink);
+  background: linear-gradient(180deg, var(--onpg-surface) 0%, var(--onpg-surface-2) 45%, var(--onpg-surface) 100%);
+}
+
+.onpg-layout .onpg-main-content {
+  background: transparent !important;
+}
+
+.onpg-layout .container {
+  max-width: var(--onpg-container);
+  padding: 0 var(--onpg-page-gutter);
+}
+
+.onpg-layout .section {
+  padding: var(--onpg-section-y) 0;
+}
+
+.onpg-layout h1,
+.onpg-layout h2,
+.onpg-layout h3 {
+  color: var(--onpg-ink) !important;
+  letter-spacing: -0.02em;
+}
+
+.onpg-layout h1 {
+  font-size: clamp(2.1rem, 3.6vw, 3.2rem);
+  line-height: 1.1;
+}
+
+.onpg-layout h2 {
+  font-size: clamp(1.75rem, 2.6vw, 2.4rem);
+  line-height: 1.15;
+}
+
+.onpg-layout h3 {
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+  line-height: 1.2;
+}
+
+.onpg-layout p {
+  color: color-mix(in srgb, var(--onpg-ink) 80%, white);
+}
+
+.onpg-layout .btn,
+.onpg-layout .btn-primary-large {
+  border-radius: 999px !important;
+  letter-spacing: 0.6px;
+  text-transform: none;
+  padding: 14px 28px;
+}
+
+.onpg-layout .btn.btn-primary,
+.onpg-layout .btn-primary,
+.onpg-layout .btn-primary-large {
+  background: linear-gradient(135deg, var(--onpg-primary) 0%, var(--onpg-primary-dark) 100%) !important;
+  color: white !important;
+  box-shadow: 0 12px 28px rgba(0, 166, 81, 0.22) !important;
+}
+
+.onpg-layout .btn.btn-primary:hover,
+.onpg-layout .btn-primary:hover,
+.onpg-layout .btn-primary-large:hover {
+  background: linear-gradient(135deg, var(--onpg-primary-dark) 0%, var(--onpg-primary) 100%) !important;
+  box-shadow: 0 16px 40px rgba(0, 166, 81, 0.30) !important;
+}
+
+.onpg-layout .btn.btn-secondary,
+.onpg-layout .btn-secondary {
+  background: white !important;
+  color: var(--onpg-ink) !important;
+  border: 1px solid var(--onpg-border) !important;
+  box-shadow: var(--onpg-shadow-sm) !important;
+}
+
+.onpg-layout .btn.btn-secondary:hover,
+.onpg-layout .btn-secondary:hover {
+  background: color-mix(in srgb, var(--onpg-primary) 6%, white) !important;
+  color: var(--onpg-ink) !important;
+  border-color: color-mix(in srgb, var(--onpg-primary) 28%, var(--onpg-border)) !important;
+  box-shadow: var(--onpg-shadow-md) !important;
+}
+
+.onpg-layout .onpg-surface {
+  background: var(--onpg-surface);
+  border: 1px solid var(--onpg-border);
+  border-radius: var(--onpg-radius-lg);
+  box-shadow: var(--onpg-shadow-sm);
+}
+

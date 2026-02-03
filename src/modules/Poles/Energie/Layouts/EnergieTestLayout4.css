@@ -1,0 +1,743 @@
+/* Layout 4 : Split-Screen Parallax Avancé + Effets de Profondeur - Inspiré Apple/Tesla - RESPECT CHARTE CIPS */
+.energie-test-layout4 {
+  min-height: 100vh;
+  background: var(--cips-white);
+  overflow-x: hidden;
+  perspective: 2000px;
+}
+
+/* Hero Split-Screen */
+.split-hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+}
+
+.split-hero-left {
+  position: relative;
+  overflow: hidden;
+}
+
+.split-hero-bg {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background-image: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.35) contrast(1.2);
+  transition: transform 0.1s ease-out, background-position 0.1s ease-out;
+}
+
+.split-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.85) 0%, rgba(0, 26, 61, 0.75) 100%);
+  z-index: 1;
+}
+
+.split-hero-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  z-index: 2;
+}
+
+.split-hero-content {
+  max-width: 600px;
+  padding: 0 3rem;
+  color: var(--cips-white);
+  animation: fadeInRight 1s ease-out;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.split-divider {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, var(--cips-orange), transparent);
+  transform: translateX(-50%);
+  z-index: 3;
+  box-shadow: 0 0 20px rgba(255, 140, 66, 0.5);
+}
+
+.split-badge {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+
+.split-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0 0 2rem 0;
+  letter-spacing: -0.02em;
+}
+
+.split-title-main {
+  display: block;
+  animation: slideInUp 1s ease-out 0.2s both;
+}
+
+.split-title-accent {
+  display: block;
+  color: var(--cips-orange);
+  animation: slideInUp 1s ease-out 0.4s both;
+  text-shadow: 0 0 40px rgba(255, 140, 66, 0.6);
+}
+
+.split-subtitle {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 300;
+  line-height: 1.6;
+  margin: 0 0 3rem 0;
+  opacity: 0.95;
+  animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.split-stats {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 0.8s both;
+}
+
+.split-stat {
+  text-align: center;
+}
+
+.split-stat-value {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--cips-orange);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 30px rgba(255, 140, 66, 0.5);
+}
+
+.split-stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+.split-cta {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  animation: fadeInUp 1s ease-out 1s both;
+}
+
+.split-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 3rem;
+  border-radius: 50px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.split-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.split-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.split-btn-primary {
+  background: var(--cips-orange);
+  color: var(--cips-white);
+  box-shadow: 0 4px 20px rgba(255, 140, 66, 0.4);
+}
+
+.split-btn-primary:hover {
+  background: #ff7a2e;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(255, 140, 66, 0.6);
+}
+
+.split-btn-secondary {
+  background: transparent;
+  color: var(--cips-white);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.split-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--cips-white);
+}
+
+.split-btn-large {
+  padding: 1.5rem 4rem;
+  font-size: 1.15rem;
+}
+
+.split-solutions,
+.split-advantages,
+.split-gallery {
+  padding: 8rem 0;
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.split-solutions {
+  background: var(--cips-white);
+}
+
+.split-advantages {
+  background: var(--cips-gray-light);
+}
+
+.split-gallery {
+  background: var(--cips-white);
+}
+
+.split-section-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  color: var(--cips-blue);
+  margin: 0 0 5rem 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.split-solutions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  transform-style: preserve-3d;
+}
+
+.split-solution-card {
+  position: relative;
+  padding: 3rem;
+  background: var(--cips-white);
+  border: 2px solid #e0e0e0;
+  border-radius: 28px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  animation: fadeInUp 0.8s ease-out both;
+  transform-style: preserve-3d;
+}
+
+.split-card-depth {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.05) 0%, rgba(255, 140, 66, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.split-solution-card:hover {
+  transform: translateY(-12px) rotateX(5deg) rotateY(5deg);
+  border-color: var(--cips-blue);
+  box-shadow: 0 24px 80px rgba(0, 47, 108, 0.2);
+}
+
+.split-solution-card:hover .split-card-depth {
+  opacity: 1;
+}
+
+.split-solution-icon {
+  font-size: 4.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1));
+}
+
+.split-solution-card:hover .split-solution-icon {
+  transform: scale(1.2) rotateZ(10deg);
+}
+
+.split-solution-stat {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--cips-gray-light);
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.split-solution-stat span:first-child {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--cips-blue);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.split-solution-stat span:last-child {
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.split-solution-card h3 {
+  font-family: var(--font-poppins);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cips-blue);
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.split-solution-card p {
+  font-size: 1rem;
+  color: var(--cips-black);
+  line-height: 1.7;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.split-simulateur {
+  position: relative;
+  padding: 8rem 0;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  overflow: hidden;
+  color: var(--cips-white);
+}
+
+.split-simulateur-bg {
+  position: absolute;
+  top: -20%;
+  left: 0;
+  width: 100%;
+  height: 140%;
+  background-image: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  filter: blur(40px);
+}
+
+.split-simulateur-content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 5rem 4rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.split-simulateur-header {
+  margin-bottom: 3rem;
+}
+
+.split-simulateur-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 140, 66, 0.15);
+  border: 2px solid rgba(255, 140, 66, 0.3);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}
+
+.split-simulateur-icon-wrapper svg {
+  color: var(--cips-orange);
+}
+
+.split-simulateur-content h2 {
+  font-family: var(--font-poppins);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 1.5rem 0;
+  color: var(--cips-white);
+  line-height: 1.2;
+}
+
+.split-simulateur-content p {
+  font-size: 1.15rem;
+  opacity: 0.95;
+  margin: 0;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.split-simulateur-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.split-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.split-feature-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 140, 66, 0.4);
+  transform: translateX(5px);
+}
+
+.split-feature-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--cips-orange);
+  border-radius: 8px;
+  flex-shrink: 0;
+  color: var(--cips-white);
+}
+
+.split-feature-item span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--cips-white);
+}
+
+.split-simulateur-cta-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.split-simulateur-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.split-badge-icon {
+  font-size: 1.1rem;
+}
+
+.split-advantages-grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.split-advantage-item {
+  display: flex;
+  gap: 2rem;
+  padding: 2.5rem;
+  background: var(--cips-white);
+  border-radius: 24px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.split-advantage-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--cips-orange) 0%, var(--cips-blue) 100%);
+  transform: scaleY(0);
+  transition: transform 0.4s ease;
+}
+
+.split-advantage-item:hover {
+  transform: translateX(15px);
+  box-shadow: 0 15px 40px rgba(0, 47, 108, 0.15);
+}
+
+.split-advantage-item:hover::before {
+  transform: scaleY(1);
+}
+
+.split-advantage-number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--cips-orange);
+  line-height: 1;
+  opacity: 0.2;
+  flex-shrink: 0;
+}
+
+.split-advantage-content {
+  flex: 1;
+  display: flex;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.split-advantage-check {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  color: var(--cips-white);
+  border-radius: 50%;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0, 47, 108, 0.3);
+}
+
+.split-advantage-content span {
+  font-size: 1.1rem;
+  color: var(--cips-black);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.split-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  transform-style: preserve-3d;
+}
+
+.split-gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 24px;
+  cursor: pointer;
+  animation: fadeInUp 0.8s ease-out both;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.split-gallery-item:hover {
+  transform: translateY(-10px) rotateX(-5deg) rotateY(5deg);
+  box-shadow: 0 20px 60px rgba(0, 47, 108, 0.25);
+}
+
+.split-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.split-gallery-item:hover img {
+  transform: scale(1.2);
+}
+
+.split-gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 47, 108, 0.9) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.split-gallery-item:hover .split-gallery-overlay {
+  opacity: 1;
+}
+
+.split-gallery-overlay span {
+  color: var(--cips-white);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.split-testimonials {
+  padding: 8rem 0;
+  background: var(--cips-gray-light);
+}
+
+.split-cta-final {
+  padding: 8rem 0;
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #001a3d 100%);
+  text-align: center;
+  color: var(--cips-white);
+}
+
+.split-cta-final h2 {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  margin: 0 0 3rem 0;
+}
+
+.split-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 2rem;
+}
+
+.split-modal-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+}
+
+.split-modal-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.split-modal-close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--cips-white);
+  font-size: 3.5rem;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  transition: transform 0.3s ease;
+}
+
+.split-modal-close:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 968px) {
+  .split-hero {
+    grid-template-columns: 1fr;
+  }
+  
+  .split-hero-left {
+    height: 50vh;
+  }
+  
+  .split-hero-right {
+    height: 50vh;
+  }
+  
+  .split-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .split-stats {
+    gap: 2rem;
+  }
+  
+  .split-solutions-grid,
+  .split-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}

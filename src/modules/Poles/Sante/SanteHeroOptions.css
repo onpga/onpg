@@ -1,0 +1,165 @@
+/* ============================================
+   OPTIONS DE DESIGN HERO - PÔLE SANTÉ
+   ============================================
+   Pour activer une option, ajouter la classe correspondante au <section className="sante-hero">
+   Exemple: <section className="sante-hero option-1">
+*/
+
+/* ============================================
+   OPTION 1 : CARROUSEL D'IMAGES (5 images qui changent automatiquement)
+   Images utilisées : positions 1, 2, 3, 4, 5 dans la galerie
+   ============================================ */
+
+
+.sante-hero.option-1 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.85) 0%, rgba(0, 61, 143, 0.80) 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+}
+
+.sante-hero.option-1 .sante-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--cips-white);
+  max-width: 900px;
+  padding: 0 2rem;
+}
+
+/* Responsive pour option-1 */
+@media (max-width: 991px) {
+  .sante-hero.option-1 {
+    min-height: 350px;
+    padding: 60px 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .sante-hero.option-1 {
+    min-height: 300px;
+    padding: 40px 0;
+  }
+}
+
+/* ============================================
+   OPTION 2 : GRILLE DE 3 IMAGES CÔTE À CÔTE
+   ============================================ */
+.sante-hero.option-2 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.85) 0%, rgba(0, 61, 143, 0.80) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.sante-hero.option-2 .hero-images-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.sante-hero.option-2 .hero-image-item {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.sante-hero.option-2 .hero-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sante-hero.option-2 .hero-image-item:hover {
+  transform: scale(1.1);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.sante-hero.option-2 .sante-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   OPTION 3 : IMAGE PRINCIPALE + 2 VIGNETTES EN OVERLAY
+   ============================================ */
+.sante-hero.option-3 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.75) 0%, rgba(0, 61, 143, 0.70) 100%),
+              url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559425/cips/poles/sante/sante-cabine-medicale-connectee.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-attachment: fixed;
+  position: relative;
+  overflow: visible;
+}
+
+.sante-hero.option-3 .hero-vignettes {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 3;
+  width: 200px;
+}
+
+.sante-hero.option-3 .hero-vignette {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.sante-hero.option-3 .hero-vignette:hover {
+  transform: scale(1.1);
+  border-color: var(--cips-orange);
+  z-index: 4;
+}
+
+.sante-hero.option-3 .hero-vignette img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sante-hero.option-3 .sante-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 60%;
+}
+
+@media (max-width: 991px) {
+  .sante-hero.option-3 .hero-vignettes {
+    display: none;
+  }
+  
+  .sante-hero.option-3 .sante-hero-content {
+    max-width: 100%;
+  }
+  
+  .sante-hero.option-2 .hero-images-grid {
+    grid-template-columns: 1fr;
+    opacity: 0.3;
+  }
+}
+
+

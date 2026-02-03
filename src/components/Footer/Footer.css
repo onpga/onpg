@@ -1,0 +1,114 @@
+.site-footer {
+  background-color: var(--cips-blue);
+  color: var(--cips-white);
+  padding: 3rem 0 1.5rem;
+  margin-top: var(--section-spacing-desktop);
+}
+
+.site-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-mobile);
+}
+
+@media (min-width: 768px) {
+  .site-footer-container {
+    padding: 0 var(--spacing-desktop);
+  }
+}
+
+.site-footer-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .site-footer-content {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.site-footer-section h3 {
+  color: var(--cips-white);
+  margin-bottom: 1rem;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.site-footer-section p {
+  color: var(--cips-gray-light);
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+}
+
+.site-footer-section a {
+  color: var(--cips-gray-light);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.site-footer-section a:hover {
+  color: var(--cips-orange);
+}
+
+.site-footer-section .location-link {
+  display: inline;
+}
+
+/* Icônes pour WhatsApp et réseaux sociaux */
+.site-footer-section .whatsapp-link,
+.site-footer-section .social-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site-footer-section .social-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.site-footer-section .whatsapp-link:hover .social-icon,
+.site-footer-section .social-link:hover .social-icon {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.site-footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  color: var(--cips-white);
+}
+
+.site-footer-bottom p {
+  color: var(--cips-white);
+  margin: 0;
+}
+
+.site-footer-legal {
+  margin-bottom: 1rem;
+}
+
+.site-footer-legal span {
+  color: var(--cips-white);
+}
+
+.site-footer-legal a {
+  color: var(--cips-white);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.site-footer-legal a:hover {
+  color: var(--cips-orange);
+}
+

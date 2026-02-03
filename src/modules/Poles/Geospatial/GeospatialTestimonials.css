@@ -1,0 +1,191 @@
+/* Styles spécifiques pour les témoignages du Pôle Géospatial */
+/* Blocage complet du scroll interne - tout le contenu est visible d'un coup */
+
+.testimonials-carousel-geospatial .testimonials-carousel {
+  height: auto !important; /* Hauteur automatique - s'adapte au contenu */
+  overflow: hidden !important; /* Bloque complètement le scroll */
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: none !important;
+  min-height: auto !important;
+}
+
+.testimonials-carousel-geospatial .testimonials-carousel-content {
+  padding: 40px 20px 20px 20px !important; /* Padding normal */
+  gap: 25px !important; /* Espace entre photo et texte */
+  overflow: hidden !important; /* Bloque complètement le scroll */
+  height: auto !important; /* Hauteur automatique - s'adapte au contenu */
+  max-height: none !important; /* Pas de limite de hauteur */
+  min-height: auto !important; /* Pas de hauteur minimale fixe */
+  margin-bottom: 0 !important; /* Pas de marge en bas */
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: none !important; /* Pas de flex qui limite la hauteur */
+  box-sizing: border-box !important;
+}
+
+.testimonials-carousel-geospatial .testimonial-text-container {
+  gap: 12px !important; /* Espace modéré entre témoignage et auteur */
+  overflow: visible !important; /* Contenu visible */
+  height: auto !important; /* Hauteur automatique - s'adapte au contenu */
+  max-height: none !important; /* Pas de limite de hauteur */
+  min-height: auto !important; /* Pas de hauteur minimale fixe */
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: none !important; /* Pas de flex qui limite la hauteur */
+  box-sizing: border-box !important;
+  width: 100% !important; /* Largeur complète */
+  margin-left: 0 !important; /* Pas de marge à gauche qui pourrait créer un espace */
+}
+
+.testimonials-carousel-geospatial .testimonial-quote {
+  overflow: visible !important; /* Contenu visible */
+  height: auto !important; /* Hauteur automatique - s'adapte au contenu */
+  max-height: none !important; /* Pas de limite de hauteur */
+  min-height: auto !important; /* Pas de hauteur minimale fixe */
+  position: relative !important;
+  display: block !important;
+  width: 100% !important; /* Largeur complète */
+  padding-left: 2rem !important; /* Padding pour la barre orange */
+  margin: 0 !important; /* Pas de marge */
+}
+
+.testimonials-carousel-geospatial .author-info {
+  margin: 0 !important; /* Pas de marge */
+  padding: 0 !important; /* Pas de padding */
+  height: auto !important; /* Hauteur automatique - s'adapte au contenu */
+  max-height: none !important; /* Pas de limite de hauteur */
+  min-height: auto !important; /* Pas de hauteur minimale fixe */
+  overflow: visible !important; /* Contenu visible */
+  gap: 8px !important; /* Espace entre les 2 lignes */
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  flex: none !important; /* Pas de flex qui limite la hauteur */
+  box-sizing: border-box !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Les règles ci-dessous masquent role et company SAUF dans le wrapper */
+/* Le sélecteur > cible uniquement les enfants directs, donc le wrapper n'est pas affecté */
+.testimonials-carousel-geospatial .author-info > .author-role {
+  display: none !important; /* Masquer la ligne rôle directe (pas dans wrapper) */
+}
+
+.testimonials-carousel-geospatial .author-info > .author-company {
+  display: none !important; /* Masquer la ligne entreprise directe (pas dans wrapper) */
+}
+
+.testimonials-carousel-geospatial .author-name {
+  display: none !important; /* Masquer le nom car il est identique à l'entreprise */
+}
+
+/* Wrapper pour role et company sur une seule ligne */
+.testimonials-carousel-geospatial .author-role-company-wrapper {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: auto !important; /* Hauteur auto pour s'adapter au contenu */
+  min-height: 17px !important;
+  line-height: 1.4 !important;
+  text-align: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+}
+
+.testimonials-carousel-geospatial .author-role-company-wrapper .author-role {
+  display: inline !important; /* Afficher le poste */
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  color: var(--cips-blue, #002F6C) !important; /* Bleu */
+  opacity: 1 !important;
+  line-height: 1.4 !important;
+  height: auto !important;
+  min-height: 17px !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  vertical-align: baseline !important;
+  visibility: visible !important;
+  font-weight: 500 !important;
+}
+
+.testimonials-carousel-geospatial .author-role-company-wrapper .author-role::after {
+  content: ' / '; /* Séparateur entre poste et entreprise */
+  color: var(--cips-blue, #002F6C) !important; /* Bleu */
+  opacity: 1 !important;
+}
+
+.testimonials-carousel-geospatial .author-role-company-wrapper .author-company {
+  display: inline !important; /* Afficher l'entreprise sur la même ligne */
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  color: var(--cips-blue, #002F6C) !important; /* Bleu */
+  opacity: 1 !important;
+  line-height: 1.4 !important;
+  height: auto !important; /* Hauteur auto pour éviter la coupure */
+  min-height: 17px !important;
+  overflow: visible !important;
+  white-space: normal !important; /* Permet le retour à la ligne si nécessaire */
+  text-overflow: clip !important; /* Pas de coupure avec ellipsis */
+  vertical-align: baseline !important;
+  visibility: visible !important;
+  font-weight: 500 !important;
+}
+
+.testimonials-carousel-geospatial .testimonials-navigation {
+  position: relative !important; /* Position relative au lieu de absolute */
+  margin-top: 20px !important; /* Marge en haut */
+  height: 50px !important; /* Hauteur fixe */
+  max-height: 50px !important;
+  min-height: 50px !important;
+  padding: 5px 20px !important; /* Padding minimal */
+  overflow: hidden !important; /* Bloque le scroll */
+}
+
+/* Empêcher tout scroll interne dans la section technology pour Geospatial */
+.geospatial-technology .testimonials-carousel-geospatial {
+  overflow: hidden !important; /* Bloque le scroll */
+  height: auto !important;
+  max-height: none !important;
+  position: relative !important;
+}
+
+.geospatial-technology-content .technology-text .testimonials-carousel-geospatial {
+  overflow: hidden !important; /* Bloque le scroll */
+  height: auto !important;
+  max-height: none !important;
+  position: relative !important;
+}
+
+/* S'assurer que les conteneurs enfants n'ont pas de scroll */
+.testimonials-carousel-geospatial .testimonial-author-photo-container {
+  overflow: visible !important; /* Photo visible */
+  height: auto !important;
+  max-height: none !important;
+  display: block !important; /* Assure que la photo est visible */
+  visibility: visible !important;
+  position: relative !important; /* Position relative pour éviter l'empiètement */
+  margin-bottom: 30px !important; /* Espace en dessous de la photo */
+  flex-shrink: 0 !important; /* Ne pas rétrécir */
+}
+
+.testimonials-carousel-geospatial .author-photo {
+  display: block !important; /* Photo visible */
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important; /* Position relative au lieu de absolute */
+  top: auto !important;
+  left: auto !important;
+}
+
+.testimonials-carousel-geospatial .testimonials-indicators {
+  overflow: hidden !important; /* Bloque le scroll */
+}

@@ -1,0 +1,95 @@
+{
+  "images": {
+    "hero-1": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-1.jpg",
+    "hero-2": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-2.jpg",
+    "hero-3": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-3.jpg",
+    "hero-4": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-4.jpg",
+    "hero-5": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-5.jpg",
+    "hero-bg": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/hero-bg.jpg",
+    "logo-onpg": "https://res.cloudinary.com/dduvinjnu/image/upload/assets/LOGO_ONPG_gvlag2.png",
+    "the-tonik-5Lbyao5bzbc-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/the-tonik-5Lbyao5bzbc-unsplash.jpg",
+    "michal-parzuchowski-7TWRwDjfGew-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/michal-parzuchowski-7TWRwDjfGew-unsplash.jpg",
+    "pexels-karola-g-4084639": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/pexels-karola-g-4084639.jpg",
+    "african-american-woman-pharmacist-standing-with-serious-expression-pharmacy": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/african-american-woman-pharmacist-standing-with-serious-expression-pharmacy.jpg",
+    "alexander-grey-FEPfs43yiPE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/alexander-grey-FEPfs43yiPE-unsplash.jpg",
+    "brett-jordan-rJVflgqasr4-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/brett-jordan-rJVflgqasr4-unsplash.jpg",
+    "christina-victoria-craft-ZHys6xN7sUE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/christina-victoria-craft-ZHys6xN7sUE-unsplash.jpg",
+    "dima-mukhin-DFhSL1pM90k-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/dima-mukhin-DFhSL1pM90k-unsplash.jpg",
+    "arpad-czapp-tvP6pCnq9iI-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/arpad-czapp-tvP6pCnq9iI-unsplash.jpg",
+    "freestocks-0-HAIyTj7Xw-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/freestocks-0-HAIyTj7Xw-unsplash.jpg",
+    "laurynas-me-1TL8AoEDj_c-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/laurynas-me-1TL8AoEDj_c-unsplash.jpg",
+    "mariano-baraldi-IIBRFPj5LQk-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/mariano-baraldi-IIBRFPj5LQk-unsplash.jpg",
+    "markus-winkler-pOu_UmkOG-0-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/markus-winkler-pOu_UmkOG-0-unsplash.jpg",
+    "nathaniel-yeo-gUZo-UA0VGQ-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/nathaniel-yeo-gUZo-UA0VGQ-unsplash.jpg",
+    "portrait-female-pharmacist-working-drugstore": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/portrait-female-pharmacist-working-drugstore.jpg",
+    "portrait-female-pharmacist-working-drugstore (1)": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/portrait-female-pharmacist-working-drugstore (1).jpg",
+    "portrait-female-pharmacist-working-drugstore (2)": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/portrait-female-pharmacist-working-drugstore (2).jpg",
+    "portrait-woman-working-pharmaceutical-industry": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/portrait-woman-working-pharmaceutical-industry.jpg",
+    "roberto-sorin-RS0-h_pyByk-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/roberto-sorin-RS0-h_pyByk-unsplash.jpg",
+    "vladislav-bychkov-NdbdD6matvE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/vladislav-bychkov-NdbdD6matvE-unsplash.jpg",
+    "pexels-markus-winkler-1430818-5699982": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/pexels-markus-winkler-1430818-5699982.jpg",
+    "flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment": "https://res.cloudinary.com/dduvinjnu/image/upload/onpg/hero/flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment.jpg"
+  },
+  "optimized": {
+    "hero-1": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-1.jpg",
+    "hero-2": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-2.jpg",
+    "hero-3": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-3.jpg",
+    "hero-4": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-4.jpg",
+    "hero-5": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-5.jpg",
+    "hero-bg": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/hero-bg.jpg",
+    "logo-onpg": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/assets/LOGO_ONPG_gvlag2.png",
+    "the-tonik-5Lbyao5bzbc-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/the-tonik-5Lbyao5bzbc-unsplash.jpg",
+    "michal-parzuchowski-7TWRwDjfGew-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/michal-parzuchowski-7TWRwDjfGew-unsplash.jpg",
+    "pexels-karola-g-4084639": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/pexels-karola-g-4084639.jpg",
+    "african-american-woman-pharmacist-standing-with-serious-expression-pharmacy": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/african-american-woman-pharmacist-standing-with-serious-expression-pharmacy.jpg",
+    "alexander-grey-FEPfs43yiPE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/alexander-grey-FEPfs43yiPE-unsplash.jpg",
+    "brett-jordan-rJVflgqasr4-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/brett-jordan-rJVflgqasr4-unsplash.jpg",
+    "christina-victoria-craft-ZHys6xN7sUE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/christina-victoria-craft-ZHys6xN7sUE-unsplash.jpg",
+    "dima-mukhin-DFhSL1pM90k-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/dima-mukhin-DFhSL1pM90k-unsplash.jpg",
+    "arpad-czapp-tvP6pCnq9iI-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/arpad-czapp-tvP6pCnq9iI-unsplash.jpg",
+    "freestocks-0-HAIyTj7Xw-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/freestocks-0-HAIyTj7Xw-unsplash.jpg",
+    "laurynas-me-1TL8AoEDj_c-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/laurynas-me-1TL8AoEDj_c-unsplash.jpg",
+    "mariano-baraldi-IIBRFPj5LQk-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/mariano-baraldi-IIBRFPj5LQk-unsplash.jpg",
+    "markus-winkler-pOu_UmkOG-0-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/markus-winkler-pOu_UmkOG-0-unsplash.jpg",
+    "nathaniel-yeo-gUZo-UA0VGQ-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/nathaniel-yeo-gUZo-UA0VGQ-unsplash.jpg",
+    "portrait-female-pharmacist-working-drugstore": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/portrait-female-pharmacist-working-drugstore.jpg",
+    "portrait-female-pharmacist-working-drugstore (1)": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/portrait-female-pharmacist-working-drugstore (1).jpg",
+    "portrait-female-pharmacist-working-drugstore (2)": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/portrait-female-pharmacist-working-drugstore (2).jpg",
+    "portrait-woman-working-pharmaceutical-industry": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/portrait-woman-working-pharmaceutical-industry.jpg",
+    "roberto-sorin-RS0-h_pyByk-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/roberto-sorin-RS0-h_pyByk-unsplash.jpg",
+    "vladislav-bychkov-NdbdD6matvE-unsplash": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/vladislav-bychkov-NdbdD6matvE-unsplash.jpg",
+    "pexels-markus-winkler-1430818-5699982": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/pexels-markus-winkler-1430818-5699982.jpg",
+    "flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment": "https://res.cloudinary.com/dduvinjnu/image/upload/q_auto,f_auto/onpg/hero/flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment.jpg"
+  },
+  "hero_slides": [
+    {
+      "image": "the-tonik-5Lbyao5bzbc-unsplash",
+      "title": "Ordre National de Pharmacie du Gabon",
+      "subtitle": "Excellence, professionnalisme et innovation au service de la santé",
+      "buttonText": "Découvrir nos missions",
+      "buttonLink": "/missions"
+    },
+    {
+      "image": "michal-parzuchowski-7TWRwDjfGew-unsplash",
+      "title": "Protection de la Santé Publique",
+      "subtitle": "Garantir la qualité et la sécurité des médicaments au Gabon",
+      "buttonText": "Nos engagements",
+      "buttonLink": "/engagements"
+    },
+    {
+      "image": "african-american-woman-pharmacist-standing-with-serious-expression-pharmacy",
+      "title": "Formation et Développement",
+      "subtitle": "Accompagner les professionnels de santé dans leur carrière",
+      "buttonText": "Formation continue",
+      "buttonLink": "/formation"
+    },
+    {
+      "image": "flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment",
+      "title": "Innovation Pharmaceutique",
+      "subtitle": "Promouvoir les avancées technologiques dans le domaine de la santé",
+      "buttonText": "Nos initiatives",
+      "buttonLink": "/initiatives"
+    }
+  ]
+}
+

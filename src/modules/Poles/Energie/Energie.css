@@ -1,0 +1,1595 @@
+/* Hero Section - Les styles sont maintenant dans EnergieHeroOptions.css */
+.energie-hero {
+  color: var(--cips-white);
+  padding: 80px 0;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.energie-hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-desktop);
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.energie-hero-content h1 {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 120%;
+  color: var(--cips-white) !important;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.energie-hero-subtitle {
+  font-size: 22px;
+  line-height: 160%;
+  color: var(--cips-white) !important;
+  opacity: 1;
+  margin: 0 auto 2rem auto;
+  max-width: 750px;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.energie-hero-description {
+  font-size: 17px;
+  line-height: 180%;
+  color: var(--cips-white) !important;
+  opacity: 1;
+  margin: 0 auto;
+  max-width: 750px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 991px) {
+  .energie-hero-content {
+    padding: 0 var(--spacing-mobile);
+  }
+
+  .energie-hero-content h1 {
+    font-size: 32px;
+    white-space: normal;
+  }
+
+  .energie-hero {
+    padding: 60px 0;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .energie-hero-content h1 {
+    font-size: 24px;
+    white-space: normal;
+  }
+
+  .energie-hero-subtitle {
+    font-size: 17px;
+  }
+
+  .energie-hero-description {
+    font-size: 15px;
+  }
+}
+
+/* Solutions Section */
+/* Solutions Section - Style Layout 1 */
+.energie-solutions {
+  padding: 8rem 0;
+  background: var(--cips-white);
+  position: relative;
+}
+
+.energy-section-header {
+  text-align: center;
+  margin-bottom: 5rem;
+}
+
+.energy-section-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  color: var(--cips-blue);
+  margin: 0 0 1.5rem 0;
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.energy-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--cips-orange), transparent);
+  border-radius: 2px;
+}
+
+.energy-section-subtitle {
+  font-size: 1.3rem;
+  color: #6b7280;
+  margin: 1.5rem 0 0 0;
+  font-weight: 400;
+}
+
+.energie-solutions-grid {
+  display: grid;
+  /* Option 1 : 2x2 - Équilibré et professionnel (RECOMMANDÉ) */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2.5rem;
+  
+  /* Option 2 : 4 colonnes sur très grand écran, 2 sur desktop, 1 sur mobile */
+  /* grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); */
+  /* max-width: 1400px; */
+  /* margin: 0 auto; */
+  
+  /* Option 3 : Grille asymétrique avec une carte mise en avant */
+  /* grid-template-columns: repeat(3, 1fr); */
+  /* grid-template-rows: repeat(2, auto); */
+  /* .energie-solution-card:first-child { grid-column: span 2; } */
+}
+
+@media (max-width: 968px) {
+  .energie-solutions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.energie-solution-card {
+  position: relative;
+  padding: 3rem;
+  background: var(--cips-white);
+  border: 2px solid #e0e0e0;
+  border-radius: 28px;
+  text-align: center;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.energy-card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: var(--gradient);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+}
+
+.energy-card-shine {
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(135deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+  transform: rotate(45deg);
+  transition: top 0.6s ease, left 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.energie-solution-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  border-color: var(--cips-blue);
+  box-shadow: 
+    0 24px 80px rgba(0, 47, 108, 0.2),
+    0 0 60px rgba(0, 47, 108, 0.1);
+}
+
+.energie-solution-card:hover .energy-card-glow {
+  opacity: 0.3;
+}
+
+.energie-solution-card:hover .energy-card-shine {
+  top: 100%;
+  left: 100%;
+}
+
+.solution-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1));
+}
+
+.energie-solution-card:hover .solution-icon {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.solution-icon svg {
+  width: 64px;
+  height: 64px;
+}
+
+.energy-solution-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--cips-gray-light);
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.4s ease;
+}
+
+.energie-solution-card:hover .energy-solution-stat {
+  background: linear-gradient(135deg, var(--cips-gray-light) 0%, rgba(0, 47, 108, 0.05) 100%);
+  transform: scale(1.05);
+}
+
+.energy-stat-number {
+  font-size: 3rem;
+  font-weight: 900;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.energy-stat-text {
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.energie-solution-card h3 {
+  font-family: var(--font-poppins);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cips-blue);
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 2;
+  line-height: 1.3;
+}
+
+.energie-solution-card p {
+  font-size: 1rem;
+  color: var(--cips-black);
+  line-height: 1.7;
+  margin: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.energy-card-border-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 28px;
+  padding: 2px;
+  background: var(--gradient);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.energie-solution-card:hover .energy-card-border-glow {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .energie-solutions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CTA Simulateur - Design premium et professionnel */
+.energie-simulateur-cta {
+  background: linear-gradient(135deg, #f8f9fa 0%, var(--cips-gray-light) 100%);
+  /* Padding symétrique haut/bas pour que l'espace perçu soit le même
+     au-dessus et en dessous du bloc blanc */
+  padding: 3rem 0 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: auto;
+  /* On enlève la limite de hauteur pour que l'espace en bas soit réellement visible */
+  max-height: none;
+}
+
+.energie-simulateur-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  filter: blur(40px);
+  transform: scale(1.1);
+}
+
+.energie-simulateur-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(245, 245, 245, 0.9) 100%);
+  z-index: 0;
+}
+
+.simulateur-cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  /* Espace extérieur léger pour que le bloc soit bien posé dans la section */
+  margin: 1.25rem auto;
+  /* Espace intérieur identique en haut et en bas pour une lecture cohérente */
+  padding: 2.75rem 2.25rem 2.75rem;
+  background: var(--cips-white);
+  border: none;
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 60px rgba(0, 47, 108, 0.15),
+    0 8px 24px rgba(0, 47, 108, 0.1),
+    0 0 0 1px rgba(0, 47, 108, 0.05);
+}
+
+.simulateur-cta-header {
+  margin-bottom: 1.25rem;
+}
+
+.simulateur-cta-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(255, 140, 66, 0.15) 100%);
+  border: 2px solid var(--cips-orange);
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.2);
+}
+
+.simulateur-cta-icon-wrapper:hover {
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+}
+
+.simulateur-cta-icon-wrapper:hover svg {
+  color: var(--cips-white);
+}
+
+.simulateur-cta-icon-wrapper svg {
+  color: var(--cips-orange);
+  width: 30px;
+  height: 30px;
+  transition: color 0.4s ease;
+}
+
+.simulateur-cta-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+  color: var(--cips-blue);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.simulateur-cta-description {
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.65;
+  color: var(--cips-black);
+  opacity: 0.75;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+.simulateur-advantages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.simulateur-advantage-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.125rem;
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.8) 0%, rgba(255, 255, 255, 1) 100%);
+  border: 1px solid rgba(0, 47, 108, 0.08);
+  border-radius: 12px;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 47, 108, 0.04);
+}
+
+.simulateur-advantage-item:hover {
+  background: linear-gradient(135deg, rgba(255, 140, 66, 0.06) 0%, rgba(255, 255, 255, 1) 100%);
+  border-color: var(--cips-orange);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.15);
+}
+
+.simulateur-advantage-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  border-radius: 7px;
+  flex-shrink: 0;
+  color: var(--cips-white);
+  box-shadow: 0 2px 8px rgba(255, 140, 66, 0.3);
+}
+
+.simulateur-advantage-check svg {
+  width: 14px;
+  height: 14px;
+}
+
+.simulateur-advantage-item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--cips-black);
+  font-family: var(--font-poppins);
+  line-height: 1.5;
+}
+
+.simulateur-cta-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.simulateur-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9rem 2.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-poppins);
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  color: var(--cips-white);
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 24px rgba(255, 140, 66, 0.4),
+    0 2px 8px rgba(255, 140, 66, 0.3);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.simulateur-cta-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.simulateur-cta-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.simulateur-cta-btn:hover {
+  background: linear-gradient(135deg, #ff7a2e 0%, var(--cips-orange) 100%);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px rgba(255, 140, 66, 0.5),
+    0 4px 12px rgba(255, 140, 66, 0.4);
+}
+
+.simulateur-cta-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.simulateur-cta-btn:hover svg {
+  transform: translateX(5px);
+}
+
+.simulateur-cta-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.04) 0%, rgba(0, 47, 108, 0.08) 100%);
+  border: 1px solid rgba(0, 47, 108, 0.12);
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cips-black);
+  font-family: var(--font-poppins);
+  box-shadow: 0 2px 8px rgba(0, 47, 108, 0.06);
+}
+
+.simulateur-badge-icon {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .energie-simulateur-cta {
+    padding: 2.5rem 0;
+  }
+
+  .simulateur-cta-content {
+    padding: 2rem 1.75rem;
+  }
+
+  .simulateur-cta-title {
+    font-size: 1.75rem;
+  }
+
+  .simulateur-cta-description {
+    font-size: 1rem;
+  }
+
+  .simulateur-advantages {
+    gap: 0.625rem;
+  }
+
+  .simulateur-advantage-item {
+    padding: 0.875rem 1.25rem;
+  }
+
+  .simulateur-advantage-item span {
+    font-size: 0.95rem;
+  }
+
+  .simulateur-cta-btn {
+    padding: 1rem 2.5rem;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .simulateur-cta-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 1.25rem;
+  }
+
+  .simulateur-cta-icon-wrapper svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .simulateur-cta-badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+  }
+}
+
+/* Why Choose Section */
+.energie-why-choose {
+  background: linear-gradient(135deg, var(--cips-blue) 0%, #003d8f 100%);
+  color: var(--cips-white);
+  padding: 80px 0;
+}
+
+.energie-why-choose .container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.energie-why-choose h2 {
+  color: var(--cips-white);
+  text-align: left;
+  margin-bottom: 0;
+  font-size: 32px;
+  line-height: 140%;
+}
+
+.energie-advantages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.energie-advantages-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  font-size: 18px;
+  line-height: 160%;
+  position: relative;
+  overflow: hidden;
+}
+
+.energie-advantages-list li:last-child {
+  border-bottom: none;
+}
+
+/* États initiaux pour l'animation - Style professionnel et subtil */
+.advantage-item-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: none;
+}
+
+.advantage-item-visible {
+  animation: advantageReveal 1.2s ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes advantageReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.check-icon {
+  color: var(--cips-orange);
+  font-size: 24px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  transition: opacity 0.8s ease-out;
+  position: relative;
+}
+
+.advantage-item-hidden .check-icon {
+  opacity: 0;
+}
+
+.advantage-item-visible .check-icon {
+  animation: checkFadeIn 0.9s ease-out forwards;
+  animation-delay: calc(var(--delay, 0s) + 0.3s);
+}
+
+@keyframes checkFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.advantage-item-visible:hover .check-icon {
+  opacity: 0.8;
+}
+
+.advantage-text {
+  flex: 1;
+  color: var(--cips-white);
+  font-weight: 500;
+  transition: opacity 0.3s ease;
+  font-family: var(--font-poppins);
+}
+
+.advantage-item-visible:hover .advantage-text {
+  opacity: 0.9;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  background-color: var(--cips-orange);
+  margin-left: 2px;
+  animation: cursorBlink 1s step-end infinite;
+  vertical-align: baseline;
+}
+
+@keyframes cursorBlink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .energie-why-choose .container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .energie-why-choose h2 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .energie-why-choose {
+    padding: 60px 0;
+  }
+
+  .energie-why-choose h2 {
+    font-size: 24px;
+  }
+
+  .energie-advantages-list li {
+    font-size: 16px;
+    padding: 1rem 0;
+  }
+
+  .check-icon {
+    font-size: 20px;
+  }
+}
+
+/* Achievements Section */
+.energie-achievements.section {
+  background-color: var(--cips-white);
+  padding: 5rem 0 0 0 !important; /* Padding-bottom à 0 pour coller à la CTA */
+}
+
+.energie-achievements h2 {
+  color: var(--cips-blue);
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 42px;
+  font-weight: 700;
+  width: 100%;
+}
+
+.energie-achievements-content {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.energie-achievements-content .achievements-text {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .energie-achievements {
+    padding: 3rem 0;
+  }
+
+  .energie-achievements h2 {
+    font-size: 28px;
+    margin-bottom: 2rem;
+  }
+}
+
+.achievements-image {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-image {
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+}
+
+.achievements-text {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Centrer par rapport à la barre orange du titre */
+  position: relative;
+}
+
+.achievements-text blockquote {
+  font-size: 20px;
+  line-height: 180%;
+  color: var(--cips-black);
+  font-style: italic;
+  margin: 0 0 2rem 0;
+  padding-left: 2rem;
+  border-left: 4px solid var(--cips-orange);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.author-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--cips-orange);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.author-info {
+  flex: 1;
+}
+
+.author-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cips-blue);
+  margin: 0 0 0.5rem 0;
+}
+
+.author-role {
+  font-size: 16px;
+  color: var(--cips-black);
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.author-company {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  font-style: italic;
+}
+
+@media (max-width: 991px) {
+  .energie-achievements-content {
+    flex-direction: column;
+  }
+  
+  .achievements-text {
+    max-width: 100%;
+  }
+
+  .placeholder-image {
+    height: 300px;
+    font-size: 80px;
+  }
+
+  .achievements-text blockquote {
+    font-size: 18px;
+    padding-left: 1.5rem;
+  }
+
+  .testimonial-author {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .author-photo {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* CTA Section - Design premium et professionnel */
+.energie-cta.section {
+  background: linear-gradient(135deg, #f8f9fa 0%, var(--cips-gray-light) 100%);
+  padding: 4rem 0 3rem 0 !important; /* Padding-top augmenté pour agrandir la zone grise vers le haut */
+  text-align: center !important; /* Centrage de la section */
+  position: relative;
+  overflow: hidden;
+  min-height: auto;
+  max-height: 90vh;
+}
+
+.energie-cta.section .container {
+  text-align: center !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  display: block !important;
+}
+
+.energie-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763559407/cips/poles/energie/energie-gabonese-technician-adjusting-a-solar-panel-confident-smile-natural-light-professional-documentary-rendering-jpg.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  filter: blur(40px);
+  transform: scale(1.1);
+}
+
+.energie-cta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(245, 245, 245, 0.9) 100%);
+  z-index: 0;
+}
+
+.energie-cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 2.25rem;
+  background: var(--cips-white);
+  border: none;
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 60px rgba(0, 47, 108, 0.15),
+    0 8px 24px rgba(0, 47, 108, 0.1),
+    0 0 0 1px rgba(0, 47, 108, 0.05);
+}
+
+.energie-cta-header {
+  margin-bottom: 1.75rem;
+}
+
+.energie-cta-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: linear-gradient(135deg, rgba(255, 140, 66, 0.1) 0%, rgba(255, 140, 66, 0.15) 100%);
+  border: 2px solid var(--cips-orange);
+  border-radius: 14px;
+  margin-bottom: 1rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.2);
+}
+
+.energie-cta-icon-wrapper:hover {
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+}
+
+.energie-cta-icon-wrapper:hover svg {
+  color: var(--cips-white);
+}
+
+.energie-cta-icon-wrapper svg {
+  color: var(--cips-orange);
+  width: 30px;
+  height: 30px;
+  transition: color 0.4s ease;
+}
+
+.energie-cta-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+  font-weight: 800;
+  margin: 0 0 0.75rem 0;
+  color: var(--cips-blue);
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+}
+
+.energie-cta-description {
+  font-size: 0.95rem;
+  margin: 0;
+  line-height: 1.65;
+  color: var(--cips-black);
+  opacity: 0.75;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+.energie-cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.energie-cta-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9rem 2.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-poppins);
+  background: linear-gradient(135deg, var(--cips-orange) 0%, #ff7a2e 100%);
+  color: var(--cips-white);
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 24px rgba(255, 140, 66, 0.4),
+    0 2px 8px rgba(255, 140, 66, 0.3);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.5px;
+}
+
+.energie-cta-btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.energie-cta-btn-primary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.energie-cta-btn-primary:hover {
+  background: linear-gradient(135deg, #ff7a2e 0%, var(--cips-orange) 100%);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px rgba(255, 140, 66, 0.5),
+    0 4px 12px rgba(255, 140, 66, 0.4);
+}
+
+.energie-cta-btn-primary svg {
+  transition: transform 0.3s ease;
+}
+
+.energie-cta-btn-primary:hover svg {
+  transform: translateX(5px);
+}
+
+.energie-cta-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.9rem 2.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: var(--font-poppins);
+  background: var(--cips-white);
+  color: var(--cips-blue);
+  border: 2px solid var(--cips-blue);
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 47, 108, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.energie-cta-btn-secondary:hover {
+  background: var(--cips-blue);
+  color: var(--cips-white);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 24px rgba(0, 47, 108, 0.25),
+    0 4px 12px rgba(0, 47, 108, 0.15);
+}
+
+.energie-cta-btn-secondary svg {
+  transition: transform 0.3s ease;
+}
+
+.energie-cta-btn-secondary:hover svg {
+  transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+  .energie-cta {
+    padding: 2.5rem 0;
+  }
+
+  .energie-cta-content {
+    padding: 2rem 1.75rem;
+  }
+
+  .energie-cta-title {
+    font-size: 1.5rem;
+  }
+
+  .energie-cta-description {
+    font-size: 0.9rem;
+  }
+
+  .energie-cta-buttons {
+    flex-direction: column;
+    gap: 0.875rem;
+    width: 100%;
+  }
+
+  .energie-cta-btn-primary,
+  .energie-cta-btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem 2rem;
+    font-size: 0.9rem;
+  }
+
+  .energie-cta-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.875rem;
+  }
+
+  .energie-cta-icon-wrapper svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* Gallery Section */
+/* Gallery Section - Style Layout 3 */
+/* Surcharge FORTE de la classe .section pour .energie-gallery */
+section.energie-gallery.section,
+.energie-gallery.section {
+  padding-top: 2rem !important;
+  padding-bottom: 0 !important; /* FORCE le padding-bottom à 0 */
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  background: var(--cips-white) !important;
+  position: relative;
+}
+
+section.energie-gallery.section .container,
+.energie-gallery.section .container {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.energie-gallery-title {
+  font-family: var(--font-poppins);
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900;
+  color: var(--cips-blue);
+  margin: 0 0 5rem 0;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.energie-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.energie-gallery-item {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border-radius: 24px;
+  cursor: pointer;
+  animation: fadeInUp 0.8s ease-out both;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.energie-gallery-item:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 47, 108, 0.25);
+}
+
+.energie-gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.energie-gallery-item:hover img {
+  transform: scale(1.2) rotate(2deg);
+}
+
+.energie-gallery-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 47, 108, 0.9) 0%, transparent 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.energie-gallery-item:hover .energie-gallery-overlay {
+  opacity: 1;
+}
+
+.energie-gallery-overlay span {
+  color: var(--cips-white);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .energie-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Image Modal */
+.image-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.image-modal-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Styles pour le mode plein écran */
+.image-modal-content:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 0;
+  background: rgba(0, 0, 0, 1);
+}
+
+.image-modal-content:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 0;
+  background: rgba(0, 0, 0, 1);
+}
+
+.image-modal-content:-moz-full-screen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 0;
+  background: rgba(0, 0, 0, 1);
+}
+
+.image-modal-content:-ms-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  padding: 0;
+  background: rgba(0, 0, 0, 1);
+}
+
+.modal-image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+  margin: 0;
+}
+
+/* Image en mode plein écran */
+.image-modal-content:fullscreen .modal-image {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  object-position: center;
+}
+
+.image-modal-content:-webkit-full-screen .modal-image {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  object-position: center;
+}
+
+.image-modal-content:-moz-full-screen .modal-image {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  object-position: center;
+}
+
+.image-modal-content:-ms-fullscreen .modal-image {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  object-position: center;
+}
+
+.modal-image.loading {
+  opacity: 0.3;
+}
+
+.modal-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10002;
+}
+
+.modal-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10001;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  transform: rotate(90deg) scale(1.1);
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.modal-nav {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  z-index: 10001;
+  width: 100%;
+  max-width: 90vw;
+  padding: 0.5rem;
+}
+
+.modal-nav-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid white;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.modal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-counter {
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.modal-nav-btn.slideshow {
+  font-size: 24px;
+}
+
+.modal-nav-btn.slideshow.active {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: rgba(76, 175, 80, 0.6);
+}
+
+.modal-nav-btn.slideshow:hover {
+  background: rgba(76, 175, 80, 0.4);
+  border-color: rgba(76, 175, 80, 0.8);
+}
+
+@media (max-width: 767px) {
+  .image-modal {
+    inset: 0;
+  }
+
+  .image-modal-content {
+    padding: 0;
+    padding-bottom: 80px;
+  }
+
+  .image-modal-content:fullscreen,
+  .image-modal-content:-webkit-full-screen,
+  .image-modal-content:-moz-full-screen,
+  .image-modal-content:-ms-fullscreen {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+  }
+
+  .modal-image {
+    width: 100%;
+    height: calc(100% - 80px);
+    max-width: 100%;
+    max-height: calc(100% - 80px);
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .image-modal-content:fullscreen .modal-image,
+  .image-modal-content:-webkit-full-screen .modal-image,
+  .image-modal-content:-moz-full-screen .modal-image,
+  .image-modal-content:-ms-fullscreen .modal-image {
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .modal-close {
+    top: 5px;
+    right: 5px;
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .modal-nav {
+    bottom: 10px;
+    gap: 1rem;
+  }
+
+  .modal-nav-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .modal-counter {
+    font-size: 14px;
+    padding: 0.5rem 1rem;
+    min-width: 50px;
+  }
+}
+

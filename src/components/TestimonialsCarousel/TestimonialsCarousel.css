@@ -1,0 +1,423 @@
+.testimonials-carousel {
+  position: relative !important;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: 600px !important; /* Hauteur fixe totale */
+  transition: none !important; /* Prevent carousel container from moving */
+  opacity: 1 !important;
+  transform: none !important;
+  overflow: hidden !important; /* Cache le débordement */
+}
+
+/* Test: height auto pour Santé uniquement */
+.testimonials-carousel-sante .testimonials-carousel {
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+.testimonials-carousel-content {
+  position: relative;
+  padding: 40px 20px 0 20px !important; /* Pas de padding-bottom - navigation en absolute */
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px; /* Espace entre photo et texte */
+  flex: 0 0 300px; /* Hauteur fixe: se termine où l'auteur se termine (300px) */
+  overflow: visible; /* Contenu visible - pas de scroll interne */
+  /* Pas de transition - structure fixe */
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  height: 300px !important; /* Hauteur fixe: se termine à 300px (où l'auteur se termine) */
+  max-height: 300px !important;
+  min-height: 300px !important;
+  box-sizing: border-box;
+  justify-content: flex-start; /* Aligner en haut */
+  margin-bottom: 0 !important; /* Pas de marge en bas */
+}
+
+/* Test: height auto pour Santé uniquement */
+.testimonials-carousel-sante .testimonials-carousel-content {
+  height: auto !important;
+  max-height: none !important;
+  min-height: auto !important;
+  flex: none !important;
+  overflow: hidden !important;
+}
+
+/* Conteneur photo fixe */
+.testimonial-author-photo-container {
+  position: relative;
+  flex-shrink: 0;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 30px; /* Espace augmenté en dessous */
+  margin-top: 0;
+  /* Pas de transition - reste fixe */
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.author-photo {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--cips-orange, #FF8C42);
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Pas de transition pour la photo - changement instantané */
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Zone de texte qui change */
+.testimonial-text-container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Espace modéré entre témoignage et auteur */
+  align-items: center;
+  flex: 0 0 135px; /* Hauteur fixe: 48px (quote) + 12px (gap) + 75px (author) = 135px */
+  overflow: visible; /* Contenu visible - pas de scroll interne */
+  box-sizing: border-box;
+  justify-content: flex-start; /* Aligner en haut */
+  height: 135px !important; /* Hauteur fixe */
+  max-height: 135px !important;
+  min-height: 135px !important;
+}
+
+/* Test: height auto pour Santé uniquement */
+.testimonials-carousel-sante .testimonial-text-container {
+  height: auto !important;
+  max-height: none !important;
+  min-height: auto !important;
+  flex: none !important;
+  overflow: visible !important;
+}
+
+.testimonial-quote {
+  margin: 0 !important; /* Force à 0 pour éviter tout margin-bottom */
+  padding: 0 0 0 2rem; /* Padding seulement à gauche pour la barre orange */
+  border-left: 4px solid var(--cips-orange, #FF8C42);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--cips-black, #222222);
+  quotes: "«" "»" "‹" "›";
+  position: relative;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  display: block; /* Affichage normal */
+  overflow: visible; /* Pas de scroll */
+  height: 48px !important; /* Hauteur fixe */
+  max-height: 48px !important;
+  min-height: 48px !important;
+}
+
+/* Test: height auto pour Santé uniquement */
+.testimonials-carousel-sante .testimonial-quote {
+  height: auto !important;
+  max-height: none !important;
+  min-height: auto !important;
+  overflow: visible !important;
+}
+
+.testimonial-quote.fading {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.testimonial-quote::before {
+  content: open-quote;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--cips-orange, #FF8C42);
+  opacity: 0.4;
+  position: absolute;
+  left: -1.5rem;
+  top: -0.5rem;
+  font-family: Georgia, serif;
+}
+
+.testimonial-quote::after {
+  content: close-quote;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--cips-orange, #FF8C42);
+  opacity: 0.4;
+  font-family: Georgia, serif;
+  position: absolute;
+  right: -1.5rem;
+  bottom: -0.5rem;
+}
+
+.testimonial-quote p {
+  margin: 0;
+  padding-left: 0;
+}
+
+.testimonial-quote p + p {
+  margin-top: 16px;
+}
+
+.testimonial-quote p:last-child {
+  margin-bottom: 0; /* Pas de marge en bas du dernier paragraphe */
+}
+
+.author-info {
+  text-align: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+  margin: 0 !important; /* Force à 0 pour éviter toute marge */
+  padding: 0 !important; /* Force à 0 pour éviter tout padding */
+  height: 75px !important; /* Hauteur fixe */
+  max-height: 75px !important;
+  min-height: 75px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 75px; /* Hauteur fixe */
+  box-sizing: border-box;
+  overflow: hidden; /* Cache le contenu qui dépasse */
+}
+
+/* Test: height auto pour Santé uniquement */
+.testimonials-carousel-sante .author-info {
+  height: auto !important;
+  max-height: none !important;
+  min-height: auto !important;
+  flex: none !important;
+  overflow: visible !important;
+}
+
+.author-info.fading {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.author-name {
+  margin: 0 !important;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cips-blue, #002F6C);
+  line-height: 1.2;
+  height: 22px !important; /* Hauteur fixe pour le nom */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-role {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+  color: var(--cips-black, #222222);
+  opacity: 0.8;
+  line-height: 1.2;
+  height: 17px; /* Hauteur fixe pour la fonction */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* Par défaut en block */
+}
+
+.author-company {
+  margin: 0;
+  font-size: 14px;
+  color: var(--cips-black, #222222);
+  opacity: 0.6;
+  line-height: 1.2;
+  height: 17px; /* Hauteur fixe pour l'entreprise */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block; /* Par défaut en block */
+}
+
+/* Navigation Desktop - Toujours visible et fixe */
+.testimonials-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 5px 20px !important; /* Padding minimal */
+  position: absolute !important;
+  bottom: 0 !important; /* En bas du carousel */
+  left: 0 !important;
+  right: 0 !important;
+  top: 300px !important; /* Position fixe: juste après l'auteur (300px) */
+  background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%);
+  z-index: 10;
+  flex-shrink: 0;
+  /* Pas de transition - reste fixe */
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  width: 100% !important;
+  height: 50px !important; /* Hauteur fixe */
+  max-height: 50px !important;
+  min-height: 50px !important;
+  box-sizing: border-box;
+  margin: 0 !important; /* Pas de marge */
+}
+
+.testimonials-nav-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid var(--cips-blue, #002F6C);
+  background: white;
+  color: var(--cips-blue, #002F6C);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+  /* Pas de transition lors du changement de témoignage */
+  opacity: 1 !important;
+  transform: none !important;
+  position: relative !important;
+  padding: 0;
+  margin: 0;
+}
+
+.testimonials-nav-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.testimonials-nav-btn:hover {
+  background: var(--cips-blue, #002F6C);
+  color: white;
+  transform: scale(1.1);
+}
+
+.testimonials-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.testimonials-indicators {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.testimonials-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--cips-blue, #002F6C);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+  padding: 0;
+}
+
+.testimonials-indicator:hover {
+  background: var(--cips-blue, #002F6C);
+  opacity: 0.5;
+  transform: scale(1.2);
+}
+
+.testimonials-indicator.active {
+  background: var(--cips-blue, #002F6C);
+  width: 14px;
+  height: 14px;
+}
+
+/* Responsive Mobile */
+@media (max-width: 767px) {
+  .testimonials-carousel {
+    height: 450px; /* Hauteur fixe sur mobile aussi */
+  }
+
+  .testimonials-carousel-content {
+    padding: 30px 16px 0 16px;
+  }
+
+  .testimonial-quote {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .testimonial-quote::before {
+    font-size: 36px;
+  }
+
+  .testimonial-quote::after {
+    font-size: 36px;
+  }
+
+  .testimonial-quote {
+    padding-left: 1.5rem;
+  }
+
+  .testimonial-quote::before {
+    left: -1rem;
+    font-size: 36px;
+  }
+
+  .testimonial-quote::after {
+    right: -1rem;
+    font-size: 36px;
+  }
+
+  .testimonial-quote p {
+    padding-left: 0;
+  }
+
+  .testimonial-author-photo-container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .author-photo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .testimonials-navigation {
+    padding: 16px;
+    background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px; /* Hauteur fixe sur mobile */
+  }
+
+  .testimonials-nav-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  .testimonials-indicators {
+    gap: 10px;
+  }
+
+  .testimonials-indicator {
+    width: 10px;
+    height: 10px;
+  }
+
+  .testimonials-indicator.active {
+    width: 12px;
+    height: 12px;
+  }
+}
+

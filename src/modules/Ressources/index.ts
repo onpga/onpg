@@ -1,0 +1,11 @@
+export { default as RessourcesActualites } from './RessourcesActualites';
+export { default as RessourcesArticleDetail } from './ArticleDetail';
+export { default as Communiques } from './Communiques';
+export { default as Photos } from './Photos';
+export { default as Videos } from './Videos';
+export { default as Articles } from './Articles';
+export { default as Theses } from './Theses';
+export { default as Decrets } from './Decrets';
+export { default as Decisions } from './Decisions';
+export { default as Commissions } from './Commissions';
+export { default as Lois } from './Lois';

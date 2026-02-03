@@ -1,0 +1,414 @@
+/* ============================================
+   AMÉLIORATIONS UX POUR LES BOUTONS CTA
+   ============================================ */
+
+/* Base améliorée pour tous les boutons */
+.btn {
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   RIPPLE EFFECT (Effet de vague au clic)
+   ============================================ */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.btn:active::before {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+  transition: width 0s, height 0s, opacity 0.3s;
+}
+
+/* ============================================
+   ÉTAT DE CHARGEMENT (Loading State)
+   ============================================ */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+  position: relative;
+  color: transparent !important;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinner pour bouton secondaire */
+.btn-secondary.loading::after {
+  border-color: rgba(0, 47, 108, 0.3);
+  border-top-color: var(--cips-blue);
+}
+
+/* ============================================
+   ÉTAT DE SUCCÈS (Success State)
+   ============================================ */
+.btn.success {
+  background-color: #4caf50 !important;
+  pointer-events: none;
+  position: relative;
+}
+
+.btn.success::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  animation: checkmark 0.5s ease-out;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   PULSE ANIMATION (Pour attirer l'attention)
+   ============================================ */
+.btn.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 140, 66, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 140, 66, 0);
+  }
+}
+
+.btn-secondary.pulse {
+  animation: pulseSecondary 2s infinite;
+}
+
+@keyframes pulseSecondary {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 47, 108, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 47, 108, 0);
+  }
+}
+
+/* ============================================
+   SHIMMER EFFECT (Effet brillant)
+   ============================================ */
+.btn.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--cips-orange) 0%,
+    #ff8c42 50%,
+    var(--cips-orange) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ============================================
+   ACTIVE STATE AMÉLIORÉ
+   ============================================ */
+.btn:active:not(.loading):not(.disabled) {
+  transform: translateY(0) scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* ============================================
+   HOVER AMÉLIORÉ AVEC SCALE
+   ============================================ */
+.btn-primary:hover:not(.loading):not(.disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+}
+
+.btn-secondary:hover:not(.loading):not(.disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 47, 108, 0.3);
+}
+
+/* ============================================
+   DISABLED STATE AMÉLIORÉ
+   ============================================ */
+.btn.disabled,
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  position: relative;
+}
+
+.btn.disabled::after,
+.btn:disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.05) 10px,
+    rgba(0, 0, 0, 0.05) 20px
+  );
+  pointer-events: none;
+}
+
+/* ============================================
+   ICÔNES ANIMÉES (Flèches qui bougent)
+   ============================================ */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-icon .icon-arrow {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.btn-icon:hover .icon-arrow {
+  transform: translateX(5px);
+}
+
+.btn-icon:active .icon-arrow {
+  transform: translateX(8px);
+}
+
+/* ============================================
+   TOOLTIP INNOVANT (Captivant et lisible)
+   ============================================ */
+.btn[data-tooltip] {
+  position: relative;
+}
+
+.btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(0) scale(0.95);
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: 0.8px;
+  line-height: 1.4;
+  font-family: var(--font-poppins, 'Poppins', sans-serif);
+  text-transform: uppercase;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  /* Ombre portée optimisée pour lisibilité de toutes les lettres, y compris le H */
+  text-shadow: 
+    1px 1px 2px rgba(0, 0, 0, 0.95),
+    0 0 6px rgba(0, 0, 0, 0.85),
+    0 0 10px rgba(0, 0, 0, 0.7),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+  /* Contour fin pour chaque lettre */
+  -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.4);
+  text-stroke: 0.3px rgba(0, 0, 0, 0.4);
+}
+
+/* Apparition avec effet bounce captivant */
+.btn[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  animation: tooltipAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tooltipAppear {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px) scale(0.8);
+  }
+  60% {
+    transform: translateX(-50%) translateY(-4px) scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* Positionnement ajusté pour "Réponse rapide" */
+.btn[data-tooltip="Réponse rapide"]::before {
+  bottom: calc(100% + 14px);
+}
+
+
+
+/* ============================================
+   FOCUS STATE ACCESSIBLE
+   ============================================ */
+.btn:focus-visible {
+  outline: 3px solid rgba(255, 140, 66, 0.5);
+  outline-offset: 2px;
+}
+
+.btn-secondary:focus-visible {
+  outline-color: rgba(0, 47, 108, 0.5);
+}
+
+/* ============================================
+   ANIMATION D'ENTRÉE (Stagger)
+   ============================================ */
+.btn-fade-in {
+  animation: btnFadeIn 0.5s ease-out backwards;
+}
+
+.btn-fade-in:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.btn-fade-in:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+@keyframes btnFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   BOUTON AVEC PROGRESS BAR
+   ============================================ */
+.btn-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+}
+
+.btn-progress.progressing::after {
+  left: 100%;
+  transition: left 2s linear;
+}
+
+/* ============================================
+   BOUTON GLOW (Effet lumineux)
+   ============================================ */
+.btn-glow {
+  box-shadow: 0 0 20px rgba(255, 140, 66, 0.5);
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 140, 66, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 140, 66, 0.8);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .btn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .btn:active:not(.loading):not(.disabled) {
+    transform: scale(0.97);
+  }
+
+  /* Désactiver certaines animations sur mobile pour performance */
+  .btn.pulse {
+    animation: none;
+  }
+}
+
+/* ============================================
+   REDUCE MOTION (Accessibilité)
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::before,
+  .btn::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .btn:hover {
+    transform: none !important;
+  }
+}
+

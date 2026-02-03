@@ -1,0 +1,166 @@
+/* Empêcher le scroll sur le body quand on est sur cette page */
+body:has(.documentation-admin-container) {
+  overflow: hidden;
+}
+
+.documentation-admin-container {
+  height: calc(100vh - 160px);
+  max-height: calc(100vh - 160px);
+  background: #f5f5f5;
+  padding: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+}
+
+.documentation-admin-header {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #002F6C 0%, #003d8f 100%);
+  color: white;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 47, 108, 0.3);
+  flex-shrink: 0;
+}
+
+.documentation-admin-header h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.documentation-admin-header .subtitle {
+  font-size: 20px;
+  margin-bottom: 25px;
+  opacity: 0.95;
+}
+
+.documentation-admin-info {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.documentation-admin-info p {
+  margin: 0;
+}
+
+.documentation-admin-info strong {
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.no-index-notice {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.documentation-admin-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.documentation-admin-iframe-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.documentation-admin-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.documentation-admin-actions {
+  text-align: center;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.btn-download-doc {
+  display: inline-block;
+  background: #002F6C;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.btn-download-doc:hover {
+  background: #003d8f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 47, 108, 0.3);
+}
+
+.documentation-admin-note {
+  color: #666;
+  font-size: 14px;
+  margin-top: 15px;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .documentation-admin-container {
+    padding: 20px 10px;
+  }
+
+  .documentation-admin-header {
+    padding: 20px 15px;
+    margin-bottom: 15px;
+  }
+
+  .documentation-admin-header h1 {
+    font-size: 24px;
+  }
+
+  .documentation-admin-header .subtitle {
+    font-size: 14px;
+  }
+
+  .documentation-admin-info {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .documentation-admin-iframe-container {
+    margin-bottom: 15px;
+  }
+
+  .documentation-admin-actions {
+    padding: 15px;
+  }
+}
+

@@ -1,0 +1,510 @@
+/* Header buttons container - align buttons properly */
+.calendar-header-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.calendar-header-buttons .btn-secondary,
+.calendar-header-buttons .btn-primary {
+  text-decoration: none !important;
+  white-space: nowrap;
+}
+
+/* Espacement supplémentaire au début du calendar-wrapper pour séparer du header */
+.calendar-wrapper {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  padding-top: 2.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 1rem;
+}
+
+/* Indicateur de rythme de publication */
+.publication-rhythm-indicator {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 2px solid #2196F3;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+.publication-rhythm-indicator h3 {
+  margin: 0 0 1rem 0;
+  color: var(--cips-blue);
+  font-size: 1.1rem;
+}
+
+.rhythm-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.rhythm-stat-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid #e0e0e0;
+}
+
+.rhythm-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.rhythm-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cips-blue);
+}
+
+.rhythm-trend {
+  font-size: 1.2rem;
+  margin-top: 0.25rem;
+}
+
+.rhythm-trend.up {
+  color: #4CAF50;
+}
+
+.rhythm-trend.down {
+  color: #f44336;
+}
+
+.rhythm-trend.stable {
+  color: #FF9800;
+}
+
+.rhythm-good {
+  font-size: 0.75rem;
+  color: #4CAF50;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.rhythm-warning {
+  font-size: 0.75rem;
+  color: #f44336;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.rhythm-ok {
+  font-size: 0.75rem;
+  color: #FF9800;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+/* Filtres et recherche */
+.calendar-filters {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cips-blue);
+}
+
+.filter-group select,
+.filter-group input {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  outline: none;
+  border-color: var(--cips-blue);
+}
+
+.search-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.view-toggle {
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.view-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--cips-blue);
+  background: white;
+  color: var(--cips-blue);
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #f0f0f0;
+}
+
+.view-btn.active {
+  background: var(--cips-blue);
+  color: white;
+}
+
+/* Vue Liste */
+.articles-list-view {
+  margin-top: 1.5rem;
+}
+
+.articles-list-view h3 {
+  margin-bottom: 1rem;
+  color: var(--cips-blue);
+}
+
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.article-list-item {
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.article-list-item:hover {
+  border-color: var(--cips-blue);
+  box-shadow: 0 2px 8px rgba(0, 47, 108, 0.1);
+}
+
+.article-list-checkbox {
+  margin-top: 0.25rem;
+}
+
+.article-list-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.article-list-content {
+  flex: 1;
+}
+
+.article-list-content h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--cips-blue);
+  font-size: 1rem;
+}
+
+.article-list-meta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.category-badge,
+.status-badge,
+.date-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.status-badge.published {
+  background: #4CAF50;
+}
+
+.status-badge.draft {
+  background: #FF9800;
+}
+
+.status-badge.archived {
+  background: #9E9E9E;
+}
+
+.date-badge {
+  background: #757575;
+}
+
+/* Légende */
+.calendar-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* FullCalendar Container */
+.fullcalendar-container {
+  margin-top: 1rem;
+}
+
+/* Styles FullCalendar personnalisés */
+.fc {
+  font-family: var(--font-poppins, 'Poppins', sans-serif);
+}
+
+.fc-header-toolbar {
+  margin-bottom: 1.5rem;
+}
+
+.fc-button {
+  background: var(--cips-blue) !important;
+  border: none !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  color: white !important;
+  font-size: 0.9rem !important;
+}
+
+.fc-button:hover {
+  background: #001a3d !important;
+}
+
+.fc-button-active {
+  background: #001a3d !important;
+}
+
+/* Icônes précédent/suivant */
+.fc-button-prev,
+.fc-button-next {
+  font-size: 0.9rem !important;
+  line-height: 1.2 !important;
+  padding: 0.5rem 1rem !important;
+  min-width: auto !important;
+  text-align: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: 'Poppins', sans-serif !important;
+  white-space: nowrap !important;
+}
+
+/* Afficher le texte des boutons prev/next */
+.fc-button-prev .fc-button-text,
+.fc-button-next .fc-button-text {
+  font-size: 0.9rem !important;
+  line-height: 1.2 !important;
+  display: inline-block !important;
+  font-weight: 600 !important;
+}
+
+/* Masquer les icônes SVG par défaut si elles interfèrent */
+.fc-button-prev .fc-icon,
+.fc-button-next .fc-icon {
+  display: none !important;
+}
+
+/* Style pour les jours cliquables avec clic droit */
+.fc-daygrid-day {
+  cursor: context-menu;
+  position: relative;
+}
+
+.fc-daygrid-day:hover::after {
+  content: 'Clic droit pour créer un article';
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  font-size: 0.7rem;
+  color: #666;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.fc-daygrid-day:hover::after {
+  opacity: 1;
+}
+
+.fc-today-button {
+  background: #4CAF50 !important;
+}
+
+.fc-today-button:hover {
+  background: #45a049 !important;
+}
+
+.fc-daygrid-event {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.fc-event-title {
+  font-weight: 600;
+}
+
+.fc-event-status {
+  opacity: 0.9;
+}
+
+/* Styles pour les événements mis en avant */
+.fc-event-featured {
+  border: 3px solid #FFD700 !important;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5) !important;
+}
+
+/* Styles pour la checkbox dans les événements */
+.fc-event-content input[type="checkbox"] {
+  accent-color: var(--cips-blue);
+  cursor: pointer;
+}
+
+.fc-event-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Empêcher la propagation du clic sur la checkbox */
+.fc-event-content > div {
+  width: 100%;
+}
+
+/* Popover pour les événements multiples */
+.fc-popover {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fc-popover-header {
+  background: var(--cips-blue);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  padding: 0.75rem;
+  font-weight: 600;
+}
+
+.fc-popover-body {
+  padding: 0.5rem;
+}
+
+.fc-more-link {
+  color: var(--cips-blue);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fc-more-link:hover {
+  text-decoration: underline;
+}
+
+/* Jours du calendrier */
+.fc-daygrid-day {
+  transition: background-color 0.2s ease;
+}
+
+.fc-daygrid-day:hover {
+  background-color: #f5f5f5;
+}
+
+.fc-day-today {
+  background-color: #e8f5e9 !important;
+}
+
+/* Header du calendrier */
+.fc-col-header-cell {
+  background: #f8f9fa;
+  font-weight: 600;
+  padding: 0.75rem 0;
+  color: var(--cips-blue);
+}
+
+/* Titre du mois */
+.fc-toolbar-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cips-blue);
+}
+
+@media (max-width: 768px) {
+  .calendar-wrapper {
+    padding: 1rem;
+  }
+
+  .calendar-legend {
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .fc-header-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.2rem;
+  }
+
+  .fc-button {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.85rem !important;
+  }
+}

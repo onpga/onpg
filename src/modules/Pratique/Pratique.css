@@ -1,0 +1,1056 @@
+/* ============================================
+   PRATIQUE PAGES - DESIGN PROFESSIONNEL ÉPOUSTOUFLANT
+   ============================================ */
+
+/* Layout général */
+.pratique-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f3f4 100%);
+}
+
+/* Hero Section */
+.pratique-hero {
+  position: relative;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #00A651 0%, #008F45 50%, #2ECC71 100%);
+  color: white;
+}
+
+.pratique-page .hero-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.pratique-page .hero-text {
+  animation: slideInLeft 1s ease-out;
+}
+
+.pratique-page .hero-animation {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.pratique-page .hero-animation.animate {
+  animation: slideInUp 0.8s ease-out forwards;
+}
+
+.pratique-page .hero-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.pratique-page .hero-title-main {
+  display: block;
+  background: linear-gradient(45deg, white, rgba(255, 255, 255, 0.9));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pratique-page .hero-title-subtitle {
+  display: block;
+  font-size: 0.6em;
+  opacity: 0.9;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.pratique-page .hero-description {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  max-width: 600px;
+}
+
+.pratique-page .hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.pratique-page .highlight-item {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.pratique-page .highlight-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Stats Cards */
+.pratique-page .hero-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.pratique-page .stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.pratique-page .stat-card.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pratique-page .stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.pratique-page .stat-card:hover::before {
+  left: 100%;
+}
+
+.pratique-page .stat-card:hover {
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.pratique-page .stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  display: block;
+  color: white;
+}
+
+.pratique-page .stat-label {
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0.9;
+  color: white;
+}
+
+/* Background Pattern */
+.pratique-page .hero-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.pratique-page .pattern-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: float 6s ease-in-out infinite;
+}
+
+.pratique-page .shape-1 {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  right: 10%;
+  animation-delay: 0s;
+}
+
+.pratique-page .shape-2 {
+  width: 200px;
+  height: 200px;
+  top: 60%;
+  right: 20%;
+  animation-delay: 2s;
+}
+
+.pratique-page .shape-3 {
+  width: 150px;
+  height: 150px;
+  bottom: 20%;
+  left: 15%;
+  animation-delay: 4s;
+}
+
+/* Hero spécialisé pharmacies */
+.pharmacies-hero {
+  background: linear-gradient(135deg, #00A651 0%, #008F45 50%, #27AE60 100%);
+}
+
+/* Filtres */
+.pratique-filters {
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  margin-top: -1px;
+}
+
+.pratique-page .section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.results-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin: 0;
+}
+
+.results-meta {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Vue cartes détaillées pharmacies */
+.pharmacies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.pharmacy-card-detail {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideInUp 0.8s ease-out forwards;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.pharmacy-card-detail:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.pharmacy-card-detail.garde {
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.pharmacy-card-detail.garde::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFC107, #FFA000);
+}
+
+.pharmacy-card-detail.ouvert {
+  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.15);
+}
+
+.pharmacy-card-detail.ferme {
+  opacity: 0.8;
+}
+
+.pharmacy-photo {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.pharmacy-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.pharmacy-card-detail:hover .pharmacy-photo img {
+  transform: scale(1.1);
+}
+
+.photo-overlay {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.garde-badge-photo {
+  background: linear-gradient(135deg, #FFC107, #FFA000);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.ouvert-badge-photo {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ouvert-badge-photo.ouvert {
+  background: rgba(39, 174, 96, 0.9);
+  color: white;
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.ouvert-badge-photo.ferme {
+  background: rgba(231, 76, 60, 0.9);
+  color: white;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.distance-badge {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pharmacy-content-detail {
+  padding: 1.5rem;
+}
+
+.pharmacy-name-detail {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin-bottom: 1rem;
+}
+
+.pharmacy-location-detail {
+  margin-bottom: 1rem;
+}
+
+.location-address-detail {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.location-city-detail {
+  color: #495057;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.pharmacy-contact-detail {
+  margin-bottom: 1rem;
+}
+
+.contact-item-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contact-icon-detail {
+  color: #00A651;
+  font-size: 0.9rem;
+}
+
+.contact-link {
+  color: #00A651;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+  color: #008F45;
+  text-decoration: underline;
+}
+
+.pharmacy-horaires-detail {
+  background: rgba(0, 166, 81, 0.05);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.horaires-today-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.horaires-today-detail strong {
+  color: #1a252f;
+  font-size: 0.85rem;
+}
+
+.horaires-ouvert {
+  color: #27ae60;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.horaires-ferme {
+  color: #e74c3c;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.pharmacy-services-detail {
+  margin-bottom: 1rem;
+}
+
+.services-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.service-tag {
+  background: rgba(0, 166, 81, 0.1);
+  color: #00A651;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.service-more {
+  background: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.pharmacy-actions-detail {
+  padding: 0 1.5rem 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pharmacy-btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pharmacy-btn.primary {
+  background: linear-gradient(135deg, #00A651, #008F45);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.2);
+}
+
+.pharmacy-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 166, 81, 0.3);
+}
+
+.pharmacy-btn.secondary {
+  background: transparent;
+  color: #00A651;
+  border: 2px solid rgba(0, 166, 81, 0.3);
+}
+
+.pharmacy-btn.secondary:hover {
+  background: rgba(0, 166, 81, 0.1);
+  border-color: #00A651;
+}
+
+.pharmacy-btn.tertiary {
+  background: rgba(108, 117, 125, 0.1);
+  color: #6c757d;
+  border: 2px solid rgba(108, 117, 125, 0.2);
+}
+
+.pharmacy-btn.tertiary:hover {
+  background: rgba(108, 117, 125, 0.2);
+  border-color: #6c757d;
+  color: #495057;
+}
+
+.pharmacy-btn.small {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* Vue liste compacte */
+.pharmacies-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.pharmacy-list-item-compact {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+.pharmacy-list-item-compact:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pharmacy-list-status-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 60px;
+}
+
+.status-indicators-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.garde-indicator-compact {
+  font-size: 1.5rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.ouvert-indicator-compact {
+  font-size: 1.2rem;
+}
+
+.ouvert-indicator-compact.ouvert {
+  color: #27ae60;
+}
+
+.ouvert-indicator-compact.ferme {
+  color: #e74c3c;
+}
+
+.pharmacy-list-content-compact {
+  flex: 1;
+}
+
+.pharmacy-list-header-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pharmacy-list-header-compact h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin: 0;
+}
+
+.pharmacy-location-compact {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.pharmacy-horaires-compact {
+  color: #00A651;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.distance-compact {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.pharmacy-list-actions-compact {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Vue carte */
+.map-view {
+  margin-bottom: 3rem;
+}
+
+.map-placeholder {
+  background: white;
+  border-radius: 20px;
+  padding: 4rem 2rem;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.map-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.map-placeholder h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin-bottom: 1rem;
+}
+
+.map-placeholder p {
+  color: #6c757d;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.map-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.map-marker {
+  background: rgba(0, 166, 81, 0.1);
+  color: #00A651;
+  padding: 1rem;
+  border-radius: 15px;
+  font-weight: 600;
+  border-left: 4px solid #00A651;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 2px solid rgba(0, 166, 81, 0.2);
+  border-radius: 15px;
+  color: #00A651;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #00A651;
+  color: white;
+  border-color: #00A651;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pagination-number {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 2px solid rgba(0, 166, 81, 0.2);
+  border-radius: 50%;
+  color: #00A651;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pagination-number:hover,
+.pagination-number.active {
+  background: #00A651;
+  color: white;
+  border-color: #00A651;
+}
+
+/* Section informations */
+.info-section {
+  background: white;
+  padding: 5rem 0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.info-card {
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-color: #00A651;
+}
+
+.info-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.info-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a252f;
+  margin-bottom: 1rem;
+}
+
+.info-card p {
+  color: #6c757d;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Section content générique */
+.section-content {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  padding: 5rem 0;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+}
+
+.coming-soon {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.coming-soon-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.coming-soon h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1a252f;
+  margin-bottom: 1rem;
+}
+
+.coming-soon p {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 166, 81, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00A651, #008F45);
+  border-radius: 4px;
+  transition: width 0.8s ease;
+}
+
+.progress-text {
+  color: #00A651;
+  font-weight: 600;
+}
+
+/* Animations */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .filters-container {
+    padding: 1.5rem;
+  }
+
+  .pharmacies-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+
+  .checkbox-filters {
+    gap: 1rem;
+  }
+
+  .checkbox-label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 0 1rem;
+  }
+
+  .pharmacy-card-detail {
+    margin: 0 -0.5rem;
+  }
+
+  .pharmacies-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pharmacy-card-detail {
+    margin: 0;
+  }
+
+  .pharmacy-content-detail {
+    padding: 1rem;
+  }
+
+  .pharmacy-actions-detail {
+    padding: 0 1rem 1rem;
+    flex-direction: column;
+  }
+
+  .pharmacy-btn {
+    width: 100%;
+  }
+
+  .pharmacy-list-item-compact {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .pharmacy-list-status-compact {
+    flex-direction: row;
+    min-width: auto;
+  }
+
+  .pharmacy-list-header-compact {
+    text-align: center;
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pagination-numbers {
+    order: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination-btn {
+    order: 2;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+  }
+
+  .filters-container {
+    padding: 1rem;
+  }
+
+  .search-form {
+    max-width: none;
+  }
+
+  .filters-row {
+    gap: 0.5rem;
+  }
+
+  .filter-group select {
+    min-width: 140px;
+    font-size: 0.9rem;
+  }
+
+  .checkbox-filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .photo-overlay {
+    top: 10px;
+    right: 10px;
+  }
+
+  .garde-badge-photo,
+  .ouvert-badge-photo {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .distance-badge {
+    bottom: 10px;
+    left: 10px;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .services-list {
+    justify-content: center;
+  }
+
+  .map-placeholder {
+    padding: 2rem 1rem;
+  }
+
+  .map-preview {
+    max-width: none;
+  }
+}
+

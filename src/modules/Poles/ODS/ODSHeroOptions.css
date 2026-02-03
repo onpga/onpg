@@ -1,0 +1,285 @@
+/* ============================================
+   OPTIONS DE DESIGN HERO - PÔLE ODS (DRONES)
+   ============================================
+   Pour activer une option, ajouter la classe correspondante au <section className="ods-hero">
+   Exemple: <section className="ods-hero option-1">
+   
+   NOTE: Les images sont configurées dans frontend/src/config/heroImagesConfig.ts
+   Pour changer les images, modifiez ce fichier de configuration.
+*/
+
+/* ============================================
+   OPTION 1 : CARROUSEL D'IMAGES (5 images qui changent automatiquement)
+   Images utilisées selon heroImagesConfig.ts : positions 3, 8, 9, 12, 13 dans la galerie
+   ============================================ */
+
+/* Animation zoom/pan du layout 20 (légèrement dézoomée pour voir toute l'image) */
+@keyframes zoomPan {
+  0% {
+    transform: scale(1.08) translateX(-2%);
+  }
+  100% {
+    transform: scale(1) translateX(0);
+  }
+}
+
+.ods-hero.option-1 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.4) 0%, rgba(0, 61, 143, 0.35) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Overlay gradient léger pour améliorer la lisibilité sans cacher l'image */
+.ods-hero.option-1 .hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Image position 3 : Drone 3 */
+.ods-hero.option-1::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497678/cips/poles/drone/drone-3.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  animation: odsCarousel1 20s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Image position 8 : Drone 8 */
+.ods-hero.option-1::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497694/cips/poles/drone/drone-8.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  opacity: 0;
+  animation: odsCarousel2 20s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Image position 9 : Drone 9 */
+.ods-hero.option-1 .hero-image-layer-3 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497699/cips/poles/drone/drone-9.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  opacity: 0;
+  animation: odsCarousel3 20s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* Image position 12 : Drone 12 */
+.ods-hero.option-1 .hero-image-layer-4 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497709/cips/poles/drone/drone-12.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  opacity: 0;
+  animation: odsCarousel4 20s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/* Image position 13 : Drone 13 */
+.ods-hero.option-1 .hero-image-layer-5 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497711/cips/poles/drone/drone-13.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  z-index: 0;
+  opacity: 0;
+  animation: odsCarousel5 20s ease-in-out infinite, zoomPan 10s ease-in-out infinite alternate;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+@keyframes odsCarousel1 {
+  0%, 20% { opacity: 1; }
+  21%, 100% { opacity: 0; }
+}
+
+@keyframes odsCarousel2 {
+  0%, 20% { opacity: 0; }
+  21%, 40% { opacity: 1; }
+  41%, 100% { opacity: 0; }
+}
+
+@keyframes odsCarousel3 {
+  0%, 40% { opacity: 0; }
+  41%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0; }
+}
+
+@keyframes odsCarousel4 {
+  0%, 60% { opacity: 0; }
+  61%, 80% { opacity: 1; }
+  81%, 100% { opacity: 0; }
+}
+
+@keyframes odsCarousel5 {
+  0%, 80% { opacity: 0; }
+  81%, 100% { opacity: 1; }
+}
+
+.ods-hero.option-1 .ods-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   OPTION 2 : GRILLE DE 3 IMAGES CÔTE À CÔTE
+   ============================================ */
+.ods-hero.option-2 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.85) 0%, rgba(0, 61, 143, 0.80) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.ods-hero.option-2 .hero-images-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.ods-hero.option-2 .hero-image-item {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.ods-hero.option-2 .hero-image-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ods-hero.option-2 .hero-image-item:hover {
+  transform: scale(1.1);
+  opacity: 0.7;
+  z-index: 1;
+}
+
+.ods-hero.option-2 .ods-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+   OPTION 3 : IMAGE PRINCIPALE + 2 VIGNETTES EN OVERLAY
+   ============================================ */
+.ods-hero.option-3 {
+  background: linear-gradient(135deg, rgba(0, 47, 108, 0.75) 0%, rgba(0, 61, 143, 0.70) 100%),
+              url('https://res.cloudinary.com/drbaadexk/image/upload/q_auto:best,f_auto,w_1920/v1763497685/cips/poles/drone/drone-5.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-attachment: fixed;
+  position: relative;
+  overflow: visible;
+}
+
+.ods-hero.option-3 .hero-vignettes {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 3;
+  width: 200px;
+}
+
+.ods-hero.option-3 .hero-vignette {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.ods-hero.option-3 .hero-vignette:hover {
+  transform: scale(1.1);
+  border-color: var(--cips-orange);
+  z-index: 4;
+}
+
+.ods-hero.option-3 .hero-vignette img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ods-hero.option-3 .ods-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 60%;
+}
+
+@media (max-width: 991px) {
+  .ods-hero.option-3 .hero-vignettes {
+    display: none;
+  }
+  
+  .ods-hero.option-3 .ods-hero-content {
+    max-width: 100%;
+  }
+  
+  .ods-hero.option-2 .hero-images-grid {
+    grid-template-columns: 1fr;
+    opacity: 0.3;
+  }
+}

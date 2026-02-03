@@ -1,22 +1,26 @@
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:20.9.0 AS builder
 
 WORKDIR /app
+
+# Install specific npm version
+RUN npm install -g npm@10.2.4
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with specific npm version
+RUN npm install --no-package-lock
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build frontend with increased memory limit
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 # Stage 2: Production
-FROM node:20-alpine AS production
+FROM node:20.9.0 AS production
 
 WORKDIR /app
 

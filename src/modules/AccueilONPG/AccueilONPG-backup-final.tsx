@@ -593,3 +593,12 @@ const AccueilONPG = () => {
         </div>
       </nav>
 
+      {/* Contenu principal - à compléter */}
+      <div style={{ marginTop: '70px' }}>
+        {/* Contenu de la page */}
+      </div>
+    </div>
+  );
+};
+
+export default AccueilONPG;

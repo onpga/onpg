@@ -319,7 +319,7 @@ const TableauOrdre = () => {
             </button>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Contenu principal */}
       <section className="tableau-content">

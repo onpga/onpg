@@ -80,8 +80,9 @@ export const ONPG_IMAGES = {
   heroPexelsMarkus: `${CLOUDINARY_BASE}/onpg/hero/pexels-markus-winkler-1430818-5699982`,
   heroFluDisease: `${CLOUDINARY_BASE}/onpg/hero/flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment`,
 
-  // Photo président (public_id exact depuis Cloudinary)
-  president: `${CLOUDINARY_BASE}/onpg/hero/flu-disease-healthcare-medicine-concept-happy-african-american-male-doctor-white-coat-present-new-drugs-cure-from-disease-viruses-showing-pills-guarantee-good-quality-treatment`,
+  // Photo présidente (public_id exact depuis Cloudinary)
+  // IMPORTANT : ne pas changer ce public_id sans mettre à jour l'image dans Cloudinary
+  president: `${CLOUDINARY_BASE}/onpg/hero/presidente`,
 
   // Images pour les liens rapides
   quickLinkInscription: `${CLOUDINARY_BASE}/onpg/hero/portrait-female-pharmacist-working-drugstore`,

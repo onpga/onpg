@@ -1,117 +1,75 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 import './TableauOrdre.css';
 
-// Types pour les membres
+// Types pour les membres (simplifié : nom, prenom, section)
 interface Member {
   id: string;
-  number: string;
-  name: string;
-  section: 'A' | 'B' | 'C' | 'D';
-  specialty: string;
-  region: string;
-  status: 'active' | 'suspended' | 'retired';
-  registrationDate: string;
-  email?: string;
-  phone?: string;
+  nom: string;
+  prenom: string;
+  section: string; // Vide pour le moment
 }
 
-const mockMembers: Member[] = [
-  {
-    id: '1',
-    number: '001-2020',
-    name: 'Dr. Alain Moreau',
-    section: 'A',
-    specialty: 'Pharmacie clinique',
-    region: 'Libreville',
-    status: 'active',
-    registrationDate: '2020-01-15',
-    email: 'alain.moreau@email.ga',
-    phone: '+241 XX XX XX XX'
-  },
-  {
-    id: '2',
-    number: '002-2020',
-    name: 'Dr. Marie Dubois',
-    section: 'A',
-    specialty: 'Pharmacie hospitalière',
-    region: 'Libreville',
-    status: 'active',
-    registrationDate: '2020-02-01',
-    email: 'marie.dubois@email.ga',
-    phone: '+241 XX XX XX XX'
-  },
-  {
-    id: '3',
-    number: '003-2020',
-    name: 'Dr. Jean Martin',
-    section: 'C',
-    specialty: 'Administration pharmaceutique',
-    region: 'Libreville',
-    status: 'active',
-    registrationDate: '2020-02-15',
-    email: 'jean.martin@email.ga',
-    phone: '+241 XX XX XX XX'
-  },
-  {
-    id: '4',
-    number: '004-2020',
-    name: 'Dr. Sophie Bernard',
-    section: 'B',
-    specialty: 'Biologie médicale',
-    region: 'Libreville',
-    status: 'active',
-    registrationDate: '2020-03-01',
-    email: 'sophie.bernard@email.ga',
-    phone: '+241 XX XX XX XX'
-  },
-  {
-    id: '5',
-    number: '005-2020',
-    name: 'Dr. Michel Dubois',
-    section: 'A',
-    specialty: 'Pharmacie officinale',
-    region: 'Port-Gentil',
-    status: 'active',
-    registrationDate: '2020-03-15',
-    email: 'michel.dubois@email.ga',
-    phone: '+241 XX XX XX XX'
-  }
-];
-
 const TableauOrdre = () => {
-  const [members, setMembers] = useState<Member[]>(mockMembers);
-  const [filteredMembers, setFilteredMembers] = useState<Member[]>(mockMembers);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedSection, setSelectedSection] = useState('Toutes');
-  const [selectedRegion, setSelectedRegion] = useState('Toutes');
-  const [selectedStatus, setSelectedStatus] = useState('Tous');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'number' | 'date'>('name');
+  const [sortBy, setSortBy] = useState<'nom' | 'prenom'>('nom');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
 
   const membersPerPage = 12;
 
+  // Charger les données depuis MongoDB (comme Resources)
+  useEffect(() => {
+    const loadPharmaciens = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('pharmaciens');
+        if (Array.isArray(data) && data.length > 0) {
+          const loadedMembers: Member[] = data.map((pharmacien: any) => ({
+            id: String(pharmacien._id || ''),
+            nom: pharmacien.nom || '',
+            prenom: pharmacien.prenom || '',
+            section: pharmacien.section || '' // Vide pour le moment
+          }));
+          setMembers(loadedMembers);
+          setFilteredMembers(loadedMembers);
+        } else {
+          setMembers([]);
+          setFilteredMembers([]);
+        }
+      } catch (error) {
+        console.error('Erreur chargement pharmaciens:', error);
+        setMembers([]);
+        setFilteredMembers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPharmaciens();
+  }, []);
+
   // Filtrage et tri
   useEffect(() => {
     let filtered = members.filter(member => {
-      const matchesSearch = member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           member.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           member.specialty.toLowerCase().includes(searchQuery.toLowerCase());
+      const fullName = `${member.nom} ${member.prenom}`.toLowerCase();
+      const matchesSearch = fullName.includes(searchQuery.toLowerCase()) ||
+                           member.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           member.prenom.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesSection = selectedSection === 'Toutes' || member.section === selectedSection;
-      const matchesRegion = selectedRegion === 'Toutes' || member.region === selectedRegion;
-      const matchesStatus = selectedStatus === 'Tous' || member.status === selectedStatus;
-      return matchesSearch && matchesSection && matchesRegion && matchesStatus;
+      return matchesSearch && matchesSection;
     });
 
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'number':
-          return a.number.localeCompare(b.number);
-        case 'date':
-          return new Date(b.registrationDate).getTime() - new Date(a.registrationDate).getTime();
+        case 'nom':
+          return a.nom.localeCompare(b.nom);
+        case 'prenom':
+          return a.prenom.localeCompare(b.prenom);
         default:
           return 0;
       }
@@ -119,7 +77,7 @@ const TableauOrdre = () => {
 
     setFilteredMembers(filtered);
     setCurrentPage(1);
-  }, [members, searchQuery, selectedSection, selectedRegion, selectedStatus, sortBy]);
+  }, [members, searchQuery, selectedSection, sortBy]);
 
   // Pagination
   const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
@@ -129,15 +87,7 @@ const TableauOrdre = () => {
 
   // Statistiques
   const stats = useMemo(() => ({
-    totalMembers: members.length,
-    activeMembers: members.filter(m => m.status === 'active').length,
-    sectionsBreakdown: {
-      A: members.filter(m => m.section === 'A').length,
-      B: members.filter(m => m.section === 'B').length,
-      C: members.filter(m => m.section === 'C').length,
-      D: members.filter(m => m.section === 'D').length
-    },
-    regionsCount: new Set(members.map(m => m.region)).size
+    totalMembers: members.length
   }), [members]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -147,39 +97,19 @@ const TableauOrdre = () => {
   const clearFilters = () => {
     setSearchQuery('');
     setSelectedSection('Toutes');
-    setSelectedRegion('Toutes');
-    setSelectedStatus('Tous');
-    setSortBy('name');
+    setSortBy('nom');
     setCurrentPage(1);
   };
 
-  const getSectionLabel = (section: Member['section']) => {
-    const labels = {
-      'A': 'Officinaux',
-      'B': 'Biologistes',
-      'C': 'Fonctionnaires',
-      'D': 'Fabricants/Grossistes/Répartiteurs'
-    };
-    return labels[section];
-  };
-
-  const getStatusLabel = (status: Member['status']) => {
-    const labels = {
-      'active': 'Actif',
-      'suspended': 'Suspendu',
-      'retired': 'Retraité'
-    };
-    return labels[status];
-  };
-
-  const getStatusColor = (status: Member['status']) => {
-    const colors = {
-      'active': '#27ae60',
-      'suspended': '#f39c12',
-      'retired': '#95a5a6'
-    };
-    return colors[status];
-  };
+  if (loading) {
+    return (
+      <div className="membres-page">
+        <div className="loading-state">
+          <p>Chargement des pharmaciens...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="membres-page">
@@ -193,13 +123,7 @@ const TableauOrdre = () => {
             </h1>
             <p className="hero-description">
               Répertoire officiel des pharmaciens inscrits à l'ONPG.
-              Consultez les informations des professionnels de santé gabonais.
             </p>
-            <div className="hero-highlights">
-              <span className="highlight-item">📋 Répertoire officiel</span>
-              <span className="highlight-item">🔍 Recherche avancée</span>
-              <span className="highlight-item">📊 Statistiques détaillées</span>
-            </div>
           </div>
 
           {/* Stats Cards */}
@@ -208,21 +132,7 @@ const TableauOrdre = () => {
               <div className="stat-number">{stats.totalMembers}</div>
               <div className="stat-label">Membres</div>
             </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.activeMembers}</div>
-              <div className="stat-label">Actifs</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">4</div>
-              <div className="stat-label">Sections</div>
-            </div>
           </div>
-        </div>
-
-        <div className="hero-bg-pattern">
-          <div className="pattern-shape shape-1"></div>
-          <div className="pattern-shape shape-2"></div>
-          <div className="pattern-shape shape-3"></div>
         </div>
       </section>
 
@@ -234,7 +144,7 @@ const TableauOrdre = () => {
               <div className="search-input-wrapper">
                 <input
                   type="text"
-                  placeholder="Rechercher un membre..."
+                  placeholder="Rechercher par nom ou prénom..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input"
@@ -255,63 +165,19 @@ const TableauOrdre = () => {
                 value={selectedSection}
                 onChange={(e) => setSelectedSection(e.target.value)}
               >
-                <option value="Toutes">Toutes les sections</option>
-                <option value="A">Section A - Officinaux</option>
-                <option value="B">Section B - Biologistes</option>
-                <option value="C">Section C - Fonctionnaires</option>
-                <option value="D">Section D - Fabricants/Grossistes</option>
+                <option value="Toutes">Toutes</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
               </select>
             </div>
 
-            <div className="filter-group">
-              <label>Région:</label>
-              <select
-                value={selectedRegion}
-                onChange={(e) => setSelectedRegion(e.target.value)}
-              >
-                <option value="Toutes">Toutes les régions</option>
-                {Array.from(new Set(members.map(m => m.region))).map(region => (
-                  <option key={region} value={region}>{region}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="filter-group">
-              <label>Statut:</label>
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                <option value="Tous">Tous les statuts</option>
-                <option value="active">Actif</option>
-                <option value="suspended">Suspendu</option>
-                <option value="retired">Retraité</option>
-              </select>
-            </div>
-
-            <div className="view-controls">
-              <button
-                className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
-                onClick={() => setViewMode('table')}
-              >
-                📋 Tableau
-              </button>
-              <button
-                className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
-                onClick={() => setViewMode('cards')}
-              >
-                ⊞ Cartes
-              </button>
-            </div>
-          </div>
-
-          <div className="sort-section">
             <div className="sort-controls">
               <label>Trier par:</label>
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
-                <option value="name">Nom</option>
-                <option value="number">Numéro</option>
-                <option value="date">Date d'inscription</option>
+                <option value="nom">Nom</option>
+                <option value="prenom">Prénom</option>
               </select>
             </div>
 
@@ -327,9 +193,8 @@ const TableauOrdre = () => {
         <div className="section-container">
           <div className="results-header">
             <h2 className="results-title">
-              {filteredMembers.length} membre{filteredMembers.length > 1 ? 's' : ''}
+              {filteredMembers.length} pharmacien{filteredMembers.length > 1 ? 's' : ''}
               {searchQuery && ` pour "${searchQuery}"`}
-              {selectedSection !== 'Toutes' && ` - ${getSectionLabel(selectedSection as Member['section'])}`}
             </h2>
             <div className="results-meta">
               Page {currentPage} sur {totalPages}
@@ -343,54 +208,33 @@ const TableauOrdre = () => {
                 <table className="membres-table">
                   <thead>
                     <tr>
-                      <th>N° Inscription</th>
                       <th>Nom</th>
+                      <th>Prénom</th>
                       <th>Section</th>
-                      <th>Spécialité</th>
-                      <th>Région</th>
-                      <th>Statut</th>
-                      <th>Date d'inscription</th>
-                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {currentMembers.map(member => (
-                      <tr key={member.id} className="member-row">
-                        <td className="member-number">{member.number}</td>
-                        <td className="member-name-cell">
-                          <div className="member-name-info">
-                            <strong>{member.name}</strong>
-                            {member.email && <div className="member-email">{member.email}</div>}
-                          </div>
-                        </td>
-                        <td>
-                          <span className="section-badge section-a">{member.section}</span>
-                        </td>
-                        <td className="member-specialty">{member.specialty}</td>
-                        <td className="member-region">{member.region}</td>
-                        <td>
-                          <span
-                            className="status-badge"
-                            style={{ backgroundColor: getStatusColor(member.status) }}
-                          >
-                            {getStatusLabel(member.status)}
-                          </span>
-                        </td>
-                        <td className="member-date">
-                          {new Date(member.registrationDate).toLocaleDateString('fr-FR')}
-                        </td>
-                        <td>
-                          <div className="table-actions">
-                            <button className="action-btn view" title="Voir le profil">
-                              👁️
-                            </button>
-                            <button className="action-btn contact" title="Contacter">
-                              📧
-                            </button>
-                          </div>
+                    {currentMembers.length > 0 ? (
+                      currentMembers.map(member => (
+                        <tr key={member.id} className="member-row">
+                          <td className="member-name-cell">
+                            <strong>{member.nom}</strong>
+                          </td>
+                          <td className="member-name-cell">
+                            {member.prenom}
+                          </td>
+                          <td>
+                            {member.section || <span style={{ color: '#999' }}>—</span>}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={3} style={{ textAlign: 'center', padding: '2rem' }}>
+                          Aucun pharmacien trouvé
                         </td>
                       </tr>
-                    ))}
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -398,38 +242,23 @@ const TableauOrdre = () => {
           ) : (
             /* Vue cartes */
             <div className="membres-cards-grid">
-              {currentMembers.map(member => (
-                <div key={member.id} className="member-card-tableau">
-                  <div className="member-card-header">
-                    <div className="member-number-badge">{member.number}</div>
-                    <div className="member-status-indicator">
-                      <span
-                        className="status-dot"
-                        style={{ backgroundColor: getStatusColor(member.status) }}
-                      ></span>
-                      {getStatusLabel(member.status)}
+              {currentMembers.length > 0 ? (
+                currentMembers.map(member => (
+                  <div key={member.id} className="member-card-tableau">
+                    <div className="member-card-content">
+                      <h3 className="member-card-name">{member.nom}</h3>
+                      <div className="member-card-name">{member.prenom}</div>
+                      <div className="member-card-section">
+                        Section: {member.section || <span style={{ color: '#999' }}>Non assignée</span>}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="member-card-content">
-                    <h3 className="member-card-name">{member.name}</h3>
-                    <div className="member-card-section">
-                      Section {member.section} - {getSectionLabel(member.section)}
-                    </div>
-                    <div className="member-card-specialty">{member.specialty}</div>
-                    <div className="member-card-region">📍 {member.region}</div>
-                    <div className="member-card-date">
-                      Inscrit le {new Date(member.registrationDate).toLocaleDateString('fr-FR')}
-                    </div>
-                  </div>
-
-                  <div className="member-card-actions">
-                    <button className="member-card-btn primary">
-                      Voir le profil →
-                    </button>
-                  </div>
+                ))
+              ) : (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                  Aucun pharmacien trouvé
                 </div>
-              ))}
+              )}
             </div>
           )}
 
@@ -467,107 +296,8 @@ const TableauOrdre = () => {
           )}
         </div>
       </section>
-
-      {/* Section statistiques détaillées */}
-      <section className="stats-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">
-              <span className="title-icon">📊</span>
-              Répartition des membres
-            </h2>
-            <p className="section-subtitle">
-              Statistiques détaillées par section et région
-            </p>
-          </div>
-
-          <div className="stats-grid">
-            <div className="stat-card-large">
-              <h3>Répartition par section</h3>
-              <div className="sections-stats">
-                <div className="section-stat">
-                  <div className="section-info">
-                    <span className="section-label">Section A - Officinaux</span>
-                    <span className="section-count">{stats.sectionsBreakdown.A}</span>
-                  </div>
-                  <div className="section-bar">
-                    <div
-                      className="section-bar-fill"
-                      style={{ width: `${(stats.sectionsBreakdown.A / stats.totalMembers) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="section-stat">
-                  <div className="section-info">
-                    <span className="section-label">Section B - Biologistes</span>
-                    <span className="section-count">{stats.sectionsBreakdown.B}</span>
-                  </div>
-                  <div className="section-bar">
-                    <div
-                      className="section-bar-fill"
-                      style={{ width: `${(stats.sectionsBreakdown.B / stats.totalMembers) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="section-stat">
-                  <div className="section-info">
-                    <span className="section-label">Section C - Fonctionnaires</span>
-                    <span className="section-count">{stats.sectionsBreakdown.C}</span>
-                  </div>
-                  <div className="section-bar">
-                    <div
-                      className="section-bar-fill"
-                      style={{ width: `${(stats.sectionsBreakdown.C / stats.totalMembers) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <div className="section-stat">
-                  <div className="section-info">
-                    <span className="section-label">Section D - Fabricants/Grossistes</span>
-                    <span className="section-count">{stats.sectionsBreakdown.D}</span>
-                  </div>
-                  <div className="section-bar">
-                    <div
-                      className="section-bar-fill"
-                      style={{ width: `${(stats.sectionsBreakdown.D / stats.totalMembers) * 100}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card-large">
-              <h3>Informations générales</h3>
-              <div className="general-stats">
-                <div className="stat-item-large">
-                  <div className="stat-icon-large">👥</div>
-                  <div className="stat-content">
-                    <div className="stat-value-large">{stats.totalMembers}</div>
-                    <div className="stat-label-large">Membres inscrits</div>
-                  </div>
-                </div>
-                <div className="stat-item-large">
-                  <div className="stat-icon-large">✅</div>
-                  <div className="stat-content">
-                    <div className="stat-value-large">{stats.activeMembers}</div>
-                    <div className="stat-label-large">Membres actifs</div>
-                  </div>
-                </div>
-                <div className="stat-item-large">
-                  <div className="stat-icon-large">📍</div>
-                  <div className="stat-content">
-                    <div className="stat-value-large">{stats.regionsCount}</div>
-                    <div className="stat-label-large">Régions couvertes</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
 
 export default TableauOrdre;
-

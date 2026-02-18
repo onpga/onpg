@@ -8,6 +8,7 @@
     "dev": "node server.js",
     "start": "node server.js",
     "insert-data": "node insert-collections-data.js",
+    "insert-pharmaciens": "node insert-pharmaciens.js",
     "test-insert": "node test-insert-data.js",
     "reset-admin": "node reset-admin-password.js",
     "reset-users": "node reset-users.js"

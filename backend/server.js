@@ -16,8 +16,13 @@ const PORT = process.env.PORT || 3001;
 const MONGODB_URI = 'mongodb://mongo:PUnGGIpyAbMtWoQohyXGFpMjVkAWTYXJ@trolley.proxy.rlwy.net:38507';
 const DB_NAME = 'onpg';
 
-// Middleware
-app.use(cors());
+// Middleware CORS - Autoriser toutes les origines (production et développement)
+app.use(cors({
+  origin: true, // Autoriser toutes les origines
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 let db;
@@ -36,7 +41,7 @@ MongoClient.connect(MONGODB_URI)
 // Collections disponibles (chaque page a sa propre collection)
 const RESOURCE_COLLECTIONS = [
   'actualites', 'articles', 'communiques', 'decisions', 
-  'decrets', 'lois', 'commissions', 'theses', 'photos', 'videos'
+  'decrets', 'lois', 'commissions', 'theses', 'photos', 'videos', 'pharmaciens'
 ];
 
 // Authentification admin par token (simple)
@@ -124,9 +129,9 @@ app.get('/api/public/:collection', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
     
-    // Pour videos, retourner toutes les données actives
+    // Pour videos et pharmaciens, retourner toutes les données actives
     // Pour les autres, retourner seulement la première (1 seule donnée)
-    if (collection === 'videos') {
+    if (collection === 'videos' || collection === 'pharmaciens') {
       const data = await db.collection(collection)
         .find({ isActive: true })
         .sort({ order: 1, createdAt: -1 })

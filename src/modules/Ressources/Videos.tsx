@@ -508,7 +508,7 @@ const Videos = () => {
         const data = await fetchResourceData('videos');
         if (Array.isArray(data) && data.length > 0) {
           const loadedVideos: Video[] = data.map(item => ({
-            id: item._id,
+            id: String(item._id || ''),
             title: item.title,
             description: item.description || '',
             thumbnail: item.thumbnail || '',

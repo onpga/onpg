@@ -67,7 +67,7 @@ const Theses = () => {
       const data = await fetchResourceData('theses');
       if (data && !Array.isArray(data)) {
         const thesis: Thesis = {
-          id: data._id,
+          id: String(data._id || ''),
           title: data.title,
           author: data.author || '',
           director: data.director || '',

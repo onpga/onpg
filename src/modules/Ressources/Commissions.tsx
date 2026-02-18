@@ -39,7 +39,7 @@ const Commissions = () => {
       const data = await fetchResourceData('commissions');
       if (data && !Array.isArray(data)) {
         const commission: Commission = {
-          id: data._id,
+          id: String(data._id || ''),
           name: data.title,
           description: data.description || '',
           president: data.president || '',

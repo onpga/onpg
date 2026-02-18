@@ -58,7 +58,7 @@ const Photos = () => {
         const data = await fetchResourceData('photos');
         if (data && !Array.isArray(data)) {
           const photo: Photo = {
-            id: data._id,
+            id: String(data._id || ''),
             title: data.title,
             description: data.description || '',
             image: data.image || '',

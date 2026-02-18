@@ -36,7 +36,7 @@ const Lois = () => {
       const data = await fetchResourceData('lois');
       if (data && !Array.isArray(data)) {
         const law: Law = {
-          id: data._id,
+          id: String(data._id || ''),
           number: data.number || '',
           title: data.title,
           publicationDate: data.publicationDate || data.date || new Date().toISOString().split('T')[0],

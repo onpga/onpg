@@ -33,7 +33,7 @@ const Decrets = () => {
       const data = await fetchResourceData('decrets');
       if (data && !Array.isArray(data)) {
         const decret: Decret = {
-          id: data._id,
+          id: String(data._id || ''),
           number: data.number || '',
           title: data.title,
           publicationDate: data.publicationDate || data.date || new Date().toISOString().split('T')[0],

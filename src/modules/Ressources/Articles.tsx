@@ -72,7 +72,7 @@ const Articles = () => {
       const data = await fetchResourceData('articles');
       if (data && !Array.isArray(data)) {
         const article: Article = {
-          id: data._id,
+          id: String(data._id || ''),
           title: data.title,
           authors: data.authors || [],
           abstract: data.excerpt || data.abstract || '',

@@ -43,7 +43,7 @@ const Communiques = () => {
       const data = await fetchResourceData('communiques');
       if (data && !Array.isArray(data)) {
         const communique: Communique = {
-          id: data._id,
+          id: String(data._id || ''),
           title: data.title,
           reference: data.reference || '',
           date: data.date || new Date().toISOString().split('T')[0],

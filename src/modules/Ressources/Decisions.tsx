@@ -31,7 +31,7 @@ const Decisions = () => {
       const data = await fetchResourceData('decisions');
       if (data && !Array.isArray(data)) {
         const decision: Decision = {
-          id: data._id,
+          id: String(data._id || ''),
           reference: data.reference || `DEC-${data._id?.substring(0, 8) || '001'}`,
           title: data.title,
           date: data.date || new Date().toISOString().split('T')[0],

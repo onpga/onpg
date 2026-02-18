@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Theses.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les thèses
 interface Thesis {
@@ -53,140 +55,47 @@ const mockUniversities: University[] = [
   }
 ];
 
-// Données fictives de thèses
-const mockTheses: Thesis[] = [
-  {
-    id: '1',
-    title: 'Étude pharmaco-épidémiologique des prescriptions d\'antibiotiques dans les officines gabonaises : Analyse des pratiques et impact sur l\'antibiorésistance',
-    author: 'Marie Dubois',
-    director: 'Pr. Jean Martin',
-    university: 'Université des Sciences de la Santé de Gabon',
-    faculty: 'Faculté de Pharmacie',
-    department: 'Département de Pharmacologie',
-    degree: 'phd',
-    year: 2023,
-    abstract: 'Cette thèse analyse les prescriptions antibiotiques dans les officines gabonaises et leur impact sur l\'antibiorésistance bactérienne. L\'étude révèle une surprescription alarmante et propose des stratégies d\'amélioration des pratiques.',
-    keywords: ['antibiotiques', 'pharmaco-épidémiologie', 'antibiorésistance', 'pratiques professionnelles'],
-    pages: 245,
-    language: 'fr',
-    specialty: 'Pharmacologie Clinique',
-    defenseDate: '2023-06-15',
-    juryMembers: ['Pr. Jean Martin', 'Pr. Sophie Bernard', 'Dr. Alain Moreau', 'Pr. Catherine Leroy'],
-    downloads: 234,
-    citations: 12,
-    featured: true
-  },
-  {
-    id: '2',
-    title: 'Évaluation de la qualité des médicaments génériques commercialisés au Gabon : Approche analytique et réglementaire',
-    author: 'Pierre Leroy',
-    director: 'Pr. Michel Dubois',
-    university: 'Université des Sciences de la Santé de Gabon',
-    faculty: 'Faculté de Pharmacie',
-    department: 'Département de Pharmacie Galénique',
-    degree: 'phd',
-    year: 2023,
-    abstract: 'Cette recherche évalue la qualité des médicaments génériques disponibles sur le marché gabonais. L\'analyse révèle des disparités importantes et formule des recommandations pour renforcer le contrôle qualité.',
-    keywords: ['médicaments génériques', 'contrôle qualité', 'réglementation', 'bioéquivalence'],
-    pages: 198,
-    language: 'fr',
-    specialty: 'Pharmacie Galénique',
-    defenseDate: '2023-09-22',
-    juryMembers: ['Pr. Michel Dubois', 'Dr. Isabelle Thomas', 'Pr. Olivier Durand', 'Dr. Nathalie Petit'],
-    downloads: 187,
-    citations: 8,
-    featured: false
-  },
-  {
-    id: '3',
-    title: 'Impact socio-économique de la dispensation pharmaceutique dans les zones rurales gabonaises',
-    author: 'Claire Moreau',
-    director: 'Dr. Antoine Leroy',
-    university: 'Université Omar Bongo Ondimba',
-    faculty: 'Faculté des Sciences Économiques',
-    department: 'Département d\'Économie Appliquée',
-    degree: 'master',
-    year: 2024,
-    abstract: 'Cette étude analyse l\'impact socio-économique des pharmacies rurales au Gabon, en mettant l\'accent sur l\'accès aux soins et les conséquences économiques pour les populations locales.',
-    keywords: ['pharmacies rurales', 'impact socio-économique', 'accès aux soins', 'développement rural'],
-    pages: 156,
-    language: 'fr',
-    specialty: 'Économie de la Santé',
-    defenseDate: '2024-01-18',
-    juryMembers: ['Dr. Antoine Leroy', 'Pr. Catherine Moreau', 'Dr. Laurent Robert'],
-    downloads: 145,
-    citations: 5,
-    featured: false
-  },
-  {
-    id: '4',
-    title: 'Développement et validation d\'une méthode chromatographique pour le dosage simultané des antipaludéens dans le plasma',
-    author: 'Thomas Bernard',
-    director: 'Pr. Catherine Moreau',
-    university: 'Université des Sciences et Techniques de Masuku',
-    faculty: 'Faculté des Sciences',
-    department: 'Département de Chimie Analytique',
-    degree: 'phd',
-    year: 2023,
-    abstract: 'Développement d\'une méthode HPLC-MS/MS pour le dosage simultané de trois antipaludéens majeurs dans le plasma humain, avec validation complète selon les normes internationales.',
-    keywords: ['chromatographie', 'antipaludéens', 'dosage', 'validation analytique'],
-    pages: 189,
-    language: 'fr',
-    specialty: 'Chimie Analytique',
-    defenseDate: '2023-11-30',
-    juryMembers: ['Pr. Catherine Moreau', 'Dr. Isabelle Thomas', 'Pr. Michel Dubois', 'Dr. Olivier Durand'],
-    downloads: 267,
-    citations: 18,
-    featured: true
-  },
-  {
-    id: '5',
-    title: 'Préparation et caractérisation de formes galéniques pédiatriques innovantes pour les médicaments essentiels',
-    author: 'Sophie Martin',
-    director: 'Dr. Nathalie Petit',
-    university: 'Université des Sciences de la Santé de Gabon',
-    faculty: 'Faculté de Pharmacie',
-    department: 'Département de Pharmacie Galénique',
-    degree: 'doctorate',
-    year: 2024,
-    abstract: 'Développement de formes galéniques pédiatriques innovantes pour améliorer l\'observance et l\'efficacité des médicaments essentiels chez l\'enfant africain.',
-    keywords: ['formes galéniques', 'pédiatrie', 'innovation', 'observance médicamenteuse'],
-    pages: 223,
-    language: 'fr',
-    specialty: 'Pharmacie Galénique',
-    defenseDate: '2024-02-08',
-    juryMembers: ['Dr. Nathalie Petit', 'Pr. Michel Dubois', 'Dr. Isabelle Thomas', 'Pr. Olivier Durand'],
-    downloads: 198,
-    citations: 7,
-    featured: false
-  },
-  {
-    id: '6',
-    title: 'Étude ethnopharmacologique des plantes médicinales utilisées en médecine traditionnelle gabonaise',
-    author: 'Antoine Thomas',
-    director: 'Pr. Olivier Durand',
-    university: 'Université Omar Bongo Ondimba',
-    faculty: 'Faculté des Sciences',
-    department: 'Département de Biologie',
-    degree: 'phd',
-    year: 2023,
-    abstract: 'Inventaire et analyse ethnopharmacologique des plantes médicinales traditionnellement utilisées au Gabon, avec évaluation de leur potentiel thérapeutique.',
-    keywords: ['ethnopharmacologie', 'plantes médicinales', 'médecine traditionnelle', 'Gabon'],
-    pages: 312,
-    language: 'fr',
-    specialty: 'Ethnopharmacologie',
-    defenseDate: '2023-12-14',
-    juryMembers: ['Pr. Olivier Durand', 'Dr. Laurent Robert', 'Pr. Catherine Moreau', 'Dr. Antoine Leroy'],
-    downloads: 312,
-    citations: 23,
-    featured: true
-  }
-];
 
 const Theses = () => {
-  const [theses, setTheses] = useState<Thesis[]>(mockTheses);
+  const [theses, setTheses] = useState<Thesis[]>([]);
   const [universities, setUniversities] = useState<University[]>(mockUniversities);
-  const [filteredTheses, setFilteredTheses] = useState<Thesis[]>(mockTheses);
+  const [filteredTheses, setFilteredTheses] = useState<Thesis[]>([]);
+  
+  // Charger depuis MongoDB - 1 seule thèse
+  useEffect(() => {
+    const loadTheses = async () => {
+      const data = await fetchResourceData('theses');
+      if (data && !Array.isArray(data)) {
+        const thesis: Thesis = {
+          id: data._id,
+          title: data.title,
+          author: data.author || '',
+          director: data.director || '',
+          university: data.university || '',
+          faculty: data.faculty || '',
+          department: data.department || '',
+          degree: (data.degree as 'master' | 'phd' | 'doctorate') || 'phd',
+          year: data.year || new Date().getFullYear(),
+          abstract: data.abstract || data.excerpt || '',
+          keywords: data.keywords || [],
+          pages: data.pages || 0,
+          language: data.language || 'fr',
+          specialty: data.specialty || 'Pharmacie',
+          defenseDate: data.defenseDate || new Date().toISOString().split('T')[0],
+          juryMembers: data.juryMembers || [],
+          downloads: data.downloads || 0,
+          citations: data.citations || 0,
+          featured: data.featured || false
+        };
+        setTheses([thesis]);
+        setFilteredTheses([thesis]);
+      } else {
+        setTheses([]);
+        setFilteredTheses([]);
+      }
+    };
+    loadTheses();
+  }, []);
   const [selectedUniversity, setSelectedUniversity] = useState('Toutes');
   const [selectedDegree, setSelectedDegree] = useState('Tous');
   const [selectedYear, setSelectedYear] = useState('Toutes');

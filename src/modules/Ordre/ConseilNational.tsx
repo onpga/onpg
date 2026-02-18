@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import './ConseilNational.css';
 
 // Types pour les membres du conseil
 interface ConseilMember {

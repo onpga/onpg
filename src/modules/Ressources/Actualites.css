@@ -207,6 +207,80 @@
   margin-top: 2rem;
 }
 
+.notion-grid-single {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 3rem;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.notion-card-single {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.notion-card-single:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-4px);
+}
+
+.notion-card-single .notion-card-image {
+  height: 400px;
+}
+
+.notion-card-single .notion-card-content {
+  padding: 2.5rem;
+}
+
+.notion-card-single h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+.notion-card-excerpt {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.notion-card-full-content {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e0e0e0;
+  color: #333;
+  line-height: 1.8;
+}
+
+.notion-card-full-content h1,
+.notion-card-full-content h2,
+.notion-card-full-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.notion-card-full-content p {
+  margin-bottom: 1rem;
+}
+
+.notion-card-full-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+
 .notion-empty {
   text-align: center;
   padding: 3rem;

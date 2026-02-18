@@ -130,10 +130,10 @@ const AccueilONPG = () => {
   const visibleNews = getVisibleNews();
 
   // Pause élégante au survol
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered] = useState(false);
 
   useEffect(() => {
-    let timeoutId;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     if (isHovered) {
       // Pause immédiate
       setIsAnimating(true);
@@ -321,6 +321,8 @@ const AccueilONPG = () => {
                       src={ONPG_IMAGES.president}
                       alt="Président ONPG"
                       className="president-photo-professional"
+                      loading="eager"
+                      fetchPriority="high"
                     />
 
                     {/* Badge Institutionnel */}

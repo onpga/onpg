@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Decisions.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les décisions
 interface Decision {
@@ -18,58 +20,40 @@ interface Decision {
   featured: boolean;
 }
 
-// Données fictives de décisions
-const mockDecisions: Decision[] = [
-  {
-    id: '1',
-    reference: 'DEC-2024-001',
-    title: 'Décision relative à l\'inscription au tableau de l\'Ordre d\'un pharmacien étranger',
-    date: '2024-01-20',
-    jurisdiction: 'Conseil National de l\'Ordre',
-    category: 'Inscription',
-    summary: 'Le Conseil National décide de l\'inscription au tableau de l\'Ordre d\'un pharmacien titulaire d\'un diplôme étranger, sous réserve de validation des équivalences.',
-    parties: ['Demandeur : Dr. Jean Dupont', 'Ordre National des Pharmaciens du Gabon'],
-    decision: 'favorable',
-    keywords: ['inscription', 'diplôme étranger', 'équivalence', 'tableau'],
-    downloads: 234,
-    citations: 8,
-    featured: true
-  },
-  {
-    id: '2',
-    reference: 'DEC-2023-156',
-    title: 'Sanction disciplinaire pour violation des règles déontologiques',
-    date: '2023-12-15',
-    jurisdiction: 'Chambre Disciplinaire',
-    category: 'Déontologie',
-    summary: 'Prononcé d\'une sanction disciplinaire de suspension temporaire pour violation des règles déontologiques relatives à la publicité des médicaments.',
-    parties: ['Prévenu : Pharmacie Centrale SA', 'Ministère Public Ordinal'],
-    decision: 'defavorable',
-    keywords: ['sanction', 'déontologie', 'publicité', 'suspension'],
-    downloads: 456,
-    citations: 15,
-    featured: false
-  },
-  {
-    id: '3',
-    reference: 'DEC-2023-089',
-    title: 'Recours contre décision de radiation du tableau',
-    date: '2023-11-30',
-    jurisdiction: 'Conseil National de l\'Ordre',
-    category: 'Radiation',
-    summary: 'Rejet du recours formé contre la décision de radiation du tableau pour faute professionnelle grave.',
-    parties: ['Recourant : Dr. Marie Leroy', 'Ordre National des Pharmaciens du Gabon'],
-    decision: 'defavorable',
-    keywords: ['recours', 'radiation', 'faute professionnelle', 'rejet'],
-    downloads: 321,
-    citations: 12,
-    featured: false
-  }
-];
 
 const Decisions = () => {
-  const [decisions, setDecisions] = useState<Decision[]>(mockDecisions);
-  const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>(mockDecisions);
+  const [decisions, setDecisions] = useState<Decision[]>([]);
+  const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>([]);
+  
+  // Charger depuis MongoDB - 1 seule décision
+  useEffect(() => {
+    const loadDecisions = async () => {
+      const data = await fetchResourceData('decisions');
+      if (data && !Array.isArray(data)) {
+        const decision: Decision = {
+          id: data._id,
+          reference: data.reference || `DEC-${data._id?.substring(0, 8) || '001'}`,
+          title: data.title,
+          date: data.date || new Date().toISOString().split('T')[0],
+          jurisdiction: data.jurisdiction || '',
+          category: data.category || 'Général',
+          summary: data.summary || data.title,
+          parties: data.parties || [],
+          decision: data.decision || 'favorable',
+          keywords: data.keywords || [],
+          downloads: data.downloads || 0,
+          citations: data.citations || 0,
+          featured: data.featured || false
+        };
+        setDecisions([decision]);
+        setFilteredDecisions([decision]);
+      } else {
+        setDecisions([]);
+        setFilteredDecisions([]);
+      }
+    };
+    loadDecisions();
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [selectedDecision, setSelectedDecision] = useState('Toutes');
   const [searchQuery, setSearchQuery] = useState('');

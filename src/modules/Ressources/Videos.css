@@ -8,7 +8,6 @@
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 30%, #ffffff 70%, #f8f9fa 100%);
   position: relative;
   overflow-x: hidden;
-  overflow-y: auto;
   border-top: 1px solid rgba(0, 166, 81, 0.08);
   border-bottom: 1px solid rgba(39, 174, 96, 0.1);
 }

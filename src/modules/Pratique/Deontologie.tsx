@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './Deontologie.css';
 
 const Deontologie = () => {
   return (

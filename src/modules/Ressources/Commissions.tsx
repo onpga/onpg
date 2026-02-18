@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Commissions.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les commissions
 interface Commission {
@@ -26,70 +28,39 @@ interface Meeting {
   documents: string[];
 }
 
-// Données fictives de commissions
-const mockCommissions: Commission[] = [
-  {
-    id: 'commission-deontologie',
-    name: 'Commission de Déontologie',
-    description: 'Commission chargée de veiller au respect des règles déontologiques par les pharmaciens',
-    president: 'Dr. Marie Dubois',
-    members: ['Dr. Jean Martin', 'Dr. Sophie Bernard', 'Dr. Alain Moreau', 'Dr. Claire Leroy'],
-    creationDate: '2020-01-15',
-    category: 'Éthique professionnelle',
-    missions: [
-      'Contrôle du respect du code de déontologie',
-      'Instruction des plaintes déontologiques',
-      'Proposition de sanctions disciplinaires',
-      'Formation continue en déontologie'
-    ],
-    meetings: 24,
-    reports: 12,
-    status: 'active',
-    featured: true
-  },
-  {
-    id: 'commission-formation',
-    name: 'Commission de Formation Continue',
-    description: 'Commission responsable de l\'organisation et du suivi de la formation continue des pharmaciens',
-    president: 'Pr. Michel Dubois',
-    members: ['Dr. Pierre Leroy', 'Dr. Nathalie Petit', 'Dr. Olivier Durand'],
-    creationDate: '2019-06-01',
-    category: 'Formation',
-    missions: [
-      'Établissement du programme annuel de formation',
-      'Validation des formations proposées',
-      'Contrôle de l\'assiduité des pharmaciens',
-      'Évaluation de la qualité des formations'
-    ],
-    meetings: 18,
-    reports: 8,
-    status: 'active',
-    featured: false
-  },
-  {
-    id: 'commission-tarification',
-    name: 'Commission de Tarification',
-    description: 'Commission chargée de l\'étude et de la proposition des tarifs de rémunération des pharmaciens',
-    president: 'Dr. Antoine Leroy',
-    members: ['Dr. Isabelle Thomas', 'Dr. Laurent Robert', 'Dr. Catherine Moreau'],
-    creationDate: '2021-03-10',
-    category: 'Économique',
-    missions: [
-      'Analyse des coûts de revient',
-      'Proposition d\'évolution des tarifs',
-      'Négociation avec les partenaires',
-      'Suivi des indicateurs économiques'
-    ],
-    meetings: 15,
-    reports: 6,
-    status: 'active',
-    featured: false
-  }
-];
 
 const Commissions = () => {
-  const [commissions, setCommissions] = useState<Commission[]>(mockCommissions);
-  const [filteredCommissions, setFilteredCommissions] = useState<Commission[]>(mockCommissions);
+  const [commissions, setCommissions] = useState<Commission[]>([]);
+  const [filteredCommissions, setFilteredCommissions] = useState<Commission[]>([]);
+  
+  // Charger depuis MongoDB - 1 seule commission
+  useEffect(() => {
+    const loadCommissions = async () => {
+      const data = await fetchResourceData('commissions');
+      if (data && !Array.isArray(data)) {
+        const commission: Commission = {
+          id: data._id,
+          name: data.title,
+          description: data.description || '',
+          president: data.president || '',
+          members: data.members || [],
+          creationDate: data.creationDate || new Date().toISOString().split('T')[0],
+          category: data.category || 'Général',
+          missions: data.attributions || data.missions || [],
+          meetings: data.meetings || 0,
+          reports: data.reports || 0,
+          status: (data.status as 'active' | 'inactive') || 'active',
+          featured: data.featured || false
+        };
+        setCommissions([commission]);
+        setFilteredCommissions([commission]);
+      } else {
+        setCommissions([]);
+        setFilteredCommissions([]);
+      }
+    };
+    loadCommissions();
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);

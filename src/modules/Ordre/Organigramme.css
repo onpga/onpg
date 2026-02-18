@@ -1,0 +1,471 @@
+/* CSS indépendant pour la page Ordre - Organigramme */
+@import './Ordre.css';
+
+/* Espace pour des styles propres à la page Organigramme */
+
+/* Organigramme.css - Styles pour la page Organigramme */
+
+.ordre-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Hero Section */
+.ordre-hero {
+  position: relative;
+  padding: 80px 20px 60px;
+  background: linear-gradient(135deg, #00A651 0%, #008F45 100%);
+  color: white;
+  overflow: hidden;
+}
+
+.ordre-hero .hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.ordre-hero .hero-text {
+  text-align: center;
+}
+
+.ordre-hero .hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.ordre-hero .hero-title-main {
+  display: block;
+  color: white;
+}
+
+.ordre-hero .hero-title-subtitle {
+  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 2.5rem;
+  margin-top: 10px;
+}
+
+.ordre-hero .hero-description {
+  font-size: 1.25rem;
+  margin-bottom: 30px;
+  opacity: 0.95;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ordre-hero .hero-highlights {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.ordre-hero .highlight-item {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  backdrop-filter: blur(10px);
+}
+
+.organigramme-controls {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 15px 25px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.zoom-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+
+.zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.zoom-level {
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+}
+
+.view-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.view-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+}
+
+.view-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.view-btn.active {
+  background: white;
+  color: #00A651;
+}
+
+.ordre-hero .hero-bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.ordre-hero .pattern-shape {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ordre-hero .shape-1 {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  right: -100px;
+}
+
+.ordre-hero .shape-2 {
+  width: 200px;
+  height: 200px;
+  bottom: -50px;
+  left: -50px;
+}
+
+.ordre-hero .shape-3 {
+  width: 150px;
+  height: 150px;
+  top: 50%;
+  left: 10%;
+}
+
+/* Section Organigramme */
+.organigramme-section {
+  padding: 60px 20px;
+}
+
+.organigramme-section .section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.organigramme-container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.org-node-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.org-node {
+  min-width: 280px;
+  padding: 25px;
+  border-radius: 15px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.org-node:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.org-node.has-children::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 20px;
+  background: #ddd;
+}
+
+.node-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.node-icon {
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.node-info {
+  flex: 1;
+}
+
+.node-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.node-person {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  opacity: 0.95;
+}
+
+.node-role {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+.node-expander {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.org-children {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.children-connector {
+  width: 2px;
+  height: 30px;
+  background: #ddd;
+  margin-bottom: 20px;
+}
+
+.children-nodes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+}
+
+/* Modal */
+.node-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.node-modal-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.node-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  z-index: 10;
+}
+
+.node-modal-close:hover {
+  background: #c0392b;
+}
+
+.node-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 30px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.node-modal-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: white;
+}
+
+.node-modal-info h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.modal-person {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.modal-role {
+  font-size: 1rem;
+  color: #999;
+}
+
+.node-modal-body {
+  padding: 30px;
+}
+
+.node-details {
+  margin-bottom: 30px;
+}
+
+.detail-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-item strong {
+  color: #00A651;
+  margin-right: 10px;
+}
+
+.node-subordinates {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.node-subordinates h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.subordinates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.subordinate-item {
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  color: #333;
+}
+
+.subordinate-title {
+  font-weight: 600;
+  color: #00A651;
+}
+
+.subordinate-person {
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ordre-hero .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .ordre-hero .hero-title-subtitle {
+    font-size: 1.8rem;
+  }
+  
+  .organigramme-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .org-node {
+    min-width: 100%;
+  }
+  
+  .children-nodes {
+    flex-direction: column;
+  }
+}
+
+

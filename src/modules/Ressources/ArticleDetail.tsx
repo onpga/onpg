@@ -1,123 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import './Ressources.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
-// Données fictives détaillées pour un article
-const getArticleById = (id: string) => {
-  const articles = [
-    {
-      id: '1',
-      title: 'Nouveau décret sur la dispensation des médicaments',
-      excerpt: 'Le ministre de la Santé annonce de nouvelles mesures concernant la dispensation des médicaments en officine.',
-      content: `
-        <p class="article-lead">Le ministre de la Santé et de la Protection sociale a annoncé ce jour de nouvelles mesures révolutionnaires concernant la dispensation des médicaments en officine. Ces changements visent à améliorer la sécurité des patients et à moderniser les pratiques pharmaceutiques.</p>
-
-        <h2>Contexte et enjeux</h2>
-        <p>Dans un contexte où la sécurité médicamenteuse constitue une priorité nationale, l'ONPG s'engage aux côtés du ministère de la Santé pour renforcer les protocoles de dispensation. Cette initiative s'inscrit dans la continuité des efforts déployés depuis plusieurs années pour améliorer la qualité des soins pharmaceutiques.</p>
-
-        <blockquote class="article-quote">
-          <p>"La sécurité des patients est notre priorité absolue. Ces nouvelles mesures permettront d'élever encore davantage les standards de qualité de notre profession."</p>
-          <cite>- Dr. Marie Dupont, Présidente de l'ONPG</cite>
-        </blockquote>
-
-        <h2>Mesures principales</h2>
-        <ul>
-          <li><strong>Double vérification systématique</strong> : Chaque ordonnance fera l'objet d'une double vérification avant dispensation</li>
-          <li><strong>Formation obligatoire</strong> : Tous les pharmaciens devront suivre une formation annuelle sur la sécurité médicamenteuse</li>
-          <li><strong>Outils numériques</strong> : Mise en place d'un système informatisé de suivi des prescriptions</li>
-          <li><strong>Contrôles qualité</strong> : Renforcement des audits internes dans les officines</li>
-        </ul>
-
-        <h2>Impact sur la profession</h2>
-        <p>Ces nouvelles dispositions, bien que contraignantes, représentent une avancée majeure pour la profession pharmaceutique. Elles permettront non seulement d'améliorer la sécurité des patients, mais aussi de valoriser l'expertise des pharmaciens dans le système de santé gabonais.</p>
-
-        <div class="article-stats-box">
-          <div class="stat-item">
-            <span class="stat-number">2,450</span>
-            <span class="stat-label">Vues</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">89</span>
-            <span class="stat-label">Partages</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">23</span>
-            <span class="stat-label">Commentaires</span>
-          </div>
-        </div>
-
-        <h2>Perspectives d'avenir</h2>
-        <p>L'ONPG continuera à travailler en étroite collaboration avec les autorités de santé pour adapter ces mesures aux réalités du terrain et assurer leur mise en œuvre effective dans toutes les officines du Gabon.</p>
-      `,
-      author: {
-        name: 'Dr. Marie Dupont',
-        title: 'Présidente de l\'ONPG',
-        bio: 'Pharmacienne spécialiste en santé publique avec plus de 15 ans d\'expérience dans la régulation pharmaceutique.',
-        avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
-        social: {
-          linkedin: '#',
-          twitter: '#'
-        }
-      },
-      date: '2024-01-15',
-      category: 'Réglementation',
-      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&h=600&fit=crop',
-      tags: ['décret', 'dispensation', 'médicaments', 'sécurité'],
-      readTime: 5,
-      featured: true,
-      views: 2450,
-      shares: 89,
-      comments: 23,
-      relatedArticles: ['2', '3', '4']
-    },
-    {
-      id: '2',
-      title: 'Formation continue : Nouvelles obligations pour 2024',
-      excerpt: 'Découvrez les nouvelles exigences en matière de formation continue pour les pharmaciens.',
-      content: `
-        <p class="article-lead">L'ONPG annonce les nouvelles exigences en matière de formation continue pour l'année 2024. Ces mesures visent à maintenir et améliorer les compétences des professionnels de santé.</p>
-
-        <h2>Nouvelles obligations</h2>
-        <p>À compter du 1er janvier 2024, tous les pharmaciens exerçant au Gabon devront respecter de nouvelles exigences en matière de formation continue. Ces mesures s'inscrivent dans une démarche qualité et d'amélioration continue des soins.</p>
-
-        <h2>Points clés</h2>
-        <ul>
-          <li><strong>20 heures minimum</strong> de formation par an</li>
-          <li><strong>Domaines obligatoires</strong> : Sécurité médicamenteuse, pharmacologie, législation</li>
-          <li><strong>Validation annuelle</strong> auprès de l'ONPG</li>
-          <li><strong>Plateforme numérique</strong> pour le suivi des formations</li>
-        </ul>
-
-        <div class="article-highlight">
-          <h3>📚 Formation digitale disponible</h3>
-          <p>L'ONPG met à disposition une plateforme e-learning complète avec plus de 50 modules de formation interactifs.</p>
-        </div>
-      `,
-      author: {
-        name: 'Pr. Jean Martin',
-        title: 'Directeur de la Formation',
-        bio: 'Spécialiste en pédagogie pharmaceutique avec 20 ans d\'expérience dans la formation professionnelle.',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-        social: {
-          linkedin: '#',
-          twitter: '#'
-        }
-      },
-      date: '2024-01-12',
-      category: 'Formation',
-      image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=600&fit=crop',
-      tags: ['formation', 'obligation', '2024', 'e-learning'],
-      readTime: 7,
-      featured: false,
-      views: 1890,
-      shares: 67,
-      comments: 15,
-      relatedArticles: ['1', '3', '5']
-    }
-  ];
-
-  return articles.find(article => article.id === id) || null;
-};
+interface RessourceArticle {
+  _id: string;
+  title: string;
+  excerpt?: string;
+  content: string;
+  author?: {
+    name: string;
+    title?: string;
+    bio?: string;
+    avatar?: string;
+    social?: {
+      linkedin?: string;
+      twitter?: string;
+    };
+  };
+  date?: string;
+  category?: string;
+  image?: string;
+  tags?: string[];
+  readTime?: number;
+  featured?: boolean;
+  views?: number;
+  shares?: number;
+  comments?: number;
+}
 
 // Composant ArticleDetail
 const ArticleDetail = () => {
@@ -130,17 +40,45 @@ const ArticleDetail = () => {
   const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const articleData = getArticleById(id);
-      if (articleData) {
-        setArticle(articleData);
-        // Simuler le chargement
-        setTimeout(() => setLoading(false), 500);
-      } else {
+    const loadArticle = async () => {
+      try {
+        const data = await fetchResourceData('actualites');
+        if (data && !Array.isArray(data)) {
+          const articleData: RessourceArticle = {
+            _id: data._id as string,
+            title: data.title || 'Sans titre',
+            excerpt: data.excerpt || data.summary || '',
+            content: data.content || '',
+            author: {
+              name: data.author?.name || 'ONPG',
+              title: data.author?.title || data.author?.role || '',
+              bio: data.author?.bio || '',
+              avatar: data.author?.avatar || '',
+              social: data.author?.social || {}
+            },
+            date: data.date || data.publishedAt || new Date().toISOString(),
+            category: data.category || 'Actualités',
+            image: data.image || data.featuredImage || '',
+            tags: data.tags || [],
+            readTime: data.readTime || 5,
+            featured: data.featured || false,
+            views: data.views || 0,
+            shares: data.shares || 0,
+            comments: data.comments || 0
+          };
+          setArticle(articleData);
+          setLoading(false);
+        } else {
+          navigate('/ressources/actualites');
+        }
+      } catch (error) {
+        console.error('❌ Erreur lors du chargement de l’actualité:', error);
         navigate('/ressources/actualites');
       }
-    }
-  }, [id, navigate]);
+    };
+
+    loadArticle();
+  }, [navigate]);
 
   // Barre de progression de lecture
   useEffect(() => {
@@ -394,30 +332,21 @@ const ArticleDetail = () => {
               </div>
             </div>
 
-            {/* Related Articles */}
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Articles similaires</h3>
-              <div className="related-articles">
-                {article.relatedArticles.map((relatedId: string) => {
-                  const relatedArticle = getArticleById(relatedId);
-                  return relatedArticle ? (
-                    <Link
-                      key={relatedId}
-                      to={`/ressources/actualites/${relatedId}`}
-                      className="related-article"
-                    >
-                      <div className="related-image">
-                        <img src={relatedArticle.image} alt={relatedArticle.title} />
-                      </div>
+            {/* Related Articles remplacé par tags simples pour éviter les données fictives */}
+            {article.tags && article.tags.length > 0 && (
+              <div className="sidebar-section">
+                <h3 className="sidebar-title">Tags associés</h3>
+                <div className="related-articles">
+                  {article.tags.map((tag: string) => (
+                    <div key={tag} className="related-article">
                       <div className="related-content">
-                        <h4>{relatedArticle.title.substring(0, 60)}...</h4>
-                        <span className="related-category">{relatedArticle.category}</span>
+                        <h4>#{tag}</h4>
                       </div>
-                    </Link>
-                  ) : null;
-                })}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Newsletter Signup */}
             <div className="sidebar-section newsletter-signup">

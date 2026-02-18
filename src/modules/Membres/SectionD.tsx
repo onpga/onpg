@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './SectionD.css';
 
 const SectionD = () => {
   return (

@@ -1,0 +1,17 @@
+/* CSS indépendant pour la page Pratique - Déontologie */
+@import './Pratique.css';
+
+/* Espace pour des styles propres à la page Déontologie */
+
+/* Deontologie.css - Styles pour Déontologie */
+/* Utilise les styles de base de Pratique.css */
+
+.pratique-hero {
+  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 100%);
+}
+
+

@@ -82,7 +82,8 @@ export const ONPG_IMAGES = {
 
   // Photo présidente (public_id exact depuis Cloudinary)
   // IMPORTANT : ne pas changer ce public_id sans mettre à jour l'image dans Cloudinary
-  president: `${CLOUDINARY_BASE}/onpg/hero/presidente`,
+  // Qualité maximale SANS redimensionnement pour préserver la netteté originale
+  president: `${CLOUDINARY_BASE}/q_100,f_auto/onpg/hero/presidente`,
 
   // Images pour les liens rapides
   quickLinkInscription: `${CLOUDINARY_BASE}/onpg/hero/portrait-female-pharmacist-working-drugstore`,

@@ -29,23 +29,18 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         <Link to="/admin/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
           📊 Dashboard
         </Link>
+        {/* Menu ONPG : Ressources, Pharmacies, Pharmaciens, Analytics, Logs, Paramètres */}
+        <Link to="/admin/resources" className={`nav-item ${currentPage === 'resources' ? 'active' : ''}`}>
+          📚 Ressources
+        </Link>
+        <Link to="/admin/pharmacies" className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}>
+          🏥 Pharmacies
+        </Link>
+        <Link to="/admin/pharmaciens" className={`nav-item ${currentPage === 'pharmaciens' ? 'active' : ''}`}>
+          👨‍⚕️ Pharmaciens
+        </Link>
         <Link to="/admin/analytics" className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}>
           📈 Analytics
-        </Link>
-        <Link to="/admin/simulations" className={`nav-item ${currentPage === 'simulations' ? 'active' : ''}`}>
-          🔧 Simulations
-        </Link>
-        <Link to="/admin/articles" className={`nav-item ${currentPage === 'articles' ? 'active' : ''}`}>
-          📰 Articles
-        </Link>
-        <Link to="/admin/projects" className={`nav-item ${currentPage === 'projects' ? 'active' : ''}`}>
-          🗂️ Projets
-        </Link>
-        <Link to="/admin/calendar" className={`nav-item ${currentPage === 'calendar' ? 'active' : ''}`}>
-          📅 Calendrier éditorial
-        </Link>
-        <Link to="/admin/jobs" className={`nav-item ${currentPage === 'jobs' ? 'active' : ''}`}>
-          💼 Offres d'emploi
         </Link>
         <Link to="/admin/logs" className={`nav-item ${currentPage === 'logs' ? 'active' : ''}`}>
           📋 Logs système

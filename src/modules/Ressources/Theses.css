@@ -1,0 +1,48 @@
+/* Theses Page - CSS Indépendant */
+.theses-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.theses-hero {
+  background: linear-gradient(135deg, #00A651 0%, #2E8B57 100%);
+  color: white;
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.theses-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.theses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.these-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.these-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+  .theses-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .theses-grid {
+    grid-template-columns: 1fr;
+  }
+}

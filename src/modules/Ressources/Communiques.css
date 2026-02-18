@@ -1,0 +1,61 @@
+/* Communiqués Page - CSS Indépendant */
+.communiques-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.communiques-hero {
+  background: linear-gradient(135deg, #00A651 0%, #2E8B57 100%);
+  color: white;
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.communiques-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.communiques-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.communiques-filters {
+  padding: 2rem 0;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.communiques-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.communique-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+}
+
+.communique-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+@media (max-width: 768px) {
+  .communiques-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .communiques-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

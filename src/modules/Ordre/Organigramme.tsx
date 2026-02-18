@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './Organigramme.css';
 
 // Types pour l'organigramme
 interface OrgNode {

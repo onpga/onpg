@@ -1,0 +1,17 @@
+/* CSS indépendant pour la page Pratique - Contact */
+@import './Pratique.css';
+
+/* Espace pour des styles propres à la page Contact Pratique */
+
+/* ContactPratique.css - Styles pour Contact Pratique */
+/* Utilise les styles de base de Pratique.css */
+
+.pratique-hero {
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #e67e22 0%, #d35400 100%);
+}
+
+

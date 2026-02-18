@@ -11,15 +11,22 @@ const AccueilONPG = lazy(() => import('./modules/AccueilONPG/AccueilONPG'));
 const RessourcesActualites = lazy(() => import('./modules/Ressources/RessourcesActualites'));
 const RessourcesArticleDetail = lazy(() => import('./modules/Ressources/ArticleDetail'));
 const Communiques = lazy(() => import('./modules/Ressources/Communiques'));
+const CommuniqueDetail = lazy(() => import('./modules/Ressources/CommuniqueDetailPage'));
 const Photos = lazy(() => import('./modules/Ressources/Photos'));
 const Videos = lazy(() => import('./modules/Ressources/Videos'));
 const TrouverPharmacie = lazy(() => import('./modules/Ressources/TrouverPharmacie'));
 const RessourcesArticles = lazy(() => import('./modules/Ressources/Articles'));
+const ArticleDetailPage = lazy(() => import('./modules/Ressources/ArticleDetailPage'));
 const Theses = lazy(() => import('./modules/Ressources/Theses'));
+const TheseDetail = lazy(() => import('./modules/Ressources/TheseDetailPage'));
 const Decrets = lazy(() => import('./modules/Ressources/Decrets'));
+const DecretDetail = lazy(() => import('./modules/Ressources/DecretDetailPage'));
 const Decisions = lazy(() => import('./modules/Ressources/Decisions'));
+const DecisionDetail = lazy(() => import('./modules/Ressources/DecisionDetailPage'));
 const Commissions = lazy(() => import('./modules/Ressources/Commissions'));
+const CommissionDetail = lazy(() => import('./modules/Ressources/CommissionDetailPage'));
 const Lois = lazy(() => import('./modules/Ressources/Lois'));
+const LoiDetail = lazy(() => import('./modules/Ressources/LoiDetailPage'));
 
 // L'Ordre
 const AProposOrdre = lazy(() => import('./modules/Ordre/APropos'));
@@ -75,6 +82,8 @@ const WikiSettings = lazy(() => import('./modules/Wiki/WikiSettings'));
 const Login = lazy(() => import('./modules/Admin/Login'));
 const Dashboard = lazy(() => import('./modules/Admin/Dashboard'));
 const Analytics = lazy(() => import('./modules/Admin/Analytics'));
+const PharmaciesAdmin = lazy(() => import('./modules/Admin/PharmaciesAdmin'));
+const PharmaciensAdmin = lazy(() => import('./modules/Admin/PharmaciensAdmin'));
 const Simulations = lazy(() => import('./modules/Admin/Simulations'));
 const Articles = lazy(() => import('./modules/Admin/Articles'));
 const ArticleForm = lazy(() => import('./modules/Admin/ArticleForm'));
@@ -86,6 +95,7 @@ const JobForm = lazy(() => import('./modules/Admin/JobForm'));
 const Logs = lazy(() => import('./modules/Admin/Logs'));
 const Projects = lazy(() => import('./modules/Admin/Projects/Projects'));
 const ProjectForm = lazy(() => import('./modules/Admin/Projects/ProjectForm'));
+const PageMocks = lazy(() => import('./modules/Admin/PageMocks'));
 
 // Composant de chargement simple
 const LoadingSpinner = () => (
@@ -111,6 +121,8 @@ function App() {
             <Route path="/admin" element={<Login />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/analytics" element={<Analytics />} />
+            <Route path="/admin/pharmacies" element={<PharmaciesAdmin />} />
+            <Route path="/admin/pharmaciens" element={<PharmaciensAdmin />} />
             <Route path="/admin/simulations" element={<Simulations />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/articles/new" element={<ArticleForm />} />
@@ -125,6 +137,7 @@ function App() {
             <Route path="/admin/idea-blocks" element={<IdeaBlocks />} />
             <Route path="/admin/logs" element={<Logs />} />
             <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/admin/resources" element={<PageMocks />} />
             
             {/* Documentation Admin - redirection directe vers HTML */}
             <Route path="/documentation-admin" element={<DocumentationAdmin />} />
@@ -145,15 +158,22 @@ function App() {
                     <Route path="/ressources/actualites" element={<RessourcesActualites />} />
                     <Route path="/ressources/actualites/:id" element={<RessourcesArticleDetail />} />
                     <Route path="/ressources/communiques" element={<Communiques />} />
+                    <Route path="/ressources/communiques/:id" element={<CommuniqueDetail />} />
                     <Route path="/ressources/photos" element={<Photos />} />
                     <Route path="/ressources/videos" element={<Videos />} />
                     <Route path="/trouver-pharmacie" element={<TrouverPharmacie />} />
                     <Route path="/ressources/articles" element={<RessourcesArticles />} />
+                    <Route path="/ressources/articles/:id" element={<ArticleDetailPage />} />
                     <Route path="/ressources/theses" element={<Theses />} />
+                    <Route path="/ressources/theses/:id" element={<TheseDetail />} />
                     <Route path="/ressources/decrets" element={<Decrets />} />
+                    <Route path="/ressources/decrets/:id" element={<DecretDetail />} />
                     <Route path="/ressources/decisions" element={<Decisions />} />
+                    <Route path="/ressources/decisions/:id" element={<DecisionDetail />} />
                     <Route path="/ressources/commissions" element={<Commissions />} />
+                    <Route path="/ressources/commissions/:id" element={<CommissionDetail />} />
                     <Route path="/ressources/lois" element={<Lois />} />
+                    <Route path="/ressources/lois/:id" element={<LoiDetail />} />
 
                     {/* L'Ordre */}
                     <Route path="/ordre/a-propos" element={<AProposOrdre />} />

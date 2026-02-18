@@ -1,0 +1,77 @@
+/* CSS indépendant pour la page Ordre - Instances de l'Ordre */
+@import './Ordre.css';
+
+/* Espace pour des styles propres à la page Instance */
+
+/* Instance Page - CSS Indépendant */
+.instance-ordre-page {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.instance-ordre-hero {
+  background: linear-gradient(135deg, #00A651 0%, #2E8B57 100%);
+  color: white;
+  padding: 5rem 0;
+  text-align: center;
+}
+
+.instance-ordre-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.instance-ordre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  padding: 4rem 0;
+}
+
+.instance-ordre-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.instance-ordre-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.instance-ordre-card-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.instance-ordre-card h3 {
+  color: #00A651;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.instance-ordre-card-president {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.instance-ordre-card-meta {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .instance-ordre-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+

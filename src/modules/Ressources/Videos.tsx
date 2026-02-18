@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './Videos.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 interface Video {
   id: string;
@@ -488,15 +489,79 @@ const mockPlaylists: Playlist[] = [
 ];
 
 const Videos = () => {
-  const [videos, setVideos] = useState<Video[]>(mockVideos);
-  const [playlists, setPlaylists] = useState<Playlist[]>(mockPlaylists);
-  const [filteredVideos, setFilteredVideos] = useState<Video[]>(mockVideos);
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [filteredVideos, setFilteredVideos] = useState<Video[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [viewMode, setViewMode] = useState<'videos' | 'playlists'>('videos');
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [sortBy, setSortBy] = useState<'date' | 'views' | 'likes'>('date');
+  const [loading, setLoading] = useState(true);
+
+  // Charger les vidéos depuis MongoDB (plusieurs vidéos)
+  useEffect(() => {
+    const loadVideos = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('videos');
+        if (Array.isArray(data) && data.length > 0) {
+          const loadedVideos: Video[] = data.map(item => ({
+            id: item._id,
+            title: item.title,
+            description: item.description || '',
+            thumbnail: item.thumbnail || '',
+            youtubeId: item.youtubeId || '',
+            duration: item.duration || '0:00',
+            views: item.views || 0,
+            likes: item.likes || 0,
+            publishedDate: item.publishedDate || new Date().toISOString().split('T')[0],
+            category: item.category || 'Général',
+            speaker: item.speaker || '',
+            event: item.event,
+            tags: item.tags || [],
+            featured: item.featured || false
+          }));
+          setVideos(loadedVideos);
+          setFilteredVideos(loadedVideos);
+          
+          // Créer les playlists à partir des catégories
+          const categoryPlaylists: Playlist[] = [];
+          const categories = [...new Set(loadedVideos.map(v => v.category))];
+          categories.forEach(cat => {
+            const catVideos = loadedVideos.filter(v => v.category === cat);
+            if (catVideos.length > 0) {
+              categoryPlaylists.push({
+                id: `playlist-${cat}`,
+                title: cat,
+                description: `Vidéos sur le thème ${cat}`,
+                thumbnail: catVideos[0].thumbnail,
+                videos: catVideos,
+                category: cat,
+                featured: catVideos.some(v => v.featured)
+              });
+            }
+          });
+          setPlaylists(categoryPlaylists);
+        } else {
+          // Fallback sur les mocks si aucune donnée en base
+          setVideos(mockVideos);
+          setFilteredVideos(mockVideos);
+          setPlaylists(mockPlaylists);
+        }
+      } catch (error) {
+        console.error('Erreur chargement vidéos:', error);
+        // Fallback sur les mocks en cas d'erreur
+        setVideos(mockVideos);
+        setFilteredVideos(mockVideos);
+        setPlaylists(mockPlaylists);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadVideos();
+  }, []);
 
   const stats = useMemo(() => ({
     totalVideos: videos.length,

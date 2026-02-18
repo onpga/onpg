@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Articles.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les articles
 interface Article {
@@ -31,7 +33,7 @@ interface Journal {
   articlesCount: number;
 }
 
-// Données fictives de journaux
+// Données fictives de journaux (statiques pour l'affichage)
 const mockJournals: Journal[] = [
   {
     id: 'rev-pharm-gab',
@@ -59,128 +61,40 @@ const mockJournals: Journal[] = [
   }
 ];
 
-// Données fictives d'articles
-const mockArticles: Article[] = [
-  {
-    id: '1',
-    title: 'Étude pharmaco-épidémiologique des prescriptions antibiotiques en officine au Gabon',
-    authors: ['Dr. Marie Dubois', 'Pr. Jean Martin', 'Dr. Sophie Bernard'],
-    abstract: 'Cette étude analyse les prescriptions antibiotiques dans les officines gabonaises sur une période de 12 mois. Les résultats montrent une prévalence élevée d\'antibiotiques de dernière ligne et soulignent la nécessité de renforcer les programmes d\'antibiorésistance.',
-    journal: 'Revue Pharmaceutique Gabonaise',
-    volume: '12',
-    issue: '3',
-    pages: '145-162',
-    year: 2024,
-    doi: '10.1234/rpg.2024.12.3.145',
-    keywords: ['antibiotiques', 'pharmaco-épidémiologie', 'antibiorésistance', 'Gabon'],
-    category: 'Pharmaco-épidémiologie',
-    downloads: 1250,
-    citations: 23,
-    featured: true,
-    language: 'fr',
-    publicationType: 'article'
-  },
-  {
-    id: '2',
-    title: 'Impact des génériques sur les dépenses de santé publique : Analyse comparative Gabon vs Afrique Centrale',
-    authors: ['Dr. Alain Moreau', 'Dr. Claire Leroy'],
-    abstract: 'Analyse économique comparative de l\'impact des médicaments génériques sur les dépenses de santé dans différents pays d\'Afrique Centrale, avec un focus particulier sur le Gabon.',
-    journal: 'Acta Pharmaceutica Africana',
-    volume: '8',
-    issue: '2',
-    pages: '78-95',
-    year: 2023,
-    doi: '10.5678/apa.2023.8.2.78',
-    keywords: ['génériques', 'dépenses santé', 'économie pharmaceutique', 'Afrique Centrale'],
-    category: 'Économie de la Santé',
-    downloads: 987,
-    citations: 34,
-    featured: false,
-    language: 'fr',
-    publicationType: 'article'
-  },
-  {
-    id: '3',
-    title: 'Préparation des mélanges magistraux pédiatriques : Bonnes pratiques et risques associés',
-    authors: ['Pr. Michel Dubois', 'Dr. Pierre Martin'],
-    abstract: 'Revue des bonnes pratiques de préparation des mélanges magistraux en pédiatrie et analyse des risques potentiels associés à ces préparations.',
-    journal: 'Revue Pharmaceutique Gabonaise',
-    volume: '11',
-    issue: '4',
-    pages: '203-218',
-    year: 2023,
-    doi: '10.1234/rpg.2023.11.4.203',
-    keywords: ['mélanges magistraux', 'pédiatrie', 'préparation', 'risques'],
-    category: 'Préparation Magistrale',
-    downloads: 756,
-    citations: 18,
-    featured: false,
-    language: 'fr',
-    publicationType: 'review'
-  },
-  {
-    id: '4',
-    title: 'Cas clinique : Réaction allergique sévère à un anti-inflammatoire non stéroïdien',
-    authors: ['Dr. Isabelle Thomas', 'Dr. Laurent Robert'],
-    abstract: 'Présentation d\'un cas clinique rare d\'anaphylaxie à l\'ibuprofène chez un patient adulte, avec discussion des mécanismes physiopathologiques et implications thérapeutiques.',
-    journal: 'Bulletin de Santé Publique',
-    volume: '15',
-    issue: '1',
-    pages: '45-52',
-    year: 2024,
-    doi: '10.9012/bsp.2024.15.1.45',
-    keywords: ['allergie', 'AINS', 'anaphylaxie', 'cas clinique'],
-    category: 'Cas Cliniques',
-    downloads: 643,
-    citations: 12,
-    featured: false,
-    language: 'fr',
-    publicationType: 'case-report'
-  },
-  {
-    id: '5',
-    title: 'Évaluation des pratiques de dispensation dans les pharmacies rurales gabonaises',
-    authors: ['Dr. Nathalie Petit', 'Dr. Olivier Durand'],
-    abstract: 'Étude qualitative et quantitative des pratiques de dispensation dans les pharmacies rurales du Gabon, identifiant les défis spécifiques et proposant des solutions adaptées.',
-    journal: 'Revue Pharmaceutique Gabonaise',
-    volume: '12',
-    issue: '1',
-    pages: '23-41',
-    year: 2024,
-    doi: '10.1234/rpg.2024.12.1.23',
-    keywords: ['dispensation', 'pharmacies rurales', 'pratiques', 'Gabon'],
-    category: 'Pratiques Professionnelles',
-    downloads: 892,
-    citations: 27,
-    featured: true,
-    language: 'fr',
-    publicationType: 'article'
-  },
-  {
-    id: '6',
-    title: 'Pharmacocinétique des antipaludéens chez l\'enfant africain : Revue systématique',
-    authors: ['Pr. Catherine Moreau', 'Dr. Antoine Leroy'],
-    abstract: 'Revue systématique de la littérature sur la pharmacocinétique des antipaludéens chez l\'enfant africain, avec implications pour l\'optimisation thérapeutique.',
-    journal: 'Acta Pharmaceutica Africana',
-    volume: '9',
-    issue: '1',
-    pages: '12-28',
-    year: 2024,
-    doi: '10.5678/apa.2024.9.1.12',
-    keywords: ['antipaludéens', 'pharmacocinétique', 'enfant', 'Afrique'],
-    category: 'Pharmacologie',
-    downloads: 1156,
-    citations: 45,
-    featured: false,
-    language: 'fr',
-    publicationType: 'review'
-  }
-];
-
 const Articles = () => {
-  const [articles, setArticles] = useState<Article[]>(mockArticles);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [journals, setJournals] = useState<Journal[]>(mockJournals);
-  const [filteredArticles, setFilteredArticles] = useState<Article[]>(mockArticles);
+  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
+  
+  // Charger depuis MongoDB - 1 seul article
+  useEffect(() => {
+    const loadArticles = async () => {
+      const data = await fetchResourceData('articles');
+      if (data && !Array.isArray(data)) {
+        const article: Article = {
+          id: data._id,
+          title: data.title,
+          authors: data.authors || [],
+          abstract: data.excerpt || data.abstract || '',
+          journal: data.journal || '',
+          year: data.year || new Date().getFullYear(),
+          keywords: data.tags || data.keywords || [],
+          category: data.category || 'Général',
+          downloads: data.downloads || 0,
+          citations: data.citations || 0,
+          featured: data.featured || false,
+          language: data.language || 'fr',
+          publicationType: data.publicationType || 'article'
+        };
+        setArticles([article]);
+        setFilteredArticles([article]);
+      } else {
+        setArticles([]);
+        setFilteredArticles([]);
+      }
+    };
+    loadArticles();
+  }, []);
   const [selectedJournal, setSelectedJournal] = useState('Tous');
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [selectedType, setSelectedType] = useState('Tous');

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import './SectionA.css';
 
 // Types pour les membres de la section A
 interface Pharmacien {

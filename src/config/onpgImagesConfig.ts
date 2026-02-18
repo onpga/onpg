@@ -21,8 +21,12 @@ export interface HeroSlide {
 
 // Fonction utilitaire pour obtenir l'URL d'une image Cloudinary ONPG
 export function getONPGImageUrl(imageKey: string, optimized: boolean = true): string {
-  const imageData = onpgImagesData.images[imageKey];
-  const optimizedData = onpgImagesData.optimized[imageKey];
+  // Cast en Record pour autoriser l'indexation dynamique par string
+  const images = onpgImagesData.images as Record<string, string>;
+  const optimizedImages = onpgImagesData.optimized as Record<string, string | undefined>;
+
+  const imageData = images[imageKey];
+  const optimizedData = optimizedImages[imageKey];
 
   if (!imageData) {
     console.warn(`Image ONPG non trouvée: ${imageKey}`);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonArticle } from '../../components/Skeleton';
 import './Actualites.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 interface Article {
   _id: string;
@@ -19,6 +20,7 @@ interface Article {
     name: string;
     role: string;
   };
+  content?: string;
 }
 
 // Layout 1 : Inspiré de Notion Blog - Épuré, cards compactes, typographie soignée
@@ -29,7 +31,6 @@ const RessourcesActualites = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
-  const [selectedPole, setSelectedPole] = useState<string>('all');
 
   const allTags = Array.from(new Set(articles.flatMap(a => a.tags || [])));
 
@@ -42,8 +43,6 @@ const RessourcesActualites = () => {
     { id: 'communiques', label: 'Communiqués' },
     { id: 'partenariats', label: 'Partenariats' }
   ];
-
-  const poles = ['Énergie', 'Sécurité Numérique', 'Drone', 'Géospatial'];
 
   const categoryColors: {[key: string]: string} = {
     'pedagogique': '#2E8B57',
@@ -237,16 +236,51 @@ const RessourcesActualites = () => {
   ];
 
   useEffect(() => {
-    // Utiliser les données mockées au lieu d'appeler l'API
-    setTimeout(() => {
-      setArticles(mockArticles);
-      setLoading(false);
-    }, 1000); // Simuler un délai de chargement
+    const loadActualites = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('actualites');
+        if (data && !Array.isArray(data) && data._id) {
+          // Une seule actualité depuis la collection
+          const article: Article = {
+            _id: String(data._id), // S'assurer que l'ID est une string
+            title: data.title || '',
+            slug: data.title ? data.title.toLowerCase().replace(/\s+/g, '-') : '',
+            excerpt: data.excerpt || data.summary || '',
+            image: data.image || data.featuredImage || '',
+            category: data.category || 'actualites',
+            pole: data.pole || 'Général',
+            publishedAt: data.date || data.publishedAt || new Date().toISOString(),
+            readTime: data.readTime || 5,
+            tags: data.tags || [],
+            featured: data.featured || false,
+            author: data.author || {
+              name: 'ONPG',
+              role: 'Équipe Communication'
+            },
+            content: data.content || ''
+          };
+          setArticles([article]);
+          setFilteredArticles([article]);
+        } else {
+          // Aucune donnée en base
+          setArticles([]);
+          setFilteredArticles([]);
+        }
+      } catch (error) {
+        console.error('Erreur chargement actualités:', error);
+        setArticles([]);
+        setFilteredArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadActualites();
   }, []);
 
   useEffect(() => {
     filterArticles();
-  }, [selectedCategory, selectedPole, searchQuery, selectedTag, articles]);
+  }, [selectedCategory, searchQuery, selectedTag, articles]);
 
   const fetchArticles = async () => {
     try {
@@ -268,10 +302,6 @@ const RessourcesActualites = () => {
 
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(a => a.category === selectedCategory);
-    }
-
-    if (selectedPole !== 'all') {
-      filtered = filtered.filter(a => a.pole === selectedPole);
     }
 
     if (selectedTag) {
@@ -326,19 +356,6 @@ const RessourcesActualites = () => {
                 </button>
               ))}
             </div>
-
-            <div className="notion-poles">
-              <select
-                value={selectedPole}
-                onChange={(e) => setSelectedPole(e.target.value)}
-                className="notion-pole-select"
-              >
-                <option value="all">Tous les pôles</option>
-                {poles.map(pole => (
-                  <option key={pole} value={pole}>{pole}</option>
-                ))}
-              </select>
-            </div>
           </div>
 
           {allTags.length > 0 && (
@@ -362,20 +379,21 @@ const RessourcesActualites = () => {
         <div className="container">
           {loading ? (
             <div className="notion-grid">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <SkeletonArticle key={i} />
-              ))}
+              <SkeletonArticle />
             </div>
           ) : filteredArticles.length === 0 ? (
             <div className="notion-empty">
-              <p>Aucun article trouvé</p>
+              <p>Aucune actualité disponible</p>
             </div>
           ) : (
             <div className="notion-grid">
-              {filteredArticles.map(article => (
+              {filteredArticles.map(article => {
+                const articleId = String(article._id);
+                console.log('🔗 Lien vers article ID:', articleId);
+                return (
                 <Link
-                  key={article._id}
-                  to={`/actualites/${article.slug}`}
+                  key={articleId}
+                  to={`/ressources/actualites/${articleId}`}
                   className="notion-card"
                 >
                   {article.image && (
@@ -409,7 +427,8 @@ const RessourcesActualites = () => {
                     )}
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

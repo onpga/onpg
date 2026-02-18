@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
+import './Communiques.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les communiqués
 interface Communique {
@@ -14,104 +15,9 @@ interface Communique {
   content: string;
   attachments?: string[];
   urgent: boolean;
+  featured?: boolean;
 }
 
-// Données fictives de communiqués
-const mockCommuniques: Communique[] = [
-  {
-    id: '1',
-    title: 'Communiqué de presse : Nouveau protocole de sécurité médicamenteuse',
-    reference: 'CP-2024-001',
-    date: '2024-01-15',
-    type: 'presse',
-    category: 'Sécurité',
-    excerpt: 'L\'ONPG annonce un nouveau protocole révolutionnaire pour renforcer la sécurité médicamenteuse dans les officines gabonaises.',
-    content: `L'ONPG, en collaboration avec le Ministère de la Santé, présente aujourd'hui un nouveau protocole de sécurité médicamenteuse qui vise à élever les standards de qualité et de sécurité dans toutes les officines du Gabon.
-
-Ce protocole comprend plusieurs mesures innovantes :
-- Système de double vérification automatisé
-- Formation continue obligatoire sur les nouvelles technologies
-- Mise en place d'un système de traçabilité complet
-- Renforcement des contrôles qualité internes
-
-Cette initiative s'inscrit dans la volonté de l'ONPG de garantir la sécurité des patients et la qualité des soins pharmaceutiques au Gabon.`,
-    urgent: false
-  },
-  {
-    id: '2',
-    title: 'URGENT : Suspension temporaire de commercialisation de spécialité pharmaceutique',
-    reference: 'URG-2024-002',
-    date: '2024-01-12',
-    type: 'urgent',
-    category: 'Alerte',
-    excerpt: 'Suspension immédiate de la commercialisation du médicament XYZ suite à des effets indésirables graves signalés.',
-    content: `Suite à des signalements d'effets indésirables graves, l'ONPG ordonne la suspension immédiate de la commercialisation du médicament XYZ dans toutes les officines du territoire national.
-
-Les pharmaciens sont tenus de :
-- Retirer immédiatement ce produit des rayons
-- Informer les patients détenteurs de ce médicament
-- Rapporter tout effet indésirable au système national de pharmacovigilance
-
-Cette mesure de précaution vise à garantir la sécurité des patients.`,
-    urgent: true
-  },
-  {
-    id: '3',
-    title: 'Information : Modification des tarifs de rémunération pour 2024',
-    reference: 'INFO-2024-003',
-    date: '2024-01-10',
-    type: 'information',
-    category: 'Tarification',
-    excerpt: 'Publication des nouveaux tarifs de rémunération des pharmaciens pour l\'année 2024 suite aux négociations conventionnelles.',
-    content: `À l'issue des négociations conventionnelles, l'ONPG et les syndicats représentatifs ont établi les nouveaux tarifs de rémunération pour l'année 2024.
-
-Les principales modifications concernent :
-- Augmentation de 2.5% des honoraires de dispensation
-- Révision des tarifs de préparation des mélanges
-- Nouveaux tarifs pour les entretiens pharmaceutiques
-
-Ces nouveaux tarifs entreront en vigueur à compter du 1er février 2024.`,
-    urgent: false
-  },
-  {
-    id: '4',
-    title: 'Communiqué administratif : Nouvelles modalités d\'inscription à l\'Ordre',
-    reference: 'ADMIN-2024-004',
-    date: '2024-01-08',
-    type: 'administratif',
-    category: 'Inscription',
-    excerpt: 'Modification des procédures d\'inscription à l\'Ordre National des Pharmaciens du Gabon.',
-    content: `L'ONPG informe les nouveaux diplômés et les pharmaciens souhaitant s'inscrire à l'Ordre des modifications apportées aux procédures d'inscription.
-
-Les nouvelles modalités incluent :
-- Dématérialisation complète du processus d'inscription
-- Suppression du stage d'adaptation pour les diplômés étrangers
-- Renforcement des exigences en matière de formation continue
-- Mise en place d'un système de validation en ligne
-
-Ces mesures visent à simplifier et moderniser les démarches administratives.`,
-    urgent: false
-  },
-  {
-    id: '5',
-    title: 'Point presse : Bilan annuel 2023 de l\'activité pharmaceutique',
-    reference: 'PP-2024-005',
-    date: '2024-01-05',
-    type: 'presse',
-    category: 'Statistiques',
-    excerpt: 'Présentation du bilan annuel 2023 : croissance de 15% de l\'activité pharmaceutique au Gabon.',
-    content: `L'ONPG dresse un bilan positif de l'activité pharmaceutique au Gabon pour l'année 2023, avec une croissance globale de 15% par rapport à 2022.
-
-Les chiffres clés :
-- 45 millions de prescriptions traitées
-- 98.5% de taux de service des officines
-- 2.3 millions de patients accompagnés dans le cadre du bilan médicamenteux
-- 850 pharmaciens formés aux nouvelles technologies
-
-Cette performance s'explique par l'engagement des professionnels de santé et les investissements technologiques réalisés.`,
-    urgent: false
-  }
-];
 
 const typeLabels = {
   urgent: 'Urgent',
@@ -128,8 +34,36 @@ const typeColors = {
 };
 
 const Communiques = () => {
-  const [communiques, setCommuniques] = useState<Communique[]>(mockCommuniques);
-  const [filteredCommuniques, setFilteredCommuniques] = useState<Communique[]>(mockCommuniques);
+  const [communiques, setCommuniques] = useState<Communique[]>([]);
+  const [filteredCommuniques, setFilteredCommuniques] = useState<Communique[]>([]);
+  
+  // Charger depuis MongoDB - 1 seul communiqué
+  useEffect(() => {
+    const loadCommuniques = async () => {
+      const data = await fetchResourceData('communiques');
+      if (data && !Array.isArray(data)) {
+        const communique: Communique = {
+          id: data._id,
+          title: data.title,
+          reference: data.reference || '',
+          date: data.date || new Date().toISOString().split('T')[0],
+          type: data.type || 'information',
+          category: data.category || 'Général',
+          excerpt: data.excerpt || '',
+          content: data.content || '',
+          attachments: data.attachments,
+          urgent: data.urgent || false,
+          featured: data.featured || false
+        };
+        setCommuniques([communique]);
+        setFilteredCommuniques([communique]);
+      } else {
+        setCommuniques([]);
+        setFilteredCommuniques([]);
+      }
+    };
+    loadCommuniques();
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('Tous');
   const [selectedCategory, setSelectedCategory] = useState('Toutes');

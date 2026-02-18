@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Decrets.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les décrets
 interface Decret {
@@ -20,145 +22,42 @@ interface Decret {
   language: string;
 }
 
-// Données fictives de décrets
-const mockDecrets: Decret[] = [
-  {
-    id: '1',
-    number: '2024-001',
-    title: 'Décret relatif à l\'organisation et au fonctionnement de l\'Ordre National des Pharmaciens du Gabon',
-    publicationDate: '2024-01-15',
-    entryDate: '2024-01-16',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Organisation professionnelle',
-    summary: 'Ce décret définit l\'organisation administrative, les compétences et le fonctionnement de l\'Ordre National des Pharmaciens du Gabon, en conformité avec les dispositions légales en vigueur.',
-    keyArticles: [
-      'Article 1 : Création et statut de l\'Ordre',
-      'Article 2 : Missions et attributions',
-      'Article 3 : Composition du Conseil National',
-      'Article 4 : Élection des instances dirigeantes'
-    ],
-    tags: ['organisation', 'fonctionnement', 'conseil national', 'élections'],
-    status: 'active',
-    downloads: 1247,
-    views: 3456,
-    featured: true,
-    language: 'fr'
-  },
-  {
-    id: '2',
-    number: '2023-045',
-    title: 'Décret fixant les conditions d\'exercice de la pharmacie au Gabon',
-    publicationDate: '2023-12-20',
-    entryDate: '2024-01-01',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Exercice professionnel',
-    summary: 'Décret établissant les conditions, modalités et règles d\'exercice de la profession de pharmacien sur le territoire gabonais.',
-    keyArticles: [
-      'Article 1 : Conditions d\'accès à la profession',
-      'Article 2 : Modalités d\'installation',
-      'Article 3 : Obligations déontologiques',
-      'Article 4 : Sanctions disciplinaires'
-    ],
-    tags: ['conditions d\'exercice', 'installation', 'déontologie', 'sanctions'],
-    status: 'active',
-    downloads: 2156,
-    views: 5678,
-    featured: false,
-    language: 'fr'
-  },
-  {
-    id: '3',
-    number: '2023-089',
-    title: 'Décret relatif aux médicaments génériques et à la politique de substitution',
-    publicationDate: '2023-11-15',
-    entryDate: '2023-12-01',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Médicaments',
-    summary: 'Réglementation de l\'utilisation des médicaments génériques et définition de la politique nationale de substitution médicamenteuse.',
-    keyArticles: [
-      'Article 1 : Définition des médicaments génériques',
-      'Article 2 : Procédures de substitution',
-      'Article 3 : Information du patient',
-      'Article 4 : Responsabilités des pharmaciens'
-    ],
-    tags: ['génériques', 'substitution', 'information patient', 'responsabilités'],
-    status: 'active',
-    downloads: 1897,
-    views: 4231,
-    featured: false,
-    language: 'fr'
-  },
-  {
-    id: '4',
-    number: '2023-067',
-    title: 'Décret sur la pharmacovigilance et la surveillance des effets indésirables',
-    publicationDate: '2023-10-10',
-    entryDate: '2023-11-01',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Sécurité sanitaire',
-    summary: 'Organisation du système national de pharmacovigilance et modalités de surveillance des effets indésirables des médicaments.',
-    keyArticles: [
-      'Article 1 : Système national de pharmacovigilance',
-      'Article 2 : Obligations de déclaration',
-      'Article 3 : Centre national de pharmacovigilance',
-      'Article 4 : Mesures d\'urgence'
-    ],
-    tags: ['pharmacovigilance', 'effets indésirables', 'déclaration', 'urgence'],
-    status: 'active',
-    downloads: 1654,
-    views: 3876,
-    featured: true,
-    language: 'fr'
-  },
-  {
-    id: '5',
-    number: '2023-034',
-    title: 'Décret portant création du Conseil National de l\'Ordre des Pharmaciens',
-    publicationDate: '2023-09-05',
-    entryDate: '2023-09-15',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Institution',
-    summary: 'Création officielle du Conseil National de l\'Ordre des Pharmaciens et définition de ses attributions et modalités de fonctionnement.',
-    keyArticles: [
-      'Article 1 : Création du Conseil National',
-      'Article 2 : Composition et élection',
-      'Article 3 : Attributions et compétences',
-      'Article 4 : Règlement intérieur'
-    ],
-    tags: ['conseil national', 'création', 'attributions', 'élection'],
-    status: 'active',
-    downloads: 1432,
-    views: 2987,
-    featured: false,
-    language: 'fr'
-  },
-  {
-    id: '6',
-    number: '2022-156',
-    title: 'Décret sur la formation continue obligatoire des pharmaciens',
-    publicationDate: '2022-12-15',
-    entryDate: '2023-01-01',
-    ministry: 'Ministère de la Santé et des Affaires Sociales',
-    category: 'Formation',
-    summary: 'Établissement de l\'obligation de formation continue pour les pharmaciens et définition des modalités d\'organisation et de validation.',
-    keyArticles: [
-      'Article 1 : Obligation de formation continue',
-      'Article 2 : Programme annuel de formation',
-      'Article 3 : Validation des formations',
-      'Article 4 : Sanctions en cas de non-respect'
-    ],
-    tags: ['formation continue', 'obligation', 'validation', 'sanctions'],
-    status: 'active',
-    downloads: 1789,
-    views: 4123,
-    featured: false,
-    language: 'fr'
-  }
-];
 
 const Decrets = () => {
-  const [decrets, setDecrets] = useState<Decret[]>(mockDecrets);
-  const [filteredDecrets, setFilteredDecrets] = useState<Decret[]>(mockDecrets);
+  const [decrets, setDecrets] = useState<Decret[]>([]);
+  const [filteredDecrets, setFilteredDecrets] = useState<Decret[]>([]);
+  
+  // Charger depuis MongoDB - 1 seul décret
+  useEffect(() => {
+    const loadDecrets = async () => {
+      const data = await fetchResourceData('decrets');
+      if (data && !Array.isArray(data)) {
+        const decret: Decret = {
+          id: data._id,
+          number: data.number || '',
+          title: data.title,
+          publicationDate: data.publicationDate || data.date || new Date().toISOString().split('T')[0],
+          entryDate: data.entryDate || data.date || new Date().toISOString().split('T')[0],
+          ministry: data.ministry || 'Ministère de la Santé et des Affaires Sociales',
+          category: data.category || 'Général',
+          summary: data.summary || data.title,
+          keyArticles: data.keyArticles || [],
+          tags: data.tags || [],
+          status: (data.status as 'active' | 'modified' | 'abrogated') || 'active',
+          downloads: data.downloads || 0,
+          views: data.views || 0,
+          featured: data.featured || false,
+          language: data.language || 'fr'
+        };
+        setDecrets([decret]);
+        setFilteredDecrets([decret]);
+      } else {
+        setDecrets([]);
+        setFilteredDecrets([]);
+      }
+    };
+    loadDecrets();
+  }, []);
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [selectedStatus, setSelectedStatus] = useState('Tous');
   const [selectedYear, setSelectedYear] = useState('Toutes');

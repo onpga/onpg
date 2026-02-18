@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import './Photos.css';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 
 // Types pour les photos avec plus de détails pour les effets wow
 interface Photo {
@@ -33,281 +34,6 @@ interface Album {
   gradient: string;
 }
 
-// Données améliorées avec plus de photos et d'effets
-const mockAlbums: Album[] = [
-  {
-    id: 'congres-2024',
-    name: '🏥 Congrès National Pharmaciens 2024',
-    description: 'Événement majeur rassemblant l\'ensemble de la profession pharmaceutique gabonaise pour trois jours d\'échanges et d\'innovation',
-    coverImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop',
-    photoCount: 45,
-    featured: true,
-    category: 'Événement National',
-    gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-  },
-  {
-    id: 'formations',
-    name: '📚 Formation Continue & Développement',
-    description: 'Programme intensif de formation professionnelle pour l\'amélioration des compétences et pratiques pharmaceutiques',
-    coverImage: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop',
-    photoCount: 28,
-    featured: false,
-    category: 'Formation Professionnelle',
-    gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
-  },
-  {
-    id: 'officines',
-    name: '🏪 Visite des Officines Modernes',
-    description: 'Découverte exclusive des pharmacies pilotes équipées des dernières technologies de dispensation automatisée',
-    coverImage: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&h=400&fit=crop',
-    photoCount: 32,
-    featured: true,
-    category: 'Innovation Technologique',
-    gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
-  },
-  {
-    id: 'evenements',
-    name: '🎓 Cérémonies & Remises de Prix',
-    description: 'Moments solennels célébrant l\'excellence professionnelle et les distinctions honorifiques de la pharmacie gabonaise',
-    coverImage: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&h=400&fit=crop',
-    photoCount: 67,
-    featured: false,
-    category: 'Célébrations Officielles',
-    gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-  },
-  {
-    id: 'laboratoire',
-    name: '🔬 Centre de Recherche Pharmacologique',
-    description: 'Visite guidée du laboratoire de pointe spécialisé dans la recherche et le développement de médicaments essentiels',
-    coverImage: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop',
-    photoCount: 38,
-    featured: true,
-    category: 'Recherche Scientifique',
-    gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
-  },
-  {
-    id: 'equipe',
-    name: '👥 Rencontre de l\'Équipe Direction ONPG',
-    description: 'Séance de travail stratégique rassemblant les dirigeants et experts de l\'Ordre National des Pharmaciens du Gabon',
-    coverImage: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop',
-    photoCount: 24,
-    featured: false,
-    category: 'Gouvernance',
-    gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
-  },
-  {
-    id: 'jpo-2024',
-    name: '🎪 Journées Portes Ouvertes 2024',
-    description: 'Événement public annuel permettant au grand public de découvrir les métiers de la pharmacie et les services de santé',
-    coverImage: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop',
-    photoCount: 52,
-    featured: true,
-    category: 'Sensibilisation Publique',
-    gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
-  }
-];
-
-// Photos améliorées avec plus de détails pour les effets wow
-const mockPhotos: Photo[] = [
-  {
-    id: '1',
-    title: 'Ouverture du Congrès National',
-    description: 'Cérémonie d\'ouverture du 15ème Congrès National des Pharmaciens du Gabon avec discours inaugural',
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop',
-    album: 'congres-2024',
-    date: '2024-01-15',
-    tags: ['congrès', 'ouverture', 'cérémonie', 'discours'],
-    photographer: 'Jean Dupont',
-    location: 'Palais des Congrès, Libreville',
-    downloads: 245,
-    likes: 89,
-    featured: true,
-    category: 'Événements',
-    orientation: 'landscape',
-    colors: ['#2E8B57', '#00A651', '#228B22']
-  },
-  {
-    id: '2',
-    title: 'Atelier Formation Technologies',
-    description: 'Session pratique interactive sur les nouvelles technologies en pharmacie et dispensation numérique',
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
-    album: 'formations',
-    date: '2024-01-12',
-    tags: ['formation', 'technologie', 'atelier', 'numérique'],
-    photographer: 'Marie Leroy',
-    location: 'Centre de Formation ONPG',
-    downloads: 156,
-    likes: 67,
-    featured: false,
-    category: 'Formation',
-    orientation: 'landscape',
-    colors: ['#4169E1', '#0000FF', '#1E90FF']
-  },
-  {
-    id: '3',
-    title: 'Officine Moderne Technologique',
-    description: 'Espace de dispensation moderne avec technologies avancées et interface digitale innovante',
-    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop',
-    album: 'officines',
-    date: '2024-01-10',
-    tags: ['officine', 'moderne', 'technologie', 'innovation'],
-    photographer: 'Pierre Martin',
-    location: 'Pharmacie Centrale, Libreville',
-    downloads: 198,
-    likes: 134,
-    featured: true,
-    category: 'Infrastructure',
-    orientation: 'landscape',
-    colors: ['#32CD32', '#228B22', '#006400']
-  },
-  {
-    id: '4',
-    title: 'Remise des Diplômes 2024',
-    description: 'Cérémonie solennelle de remise des diplômes aux nouveaux pharmaciens diplômés',
-    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400&h=300&fit=crop',
-    album: 'evenements',
-    date: '2024-01-08',
-    tags: ['diplômes', 'cérémonie', 'remise', 'graduation'],
-    photographer: 'Sophie Bernard',
-    location: 'Université des Sciences de la Santé',
-    downloads: 312,
-    likes: 201,
-    featured: false,
-    category: 'Célébrations',
-    orientation: 'landscape',
-    colors: ['#FFD700', '#FFA500', '#FF8C00']
-  },
-  {
-    id: '5',
-    title: 'Laboratoire de Recherche Avancé',
-    description: 'Équipements de pointe dans notre laboratoire de recherche pharmacologique',
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop',
-    album: 'laboratoire',
-    date: '2024-01-05',
-    tags: ['laboratoire', 'recherche', 'équipement', 'science'],
-    photographer: 'Dr. Ahmed Kone',
-    location: 'Centre de Recherche ONPG',
-    downloads: 278,
-    likes: 145,
-    featured: true,
-    category: 'Recherche',
-    orientation: 'landscape',
-    colors: ['#9370DB', '#8A2BE2', '#4B0082']
-  },
-  {
-    id: '6',
-    title: 'Équipe Direction ONPG',
-    description: 'Portrait officiel de l\'équipe de direction lors de la réunion stratégique annuelle',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-    album: 'equipe',
-    date: '2024-01-03',
-    tags: ['équipe', 'direction', 'portrait', 'professionnel'],
-    photographer: 'Équipe Communication',
-    location: 'Siège ONPG, Libreville',
-    downloads: 189,
-    likes: 98,
-    featured: false,
-    category: 'Équipe',
-    orientation: 'landscape',
-    colors: ['#708090', '#2F4F4F', '#556B2F']
-  },
-  {
-    id: '7',
-    title: 'Innovation Pharmacologique',
-    description: 'Présentation des dernières innovations en pharmacologie lors du symposium annuel',
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=1200&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=400&fit=crop',
-    album: 'congres-2024',
-    date: '2024-01-14',
-    tags: ['innovation', 'pharmacologie', 'symposium', 'recherche'],
-    photographer: 'Marie Leroy',
-    location: 'Salle Innovation, Palais des Congrès',
-    downloads: 334,
-    likes: 167,
-    featured: true,
-    category: 'Événements',
-    orientation: 'portrait',
-    colors: ['#FF69B4', '#FF1493', '#DC143C']
-  },
-  {
-    id: '8',
-    title: 'Formation Pratique Médicaments',
-    description: 'Atelier pratique sur la manipulation et la dispensation sécurisée des médicaments',
-    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&h=300&fit=crop',
-    album: 'formations',
-    date: '2024-01-11',
-    tags: ['formation', 'pratique', 'médicaments', 'sécurité'],
-    photographer: 'Pierre Martin',
-    location: 'Laboratoire de Formation',
-    downloads: 223,
-    likes: 112,
-    featured: false,
-    category: 'Formation',
-    orientation: 'landscape',
-    colors: ['#FF6347', '#FF4500', '#DC143C']
-  },
-  {
-    id: '9',
-    title: 'Stand Information Santé Publique',
-    description: 'Présentation interactive des programmes de prévention et d\'éducation pour la santé au Gabon',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop',
-    album: 'jpo-2024',
-    date: '2024-03-15',
-    tags: ['prévention', 'santé publique', 'éducation', 'gabon'],
-    photographer: 'Équipe Communication ONPG',
-    location: 'Centre Ville, Libreville',
-    downloads: 189,
-    likes: 156,
-    featured: true,
-    category: 'Sensibilisation Publique',
-    orientation: 'landscape',
-    colors: ['#00A651', '#2ECC71', '#27AE60']
-  },
-  {
-    id: '10',
-    title: 'Atelier Enfants - Les Métiers de la Santé',
-    description: 'Séance ludique d\'initiation aux différents métiers du secteur de la santé pour les jeunes visiteurs',
-    image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=1200&h=800&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=300&fit=crop',
-    album: 'jpo-2024',
-    date: '2024-03-16',
-    tags: ['enfants', 'métiers', 'santé', 'éducation'],
-    photographer: 'Sophie Bernard',
-    location: 'Espace Jeunesse, Palais des Congrès',
-    downloads: 267,
-    likes: 203,
-    featured: false,
-    category: 'Sensibilisation Publique',
-    orientation: 'portrait',
-    colors: ['#FFD700', '#FFA500', '#FF8C00']
-  },
-  {
-    id: '11',
-    title: 'Conférence - Innovation Technologique',
-    description: 'Présentation des dernières avancées technologiques en pharmacie et leur impact sur les soins de santé',
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=1200&fit=crop',
-    thumbnail: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=300&h=400&fit=crop',
-    album: 'jpo-2024',
-    date: '2024-03-17',
-    tags: ['innovation', 'technologie', 'conférence', 'soins'],
-    photographer: 'Dr. Lionel Ozounguet',
-    location: 'Salle Innovation, Palais des Congrès',
-    downloads: 334,
-    likes: 278,
-    featured: true,
-    category: 'Sensibilisation Publique',
-    orientation: 'portrait',
-    colors: ['#9370DB', '#8A2BE2', '#4B0082']
-  }
-];
 
 const Photos = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -324,17 +50,59 @@ const Photos = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Simulation de chargement avec délai pour effet wow
+  // Charger depuis MongoDB - 1 seule photo
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      // Simulation de chargement réseau
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      setPhotos(mockPhotos);
-      setAlbums(mockAlbums);
-      setFilteredPhotos(mockPhotos);
-      setIsLoading(false);
+      try {
+        const data = await fetchResourceData('photos');
+        if (data && !Array.isArray(data)) {
+          const photo: Photo = {
+            id: data._id,
+            title: data.title,
+            description: data.description || '',
+            image: data.image || '',
+            thumbnail: data.image || data.thumbnail || '',
+            album: data.album || 'Général',
+            date: data.date || new Date().toISOString().split('T')[0],
+            tags: data.tags || [],
+            category: data.category || 'Général',
+            photographer: data.photographer,
+            location: data.location,
+            downloads: data.downloads || 0,
+            likes: data.likes || 0,
+            featured: data.featured || false,
+            orientation: (data.orientation as 'portrait' | 'landscape' | 'square') || 'landscape',
+            colors: data.colors || []
+          };
+          setPhotos([photo]);
+          setFilteredPhotos([photo]);
+          
+          // Créer un album pour cette photo
+          const album: Album = {
+            id: photo.album.toLowerCase().replace(/\s+/g, '-'),
+            name: photo.album,
+            description: data.albumDescription || `Album ${photo.album}`,
+            coverImage: photo.image,
+            photoCount: 1,
+            featured: photo.featured,
+            category: photo.category,
+            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          };
+          setAlbums([album]);
+        } else {
+          setPhotos([]);
+          setFilteredPhotos([]);
+          setAlbums([]);
+        }
+      } catch (error) {
+        console.error('Erreur chargement photos:', error);
+        setPhotos([]);
+        setFilteredPhotos([]);
+        setAlbums([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadData();

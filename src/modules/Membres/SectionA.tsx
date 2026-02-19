@@ -57,7 +57,18 @@ const SectionA = () => {
           // Filtrer par section A
           const sectionA = data.filter((p: any) => p.section === 'A' && p.isActive !== false);
           if (sectionA.length > 0) {
-            setPharmaciens(sectionA);
+            // Mapper explicitement les champs attendus par le type Pharmacien
+            setPharmaciens(
+              sectionA.map((p: any) => ({
+                _id: p._id,
+                nom: p.nom || '',
+                prenom: p.prenom || '',
+                section: p.section,
+                photo: p.photo,
+                role: p.role,
+                these: p.these
+              }))
+            );
           } else {
             // Utiliser mock si aucune donnée
             setPharmaciens(mockPharmaciens);

@@ -46,7 +46,17 @@ const SectionD = () => {
         if (Array.isArray(data)) {
           const sectionD = data.filter((p: any) => p.section === 'D' && p.isActive !== false);
           if (sectionD.length > 0) {
-            setPharmaciens(sectionD);
+            setPharmaciens(
+              sectionD.map((p: any) => ({
+                _id: p._id,
+                nom: p.nom || '',
+                prenom: p.prenom || '',
+                section: p.section,
+                photo: p.photo,
+                role: p.role,
+                these: p.these
+              }))
+            );
           } else {
             setPharmaciens(mockPharmaciens);
           }

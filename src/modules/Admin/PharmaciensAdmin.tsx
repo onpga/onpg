@@ -15,13 +15,18 @@ interface Pharmacien {
   cotisationsAJour?: boolean;
   dateRetardCotisations?: string | null;
   isActive?: boolean;
+  photo?: string;
+  role?: string;
+  these?: string;
 }
 
 const PharmaciensAdmin = () => {
   const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<Pharmacien | null>(null);
+  const [viewingItem, setViewingItem] = useState<Pharmacien | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [formData, setFormData] = useState<Pharmacien>({
     nom: '',
     prenom: '',
@@ -30,7 +35,10 @@ const PharmaciensAdmin = () => {
     section: '',
     cotisationsAJour: true,
     dateRetardCotisations: null,
-    isActive: true
+    isActive: true,
+    photo: '',
+    role: '',
+    these: ''
   });
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -65,7 +73,10 @@ const PharmaciensAdmin = () => {
       section: pharmacien.section || '',
       cotisationsAJour: pharmacien.cotisationsAJour !== undefined ? pharmacien.cotisationsAJour : true,
       dateRetardCotisations: pharmacien.dateRetardCotisations || null,
-      isActive: pharmacien.isActive !== undefined ? pharmacien.isActive : true
+      isActive: pharmacien.isActive !== undefined ? pharmacien.isActive : true,
+      photo: pharmacien.photo || '',
+      role: pharmacien.role || '',
+      these: pharmacien.these || ''
     });
     setShowForm(true);
     setTimeout(() => {
@@ -98,7 +109,10 @@ const PharmaciensAdmin = () => {
       section: '',
       cotisationsAJour: true,
       dateRetardCotisations: null,
-      isActive: true
+      isActive: true,
+      photo: '',
+      role: '',
+      these: ''
     });
     setShowForm(true);
     setTimeout(() => {
@@ -140,7 +154,10 @@ const PharmaciensAdmin = () => {
       section: '',
       cotisationsAJour: true,
       dateRetardCotisations: null,
-      isActive: true
+      isActive: true,
+      photo: '',
+      role: '',
+      these: ''
     });
   };
 
@@ -168,13 +185,15 @@ const PharmaciensAdmin = () => {
               <table className="data-table">
                 <thead>
                   <tr>
+                    <th>Photo</th>
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>N° d&apos;ordre</th>
                     <th>Nationalité</th>
                     <th>Section</th>
+                    <th>Rôle</th>
+                    <th>Thèse</th>
                     <th>Cotisations à jour</th>
-                    <th>Date retard cotisations</th>
                     <th>Actif</th>
                     <th>Actions</th>
                   </tr>
@@ -182,30 +201,43 @@ const PharmaciensAdmin = () => {
                 <tbody>
                   {pharmaciens.length === 0 ? (
                     <tr>
-                      <td colSpan={9} style={{ textAlign: 'center', padding: '2rem' }}>
+                      <td colSpan={11} style={{ textAlign: 'center', padding: '2rem' }}>
                         Aucun pharmacien enregistré
                       </td>
                     </tr>
                   ) : (
                     pharmaciens.map((pharmacien) => (
                       <tr key={pharmacien._id}>
+                        <td>
+                          {pharmacien.photo ? (
+                            <img
+                              src={pharmacien.photo}
+                              alt={`${pharmacien.prenom} ${pharmacien.nom}`}
+                              style={{
+                                width: '50px',
+                                height: '50px',
+                                borderRadius: '50%',
+                                objectFit: 'cover'
+                              }}
+                            />
+                          ) : (
+                            <span style={{ color: '#999' }}>—</span>
+                          )}
+                        </td>
                         <td>{pharmacien.nom || '—'}</td>
                         <td>{pharmacien.prenom || '—'}</td>
                         <td>{pharmacien.numeroOrdre || '—'}</td>
                         <td>{pharmacien.nationalite || '—'}</td>
                         <td>{pharmacien.section || <span style={{ color: '#999' }}>—</span>}</td>
+                        <td>{pharmacien.role || <span style={{ color: '#999' }}>—</span>}</td>
+                        <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {pharmacien.these || <span style={{ color: '#999' }}>—</span>}
+                        </td>
                         <td>
                           {pharmacien.cotisationsAJour ? (
                             <span style={{ color: '#27ae60' }}>✅ Oui</span>
                           ) : (
                             <span style={{ color: '#e74c3c' }}>❌ Non</span>
-                          )}
-                        </td>
-                        <td>
-                          {pharmacien.dateRetardCotisations ? (
-                            new Date(pharmacien.dateRetardCotisations).toLocaleDateString('fr-FR')
-                          ) : (
-                            <span style={{ color: '#999' }}>—</span>
                           )}
                         </td>
                         <td>
@@ -216,18 +248,28 @@ const PharmaciensAdmin = () => {
                           )}
                         </td>
                         <td>
-                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <button
+                              onClick={() => {
+                                setViewingItem(pharmacien);
+                                setShowViewModal(true);
+                              }}
+                              className="btn-primary"
+                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
+                            >
+                              👁️ Voir
+                            </button>
                             <button
                               onClick={() => handleEdit(pharmacien)}
                               className="btn-edit"
-                              style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
                             >
                               ✏️ Modifier
                             </button>
                             <button
                               onClick={() => pharmacien._id && handleDelete(pharmacien._id)}
                               className="btn-delete"
-                              style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
                             >
                               🗑️ Supprimer
                             </button>
@@ -348,6 +390,42 @@ const PharmaciensAdmin = () => {
                     <option value="false">❌ Inactif</option>
                   </select>
                 </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    Photo (URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.photo || ''}
+                    onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
+                    placeholder="https://..."
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    Rôle
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.role || ''}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    placeholder="Ex: Pharmacien titulaire, Biologiste médical..."
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    Thèse
+                  </label>
+                  <textarea
+                    value={formData.these || ''}
+                    onChange={(e) => setFormData({ ...formData, these: e.target.value })}
+                    placeholder="Titre de la thèse..."
+                    rows={3}
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px', resize: 'vertical' }}
+                  />
+                </div>
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
@@ -360,6 +438,156 @@ const PharmaciensAdmin = () => {
               </div>
             </form>
           </section>
+        )}
+
+        {/* Modal de visualisation */}
+        {showViewModal && viewingItem && (
+          <div 
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000
+            }}
+            onClick={() => setShowViewModal(false)}
+          >
+            <div 
+              style={{
+                backgroundColor: 'white',
+                padding: '2rem',
+                borderRadius: '8px',
+                maxWidth: '600px',
+                width: '90%',
+                maxHeight: '90vh',
+                overflow: 'auto'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ margin: 0 }}>👁️ Détails du pharmacien</h2>
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '1.5rem',
+                    cursor: 'pointer',
+                    padding: '0.5rem'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Nom:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.nom || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Prénom:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.prenom || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>N° d&apos;ordre:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.numeroOrdre || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Nationalité:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.nationalite || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Section:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                    {viewingItem.section || <span style={{ color: '#999' }}>— Non assignée</span>}
+                  </p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Cotisations à jour:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                    {viewingItem.cotisationsAJour ? (
+                      <span style={{ color: '#27ae60' }}>✅ Oui</span>
+                    ) : (
+                      <span style={{ color: '#e74c3c' }}>❌ Non</span>
+                    )}
+                  </p>
+                </div>
+                {!viewingItem.cotisationsAJour && viewingItem.dateRetardCotisations && (
+                  <div>
+                    <strong style={{ fontSize: '1.1rem' }}>Date retard cotisations:</strong>
+                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                      {new Date(viewingItem.dateRetardCotisations).toLocaleDateString('fr-FR')}
+                    </p>
+                  </div>
+                )}
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Statut:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                    {viewingItem.isActive ? (
+                      <span style={{ color: '#27ae60' }}>✅ Actif</span>
+                    ) : (
+                      <span style={{ color: '#999' }}>❌ Inactif</span>
+                    )}
+                  </p>
+                </div>
+                {viewingItem.photo && (
+                  <div>
+                    <strong style={{ fontSize: '1.1rem' }}>Photo:</strong>
+                    <div style={{ margin: '0.5rem 0' }}>
+                      <img
+                        src={viewingItem.photo}
+                        alt={`${viewingItem.prenom} ${viewingItem.nom}`}
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                          borderRadius: '50%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+                {viewingItem.role && (
+                  <div>
+                    <strong style={{ fontSize: '1.1rem' }}>Rôle:</strong>
+                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.role}</p>
+                  </div>
+                )}
+                {viewingItem.these && (
+                  <div>
+                    <strong style={{ fontSize: '1.1rem' }}>Thèse:</strong>
+                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.these}</p>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
+                <button
+                  onClick={() => {
+                    setShowViewModal(false);
+                    handleEdit(viewingItem);
+                  }}
+                  className="btn-edit"
+                  style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}
+                >
+                  ✏️ Modifier
+                </button>
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  className="btn-secondary"
+                  style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>

@@ -1,7 +1,72 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 import './SectionD.css';
 
+interface Pharmacien {
+  _id?: string;
+  nom: string;
+  prenom: string;
+  section?: string;
+  photo?: string;
+  role?: string;
+  these?: string;
+}
+
+const mockPharmaciens: Pharmacien[] = [
+  {
+    _id: 'mock1',
+    nom: 'Garcia',
+    prenom: 'Carlos',
+    section: 'D',
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+    role: 'Fabricant',
+    these: 'Thèse sur la fabrication pharmaceutique'
+  },
+  {
+    _id: 'mock2',
+    nom: 'Rodriguez',
+    prenom: 'Maria',
+    section: 'D',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
+    role: 'Grossiste',
+    these: 'Thèse sur la distribution pharmaceutique'
+  }
+];
+
 const SectionD = () => {
+  const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const loadPharmaciens = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('pharmaciens');
+        if (Array.isArray(data)) {
+          const sectionD = data.filter((p: any) => p.section === 'D' && p.isActive !== false);
+          if (sectionD.length > 0) {
+            setPharmaciens(sectionD);
+          } else {
+            setPharmaciens(mockPharmaciens);
+          }
+        } else {
+          setPharmaciens(mockPharmaciens);
+        }
+      } catch (error) {
+        console.error('Erreur chargement pharmaciens:', error);
+        setPharmaciens(mockPharmaciens);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPharmaciens();
+  }, []);
+
+  const filteredPharmaciens = pharmaciens.filter(p =>
+    `${p.nom} ${p.prenom}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="membres-page">
       <section className="membres-hero section-d-hero">
@@ -13,49 +78,90 @@ const SectionD = () => {
             </h1>
             <p className="hero-description">
               Pharmaciens fabricants, grossistes et répartiteurs.
-              Maillon essentiel de la chaîne d'approvisionnement pharmaceutique.
             </p>
-            <div className="hero-highlights">
-              <span className="highlight-item">🏭 Fabrication</span>
-              <span className="highlight-item">📦 Distribution</span>
-              <span className="highlight-item">🔗 Chaîne logistique</span>
-            </div>
           </div>
-
           <div className="hero-stats">
             <div className="stat-card">
-              <div className="stat-number">8</div>
-              <div className="stat-label">Entreprises</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">95%</div>
-              <div className="stat-label">Couverture</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">500+</div>
-              <div className="stat-label">Médicaments</div>
+              <div className="stat-number">{pharmaciens.length}</div>
+              <div className="stat-label">Membres</div>
             </div>
           </div>
-        </div>
-
-        <div className="hero-bg-pattern">
-          <div className="pattern-shape shape-1"></div>
-          <div className="pattern-shape shape-2"></div>
-          <div className="pattern-shape shape-3"></div>
         </div>
       </section>
 
+      <div className="membres-filters">
+        <div className="filters-container">
+          <div className="search-section">
+            <input
+              type="text"
+              placeholder="Rechercher par nom ou prénom..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+              style={{ fontSize: '1.1rem', padding: '0.75rem' }}
+            />
+          </div>
+        </div>
+      </div>
+
       <section className="section-content">
         <div className="section-container">
-          <div className="coming-soon">
-            <div className="coming-soon-icon">🏭</div>
-            <h2>Section D - Fabricants & Grossistes</h2>
-            <p>Page en cours de développement</p>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: '45%' }}></div>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>
+          ) : filteredPharmaciens.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>Aucun pharmacien trouvé</div>
+          ) : (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: '1.5rem',
+              padding: '2rem 0'
+            }}>
+              {filteredPharmaciens.map((pharmacien) => (
+                <div
+                  key={pharmacien._id}
+                  style={{
+                    backgroundColor: 'white',
+                    borderRadius: '12px',
+                    padding: '1.5rem',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    transition: 'transform 0.2s',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                >
+                  <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+                    <img
+                      src={pharmacien.photo || 'https://via.placeholder.com/150'}
+                      alt={`${pharmacien.prenom} ${pharmacien.nom}`}
+                      style={{
+                        width: '120px',
+                        height: '120px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '3px solid #9b59b6',
+                        marginBottom: '0.5rem'
+                      }}
+                    />
+                  </div>
+                  <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
+                    Dr. {pharmacien.prenom} {pharmacien.nom}
+                  </h3>
+                  {pharmacien.role && (
+                    <p style={{ textAlign: 'center', color: '#666', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                      {pharmacien.role}
+                    </p>
+                  )}
+                  {pharmacien.these && (
+                    <p style={{ textAlign: 'center', color: '#999', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                      {pharmacien.these}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
-            <p className="progress-text">45% terminé</p>
-          </div>
+          )}
         </div>
       </section>
     </div>
@@ -63,4 +169,3 @@ const SectionD = () => {
 };
 
 export default SectionD;
-

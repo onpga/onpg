@@ -18,14 +18,6 @@ interface Valeur {
   icon: string;
 }
 
-interface Stat {
-  id: string;
-  value: string;
-  label: string;
-  icon: string;
-  color: string;
-}
-
 // Données fictives
 const missions: Mission[] = [
   {
@@ -85,37 +77,6 @@ const valeurs: Valeur[] = [
   }
 ];
 
-const stats: Stat[] = [
-  {
-    id: '1',
-    value: '45+',
-    label: 'Années d\'existence',
-    icon: '📅',
-    color: '#00A651'
-  },
-  {
-    id: '2',
-    value: '1200+',
-    label: 'Pharmaciens inscrits',
-    icon: '👥',
-    color: '#008F45'
-  },
-  {
-    id: '3',
-    value: '300+',
-    label: 'Officines actives',
-    icon: '🏥',
-    color: '#2ECC71'
-  },
-  {
-    id: '4',
-    value: '98.5%',
-    label: 'Satisfaction patients',
-    icon: '⭐',
-    color: '#27AE60'
-  }
-];
-
 const APropos = () => {
   const [activeMission, setActiveMission] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -158,25 +119,7 @@ const APropos = () => {
             </div>
           </div>
 
-          {/* Stats Cards animées */}
-          <div className="hero-stats">
-            {stats.map((stat, index) => (
-              <div
-                key={stat.id}
-                className={`stat-card ${isVisible ? 'animate' : ''}`}
-                style={{
-                  animationDelay: `${0.2 + index * 0.1}s`,
-                  borderColor: stat.color
-                }}
-              >
-                <div className="stat-icon" style={{ color: stat.color }}>
-                  {stat.icon}
-                </div>
-                <div className="stat-value">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
-            ))}
-          </div>
+          {/* Bloc stats fictives supprimé pour éviter de fausses informations */}
         </div>
 
         {/* Background Pattern */}
@@ -187,13 +130,13 @@ const APropos = () => {
         </div>
       </section>
 
-      {/* Navigation interne */}
+      {/* Navigation interne (on utilise des ancres classiques pour forcer le scroll) */}
       <nav className="ordre-nav">
         <div className="nav-container">
-          <Link to="#mission" className="nav-link">Notre Mission</Link>
-          <Link to="#valeurs" className="nav-link">Nos Valeurs</Link>
-          <Link to="#histoire" className="nav-link">Notre Histoire</Link>
-          <Link to="#organisation" className="nav-link">Organisation</Link>
+          <a href="#mission" className="nav-link">Notre Mission</a>
+          <a href="#valeurs" className="nav-link">Nos Valeurs</a>
+          <a href="#histoire" className="nav-link">Notre Histoire</a>
+          <a href="#organisation" className="nav-link">Organisation</a>
         </div>
       </nav>
 

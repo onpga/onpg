@@ -36,32 +36,37 @@ const typeColors = {
 const Communiques = () => {
   const [communiques, setCommuniques] = useState<Communique[]>([]);
   const [filteredCommuniques, setFilteredCommuniques] = useState<Communique[]>([]);
-  
-  // Charger depuis MongoDB - 1 seul communiqué
+  // Charger depuis MongoDB - désormais plusieurs communiqués possibles
   useEffect(() => {
     const loadCommuniques = async () => {
       const data = await fetchResourceData('communiques');
-      if (data && !Array.isArray(data)) {
-        const communique: Communique = {
-          id: String(data._id || ''),
-          title: data.title,
-          reference: data.reference || '',
-          date: data.date || new Date().toISOString().split('T')[0],
-          type: data.type || 'information',
-          category: data.category || 'Général',
-          excerpt: data.excerpt || '',
-          content: data.content || '',
-          attachments: data.attachments,
-          urgent: data.urgent || false,
-          featured: data.featured || false
-        };
-        setCommuniques([communique]);
-        setFilteredCommuniques([communique]);
-      } else {
+
+      if (!data) {
         setCommuniques([]);
         setFilteredCommuniques([]);
+        return;
       }
+
+      const rawArray = Array.isArray(data) ? data : [data];
+
+      const mapped: Communique[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        title: item.title || '',
+        reference: item.reference || '',
+        date: item.date || new Date().toISOString().split('T')[0],
+        type: (item.type as Communique['type']) || 'information',
+        category: item.category || 'Général',
+        excerpt: item.excerpt || item.summary || '',
+        content: item.content || '',
+        attachments: item.attachments || [],
+        urgent: item.urgent || false,
+        featured: item.featured || false
+      }));
+
+      setCommuniques(mapped);
+      setFilteredCommuniques(mapped);
     };
+
     loadCommuniques();
   }, []);
   const [searchQuery, setSearchQuery] = useState('');

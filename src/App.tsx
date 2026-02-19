@@ -30,7 +30,6 @@ const LoiDetail = lazy(() => import('./modules/Ressources/LoiDetailPage'));
 
 // L'Ordre
 const AProposOrdre = lazy(() => import('./modules/Ordre/APropos'));
-const Instance = lazy(() => import('./modules/Ordre/Instance'));
 const Organigramme = lazy(() => import('./modules/Ordre/Organigramme'));
 const ConseilNational = lazy(() => import('./modules/Ordre/ConseilNational'));
 
@@ -177,7 +176,6 @@ function App() {
 
                     {/* L'Ordre */}
                     <Route path="/ordre/a-propos" element={<AProposOrdre />} />
-                    <Route path="/ordre/instance" element={<Instance />} />
                     <Route path="/ordre/organigramme" element={<Organigramme />} />
                     <Route path="/ordre/conseil-national" element={<ConseilNational />} />
 

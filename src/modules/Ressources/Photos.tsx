@@ -50,51 +50,76 @@ const Photos = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
-  // Charger depuis MongoDB - 1 seule photo
+  // Charger depuis MongoDB - plusieurs événements/collections de photos
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
       try {
         const data = await fetchResourceData('photos');
-        if (data && !Array.isArray(data)) {
-          const photo: Photo = {
-            id: String(data._id || ''),
-            title: data.title,
-            description: data.description || '',
-            image: data.image || '',
-            thumbnail: data.image || data.thumbnail || '',
-            album: data.album || 'Général',
-            date: data.date || new Date().toISOString().split('T')[0],
-            tags: data.tags || [],
-            category: data.category || 'Général',
-            photographer: data.photographer,
-            location: data.location,
-            downloads: data.downloads || 0,
-            likes: data.likes || 0,
-            featured: data.featured || false,
-            orientation: (data.orientation as 'portrait' | 'landscape' | 'square') || 'landscape',
-            colors: data.colors || []
-          };
-          setPhotos([photo]);
-          setFilteredPhotos([photo]);
-          
-          // Créer un album pour cette photo
-          const album: Album = {
-            id: photo.album.toLowerCase().replace(/\s+/g, '-'),
-            name: photo.album,
-            description: data.albumDescription || `Album ${photo.album}`,
-            coverImage: photo.image,
-            photoCount: 1,
-            featured: photo.featured,
-            category: photo.category,
-            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-          };
-          setAlbums([album]);
-        } else {
+
+        if (!data) {
           setPhotos([]);
           setFilteredPhotos([]);
           setAlbums([]);
+          return;
         }
+
+        const rawArray = Array.isArray(data) ? data : [data];
+
+        const mappedPhotos: Photo[] = [];
+        const mappedAlbums: Album[] = [];
+
+        rawArray.forEach((item: any, index: number) => {
+          const albumId = String(item._id || `album-${index}`);
+          const albumName = item.album || item.title || 'Événement ONPG';
+          const category = item.category || 'Événements';
+          const baseDate = item.date || new Date().toISOString().split('T')[0];
+
+          // On accepte soit un champ "images" (tableau), soit un seul "image"
+          const imageList: string[] = Array.isArray(item.images)
+            ? item.images.filter((u: string) => !!u)
+            : [item.image || item.thumbnail].filter((u: string) => !!u);
+
+          if (imageList.length === 0) {
+            return;
+          }
+
+          imageList.forEach((url: string, idx: number) => {
+            mappedPhotos.push({
+              id: `${albumId}-${idx}`,
+              title: (item.photoTitles && item.photoTitles[idx]) || `${albumName} #${idx + 1}`,
+              description: item.description || '',
+              image: url,
+              thumbnail: url,
+              album: albumId,
+              date: baseDate,
+              tags: item.tags || [],
+              photographer: item.photographer,
+              location: item.location,
+              downloads: item.downloads || 0,
+              likes: item.likes || 0,
+              featured: item.featured || false,
+              category,
+              orientation: (item.orientation as 'portrait' | 'landscape' | 'square') || 'landscape',
+              colors: item.colors || []
+            });
+          });
+
+          mappedAlbums.push({
+            id: albumId,
+            name: albumName,
+            description: item.albumDescription || item.description || `Événement ${albumName}`,
+            coverImage: imageList[0],
+            photoCount: imageList.length,
+            featured: item.featured || false,
+            category,
+            gradient: item.gradient || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          });
+        });
+
+        setPhotos(mappedPhotos);
+        setFilteredPhotos(mappedPhotos);
+        setAlbums(mappedAlbums);
       } catch (error) {
         console.error('Erreur chargement photos:', error);
         setPhotos([]);

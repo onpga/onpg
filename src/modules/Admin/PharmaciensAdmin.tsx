@@ -9,6 +9,9 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 interface Pharmacien {
   _id?: string;
   nom: string;
@@ -27,10 +30,13 @@ interface Pharmacien {
 const PharmaciensAdmin = () => {
   const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [editingItem, setEditingItem] = useState<Pharmacien | null>(null);
   const [viewingItem, setViewingItem] = useState<Pharmacien | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [formData, setFormData] = useState<Pharmacien>({
     nom: '',
     prenom: '',
@@ -66,6 +72,11 @@ const PharmaciensAdmin = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const filteredPharmaciens = pharmaciens.filter((p) => {
+    const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.numeroOrdre || ''}`.toLowerCase();
+    return haystack.includes(searchQuery.toLowerCase());
+  });
 
   const handleEdit = (pharmacien: Pharmacien) => {
     setEditingItem(pharmacien);
@@ -165,6 +176,46 @@ const PharmaciensAdmin = () => {
     });
   };
 
+  const handlePhotoUpload = async (file: File) => {
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      alert(
+        "Configuration d'upload image manquante. Veuillez définir VITE_CLOUDINARY_CLOUD_NAME et VITE_CLOUDINARY_UPLOAD_PRESET."
+      );
+      return;
+    }
+
+    setUploadingPhoto(true);
+    setUploadError(null);
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formDataUpload
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.secure_url) {
+        setFormData((prev) => ({ ...prev, photo: data.secure_url }));
+      } else {
+        console.error('Erreur upload Cloudinary:', data);
+        setUploadError("Erreur lors de l'envoi de la photo");
+      }
+    } catch (err) {
+      console.error('Erreur upload Cloudinary:', err);
+      setUploadError("Erreur lors de l'envoi de la photo");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   return (
     <div className="dashboard-page">
       <AdminSidebar currentPage="pharmaciens" />
@@ -175,11 +226,47 @@ const PharmaciensAdmin = () => {
         </div>
 
         <section className="dashboard-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2>Liste des pharmaciens</h2>
-            <button onClick={handleNew} className="btn-primary" style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}>
-              ➕ Nouveau pharmacien
-            </button>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1.5rem',
+              gap: '1.5rem',
+              flexWrap: 'wrap'
+            }}
+          >
+            <div>
+              <h2>Liste des pharmaciens</h2>
+              <p style={{ margin: '0.25rem 0', color: '#666', fontSize: '0.95rem' }}>
+                {pharmaciens.length} pharmacien(s) au total
+                {searchQuery.trim()
+                  ? ` • ${filteredPharmaciens.length} résultat(s) pour "${searchQuery}"`
+                  : ''}
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="Rechercher par nom, prénom ou n° d'ordre..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  minWidth: '260px',
+                  padding: '0.7rem 0.9rem',
+                  fontSize: '1rem',
+                  borderRadius: '999px',
+                  border: '2px solid #ddd'
+                }}
+              />
+              <button
+                onClick={handleNew}
+                className="btn-primary"
+                style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}
+              >
+                ➕ Nouveau pharmacien
+              </button>
+            </div>
           </div>
 
           {loading ? (
@@ -206,7 +293,7 @@ const PharmaciensAdmin = () => {
                       </td>
                     </tr>
                   ) : (
-                    pharmaciens.map((pharmacien) => (
+                    (filteredPharmaciens.length === 0 ? pharmaciens : filteredPharmaciens).map((pharmacien) => (
                       <tr key={pharmacien._id}>
                         <td>
                           {pharmacien.photo ? (
@@ -382,16 +469,94 @@ const PharmaciensAdmin = () => {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Photo (URL)
+                  <label
+                    style={{
+                      display: 'block',
+                      marginBottom: '0.5rem',
+                      fontSize: '1.1rem',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Photo du pharmacien
                   </label>
-                  <input
-                    type="text"
-                    value={formData.photo || ''}
-                    onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
-                    placeholder="https://..."
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
-                  />
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.75rem'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div
+                        style={{
+                          width: '64px',
+                          height: '64px',
+                          borderRadius: '50%',
+                          overflow: 'hidden',
+                          border: '2px solid #ddd',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor: '#f5f5f5'
+                        }}
+                      >
+                        {formData.photo ? (
+                          <img
+                            src={formData.photo}
+                            alt="Aperçu"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                        ) : (
+                          <span style={{ fontSize: '1.5rem', color: '#aaa' }}>👤</span>
+                        )}
+                      </div>
+                      {formData.photo && (
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem' }}
+                          onClick={() => setFormData({ ...formData, photo: '' })}
+                        >
+                          Supprimer la photo
+                        </button>
+                      )}
+                    </div>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handlePhotoUpload(file);
+                        }
+                      }}
+                      style={{ fontSize: '0.95rem' }}
+                    />
+                    {uploadingPhoto && (
+                      <span style={{ fontSize: '0.9rem', color: '#666' }}>Envoi de la photo...</span>
+                    )}
+                    {uploadError && (
+                      <span style={{ fontSize: '0.9rem', color: '#e74c3c' }}>{uploadError}</span>
+                    )}
+                    <input
+                      type="text"
+                      value={formData.photo || ''}
+                      onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
+                      placeholder="Ou collez une URL d'image (https://...)"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        fontSize: '1rem',
+                        border: '2px solid #ddd',
+                        borderRadius: '4px'
+                      }}
+                    />
+                  </div>
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>

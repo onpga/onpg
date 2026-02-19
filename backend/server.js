@@ -17,9 +17,9 @@ const MONGODB_URI = 'mongodb://mongo:PUnGGIpyAbMtWoQohyXGFpMjVkAWTYXJ@trolley.pr
 const DB_NAME = 'onpg';
 
 // Middleware CORS - Autoriser toutes les origines (production et développement)
+// On autorise explicitement toutes les origines pour éviter les blocages entre www.onpg.ga et Railway
 app.use(cors({
-  origin: true, // Autoriser toutes les origines
-  credentials: true,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));

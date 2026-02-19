@@ -39,6 +39,12 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         <Link to="/admin/pharmaciens" className={`nav-item ${currentPage === 'pharmaciens' ? 'active' : ''}`}>
           👨‍⚕️ Pharmaciens
         </Link>
+        <Link to="/admin/formations" className={`nav-item ${currentPage === 'formations' ? 'active' : ''}`}>
+          🎓 Formations
+        </Link>
+        <Link to="/admin/deontologie" className={`nav-item ${currentPage === 'deontologie' ? 'active' : ''}`}>
+          ⚖️ Déontologie
+        </Link>
         <Link to="/admin/analytics" className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}>
           📈 Analytics
         </Link>

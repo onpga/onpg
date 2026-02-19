@@ -83,6 +83,8 @@ const Dashboard = lazy(() => import('./modules/Admin/Dashboard'));
 const Analytics = lazy(() => import('./modules/Admin/Analytics'));
 const PharmaciesAdmin = lazy(() => import('./modules/Admin/PharmaciesAdmin'));
 const PharmaciensAdmin = lazy(() => import('./modules/Admin/PharmaciensAdmin'));
+const FormationsAdmin = lazy(() => import('./modules/Admin/FormationsAdmin'));
+const DeontologieAdmin = lazy(() => import('./modules/Admin/DeontologieAdmin'));
 const Simulations = lazy(() => import('./modules/Admin/Simulations'));
 const Articles = lazy(() => import('./modules/Admin/Articles'));
 const ArticleForm = lazy(() => import('./modules/Admin/ArticleForm'));
@@ -122,6 +124,8 @@ function App() {
             <Route path="/admin/analytics" element={<Analytics />} />
             <Route path="/admin/pharmacies" element={<PharmaciesAdmin />} />
             <Route path="/admin/pharmaciens" element={<PharmaciensAdmin />} />
+            <Route path="/admin/formations" element={<FormationsAdmin />} />
+            <Route path="/admin/deontologie" element={<DeontologieAdmin />} />
             <Route path="/admin/simulations" element={<Simulations />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/articles/new" element={<ArticleForm />} />

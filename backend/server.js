@@ -45,7 +45,8 @@ MongoClient.connect(MONGODB_URI)
 // Collections disponibles (chaque page a sa propre collection)
 const RESOURCE_COLLECTIONS = [
   'actualites', 'articles', 'communiques', 'decisions', 
-  'decrets', 'lois', 'commissions', 'theses', 'photos', 'videos', 'pharmaciens'
+  'decrets', 'lois', 'commissions', 'theses', 'photos', 'videos', 'pharmaciens',
+  'formations', 'deontologie'
 ];
 
 // Authentification admin par token (simple)

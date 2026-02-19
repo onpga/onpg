@@ -336,7 +336,7 @@ const AccueilONPG = () => {
 
                     {/* Informations Institutionnelles */}
                     <div className="president-info-professional">
-                      <h3 className="president-name-professional">Dr. [Nom du Président]</h3>
+                      <h3 className="president-name-professional">Dr Patience Asseko NTOGONO OKE</h3>
                       <p className="president-position-professional">
                         Président de l'Ordre National<br />
                         de Pharmacie du Gabon
@@ -740,7 +740,7 @@ Et vive le Gabon !`;
       <div className="discourse-footer">
         <div className="discourse-signature">
           <span className="signature-line"></span>
-          <span className="signature-text">Dr. Président de l'ONPG</span>
+          <span className="signature-text">Dr Patience Asseko NTOGONO OKE<br />Présidente de l'ONPG</span>
         </div>
       </div>
     </div>

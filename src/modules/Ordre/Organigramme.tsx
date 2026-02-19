@@ -72,7 +72,7 @@ const Organigramme = () => {
               minWidth: '280px'
             }}>
               <h3 style={{ margin: 0, fontSize: '1.3rem', fontWeight: 'bold' }}>👑 Présidente</h3>
-              <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem' }}>Dr. Marie Dupont</p>
+              <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem' }}>Dr Patience Asseko NTOGONO OKE</p>
             </div>
 
             {/* Flèche vers le bas */}

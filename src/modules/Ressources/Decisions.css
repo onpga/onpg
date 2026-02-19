@@ -1,4 +1,4 @@
-/* Decisions Page - CSS Indépendant */
+/* Decisions Page - CSS Indépendant - AMÉLIORÉ */
 .decisions-page {
   min-height: 100vh;
   background: #f8f9fa;
@@ -17,24 +17,46 @@
   margin-bottom: 1rem;
 }
 
+.decisions-hero p {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
 .decisions-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
-  padding: 2rem 0;
+  gap: 2.5rem;
+  padding: 3rem 0;
 }
 
 .decision-card {
   background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transition: all 0.3s;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .decision-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.decision-card h2,
+.decision-card h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  line-height: 1.3;
+}
+
+.decision-card p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(0, 0, 0, 0.8);
 }
 
 @media (max-width: 768px) {
@@ -44,5 +66,16 @@
   
   .decisions-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 0;
+  }
+
+  .decision-card {
+    padding: 1.5rem;
+  }
+
+  .decision-card h2,
+  .decision-card h3 {
+    font-size: 1.2rem;
   }
 }

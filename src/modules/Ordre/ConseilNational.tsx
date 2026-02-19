@@ -11,7 +11,7 @@ interface ConseilMember {
 const conseilMembers: ConseilMember[] = [
   {
     id: '1',
-    name: 'Dr. Marie Dupont',
+    name: 'Dr Patience Asseko NTOGONO OKE',
     photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
     role: 'Présidente'
   },

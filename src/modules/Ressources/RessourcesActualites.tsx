@@ -76,7 +76,7 @@ const RessourcesActualites = () => {
       tags: ['décret', 'dispensation', 'médicaments', 'sécurité'],
       featured: true,
       author: {
-        name: 'Dr. Marie Dupont',
+        name: 'Dr Patience Asseko NTOGONO OKE',
         role: 'Présidente de l\'ONPG'
       }
     },

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import './Ressources.css';
 import './Lois.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 

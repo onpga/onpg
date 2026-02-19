@@ -5,7 +5,7 @@
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? 'https://www.onpg.ga/api' : 'http://localhost:3001/api');
+  (import.meta.env.PROD ? 'https://onpg-production.up.railway.app/api' : 'http://localhost:3001/api');
 
 export interface ResourceData {
   _id?: string;

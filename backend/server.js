@@ -326,7 +326,7 @@ app.get('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
 // POST créer une nouvelle pharmacie
 app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) => {
   try {
-    const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires } = req.body;
+    const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires, garde } = req.body;
     
     if (!nom || !ville || !adresse) {
       return res.status(400).json({ success: false, error: 'Nom, ville et adresse requis' });
@@ -347,6 +347,7 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
       telephone: telephone || '',
       email: email || '',
       horaires: horaires || {},
+      garde: garde === true || garde === 'true',
       pharmacienId: req.pharmacienId,
       messages: [],
       isActive: true,
@@ -364,7 +365,7 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
 // PUT modifier une pharmacie
 app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, res) => {
   try {
-    const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires } = req.body;
+    const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires, garde } = req.body;
     
     // Vérifier que la pharmacie appartient au pharmacien
     const existing = await db.collection('pharmacies').findOne({
@@ -393,6 +394,7 @@ app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
       ...(telephone !== undefined && { telephone }),
       ...(email !== undefined && { email }),
       ...(horaires && { horaires }),
+      ...(garde !== undefined && { garde: garde === true || garde === 'true' }),
       updatedAt: new Date()
     };
 
@@ -502,7 +504,7 @@ app.delete('/api/pharmacien/pharmacies/:id/messages/:messageId', authenticatePha
 // GET toutes les pharmacies publiques (avec filtres et géolocalisation)
 app.get('/api/public/pharmacies', async (req, res) => {
   try {
-    const { ville, quartier, latitude, longitude, search } = req.query;
+    const { ville, quartier, latitude, longitude, search, garde } = req.query;
     
     let query = { isActive: true };
     
@@ -512,6 +514,10 @@ app.get('/api/public/pharmacies', async (req, res) => {
     
     if (quartier) {
       query.quartier = new RegExp(quartier, 'i');
+    }
+    
+    if (garde === 'true') {
+      query.garde = true;
     }
     
     if (search) {

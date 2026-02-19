@@ -51,7 +51,13 @@ const PharmaciesAdmin = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const pharmaciesData = await pharmaciesRes.json();
-      setPharmacies(pharmaciesData.data || []);
+      console.log('Pharmacies chargées:', pharmaciesData);
+      if (pharmaciesData.success) {
+        setPharmacies(pharmaciesData.data || []);
+      } else {
+        console.error('Erreur API pharmacies:', pharmaciesData);
+        setPharmacies([]);
+      }
 
       // Charger pharmaciens
       const pharmaciensRes = await fetch(`${API_URL}/admin/pharmaciens`, {

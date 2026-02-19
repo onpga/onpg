@@ -23,7 +23,16 @@ interface Pharmacie {
   longitude?: number;
   telephone: string;
   email: string;
-  horaires: any;
+  horaires: {
+    lundi?: string;
+    mardi?: string;
+    mercredi?: string;
+    jeudi?: string;
+    vendredi?: string;
+    samedi?: string;
+    dimanche?: string;
+  };
+  garde?: boolean;
   messages: Message[];
   createdAt: string;
 }
@@ -54,7 +63,16 @@ const PharmaciesPharmacien = () => {
     longitude: '',
     telephone: '',
     email: '',
-    horaires: {}
+    horaires: {
+      lundi: '',
+      mardi: '',
+      mercredi: '',
+      jeudi: '',
+      vendredi: '',
+      samedi: '',
+      dimanche: ''
+    },
+    garde: false
   });
   const [messageForm, setMessageForm] = useState({
     pharmacieId: '',
@@ -178,7 +196,9 @@ const PharmaciesPharmacien = () => {
         setEditingPharmacie(null);
         setFormData({
           nom: '', ville: '', quartier: '', adresse: '', photo: '',
-          latitude: '', longitude: '', telephone: '', email: '', horaires: {}
+          latitude: '', longitude: '', telephone: '', email: '', 
+          horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+          garde: false
         });
       }
     } catch (error) {
@@ -328,10 +348,37 @@ const PharmaciesPharmacien = () => {
                       style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }}
                     />
                   )}
-                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>{pharmacie.nom}</h3>
+                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>
+                    {pharmacie.nom}
+                    {pharmacie.garde && (
+                      <span style={{ 
+                        marginLeft: '0.5rem', 
+                        background: '#e53e3e', 
+                        color: 'white', 
+                        padding: '0.25rem 0.75rem', 
+                        borderRadius: '12px', 
+                        fontSize: '0.75rem',
+                        fontWeight: '700'
+                      }}>
+                        🚨 DE GARDE
+                      </span>
+                    )}
+                  </h3>
                   <p><strong>📍</strong> {pharmacie.adresse}, {pharmacie.quartier}, {pharmacie.ville}</p>
                   {pharmacie.telephone && <p><strong>📞</strong> {pharmacie.telephone}</p>}
                   {pharmacie.email && <p><strong>✉️</strong> {pharmacie.email}</p>}
+                  {pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires[k as keyof typeof pharmacie.horaires]) && (
+                    <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#f8f9fa', borderRadius: '8px' }}>
+                      <strong style={{ display: 'block', marginBottom: '0.5rem' }}>🕐 Horaires :</strong>
+                      {pharmacie.horaires.lundi && <div>Lun: {pharmacie.horaires.lundi}</div>}
+                      {pharmacie.horaires.mardi && <div>Mar: {pharmacie.horaires.mardi}</div>}
+                      {pharmacie.horaires.mercredi && <div>Mer: {pharmacie.horaires.mercredi}</div>}
+                      {pharmacie.horaires.jeudi && <div>Jeu: {pharmacie.horaires.jeudi}</div>}
+                      {pharmacie.horaires.vendredi && <div>Ven: {pharmacie.horaires.vendredi}</div>}
+                      {pharmacie.horaires.samedi && <div>Sam: {pharmacie.horaires.samedi}</div>}
+                      {pharmacie.horaires.dimanche && <div>Dim: {pharmacie.horaires.dimanche}</div>}
+                    </div>
+                  )}
                   
                   {pharmacie.messages && pharmacie.messages.length > 0 && (
                     <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
@@ -374,7 +421,8 @@ const PharmaciesPharmacien = () => {
                           longitude: pharmacie.longitude?.toString() || '',
                           telephone: pharmacie.telephone,
                           email: pharmacie.email,
-                          horaires: pharmacie.horaires
+                          horaires: pharmacie.horaires || { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                          garde: pharmacie.garde || false
                         });
                         setShowForm(true);
                       }}
@@ -410,22 +458,34 @@ const PharmaciesPharmacien = () => {
             </div>
           )}
 
-          {/* Formulaire pharmacie */}
+          {/* Formulaire pharmacie - INLINE sur la même page */}
           {showForm && (
-            <div className="modal-overlay" onClick={() => {
-              setShowForm(false);
-              setEditingPharmacie(null);
+            <div style={{
+              background: 'white',
+              padding: '2rem',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+              marginTop: '2rem',
+              marginBottom: '2rem'
             }}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '12px',
-                maxWidth: '600px',
-                width: '90%',
-                maxHeight: '90vh',
-                overflowY: 'auto'
-              }}>
-                <h2>{editingPharmacie ? 'Modifier' : 'Nouvelle'} Pharmacie</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: '1.8rem', color: '#00A651' }}>{editingPharmacie ? '✏️ Modifier' : '➕ Nouvelle'} Pharmacie</h2>
+                <button
+                  onClick={() => {
+                    setShowForm(false);
+                    setEditingPharmacie(null);
+                    setFormData({
+                      nom: '', ville: '', quartier: '', adresse: '', photo: '',
+                      latitude: '', longitude: '', telephone: '', email: '', 
+                      horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                      garde: false
+                    });
+                  }}
+                  style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}
+                >
+                  ✕ Fermer
+                </button>
+              </div>
                 <form onSubmit={handleSubmit}>
                   <div className="form-group">
                     <label>Nom de la pharmacie *</label>
@@ -538,38 +598,98 @@ const PharmaciesPharmacien = () => {
                     />
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}>
-                      {editingPharmacie ? 'Modifier' : 'Créer'}
+                  {/* Horaires */}
+                  <div className="form-group" style={{ marginTop: '1.5rem' }}>
+                    <label style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', display: 'block' }}>🕐 Horaires d'ouverture</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+                      {['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'].map((jour) => (
+                        <div key={jour}>
+                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem', fontWeight: '500', textTransform: 'capitalize' }}>
+                            {jour}
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Ex: 8h-20h"
+                            value={formData.horaires[jour as keyof typeof formData.horaires] || ''}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              horaires: { ...formData.horaires, [jour]: e.target.value }
+                            })}
+                            style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #e0e0e0', borderRadius: '8px' }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Garde */}
+                  <div className="form-group" style={{ marginTop: '1.5rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '1.1rem' }}>
+                      <input
+                        type="checkbox"
+                        checked={formData.garde}
+                        onChange={(e) => setFormData({ ...formData, garde: e.target.checked })}
+                        style={{ width: '20px', height: '20px' }}
+                      />
+                      <span>🚨 Pharmacie de garde</span>
+                    </label>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem', fontWeight: '600' }}>
+                      {editingPharmacie ? '💾 Modifier' : '✅ Créer'}
                     </button>
                     <button 
                       type="button"
                       onClick={() => {
                         setShowForm(false);
                         setEditingPharmacie(null);
+                        setFormData({
+                          nom: '', ville: '', quartier: '', adresse: '', photo: '',
+                          latitude: '', longitude: '', telephone: '', email: '', 
+                          horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                          garde: false
+                        });
                       }}
                       className="btn-secondary"
-                      style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                      style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem' }}
                     >
                       Annuler
                     </button>
                   </div>
                 </form>
-              </div>
             </div>
           )}
 
-          {/* Formulaire message */}
+          {/* Formulaire message - INLINE sur la même page */}
           {showMessageForm && (
-            <div className="modal-overlay" onClick={() => setShowMessageForm(false)}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{
-                background: 'white',
-                padding: '2rem',
-                borderRadius: '12px',
-                maxWidth: '500px',
-                width: '90%'
-              }}>
-                <h2>Ajouter un Message/Alerte</h2>
+            <div style={{
+              background: 'white',
+              padding: '2rem',
+              borderRadius: '16px',
+              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+              marginTop: '2rem',
+              marginBottom: '2rem'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: '1.8rem', color: '#00A651' }}>💬 Ajouter un Message/Alerte</h2>
+                <button
+                  onClick={() => {
+                    setShowMessageForm(false);
+                    setMessageForm({
+                      pharmacieId: '',
+                      type: 'visiteur',
+                      titre: '',
+                      contenu: '',
+                      visibleVisiteurs: true,
+                      visibleOrdre: false
+                    });
+                  }}
+                  style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}
+                >
+                  ✕ Fermer
+                </button>
+              </div>
                 <form onSubmit={handleAddMessage}>
                   <div className="form-group">
                     <label>Type *</label>
@@ -633,21 +753,30 @@ const PharmaciesPharmacien = () => {
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}>
-                      Ajouter
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem', fontWeight: '600' }}>
+                      ✅ Ajouter
                     </button>
                     <button 
                       type="button"
-                      onClick={() => setShowMessageForm(false)}
+                      onClick={() => {
+                        setShowMessageForm(false);
+                        setMessageForm({
+                          pharmacieId: '',
+                          type: 'visiteur',
+                          titre: '',
+                          contenu: '',
+                          visibleVisiteurs: true,
+                          visibleOrdre: false
+                        });
+                      }}
                       className="btn-secondary"
-                      style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                      style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem' }}
                     >
                       Annuler
                     </button>
                   </div>
                 </form>
-              </div>
             </div>
           )}
         </div>

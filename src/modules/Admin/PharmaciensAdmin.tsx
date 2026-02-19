@@ -190,18 +190,14 @@ const PharmaciensAdmin = () => {
                     <th>Prénom</th>
                     <th>N° d&apos;ordre</th>
                     <th>Nationalité</th>
-                    <th>Section</th>
-                    <th>Rôle</th>
-                    <th>Thèse</th>
                     <th>Cotisations à jour</th>
-                    <th>Actif</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pharmaciens.length === 0 ? (
                     <tr>
-                      <td colSpan={11} style={{ textAlign: 'center', padding: '2rem' }}>
+                      <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
                         Aucun pharmacien enregistré
                       </td>
                     </tr>
@@ -228,23 +224,11 @@ const PharmaciensAdmin = () => {
                         <td>{pharmacien.prenom || '—'}</td>
                         <td>{pharmacien.numeroOrdre || '—'}</td>
                         <td>{pharmacien.nationalite || '—'}</td>
-                        <td>{pharmacien.section || <span style={{ color: '#999' }}>—</span>}</td>
-                        <td>{pharmacien.role || <span style={{ color: '#999' }}>—</span>}</td>
-                        <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {pharmacien.these || <span style={{ color: '#999' }}>—</span>}
-                        </td>
                         <td>
                           {pharmacien.cotisationsAJour ? (
-                            <span style={{ color: '#27ae60' }}>✅ Oui</span>
-                          ) : (
-                            <span style={{ color: '#e74c3c' }}>❌ Non</span>
-                          )}
-                        </td>
-                        <td>
-                          {pharmacien.isActive ? (
                             <span style={{ color: '#27ae60' }}>✅</span>
                           ) : (
-                            <span style={{ color: '#999' }}>❌</span>
+                            <span style={{ color: '#e74c3c' }}>❌</span>
                           )}
                         </td>
                         <td>
@@ -255,23 +239,26 @@ const PharmaciensAdmin = () => {
                                 setShowViewModal(true);
                               }}
                               className="btn-primary"
-                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
+                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              aria-label="Voir le détail"
                             >
-                              👁️ Voir
+                              👁️
                             </button>
                             <button
                               onClick={() => handleEdit(pharmacien)}
                               className="btn-edit"
-                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
+                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              aria-label="Modifier"
                             >
-                              ✏️ Modifier
+                              ✏️
                             </button>
                             <button
                               onClick={() => pharmacien._id && handleDelete(pharmacien._id)}
                               className="btn-delete"
-                              style={{ fontSize: '0.9rem', padding: '0.4rem 0.8rem' }}
+                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              aria-label="Supprimer"
                             >
-                              🗑️ Supprimer
+                              🗑️
                             </button>
                           </div>
                         </td>

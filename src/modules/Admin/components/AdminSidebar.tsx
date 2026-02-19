@@ -21,8 +21,8 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-header">
-        <img src="/CIPS_logo_noir_HD_transparent.png" alt="CIPS" className="sidebar-logo" />
-        <h2>Admin CIPS</h2>
+        <img src="/onpg-logo.png" alt="ONPG" className="sidebar-logo" />
+        <h2>Espace admin ONPG</h2>
       </div>
 
       <nav className="sidebar-nav">

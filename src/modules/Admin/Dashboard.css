@@ -7,7 +7,7 @@
 /* Sidebar */
 .admin-sidebar {
   width: 260px;
-  background: linear-gradient(180deg, var(--cips-blue) 0%, #001a3d 100%);
+  background: linear-gradient(180deg, #00A651 0%, #006637 100%); /* Couleurs ONPG */
   color: white;
   display: flex;
   flex-direction: column;
@@ -70,9 +70,9 @@
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, var(--cips-orange) 0%, #e67a35 100%);
+  background: linear-gradient(135deg, #00A651 0%, #009245 100%); /* Accent ONPG */
   color: white;
-  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.4);
 }
 
 .sidebar-footer {
@@ -156,14 +156,14 @@
   padding: 2.5rem 2.5rem 2rem;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border-left: 6px solid var(--cips-orange);
+  border-left: 6px solid #00A651; /* Accent ONPG */
 }
 
 .dashboard-header h1 {
   font-family: var(--font-poppins);
   font-size: 2.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--cips-blue), #4a7bb7);
+  background: linear-gradient(135deg, #00A651, #006637); /* Titre aux couleurs ONPG */
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -270,13 +270,13 @@
 }
 
 .stat-card.blue::before { 
-  background: linear-gradient(90deg, #2196F3, #64B5F6);
+  background: linear-gradient(90deg, #00A651, #33C27D);
 }
 .stat-card.green::before { 
   background: linear-gradient(90deg, #4CAF50, #81C784);
 }
 .stat-card.orange::before { 
-  background: linear-gradient(90deg, var(--cips-orange), #ffb366);
+  background: linear-gradient(90deg, #00A651, #33C27D);
 }
 .stat-card.purple::before { 
   background: linear-gradient(90deg, #9C27B0, #BA68C8);
@@ -312,7 +312,7 @@
 }
 
 .stat-link {
-  color: var(--cips-blue);
+  color: #00A651;
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -320,7 +320,7 @@
 }
 
 .stat-link:hover {
-  color: var(--cips-orange);
+  color: #006637;
 }
 
 /* Quick Actions */
@@ -332,7 +332,7 @@
   font-family: var(--font-poppins);
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--cips-blue);
+  color: #00A651;
   margin-bottom: 2rem;
   position: relative;
   padding-bottom: 0.75rem;
@@ -345,7 +345,7 @@
   left: 0;
   width: 60px;
   height: 4px;
-  background: linear-gradient(90deg, var(--cips-orange), #ffb366);
+  background: linear-gradient(90deg, #00A651, #33C27D);
   border-radius: 2px;
 }
 
@@ -388,7 +388,7 @@
 .action-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
-  border-color: var(--cips-orange);
+  border-color: #00A651;
 }
 
 .action-icon {
@@ -404,7 +404,7 @@
   font-family: var(--font-poppins);
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--cips-blue);
+  color: #00A651;
   margin-bottom: 0.5rem;
 }
 
@@ -842,7 +842,7 @@
   font-family: var(--font-poppins);
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--cips-orange);
+  color: #00A651;
   line-height: 1;
   margin-bottom: 0.5rem;
 }

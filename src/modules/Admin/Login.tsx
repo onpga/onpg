@@ -53,9 +53,9 @@ const Login = () => {
         <div className="login-card">
           {/* Logo */}
           <div className="login-header">
-            <img src="/CIPS_logo_noir_HD_transparent.png" alt="CIPS Logo" className="login-logo" />
-            <h1>Panneau d'administration</h1>
-            <p>Connexion sécurisée</p>
+            <img src="/onpg-logo.png" alt="Logo ONPG" className="login-logo" />
+            <h1>Espace admin ONPG</h1>
+            <p>Connexion sécurisée à l&apos;Ordre National des Pharmaciens du Gabon</p>
           </div>
 
           {/* Formulaire */}

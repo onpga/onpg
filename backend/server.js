@@ -119,7 +119,7 @@ app.get('/api/public/:collection/:id', async (req, res) => {
   }
 });
 
-// Routes publiques pour récupérer les données d'une collection
+// Routes publiques pour récupérer TOUTES les données actives d'une collection
 app.get('/api/public/:collection', async (req, res) => {
   try {
     const { collection } = req.params;
@@ -128,21 +128,13 @@ app.get('/api/public/:collection', async (req, res) => {
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
-    
-    // Pour videos et pharmaciens, retourner toutes les données actives
-    // Pour les autres, retourner seulement la première (1 seule donnée)
-    if (collection === 'videos' || collection === 'pharmaciens') {
-      const data = await db.collection(collection)
-        .find({ isActive: true })
-        .sort({ order: 1, createdAt: -1 })
-        .toArray();
-      res.json({ success: true, data });
-    } else {
-      // Une seule donnée pour les autres collections
-      const data = await db.collection(collection)
-        .findOne({ isActive: true }, { sort: { order: 1, createdAt: -1 } });
-      res.json({ success: true, data: data || null });
-    }
+
+    const data = await db.collection(collection)
+      .find({ isActive: true })
+      .sort({ order: 1, createdAt: -1 })
+      .toArray();
+
+    res.json({ success: true, data });
   } catch (error) {
     console.error(`Erreur chargement ${req.params.collection}:`, error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });

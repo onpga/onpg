@@ -5,7 +5,9 @@ import './Dashboard.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api');
+  (import.meta.env.PROD
+    ? 'https://backendonpg-production.up.railway.app/api'
+    : 'http://localhost:3001/api');
 
 interface Pharmacien {
   _id?: string;

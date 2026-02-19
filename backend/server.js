@@ -4,7 +4,6 @@
 
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
-const cors = require('cors');
 const bcrypt = require('bcrypt');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, 'backend-config.env') });
@@ -16,13 +15,18 @@ const PORT = process.env.PORT || 3001;
 const MONGODB_URI = 'mongodb://mongo:PUnGGIpyAbMtWoQohyXGFpMjVkAWTYXJ@trolley.proxy.rlwy.net:38507';
 const DB_NAME = 'onpg';
 
-// Middleware CORS - Autoriser toutes les origines (production et développement)
-// On autorise explicitement toutes les origines pour éviter les blocages entre www.onpg.ga et Railway
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Middleware CORS très permissif - en-têtes ajoutés manuellement
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 app.use(express.json());
 
 let db;

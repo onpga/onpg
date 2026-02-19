@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './Login.css';
 
 const API_URL =
@@ -38,8 +39,12 @@ const Login = () => {
         localStorage.setItem('admin_token', data.token);
         localStorage.setItem('admin_user', JSON.stringify(data.user));
         
-        // Rediriger vers le dashboard
-        navigate('/admin/dashboard');
+        // Rediriger selon le rôle
+        if (data.user.role === 'pharmacien') {
+          navigate('/pharmacien/dashboard');
+        } else {
+          navigate('/admin/dashboard');
+        }
       } else {
         setError(data.error || 'Erreur de connexion');
       }
@@ -57,7 +62,7 @@ const Login = () => {
         <div className="login-card">
           {/* Logo */}
           <div className="login-header">
-            <img src="/onpg-logo.png" alt="Logo ONPG" className="login-logo" />
+            <img src={ONPG_IMAGES.logo} alt="Logo ONPG" className="login-logo" />
             <h1>Espace admin ONPG</h1>
             <p>Connexion sécurisée à l&apos;Ordre National des Pharmaciens du Gabon</p>
           </div>

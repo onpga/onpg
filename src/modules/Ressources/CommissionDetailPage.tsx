@@ -10,3 +10,4 @@ const CommissionDetailPage = () => (
 
 export default CommissionDetailPage;
 
+

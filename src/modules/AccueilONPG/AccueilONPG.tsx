@@ -297,13 +297,13 @@ const AccueilONPG = () => {
         <div className="container president-titleband-container">
           <div className="president-titleband-inner">
             <div className="president-titleband-rule" aria-hidden="true"></div>
-            <h2 className="president-titleband-title">Message du Président</h2>
+            <h2 className="president-titleband-title">Message de la Présidente</h2>
             <div className="president-titleband-rule" aria-hidden="true"></div>
           </div>
         </div>
       </div>
 
-      {/* Message du Président - Nouveau Design Professionnel avec Bloc Interactif */}
+      {/* Message de la Présidente - Nouveau Design Professionnel avec Bloc Interactif */}
       <section className="onpg-president-message section" data-animate>
         <div className="container">
           <AnimatedSection animation="fadeIn">
@@ -319,7 +319,7 @@ const AccueilONPG = () => {
                     <div className="photo-professional-border"></div>
                     <img
                       src={ONPG_IMAGES.president}
-                      alt="Président ONPG"
+                      alt="Présidente ONPG - Dr Patience Asseko NTOGONO OKE"
                       className="president-photo-professional"
                       loading="eager"
                       fetchPriority="high"
@@ -328,7 +328,7 @@ const AccueilONPG = () => {
                     {/* Badge Institutionnel */}
                     <div className="president-badge-professional">
                       <div className="badge-professional-content">
-                        <span className="badge-professional-title">PRÉSIDENT</span>
+                        <span className="badge-professional-title">PRÉSIDENTE</span>
                         <div className="badge-professional-accent"></div>
                         <span className="badge-professional-org">Ordre National</span>
                       </div>
@@ -338,8 +338,8 @@ const AccueilONPG = () => {
                     <div className="president-info-professional">
                       <h3 className="president-name-professional">Dr Patience Asseko NTOGONO OKE</h3>
                       <p className="president-position-professional">
-                        Président de l'Ordre National<br />
-                        de Pharmacie du Gabon
+                        Présidente de l'Ordre National<br />
+                        des Pharmaciens du Gabon
                       </p>
                     </div>
                   </div>
@@ -713,7 +713,7 @@ Et vive le Gabon !`;
             {isAutoScrolling ? '⏸️' : '▶️'}
           </button>
         </div>
-        <h3 className="discourse-title">Message du Président</h3>
+            <h3 className="discourse-title">Message de la Présidente</h3>
         <p className="discourse-subtitle">Cérémonie d'investiture du nouveau bureau</p>
       </div>
       

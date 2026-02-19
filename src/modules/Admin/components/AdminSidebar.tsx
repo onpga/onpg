@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { ONPG_IMAGES } from '../../../utils/cloudinary-onpg';
 import '../Dashboard.css';
 
 interface AdminSidebarProps {
@@ -21,7 +22,7 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-header">
-        <img src="/onpg-logo.png" alt="ONPG" className="sidebar-logo" />
+        <img src={ONPG_IMAGES.logo} alt="ONPG" className="sidebar-logo" />
         <h2>Espace admin ONPG</h2>
       </div>
 

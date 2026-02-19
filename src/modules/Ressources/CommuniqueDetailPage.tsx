@@ -10,3 +10,4 @@ const CommuniqueDetailPage = () => (
 
 export default CommuniqueDetailPage;
 
+

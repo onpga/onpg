@@ -63,3 +63,4 @@ Si le script échoue :
 - Vérifier que le token admin est correct dans `backend-config.env`
 - Vérifier les logs du backend pour voir les erreurs détaillées
 
+

@@ -10,3 +10,4 @@ const DecretDetailPage = () => (
 
 export default DecretDetailPage;
 
+

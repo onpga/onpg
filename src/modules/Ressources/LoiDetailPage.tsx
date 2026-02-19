@@ -10,3 +10,4 @@ const LoiDetailPage = () => (
 
 export default LoiDetailPage;
 
+

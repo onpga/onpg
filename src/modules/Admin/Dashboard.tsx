@@ -3,23 +3,42 @@ import { useNavigate, Link } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './Dashboard.css';
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://backendonpg-production.up.railway.app/api'
+    : 'http://localhost:3001/api');
+
 interface Stats {
+  actualites: number;
+  communiques: number;
+  pharmaciens: number;
+  pharmacies: number;
+  formations: number;
   articles: number;
-  projects: number;
-  jobs: number;
-  applications: number;
+  lois: number;
+  decisions: number;
 }
 
 interface RecentItem {
   _id: string;
   title: string;
-  type: 'article' | 'project';
+  type: 'actualite' | 'communique' | 'formation' | 'pharmacie';
   publishedAt: string;
-  views?: number;
+  date?: string;
 }
 
 const Dashboard = () => {
-  const [stats, setStats] = useState<Stats>({ articles: 0, projects: 0, jobs: 0, applications: 0 });
+  const [stats, setStats] = useState<Stats>({ 
+    actualites: 0, 
+    communiques: 0, 
+    pharmaciens: 0, 
+    pharmacies: 0, 
+    formations: 0,
+    articles: 0,
+    lois: 0,
+    decisions: 0
+  });
   const [recentItems, setRecentItems] = useState<RecentItem[]>([]);
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
@@ -43,39 +62,72 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const [articles, projects, jobs, applications] = await Promise.all([
-        fetch('/api/articles').then(r => r.json()),
-        fetch('/api/projects').then(r => r.json()),
-        fetch('/api/jobs').then(r => r.json()),
-        fetch('/api/applications').then(r => r.json())
+      const token = localStorage.getItem('admin_token');
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+
+      const [actualites, communiques, pharmaciens, pharmacies, formations, articles, lois, decisions] = await Promise.all([
+        fetch(`${API_URL}/admin/actualites`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/communiques`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/pharmaciens`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/pharmacies`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/formations`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/articles`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/lois`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] })),
+        fetch(`${API_URL}/admin/decisions`, { headers }).then(r => r.json()).catch(() => ({ success: false, data: [] }))
       ]);
 
       setStats({
-        articles: articles.count || 0,
-        projects: projects.count || 0,
-        jobs: jobs.count || 0,
-        applications: applications.count || 0
+        actualites: actualites.success ? (actualites.data?.length || 0) : 0,
+        communiques: communiques.success ? (communiques.data?.length || 0) : 0,
+        pharmaciens: pharmaciens.success ? (pharmaciens.data?.length || 0) : 0,
+        pharmacies: pharmacies.success ? (pharmacies.data?.length || 0) : 0,
+        formations: formations.success ? (formations.data?.length || 0) : 0,
+        articles: articles.success ? (articles.data?.length || 0) : 0,
+        lois: lois.success ? (lois.data?.length || 0) : 0,
+        decisions: decisions.success ? (decisions.data?.length || 0) : 0
       });
 
       // Récupérer les items récents
       const allItems: RecentItem[] = [
-        ...(articles.data || []).slice(0, 5).map((a: any) => ({ 
+        ...(actualites.success && actualites.data ? actualites.data.slice(0, 3).map((a: any) => ({ 
           _id: a._id, 
-          title: a.title, 
-          type: 'article' as const, 
-          publishedAt: a.publishedAt,
-          views: a.views 
-        })),
-        ...(projects.data || []).slice(0, 5).map((p: any) => ({ 
+          title: a.title || 'Actualité sans titre', 
+          type: 'actualite' as const, 
+          publishedAt: a.date || a.createdAt || new Date().toISOString(),
+          date: a.date || a.createdAt
+        })) : []),
+        ...(communiques.success && communiques.data ? communiques.data.slice(0, 3).map((c: any) => ({ 
+          _id: c._id, 
+          title: c.title || 'Communiqué sans titre', 
+          type: 'communique' as const, 
+          publishedAt: c.date || c.createdAt || new Date().toISOString(),
+          date: c.date || c.createdAt
+        })) : []),
+        ...(formations.success && formations.data ? formations.data.slice(0, 2).map((f: any) => ({ 
+          _id: f._id, 
+          title: f.title || 'Formation sans titre', 
+          type: 'formation' as const, 
+          publishedAt: f.date || f.createdAt || new Date().toISOString(),
+          date: f.date || f.createdAt
+        })) : []),
+        ...(pharmacies.success && pharmacies.data ? pharmacies.data.slice(0, 2).map((p: any) => ({ 
           _id: p._id, 
-          title: p.title, 
-          type: 'project' as const, 
-          publishedAt: p.date 
-        }))
+          title: p.nom || 'Pharmacie sans nom', 
+          type: 'pharmacie' as const, 
+          publishedAt: p.createdAt || new Date().toISOString(),
+          date: p.createdAt
+        })) : [])
       ];
 
       // Trier par date
-      allItems.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      allItems.sort((a, b) => {
+        const dateA = new Date(a.publishedAt || a.date || 0).getTime();
+        const dateB = new Date(b.publishedAt || b.date || 0).getTime();
+        return dateB - dateA;
+      });
       setRecentItems(allItems.slice(0, 6));
 
     } catch (error) {
@@ -121,37 +173,73 @@ const Dashboard = () => {
             <div className="stat-card blue">
               <div className="stat-icon">📰</div>
               <div className="stat-info">
-                <h3>{stats.articles}</h3>
-                <p>Articles publiés</p>
+                <h3>{stats.actualites}</h3>
+                <p>Actualités</p>
               </div>
-              <Link to="/admin/articles" className="stat-link">Gérer →</Link>
+              <Link to="/admin/resources" className="stat-link">Gérer →</Link>
             </div>
 
             <div className="stat-card green">
-              <div className="stat-icon">🗂️</div>
+              <div className="stat-icon">📢</div>
               <div className="stat-info">
-                <h3>{stats.projects}</h3>
-                <p>Projets réalisés</p>
+                <h3>{stats.communiques}</h3>
+                <p>Communiqués</p>
               </div>
-              <Link to="/admin/projects" className="stat-link">Gérer →</Link>
+              <Link to="/admin/resources" className="stat-link">Gérer →</Link>
             </div>
 
             <div className="stat-card orange">
-              <div className="stat-icon">💼</div>
+              <div className="stat-icon">👨‍⚕️</div>
               <div className="stat-info">
-                <h3>{stats.jobs}</h3>
-                <p>Offres d'emploi</p>
+                <h3>{stats.pharmaciens}</h3>
+                <p>Pharmaciens</p>
               </div>
-              <Link to="/admin/jobs" className="stat-link">Gérer →</Link>
+              <Link to="/admin/pharmaciens" className="stat-link">Gérer →</Link>
             </div>
 
             <div className="stat-card purple">
-              <div className="stat-icon">📧</div>
+              <div className="stat-icon">🏥</div>
               <div className="stat-info">
-                <h3>{stats.applications}</h3>
-                <p>Candidatures</p>
+                <h3>{stats.pharmacies}</h3>
+                <p>Pharmacies</p>
               </div>
-              <Link to="/admin/jobs" className="stat-link">Voir →</Link>
+              <Link to="/admin/pharmacies" className="stat-link">Gérer →</Link>
+            </div>
+
+            <div className="stat-card blue">
+              <div className="stat-icon">🎓</div>
+              <div className="stat-info">
+                <h3>{stats.formations}</h3>
+                <p>Formations</p>
+              </div>
+              <Link to="/admin/formations" className="stat-link">Gérer →</Link>
+            </div>
+
+            <div className="stat-card green">
+              <div className="stat-icon">📚</div>
+              <div className="stat-info">
+                <h3>{stats.articles}</h3>
+                <p>Articles</p>
+              </div>
+              <Link to="/admin/resources" className="stat-link">Gérer →</Link>
+            </div>
+
+            <div className="stat-card orange">
+              <div className="stat-icon">⚖️</div>
+              <div className="stat-info">
+                <h3>{stats.lois}</h3>
+                <p>Lois</p>
+              </div>
+              <Link to="/admin/resources" className="stat-link">Gérer →</Link>
+            </div>
+
+            <div className="stat-card purple">
+              <div className="stat-icon">📋</div>
+              <div className="stat-info">
+                <h3>{stats.decisions}</h3>
+                <p>Décisions</p>
+              </div>
+              <Link to="/admin/resources" className="stat-link">Gérer →</Link>
             </div>
           </div>
         </section>
@@ -160,22 +248,22 @@ const Dashboard = () => {
         <section className="quick-actions-section">
           <h2>Actions rapides</h2>
           <div className="actions-grid">
-            <Link to="/admin/articles/new" className="action-card">
-              <span className="action-icon">➕</span>
-              <h3>Nouvel article</h3>
-              <p>Créer un article de blog</p>
+            <Link to="/admin/resources" className="action-card">
+              <span className="action-icon">📚</span>
+              <h3>Gérer les ressources</h3>
+              <p>Actualités, communiqués, articles, lois...</p>
             </Link>
 
-            <Link to="/admin/projects/new" className="action-card">
-              <span className="action-icon">➕</span>
-              <h3>Nouveau projet</h3>
-              <p>Ajouter une réalisation</p>
+            <Link to="/admin/formations" className="action-card">
+              <span className="action-icon">🎓</span>
+              <h3>Nouvelle formation</h3>
+              <p>Créer une formation continue</p>
             </Link>
 
-            <Link to="/admin/calendar" className="action-card">
-              <span className="action-icon">📅</span>
-              <h3>Calendrier</h3>
-              <p>Planifier les publications</p>
+            <Link to="/admin/pharmaciens" className="action-card">
+              <span className="action-icon">👨‍⚕️</span>
+              <h3>Gérer les pharmaciens</h3>
+              <p>Voir et modifier les pharmaciens</p>
             </Link>
 
             <Link to="/" className="action-card" target="_blank">
@@ -190,37 +278,44 @@ const Dashboard = () => {
         <section className="recent-section">
           <div className="section-header">
             <h2>📝 Publications récentes</h2>
-            <Link to="/admin/calendar" className="view-all-link">Tout voir →</Link>
+            <Link to="/admin/resources" className="view-all-link">Tout voir →</Link>
           </div>
 
           <div className="recent-list">
             {recentItems.length === 0 ? (
               <div className="empty-state">
-                <p>Aucune publication pour le moment</p>
-                <Link to="/admin/articles/new" className="btn-primary">Créer un article</Link>
+                <p>Aucune publication récente</p>
+                <Link to="/admin/resources" className="btn-primary">Gérer les ressources</Link>
               </div>
             ) : (
               recentItems.map(item => (
                 <div key={`${item.type}-${item._id}`} className="recent-item">
                   <div className="recent-item-icon">
-                    {item.type === 'article' ? '📰' : '🗂️'}
+                    {item.type === 'actualite' ? '📰' : 
+                     item.type === 'communique' ? '📢' : 
+                     item.type === 'formation' ? '🎓' : 
+                     item.type === 'pharmacie' ? '🏥' : '📄'}
                   </div>
                   <div className="recent-item-content">
                     <h4>{item.title}</h4>
                     <div className="recent-item-meta">
                       <span className="item-type">
-                        {item.type === 'article' ? 'Article' : 'Projet'}
+                        {item.type === 'actualite' ? 'Actualité' : 
+                         item.type === 'communique' ? 'Communiqué' : 
+                         item.type === 'formation' ? 'Formation' : 
+                         item.type === 'pharmacie' ? 'Pharmacie' : 'Autre'}
                       </span>
                       <span className="item-date">
-                        {new Date(item.publishedAt).toLocaleDateString('fr-FR')}
+                        {item.publishedAt || item.date ? 
+                          new Date(item.publishedAt || item.date).toLocaleDateString('fr-FR') : 
+                          'Date inconnue'}
                       </span>
-                      {item.views !== undefined && (
-                        <span className="item-views">👁️ {item.views} vues</span>
-                      )}
                     </div>
                   </div>
                   <Link 
-                    to={item.type === 'article' ? `/admin/articles` : `/admin/projects`}
+                    to={item.type === 'actualite' || item.type === 'communique' ? `/admin/resources` : 
+                        item.type === 'formation' ? `/admin/formations` : 
+                        item.type === 'pharmacie' ? `/admin/pharmacies` : `/admin/resources`}
                     className="recent-item-action"
                   >
                     →
@@ -236,43 +331,58 @@ const Dashboard = () => {
           <h2>📊 Vue d'ensemble</h2>
           <div className="overview-grid">
             <div className="overview-card">
-              <h3>📈 Performance</h3>
+              <h3>📈 Contenu</h3>
               <div className="progress-item">
                 <div className="progress-label">
-                  <span>Articles publiés</span>
-                  <span className="progress-value">{stats.articles}</span>
+                  <span>Actualités publiées</span>
+                  <span className="progress-value">{stats.actualites}</span>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${Math.min((stats.articles / 24) * 100, 100)}%` }}></div>
+                  <div className="progress-fill" style={{ width: `${Math.min((stats.actualites / 50) * 100, 100)}%` }}></div>
                 </div>
-                <small>Objectif: 24 articles (calendrier éditorial)</small>
+                <small>Objectif: 50 actualités minimum</small>
               </div>
 
               <div className="progress-item">
                 <div className="progress-label">
-                  <span>Projets en vitrine</span>
-                  <span className="progress-value">{stats.projects}</span>
+                  <span>Communiqués</span>
+                  <span className="progress-value">{stats.communiques}</span>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-fill green" style={{ width: `${Math.min((stats.projects / 12) * 100, 100)}%` }}></div>
+                  <div className="progress-fill green" style={{ width: `${Math.min((stats.communiques / 30) * 100, 100)}%` }}></div>
                 </div>
-                <small>Objectif: 12 projets minimum</small>
+                <small>Objectif: 30 communiqués minimum</small>
               </div>
             </div>
 
             <div className="overview-card">
-              <h3>💼 Recrutement</h3>
+              <h3>👥 Membres</h3>
               <div className="stat-row">
                 <div className="stat-mini">
-                  <div className="stat-mini-value">{stats.jobs}</div>
-                  <div className="stat-mini-label">Offres actives</div>
+                  <div className="stat-mini-value">{stats.pharmaciens}</div>
+                  <div className="stat-mini-label">Pharmaciens</div>
                 </div>
                 <div className="stat-mini">
-                  <div className="stat-mini-value">{stats.applications}</div>
-                  <div className="stat-mini-label">Candidatures</div>
+                  <div className="stat-mini-value">{stats.pharmacies}</div>
+                  <div className="stat-mini-label">Pharmacies</div>
                 </div>
               </div>
-              <Link to="/admin/jobs" className="card-link">Gérer les offres →</Link>
+              <Link to="/admin/pharmaciens" className="card-link">Gérer les membres →</Link>
+            </div>
+
+            <div className="overview-card">
+              <h3>🎓 Formations</h3>
+              <div className="stat-row">
+                <div className="stat-mini">
+                  <div className="stat-mini-value">{stats.formations}</div>
+                  <div className="stat-mini-label">Formations actives</div>
+                </div>
+                <div className="stat-mini">
+                  <div className="stat-mini-value">{stats.articles + stats.lois + stats.decisions}</div>
+                  <div className="stat-mini-label">Documents</div>
+                </div>
+              </div>
+              <Link to="/admin/formations" className="card-link">Gérer les formations →</Link>
             </div>
           </div>
         </section>
@@ -282,4 +392,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
 

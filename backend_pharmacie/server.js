@@ -56,7 +56,9 @@ const RESOURCE_COLLECTIONS = [
   'theses',
   'photos',
   'videos',
-  'pharmaciens'
+  'pharmaciens',
+  'formations',
+  'deontologie'
 ];
 
 // Authentification admin par token (simple)

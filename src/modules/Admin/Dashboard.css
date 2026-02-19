@@ -30,7 +30,8 @@
   width: 70px;
   height: auto;
   margin-bottom: 0.75rem;
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(255, 255, 255, 0.3));
+  object-fit: contain;
 }
 
 .sidebar-header h2 {
@@ -865,10 +866,53 @@
   color: var(--cips-orange);
 }
 
+/* Admin Layout (FormationsAdmin, DeontologieAdmin, etc.) */
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 2.5rem 3rem;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-header h1 {
+  font-family: var(--font-poppins);
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00A651;
+  margin: 0;
+}
+
+.admin-content {
+  padding: 0;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .overview-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-main {
+    margin-left: 0;
+    padding: 1.5rem;
   }
 }
 

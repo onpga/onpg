@@ -165,8 +165,8 @@ const FormationsAdmin = () => {
     <div className="admin-layout">
       <AdminSidebar currentPage="formations" />
       <main className="admin-main">
-        <div className="admin-header">
-          <h1>Gestion des Formations</h1>
+        <div className="admin-header" style={{ marginBottom: '2rem', padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#00A651', margin: 0, padding: 0 }}>🎓 Gestion des Formations</h1>
           <button
             onClick={() => {
               setEditingItem(null);
@@ -217,17 +217,18 @@ const FormationsAdmin = () => {
           {loading ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>
           ) : (
-            <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'white', borderRadius: '8px', overflow: 'hidden' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#00A651', color: 'white' }}>
-                  <th style={{ padding: '1rem', textAlign: 'left' }}>Titre</th>
-                  <th style={{ padding: '1rem', textAlign: 'left' }}>Durée</th>
-                  <th style={{ padding: '1rem', textAlign: 'left' }}>Catégorie</th>
-                  <th style={{ padding: '1rem', textAlign: 'left' }}>Tarif</th>
-                  <th style={{ padding: '1rem', textAlign: 'left' }}>Statut</th>
-                  <th style={{ padding: '1rem', textAlign: 'center' }}>Actions</th>
-                </tr>
-              </thead>
+            <div style={{ overflowX: 'auto', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '800px' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#00A651', color: 'white' }}>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'left', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Titre</th>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'left', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Durée</th>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'left', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap', minWidth: '150px' }}>Catégorie</th>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'left', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Tarif</th>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'left', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Statut</th>
+                    <th style={{ padding: '1.25rem 1rem', textAlign: 'center', fontSize: '1rem', fontWeight: '600', whiteSpace: 'nowrap' }}>Actions</th>
+                  </tr>
+                </thead>
               <tbody>
                 {filteredFormations.map((formation) => (
                   <tr key={formation._id} style={{ borderBottom: '1px solid #eee' }}>
@@ -276,6 +277,7 @@ const FormationsAdmin = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
 
           {filteredFormations.length === 0 && !loading && (
@@ -477,4 +479,5 @@ const FormationsAdmin = () => {
 };
 
 export default FormationsAdmin;
+
 

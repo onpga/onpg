@@ -240,33 +240,36 @@ const RessourcesActualites = () => {
       setLoading(true);
       try {
         const data = await fetchResourceData('actualites');
-        if (data && !Array.isArray(data) && data._id) {
-          // Une seule actualité depuis la collection
-          const article: Article = {
-            _id: String(data._id), // S'assurer que l'ID est une string
-            title: data.title || '',
-            slug: data.title ? data.title.toLowerCase().replace(/\s+/g, '-') : '',
-            excerpt: data.excerpt || data.summary || '',
-            image: data.image || data.featuredImage || '',
-            category: data.category || 'actualites',
-            pole: data.pole || 'Général',
-            publishedAt: data.date || data.publishedAt || new Date().toISOString(),
-            readTime: data.readTime || 5,
-            tags: data.tags || [],
-            featured: data.featured || false,
-            author: data.author || {
-              name: 'ONPG',
-              role: 'Équipe Communication'
-            },
-            content: data.content || ''
-          };
-          setArticles([article]);
-          setFilteredArticles([article]);
-        } else {
-          // Aucune donnée en base
+        if (!data) {
           setArticles([]);
           setFilteredArticles([]);
+          return;
         }
+
+        // Gérer un tableau de données
+        const rawArray = Array.isArray(data) ? data : [data];
+        
+        const mapped: Article[] = rawArray.map((item: any) => ({
+          _id: String(item._id || ''),
+          title: item.title || '',
+          slug: item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : '',
+          excerpt: item.excerpt || item.summary || '',
+          image: item.image || item.featuredImage || '',
+          category: item.category || 'actualites',
+          pole: item.pole || 'Général',
+          publishedAt: item.date || item.publishedAt || new Date().toISOString(),
+          readTime: item.readTime || 5,
+          tags: item.tags || [],
+          featured: item.featured || false,
+          author: item.author || {
+            name: 'ONPG',
+            role: 'Équipe Communication'
+          },
+          content: item.content || ''
+        }));
+
+        setArticles(mapped);
+        setFilteredArticles(mapped);
       } catch (error) {
         console.error('Erreur chargement actualités:', error);
         setArticles([]);

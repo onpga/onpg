@@ -25,32 +25,37 @@ const Decisions = () => {
   const [decisions, setDecisions] = useState<Decision[]>([]);
   const [filteredDecisions, setFilteredDecisions] = useState<Decision[]>([]);
   
-  // Charger depuis MongoDB - 1 seule décision
+  // Charger depuis MongoDB - plusieurs décisions possibles
   useEffect(() => {
     const loadDecisions = async () => {
       const data = await fetchResourceData('decisions');
-      if (data && !Array.isArray(data)) {
-        const decision: Decision = {
-          id: String(data._id || ''),
-          reference: data.reference || `DEC-${data._id?.substring(0, 8) || '001'}`,
-          title: data.title,
-          date: data.date || new Date().toISOString().split('T')[0],
-          jurisdiction: data.jurisdiction || '',
-          category: data.category || 'Général',
-          summary: data.summary || data.title,
-          parties: data.parties || [],
-          decision: data.decision || 'favorable',
-          keywords: data.keywords || [],
-          downloads: data.downloads || 0,
-          citations: data.citations || 0,
-          featured: data.featured || false
-        };
-        setDecisions([decision]);
-        setFilteredDecisions([decision]);
-      } else {
+      if (!data) {
         setDecisions([]);
         setFilteredDecisions([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Decision[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        reference: item.reference || `DEC-${item._id?.substring(0, 8) || '001'}`,
+        title: item.title || '',
+        date: item.date || new Date().toISOString().split('T')[0],
+        jurisdiction: item.jurisdiction || '',
+        category: item.category || 'Général',
+        summary: item.summary || item.title || '',
+        parties: item.parties || [],
+        decision: (item.decision as 'favorable' | 'defavorable' | 'partiellement favorable' | 'irrecevable') || 'favorable',
+        keywords: item.keywords || [],
+        downloads: item.downloads || 0,
+        citations: item.citations || 0,
+        featured: item.featured || false
+      }));
+
+      setDecisions(mapped);
+      setFilteredDecisions(mapped);
     };
     loadDecisions();
   }, []);

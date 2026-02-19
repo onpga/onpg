@@ -27,34 +27,39 @@ const Decrets = () => {
   const [decrets, setDecrets] = useState<Decret[]>([]);
   const [filteredDecrets, setFilteredDecrets] = useState<Decret[]>([]);
   
-  // Charger depuis MongoDB - 1 seul décret
+  // Charger depuis MongoDB - plusieurs décrets possibles
   useEffect(() => {
     const loadDecrets = async () => {
       const data = await fetchResourceData('decrets');
-      if (data && !Array.isArray(data)) {
-        const decret: Decret = {
-          id: String(data._id || ''),
-          number: data.number || '',
-          title: data.title,
-          publicationDate: data.publicationDate || data.date || new Date().toISOString().split('T')[0],
-          entryDate: data.entryDate || data.date || new Date().toISOString().split('T')[0],
-          ministry: data.ministry || 'Ministère de la Santé et des Affaires Sociales',
-          category: data.category || 'Général',
-          summary: data.summary || data.title,
-          keyArticles: data.keyArticles || [],
-          tags: data.tags || [],
-          status: (data.status as 'active' | 'modified' | 'abrogated') || 'active',
-          downloads: data.downloads || 0,
-          views: data.views || 0,
-          featured: data.featured || false,
-          language: data.language || 'fr'
-        };
-        setDecrets([decret]);
-        setFilteredDecrets([decret]);
-      } else {
+      if (!data) {
         setDecrets([]);
         setFilteredDecrets([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Decret[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        number: item.number || '',
+        title: item.title || '',
+        publicationDate: item.publicationDate || item.date || new Date().toISOString().split('T')[0],
+        entryDate: item.entryDate || item.date || new Date().toISOString().split('T')[0],
+        ministry: item.ministry || 'Ministère de la Santé et des Affaires Sociales',
+        category: item.category || 'Général',
+        summary: item.summary || item.title || '',
+        keyArticles: item.keyArticles || [],
+        tags: item.tags || [],
+        status: (item.status as 'active' | 'modified' | 'abrogated') || 'active',
+        downloads: item.downloads || 0,
+        views: item.views || 0,
+        featured: item.featured || false,
+        language: item.language || 'fr'
+      }));
+
+      setDecrets(mapped);
+      setFilteredDecrets(mapped);
     };
     loadDecrets();
   }, []);

@@ -61,38 +61,43 @@ const Theses = () => {
   const [universities, setUniversities] = useState<University[]>(mockUniversities);
   const [filteredTheses, setFilteredTheses] = useState<Thesis[]>([]);
   
-  // Charger depuis MongoDB - 1 seule thèse
+  // Charger depuis MongoDB - plusieurs thèses possibles
   useEffect(() => {
     const loadTheses = async () => {
       const data = await fetchResourceData('theses');
-      if (data && !Array.isArray(data)) {
-        const thesis: Thesis = {
-          id: String(data._id || ''),
-          title: data.title,
-          author: data.author || '',
-          director: data.director || '',
-          university: data.university || '',
-          faculty: data.faculty || '',
-          department: data.department || '',
-          degree: (data.degree as 'master' | 'phd' | 'doctorate') || 'phd',
-          year: data.year || new Date().getFullYear(),
-          abstract: data.abstract || data.excerpt || '',
-          keywords: data.keywords || [],
-          pages: data.pages || 0,
-          language: data.language || 'fr',
-          specialty: data.specialty || 'Pharmacie',
-          defenseDate: data.defenseDate || new Date().toISOString().split('T')[0],
-          juryMembers: data.juryMembers || [],
-          downloads: data.downloads || 0,
-          citations: data.citations || 0,
-          featured: data.featured || false
-        };
-        setTheses([thesis]);
-        setFilteredTheses([thesis]);
-      } else {
+      if (!data) {
         setTheses([]);
         setFilteredTheses([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Thesis[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        title: item.title || '',
+        author: item.author || '',
+        director: item.director || '',
+        university: item.university || '',
+        faculty: item.faculty || '',
+        department: item.department || '',
+        degree: (item.degree as 'master' | 'phd' | 'doctorate') || 'phd',
+        year: item.year || new Date().getFullYear(),
+        abstract: item.abstract || item.excerpt || '',
+        keywords: item.keywords || [],
+        pages: item.pages || 0,
+        language: item.language || 'fr',
+        specialty: item.specialty || 'Pharmacie',
+        defenseDate: item.defenseDate || new Date().toISOString().split('T')[0],
+        juryMembers: item.juryMembers || [],
+        downloads: item.downloads || 0,
+        citations: item.citations || 0,
+        featured: item.featured || false
+      }));
+
+      setTheses(mapped);
+      setFilteredTheses(mapped);
     };
     loadTheses();
   }, []);

@@ -30,34 +30,39 @@ const Lois = () => {
   const [laws, setLaws] = useState<Law[]>([]);
   const [filteredLaws, setFilteredLaws] = useState<Law[]>([]);
   
-  // Charger depuis MongoDB - 1 seule loi
+  // Charger depuis MongoDB - plusieurs lois possibles
   useEffect(() => {
     const loadLaws = async () => {
       const data = await fetchResourceData('lois');
-      if (data && !Array.isArray(data)) {
-        const law: Law = {
-          id: String(data._id || ''),
-          number: data.number || '',
-          title: data.title,
-          publicationDate: data.publicationDate || data.date || new Date().toISOString().split('T')[0],
-          entryDate: data.entryDate || data.date || new Date().toISOString().split('T')[0],
-          category: data.category || 'Législation',
-          summary: data.summary || data.title,
-          tableOfContents: data.tableOfContents || [],
-          keyArticles: data.keyArticles || [],
-          tags: data.tags || [],
-          status: (data.status as 'active' | 'modified' | 'repealed') || 'active',
-          downloads: data.downloads || 0,
-          views: data.views || 0,
-          featured: data.featured || false,
-          language: data.language || 'fr'
-        };
-        setLaws([law]);
-        setFilteredLaws([law]);
-      } else {
+      if (!data) {
         setLaws([]);
         setFilteredLaws([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Law[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        number: item.number || '',
+        title: item.title || '',
+        publicationDate: item.publicationDate || item.date || new Date().toISOString().split('T')[0],
+        entryDate: item.entryDate || item.date || new Date().toISOString().split('T')[0],
+        category: item.category || 'Législation',
+        summary: item.summary || item.title || '',
+        tableOfContents: item.tableOfContents || [],
+        keyArticles: item.keyArticles || [],
+        tags: item.tags || [],
+        status: (item.status as 'active' | 'modified' | 'repealed') || 'active',
+        downloads: item.downloads || 0,
+        views: item.views || 0,
+        featured: item.featured || false,
+        language: item.language || 'fr'
+      }));
+
+      setLaws(mapped);
+      setFilteredLaws(mapped);
     };
     loadLaws();
   }, []);

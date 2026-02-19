@@ -66,32 +66,37 @@ const Articles = () => {
   const [journals, setJournals] = useState<Journal[]>(mockJournals);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   
-  // Charger depuis MongoDB - 1 seul article
+  // Charger depuis MongoDB - plusieurs articles possibles
   useEffect(() => {
     const loadArticles = async () => {
       const data = await fetchResourceData('articles');
-      if (data && !Array.isArray(data)) {
-        const article: Article = {
-          id: String(data._id || ''),
-          title: data.title,
-          authors: data.authors || [],
-          abstract: data.excerpt || data.abstract || '',
-          journal: data.journal || '',
-          year: data.year || new Date().getFullYear(),
-          keywords: data.tags || data.keywords || [],
-          category: data.category || 'Général',
-          downloads: data.downloads || 0,
-          citations: data.citations || 0,
-          featured: data.featured || false,
-          language: data.language || 'fr',
-          publicationType: data.publicationType || 'article'
-        };
-        setArticles([article]);
-        setFilteredArticles([article]);
-      } else {
+      if (!data) {
         setArticles([]);
         setFilteredArticles([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Article[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        title: item.title || '',
+        authors: item.authors || [],
+        abstract: item.excerpt || item.abstract || '',
+        journal: item.journal || '',
+        year: item.year || new Date().getFullYear(),
+        keywords: item.tags || item.keywords || [],
+        category: item.category || 'Général',
+        downloads: item.downloads || 0,
+        citations: item.citations || 0,
+        featured: item.featured || false,
+        language: item.language || 'fr',
+        publicationType: (item.publicationType as 'article' | 'review' | 'case-report' | 'letter') || 'article'
+      }));
+
+      setArticles(mapped);
+      setFilteredArticles(mapped);
     };
     loadArticles();
   }, []);

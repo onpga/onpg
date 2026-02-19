@@ -33,31 +33,36 @@ const Commissions = () => {
   const [commissions, setCommissions] = useState<Commission[]>([]);
   const [filteredCommissions, setFilteredCommissions] = useState<Commission[]>([]);
   
-  // Charger depuis MongoDB - 1 seule commission
+  // Charger depuis MongoDB - plusieurs commissions possibles
   useEffect(() => {
     const loadCommissions = async () => {
       const data = await fetchResourceData('commissions');
-      if (data && !Array.isArray(data)) {
-        const commission: Commission = {
-          id: String(data._id || ''),
-          name: data.title,
-          description: data.description || '',
-          president: data.president || '',
-          members: data.members || [],
-          creationDate: data.creationDate || new Date().toISOString().split('T')[0],
-          category: data.category || 'Général',
-          missions: data.attributions || data.missions || [],
-          meetings: data.meetings || 0,
-          reports: data.reports || 0,
-          status: (data.status as 'active' | 'inactive') || 'active',
-          featured: data.featured || false
-        };
-        setCommissions([commission]);
-        setFilteredCommissions([commission]);
-      } else {
+      if (!data) {
         setCommissions([]);
         setFilteredCommissions([]);
+        return;
       }
+
+      // Gérer un tableau de données
+      const rawArray = Array.isArray(data) ? data : [data];
+      
+      const mapped: Commission[] = rawArray.map((item: any) => ({
+        id: String(item._id || ''),
+        name: item.title || item.name || '',
+        description: item.description || '',
+        president: item.president || '',
+        members: item.members || [],
+        creationDate: item.creationDate || new Date().toISOString().split('T')[0],
+        category: item.category || 'Général',
+        missions: item.attributions || item.missions || [],
+        meetings: item.meetings || 0,
+        reports: item.reports || 0,
+        status: (item.status as 'active' | 'inactive') || 'active',
+        featured: item.featured || false
+      }));
+
+      setCommissions(mapped);
+      setFilteredCommissions(mapped);
     };
     loadCommissions();
   }, []);

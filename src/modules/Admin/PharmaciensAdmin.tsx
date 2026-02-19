@@ -3,7 +3,9 @@ import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
 import './Dashboard.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://www.onpg.ga/api' : 'http://localhost:3001/api');
 
 interface Pharmacien {
   _id?: string;

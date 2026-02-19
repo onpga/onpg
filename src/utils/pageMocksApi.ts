@@ -3,7 +3,9 @@
  * Chaque page Resources a sa propre collection MongoDB (actualites, articles, videos, etc.)
  */
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? 'https://www.onpg.ga/api' : 'http://localhost:3001/api');
 
 export interface ResourceData {
   _id?: string;

@@ -52,10 +52,17 @@ const TrouverPharmacie: React.FC = () => {
   const [useLocation, setUseLocation] = useState(false);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  // Charger les pharmacies depuis l'API
+  // Charger les pharmacies depuis l'API au montage et quand les filtres changent
   useEffect(() => {
     loadPharmacies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVille, selectedQuartier, searchQuery, gardeOnly, userLocation]);
+  
+  // Charger les pharmacies au montage initial
+  useEffect(() => {
+    loadPharmacies();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Demander la géolocalisation si activée
   useEffect(() => {
@@ -101,22 +108,31 @@ const TrouverPharmacie: React.FC = () => {
       }
 
       const url = `${API_URL}/public/pharmacies?${params.toString()}`;
-      console.log('🔍 Chargement pharmacies depuis:', url);
+      console.log('🔍 [TrouverPharmacie] Chargement pharmacies depuis:', url);
       
       const response = await fetch(url);
-      const data = await response.json();
       
-      console.log('📦 Réponse API pharmacies:', data);
+      if (!response.ok) {
+        console.error('❌ [TrouverPharmacie] Erreur HTTP:', response.status, response.statusText);
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('📦 [TrouverPharmacie] Réponse API complète:', data);
       
       if (data.success) {
-        console.log('✅ Pharmacies chargées:', data.data?.length || 0);
-        setPharmacies(data.data || []);
+        const pharmaciesList = Array.isArray(data.data) ? data.data : [];
+        console.log('✅ [TrouverPharmacie] Pharmacies chargées:', pharmaciesList.length);
+        if (pharmaciesList.length > 0) {
+          console.log('📋 [TrouverPharmacie] Première pharmacie:', pharmaciesList[0]);
+        }
+        setPharmacies(pharmaciesList);
       } else {
-        console.error('❌ Erreur API:', data.error);
+        console.error('❌ [TrouverPharmacie] Erreur API:', data.error || 'Réponse invalide');
         setPharmacies([]);
       }
     } catch (error) {
-      console.error('❌ Erreur chargement pharmacies:', error);
+      console.error('❌ [TrouverPharmacie] Erreur chargement pharmacies:', error);
       setPharmacies([]);
     } finally {
       setLoading(false);
@@ -268,16 +284,23 @@ const TrouverPharmacie: React.FC = () => {
                 📍 Triées par distance depuis votre position
               </p>
             )}
-            {!loading && pharmacies.length === 0 && (
-              <p className="no-results" style={{ fontSize: '1.2rem', padding: '2rem' }}>
-                Aucune pharmacie trouvée pour ces critères.
-              </p>
-            )}
           </div>
 
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem', fontSize: '1.2rem' }}>
               Chargement des pharmacies...
+            </div>
+          ) : pharmacies.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '16px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🏥</div>
+              <p style={{ fontSize: '1.3rem', color: '#333', marginBottom: '0.5rem', fontWeight: '600' }}>
+                Aucune pharmacie trouvée
+              </p>
+              <p style={{ fontSize: '1rem', color: '#666' }}>
+                {searchQuery || selectedVille !== 'Toutes les villes' || selectedQuartier !== 'Tous les quartiers' || gardeOnly
+                  ? 'Essayez de modifier vos critères de recherche.'
+                  : 'Les pharmacies seront affichées ici une fois enregistrées.'}
+              </p>
             </div>
           ) : (
             <div className="pharmacies-grid" style={{ 

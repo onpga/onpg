@@ -149,6 +149,75 @@ app.post('/api/auth/login', async (req, res) => {
 
 // Routes publiques - IMPORTANT: Les routes les plus spécifiques doivent être définies EN PREMIER
 
+// ============================================
+// ROUTE SPÉCIFIQUE POUR LES PHARMACIES (DOIT ÊTRE AVANT /api/public/:collection)
+// ============================================
+// GET toutes les pharmacies publiques (avec filtres et géolocalisation)
+app.get('/api/public/pharmacies', async (req, res) => {
+  try {
+    const { ville, quartier, latitude, longitude, search, garde } = req.query;
+    
+    let query = { isActive: true };
+    
+    if (ville) {
+      query.ville = new RegExp(ville, 'i');
+    }
+    
+    if (quartier) {
+      query.quartier = new RegExp(quartier, 'i');
+    }
+    
+    if (garde === 'true') {
+      query.garde = true;
+    }
+    
+    if (search) {
+      query.$or = [
+        { nom: new RegExp(search, 'i') },
+        { ville: new RegExp(search, 'i') },
+        { quartier: new RegExp(search, 'i') },
+        { adresse: new RegExp(search, 'i') }
+      ];
+    }
+
+    let pharmacies = await db.collection('pharmacies')
+      .find(query)
+      .toArray();
+
+    // Filtrer les messages pour ne garder que ceux visibles aux visiteurs
+    pharmacies = pharmacies.map(ph => ({
+      ...ph,
+      messages: (ph.messages || []).filter(m => m.visibleVisiteurs === true)
+    }));
+
+    // Si géolocalisation fournie, calculer les distances et trier
+    if (latitude && longitude) {
+      const userLat = parseFloat(latitude);
+      const userLng = parseFloat(longitude);
+      
+      pharmacies = pharmacies
+        .filter(p => p.latitude && p.longitude)
+        .map(p => {
+          const distance = calculateDistance(
+            userLat,
+            userLng,
+            p.latitude,
+            p.longitude
+          );
+          return { ...p, distance };
+        })
+        .sort((a, b) => a.distance - b.distance);
+    } else {
+      pharmacies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+
+    res.json({ success: true, data: pharmacies });
+  } catch (error) {
+    console.error('Erreur chargement pharmacies publiques:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
 // GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
 app.get('/api/public/:collection/:id', async (req, res) => {
   try {
@@ -493,76 +562,6 @@ app.delete('/api/pharmacien/pharmacies/:id/messages/:messageId', authenticatePha
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur suppression message:', error);
-    res.status(500).json({ success: false, error: 'Erreur serveur' });
-  }
-});
-
-// ============================================
-// ROUTES PUBLIQUES POUR LES PHARMACIES
-// ============================================
-
-// GET toutes les pharmacies publiques (avec filtres et géolocalisation)
-app.get('/api/public/pharmacies', async (req, res) => {
-  try {
-    const { ville, quartier, latitude, longitude, search, garde } = req.query;
-    
-    let query = { isActive: true };
-    
-    if (ville) {
-      query.ville = new RegExp(ville, 'i');
-    }
-    
-    if (quartier) {
-      query.quartier = new RegExp(quartier, 'i');
-    }
-    
-    if (garde === 'true') {
-      query.garde = true;
-    }
-    
-    if (search) {
-      query.$or = [
-        { nom: new RegExp(search, 'i') },
-        { ville: new RegExp(search, 'i') },
-        { quartier: new RegExp(search, 'i') },
-        { adresse: new RegExp(search, 'i') }
-      ];
-    }
-
-    let pharmacies = await db.collection('pharmacies')
-      .find(query)
-      .toArray();
-
-    // Filtrer les messages pour ne garder que ceux visibles aux visiteurs
-    pharmacies = pharmacies.map(ph => ({
-      ...ph,
-      messages: (ph.messages || []).filter(m => m.visibleVisiteurs === true)
-    }));
-
-    // Si géolocalisation fournie, calculer les distances et trier
-    if (latitude && longitude) {
-      const userLat = parseFloat(latitude);
-      const userLng = parseFloat(longitude);
-      
-      pharmacies = pharmacies
-        .filter(p => p.latitude && p.longitude)
-        .map(p => {
-          const distance = calculateDistance(
-            userLat,
-            userLng,
-            p.latitude,
-            p.longitude
-          );
-          return { ...p, distance };
-        })
-        .sort((a, b) => a.distance - b.distance);
-    } else {
-      pharmacies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    }
-
-    res.json({ success: true, data: pharmacies });
-  } catch (error) {
-    console.error('Erreur chargement pharmacies publiques:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

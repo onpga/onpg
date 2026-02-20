@@ -173,6 +173,7 @@ function App() {
                     <Route path="/ressources/photos" element={<Photos />} />
                     <Route path="/ressources/videos" element={<Videos />} />
                     <Route path="/trouver-pharmacie" element={<TrouverPharmacie />} />
+                    <Route path="/pharmacies" element={<TrouverPharmacie />} />
                     <Route path="/ressources/articles" element={<RessourcesArticles />} />
                     <Route path="/ressources/articles/:id" element={<ArticleDetailPage />} />
                     <Route path="/ressources/theses" element={<Theses />} />

@@ -200,6 +200,9 @@ const PharmaciesPharmacien = () => {
           horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
           garde: false
         });
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Erreur inconnue' }));
+        alert('Erreur: ' + (errorData.error || 'Erreur lors de la sauvegarde'));
       }
     } catch (error) {
       console.error('Erreur sauvegarde pharmacie:', error);
@@ -314,7 +317,9 @@ const PharmaciesPharmacien = () => {
                 setEditingPharmacie(null);
                 setFormData({
                   nom: '', ville: '', quartier: '', adresse: '', photo: '',
-                  latitude: '', longitude: '', telephone: '', email: '', horaires: {}
+                  latitude: '', longitude: '', telephone: '', email: '', 
+                  horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                  garde: false
                 });
                 setShowForm(true);
               }}

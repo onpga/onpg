@@ -100,17 +100,23 @@ const TrouverPharmacie: React.FC = () => {
         params.append('longitude', userLocation.lng.toString());
       }
 
-      const response = await fetch(`${API_URL}/public/pharmacies?${params.toString()}`);
+      const url = `${API_URL}/public/pharmacies?${params.toString()}`;
+      console.log('🔍 Chargement pharmacies depuis:', url);
+      
+      const response = await fetch(url);
       const data = await response.json();
       
+      console.log('📦 Réponse API pharmacies:', data);
+      
       if (data.success) {
+        console.log('✅ Pharmacies chargées:', data.data?.length || 0);
         setPharmacies(data.data || []);
       } else {
-        // Fallback sur données mock si API échoue
+        console.error('❌ Erreur API:', data.error);
         setPharmacies([]);
       }
     } catch (error) {
-      console.error('Erreur chargement pharmacies:', error);
+      console.error('❌ Erreur chargement pharmacies:', error);
       setPharmacies([]);
     } finally {
       setLoading(false);

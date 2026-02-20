@@ -49,18 +49,27 @@ const AccueilONPG = () => {
           const rawArray = Array.isArray(data) ? data : [data];
           // Trier par date (plus récentes en premier) et limiter à 6 pour le carousel
           const sorted = rawArray
-            .map((item: any) => ({
-              _id: String(item._id || ''),
-              title: item.title || '',
-              excerpt: item.excerpt || item.summary || '',
-              content: item.content || '',
-              image: item.backgroundImage || item.image || ONPG_IMAGES.president,
-              category: item.category || 'ACTUALITÉS',
-              publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
-              author: item.author || 'ONPG',
-              readTime: item.readTime || 3,
-              featured: item.featured || false
-            }))
+            .map((item: any) => {
+              // Priorité: backgroundImage > image > fallback président
+              const imageUrl = item.backgroundImage || item.image || ONPG_IMAGES.president;
+              console.log('📸 Actualité:', item.title, {
+                backgroundImage: item.backgroundImage || '❌',
+                image: item.image || '❌',
+                finalImage: imageUrl
+              });
+              return {
+                _id: String(item._id || ''),
+                title: item.title || '',
+                excerpt: item.excerpt || item.summary || '',
+                content: item.content || '',
+                image: imageUrl,
+                category: item.category || 'ACTUALITÉS',
+                publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
+                author: item.author || 'ONPG',
+                readTime: item.readTime || 3,
+                featured: item.featured || false
+              };
+            })
             .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
             .slice(0, 6);
           
@@ -403,11 +412,13 @@ const AccueilONPG = () => {
             ) : (
               actualites.slice(0, 3).map((actualite) => {
                 const dateFormatted = formatDate(actualite.publishedAt);
+                // Utiliser backgroundImage en priorité, puis image, puis fallback
+                const imageUrl = actualite.image || ONPG_IMAGES.president;
                 return (
                   <div key={actualite._id} className="news-card">
                     <div className="news-image">
                       <img 
-                        src={actualite.image || ONPG_IMAGES.president} 
+                        src={imageUrl} 
                         alt={actualite.title} 
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = ONPG_IMAGES.president;

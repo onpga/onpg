@@ -305,189 +305,189 @@ const TrouverPharmacie: React.FC = () => {
           ) : (
             <div className="pharmacies-grid" style={{ 
               display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-              gap: '1.5rem' 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
+              gap: '1rem' 
             }}>
               {pharmacies.map(pharmacie => (
-                <div key={pharmacie._id} className="pharmacie-card" style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  transition: 'transform 0.3s, box-shadow 0.3s',
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                }}
-                >
-                  {pharmacie.photo && (
-                    <div className="card-image" style={{ height: '180px', overflow: 'hidden', position: 'relative' }}>
-                      <img
-                        src={pharmacie.photo}
-                        alt={`Pharmacie ${pharmacie.nom}`}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        loading="lazy"
-                      />
-                      {pharmacie.garde && (
-                        <div className="garde-badge" style={{
-                          position: 'absolute',
-                          top: '0.75rem',
-                          right: '0.75rem',
-                          background: 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)',
-                          color: 'white',
-                          padding: '0.4rem 0.8rem',
-                          borderRadius: '20px',
-                          fontSize: '0.75rem',
-                          fontWeight: '700',
-                          boxShadow: '0 4px 12px rgba(229, 62, 62, 0.4)',
-                          zIndex: 10
-                        }}>
-                          🚨 DE GARDE
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {!pharmacie.photo && (
-                    <div style={{ height: '120px', background: 'linear-gradient(135deg, #00A651 0%, #27AE60 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                      <span style={{ fontSize: '3rem' }}>🏥</span>
-                      {pharmacie.garde && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '0.75rem',
-                          right: '0.75rem',
-                          background: 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)',
-                          color: 'white',
-                          padding: '0.4rem 0.8rem',
-                          borderRadius: '20px',
-                          fontSize: '0.75rem',
-                          fontWeight: '700',
-                          boxShadow: '0 4px 12px rgba(229, 62, 62, 0.4)'
-                        }}>
-                          🚨 DE GARDE
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <div className="card-content" style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
-                      <h3 className="pharmacie-nom" style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, flex: 1 }}>
-                        {pharmacie.nom}
-                      </h3>
-                      {pharmacie.distance && (
-                        <div style={{ 
-                          background: '#00A651', 
-                          color: 'white', 
-                          padding: '0.3rem 0.6rem', 
-                          borderRadius: '12px', 
-                          fontSize: '0.85rem', 
-                          fontWeight: '600',
-                          whiteSpace: 'nowrap',
-                          marginLeft: '0.5rem'
-                        }}>
-                          📍 {formatDistance(pharmacie.distance)}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pharmacie-location" style={{ marginBottom: '0.5rem', fontSize: '0.9rem', color: '#666' }}>
-                      <strong>📍</strong> {pharmacie.ville} {pharmacie.quartier && `- ${pharmacie.quartier}`}
-                    </div>
-
-                    <div className="pharmacie-adresse" style={{ 
-                      fontSize: '0.9rem',
-                      color: '#666',
-                      marginBottom: '0.5rem',
-                      lineHeight: '1.4'
-                    }}>
-                      {pharmacie.adresse}
-                    </div>
-
-                    <div style={{ 
-                      display: 'flex', 
-                      gap: '1rem', 
-                      marginTop: 'auto',
-                      paddingTop: '0.75rem',
-                      borderTop: '1px solid #e0e0e0',
-                      fontSize: '0.9rem'
-                    }}>
-                      {pharmacie.telephone && (
-                        <a href={`tel:${pharmacie.telephone}`} style={{ 
-                          color: '#00A651', 
-                          textDecoration: 'none', 
-                          fontWeight: '600',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.25rem'
-                        }}>
-                          📞 {pharmacie.telephone}
-                        </a>
-                      )}
-                      {pharmacie.email && (
-                        <span style={{ color: '#666', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                          ✉️ {pharmacie.email}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Horaires - Compact */}
-                    {pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires[k as keyof typeof pharmacie.horaires]) && (
-                      <div style={{ 
-                        marginTop: '0.75rem', 
-                        padding: '0.75rem', 
-                        background: '#f8f9fa', 
-                        borderRadius: '8px',
-                        fontSize: '0.85rem'
-                      }}>
-                        <strong style={{ display: 'block', marginBottom: '0.25rem', color: '#2d3748', fontSize: '0.9rem' }}>🕐 Horaires :</strong>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.25rem', color: '#666' }}>
-                          {pharmacie.horaires.lundi && <div>Lun: {pharmacie.horaires.lundi}</div>}
-                          {pharmacie.horaires.mardi && <div>Mar: {pharmacie.horaires.mardi}</div>}
-                          {pharmacie.horaires.mercredi && <div>Mer: {pharmacie.horaires.mercredi}</div>}
-                          {pharmacie.horaires.jeudi && <div>Jeu: {pharmacie.horaires.jeudi}</div>}
-                          {pharmacie.horaires.vendredi && <div>Ven: {pharmacie.horaires.vendredi}</div>}
-                          {pharmacie.horaires.samedi && <div>Sam: {pharmacie.horaires.samedi}</div>}
-                          {pharmacie.horaires.dimanche && <div>Dim: {pharmacie.horaires.dimanche}</div>}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Messages/Alerte visibles aux visiteurs */}
-                    {pharmacie.messages && pharmacie.messages.length > 0 && (
-                      <div style={{ 
-                        marginTop: '1rem', 
-                        padding: '1rem', 
-                        background: '#fff3cd', 
-                        borderRadius: '8px',
-                        border: '1px solid #ffc107'
-                      }}>
-                        {pharmacie.messages
-                          .filter(m => m.visibleVisiteurs)
-                          .map((msg) => (
-                            <div key={msg._id} style={{ marginBottom: '0.5rem' }}>
-                              <strong style={{ color: '#856404', fontSize: '1rem' }}>⚠️ {msg.titre}</strong>
-                              <p style={{ marginTop: '0.25rem', fontSize: '0.95rem', color: '#856404' }}>
-                                {msg.contenu}
-                              </p>
-                            </div>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <PharmacieCardCompact key={pharmacie._id} pharmacie={pharmacie} formatDistance={formatDistance} />
               ))}
             </div>
           )}
         </div>
       </section>
     </div>
+  );
+};
+
+// Composant card compact séparé pour gérer le state hover
+const PharmacieCardCompact = ({ pharmacie, formatDistance }: { pharmacie: Pharmacie, formatDistance: (d: number) => string }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <div 
+      className="pharmacie-card-compact" 
+      style={{
+        background: 'white',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+        transition: 'all 0.3s',
+        display: 'flex',
+        flexDirection: 'column',
+        cursor: 'pointer'
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Image compacte */}
+        {pharmacie.photo ? (
+          <div style={{ height: '80px', overflow: 'hidden', position: 'relative', background: '#f0f0f0' }}>
+            <img
+              src={pharmacie.photo}
+              alt={pharmacie.nom}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              loading="lazy"
+            />
+            {pharmacie.garde && (
+              <div style={{
+                position: 'absolute',
+                top: '0.25rem',
+                right: '0.25rem',
+                background: '#e53e3e',
+                color: 'white',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '12px',
+                fontSize: '0.65rem',
+                fontWeight: '700'
+              }}>
+                🚨
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ 
+            height: '80px', 
+            background: 'linear-gradient(135deg, #00A651 0%, #27AE60 100%)', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            position: 'relative'
+          }}>
+            <span style={{ fontSize: '2rem' }}>🏥</span>
+            {pharmacie.garde && (
+              <div style={{
+                position: 'absolute',
+                top: '0.25rem',
+                right: '0.25rem',
+                background: '#e53e3e',
+                color: 'white',
+                padding: '0.2rem 0.5rem',
+                borderRadius: '12px',
+                fontSize: '0.65rem',
+                fontWeight: '700'
+              }}>
+                🚨
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Contenu compact */}
+        <div style={{ padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {/* Nom et distance */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '0.5rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', margin: 0, flex: 1, lineHeight: '1.3', color: '#1a365d' }}>
+              {pharmacie.nom}
+            </h3>
+            {pharmacie.distance && (
+              <span style={{ 
+                background: '#00A651', 
+                color: 'white', 
+                padding: '0.2rem 0.5rem', 
+                borderRadius: '8px', 
+                fontSize: '0.75rem', 
+                fontWeight: '600',
+                whiteSpace: 'nowrap'
+              }}>
+                {formatDistance(pharmacie.distance)}
+              </span>
+            )}
+          </div>
+
+          {/* Location compacte */}
+          <div style={{ fontSize: '0.85rem', color: '#666', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <span>📍</span>
+            <span>{pharmacie.ville}{pharmacie.quartier && ` - ${pharmacie.quartier}`}</span>
+          </div>
+
+          {/* Contact compact */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', fontSize: '0.85rem' }}>
+            {pharmacie.telephone && (
+              <a href={`tel:${pharmacie.telephone}`} style={{ 
+                color: '#00A651', 
+                textDecoration: 'none', 
+                fontWeight: '600',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}>
+                📞 {pharmacie.telephone}
+              </a>
+            )}
+            {pharmacie.email && (
+              <span style={{ color: '#666', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                ✉️ {pharmacie.email}
+              </span>
+            )}
+          </div>
+
+          {/* Détails au survol - Horaires */}
+          {isHovered && pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires[k as keyof typeof pharmacie.horaires]) && (
+            <div style={{ 
+              marginTop: '0.5rem', 
+              padding: '0.75rem', 
+              background: '#f8f9fa', 
+              borderRadius: '8px',
+              fontSize: '0.8rem',
+              border: '1px solid #e0e0e0'
+            }}>
+              <strong style={{ display: 'block', marginBottom: '0.25rem', color: '#2d3748', fontSize: '0.85rem' }}>🕐 Horaires :</strong>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.2rem', color: '#666', fontSize: '0.75rem' }}>
+                {pharmacie.horaires.lundi && <div>Lun: {pharmacie.horaires.lundi}</div>}
+                {pharmacie.horaires.mardi && <div>Mar: {pharmacie.horaires.mardi}</div>}
+                {pharmacie.horaires.mercredi && <div>Mer: {pharmacie.horaires.mercredi}</div>}
+                {pharmacie.horaires.jeudi && <div>Jeu: {pharmacie.horaires.jeudi}</div>}
+                {pharmacie.horaires.vendredi && <div>Ven: {pharmacie.horaires.vendredi}</div>}
+                {pharmacie.horaires.samedi && <div>Sam: {pharmacie.horaires.samedi}</div>}
+                {pharmacie.horaires.dimanche && <div>Dim: {pharmacie.horaires.dimanche}</div>}
+              </div>
+            </div>
+          )}
+
+          {/* Détails au survol - Messages/Alerte */}
+          {isHovered && pharmacie.messages && pharmacie.messages.length > 0 && (
+            <div style={{ 
+              marginTop: '0.5rem', 
+              padding: '0.75rem', 
+              background: '#fff3cd', 
+              borderRadius: '8px',
+              border: '1px solid #ffc107',
+              fontSize: '0.8rem'
+            }}>
+              {pharmacie.messages
+                .filter(m => m.visibleVisiteurs)
+                .map((msg) => (
+                  <div key={msg._id} style={{ marginBottom: '0.5rem' }}>
+                    <strong style={{ color: '#856404', fontSize: '0.85rem' }}>⚠️ {msg.titre}</strong>
+                    <p style={{ marginTop: '0.25rem', fontSize: '0.75rem', color: '#856404', margin: 0 }}>
+                      {msg.contenu}
+                    </p>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
+      </div>
   );
 };
 

@@ -32,6 +32,8 @@ const LoiDetail = lazy(() => import('./modules/Ressources/LoiDetailPage'));
 const AProposOrdre = lazy(() => import('./modules/Ordre/APropos'));
 const Organigramme = lazy(() => import('./modules/Ordre/Organigramme'));
 const ConseilNational = lazy(() => import('./modules/Ordre/ConseilNational'));
+const SantePublique = lazy(() => import('./modules/Ordre/SantePublique'));
+const DefenseProfessionnelle = lazy(() => import('./modules/Ordre/DefenseProfessionnelle'));
 
 // Membres
 const TableauOrdre = lazy(() => import('./modules/Membres/TableauOrdre'));
@@ -191,6 +193,8 @@ function App() {
                     <Route path="/ordre/a-propos" element={<AProposOrdre />} />
                     <Route path="/ordre/organigramme" element={<Organigramme />} />
                     <Route path="/ordre/conseil-national" element={<ConseilNational />} />
+                    <Route path="/ordre/sante-publique" element={<SantePublique />} />
+                    <Route path="/ordre/defense-professionnelle" element={<DefenseProfessionnelle />} />
 
                     {/* Membres */}
                     <Route path="/membres/tableau-ordre" element={<TableauOrdre />} />

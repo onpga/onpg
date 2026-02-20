@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 import './AProposOrdre.css';
 
 // Types pour les données
@@ -80,9 +81,30 @@ const valeurs: Valeur[] = [
 const APropos = () => {
   const [activeMission, setActiveMission] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [nombrePharmaciens, setNombrePharmaciens] = useState<number | null>(null);
 
   useEffect(() => {
     setIsVisible(true);
+  }, []);
+
+  // Charger le nombre réel de pharmaciens depuis la base de données
+  useEffect(() => {
+    const loadNombrePharmaciens = async () => {
+      try {
+        const data = await fetchResourceData('pharmaciens');
+        if (data) {
+          const rawArray = Array.isArray(data) ? data : [data];
+          // Filtrer uniquement les pharmaciens actifs
+          const actifs = rawArray.filter((p: any) => p.isActive !== false);
+          setNombrePharmaciens(actifs.length);
+        }
+      } catch (error) {
+        console.error('Erreur chargement nombre pharmaciens:', error);
+        // En cas d'erreur, on laisse null pour ne pas afficher de nombre
+      }
+    };
+    
+    loadNombrePharmaciens();
   }, []);
 
   const handleMissionHover = (missionId: string) => {
@@ -135,7 +157,6 @@ const APropos = () => {
         <div className="nav-container">
           <a href="#mission" className="nav-link">Notre Mission</a>
           <a href="#valeurs" className="nav-link">Nos Valeurs</a>
-          <a href="#histoire" className="nav-link">Notre Histoire</a>
           <a href="#organisation" className="nav-link">Organisation</a>
         </div>
       </nav>
@@ -216,73 +237,6 @@ const APropos = () => {
         </div>
       </section>
 
-      {/* Section Histoire */}
-      <section id="histoire" className="histoire-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">
-              <span className="title-icon">📚</span>
-              Notre Histoire
-            </h2>
-            <p className="section-subtitle">
-              Plus de 45 ans au service de la santé gabonaise
-            </p>
-          </div>
-
-          <div className="timeline-container">
-            <div className="timeline-line"></div>
-
-            <div className="timeline-item">
-              <div className="timeline-dot"></div>
-              <div className="timeline-content">
-                <div className="timeline-year">1978</div>
-                <h3 className="timeline-title">Création de l'Ordre</h3>
-                <p className="timeline-description">
-                  Fondation de l'Ordre National des Pharmaciens du Gabon pour réguler
-                  et organiser la profession pharmaceutique.
-                </p>
-              </div>
-            </div>
-
-            <div className="timeline-item">
-              <div className="timeline-dot"></div>
-              <div className="timeline-content">
-                <div className="timeline-year">2005</div>
-                <h3 className="timeline-title">Modernisation</h3>
-                <p className="timeline-description">
-                  Adoption du nouveau code de déontologie et mise en place
-                  du système de formation continue obligatoire.
-                </p>
-              </div>
-            </div>
-
-            <div className="timeline-item">
-              <div className="timeline-dot"></div>
-              <div className="timeline-content">
-                <div className="timeline-year">2015</div>
-                <h3 className="timeline-title">Numérisation</h3>
-                <p className="timeline-description">
-                  Lancement de la plateforme numérique et des services en ligne
-                  pour faciliter les démarches administratives.
-                </p>
-              </div>
-            </div>
-
-            <div className="timeline-item active">
-              <div className="timeline-dot"></div>
-              <div className="timeline-content">
-                <div className="timeline-year">2024</div>
-                <h3 className="timeline-title">Innovation Continue</h3>
-                <p className="timeline-description">
-                  Développement de nouvelles technologies et partenariats
-                  pour améliorer l'accès aux soins de santé.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Section Organisation */}
       <section id="organisation" className="organisation-section">
         <div className="section-container">
@@ -337,7 +291,11 @@ const APropos = () => {
                 </div>
                 <div className="org-level membres">
                   <div className="org-title">Membres</div>
-                  <div className="org-subtitle">1200+ pharmaciens</div>
+                  <div className="org-subtitle">
+                    {nombrePharmaciens !== null 
+                      ? `${nombrePharmaciens} pharmacien${nombrePharmaciens > 1 ? 's' : ''}`
+                      : 'Pharmaciens inscrits'}
+                  </div>
                 </div>
               </div>
             </div>

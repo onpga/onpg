@@ -1,89 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-
-// Données des actualités pour le carousel
-const NEWS_DATA = [
-  {
-    id: 1,
-    image: 'hero1',
-    title: 'Nouveau décret sur la dispensation des médicaments',
-    excerpt: 'Publication du décret n°2024-XXX réglementant les conditions de dispensation des médicaments au Gabon.',
-    date: { day: '15', month: 'Déc' },
-    category: 'RÉGLEMENTATION',
-    categoryClass: '',
-    author: 'ONPG',
-    readTime: '3 min',
-    link: '/actualites/decret-medicaments'
-  },
-  {
-    id: 2,
-    image: 'hero2',
-    title: 'Formation continue obligatoire 2024',
-    excerpt: 'L\'ONPG lance le nouveau programme de formation continue pour tous les pharmaciens inscrits.',
-    date: { day: '12', month: 'Déc' },
-    category: 'FORMATION',
-    categoryClass: 'category-formation',
-    author: 'Service Formation',
-    readTime: '2 min',
-    link: '/actualites/formation-continue'
-  },
-  {
-    id: 3,
-    image: 'hero3',
-    title: 'Conseil National : Session extraordinaire',
-    excerpt: 'Réunion extraordinaire du Conseil National pour l\'examen des textes réglementaires en cours.',
-    date: { day: '08', month: 'Déc' },
-    category: 'CONSEIL',
-    categoryClass: 'category-conseil',
-    author: 'Secrétariat Général',
-    readTime: '4 min',
-    link: '/actualites/conseil-national'
-  },
-  {
-    id: 4,
-    image: 'hero4',
-    title: 'Programme de formation 2025',
-    excerpt: 'Découvrez le nouveau programme de formation continue obligatoire pour tous les pharmaciens.',
-    date: { day: '05', month: 'Déc' },
-    category: 'FORMATION',
-    categoryClass: 'category-formation',
-    author: 'Direction Formation',
-    readTime: '3 min',
-    link: '/actualites/formation-2025'
-  },
-  {
-    id: 5,
-    image: 'hero5',
-    title: 'Nouvelles normes de stockage',
-    excerpt: 'Mise à jour des normes de stockage et conservation des médicaments.',
-    date: { day: '02', month: 'Déc' },
-    category: 'RÉGLEMENTATION',
-    categoryClass: '',
-    author: 'Commission Qualité',
-    readTime: '5 min',
-    link: '/actualites/normes-stockage'
-  },
-  {
-    id: 6,
-    image: 'hero1',
-    title: 'Journée Portes Ouvertes',
-    excerpt: 'L\'ONPG organise une journée portes ouvertes pour présenter ses missions.',
-    date: { day: '28', month: 'Nov' },
-    category: 'ÉVÉNEMENT',
-    categoryClass: 'category-evenement',
-    author: 'Communication',
-    readTime: '2 min',
-    link: '/actualites/journee-portes-ouvertes'
-  }
-];
 import HeroONPG from './components/HeroONPG';
 import AnimatedSection from '../../components/AnimatedSection';
 import ONPG_CONFIG from '../../config/onpg-config';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { fetchResourceData } from '../../utils/pageMocksApi';
 import './AccueilONPG.css';
 import './AccueilONPG-Elegant.css';
 
+interface Actualite {
+  _id: string;
+  title: string;
+  excerpt?: string;
+  summary?: string;
+  content?: string;
+  image?: string;
+  category?: string;
+  publishedAt?: string;
+  date?: string;
+  createdAt?: string;
+  author?: string;
+  readTime?: number;
+  featured?: boolean;
+}
+
 const AccueilONPG = () => {
+  // État pour les actualités réelles
+  const [actualites, setActualites] = useState<Actualite[]>([]);
+  const [loadingActualites, setLoadingActualites] = useState(true);
+  
   // État pour le carousel avec 3 blocs et défilement subtil
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -93,41 +38,93 @@ const AccueilONPG = () => {
     document.title = ONPG_CONFIG.app.title;
   }, []);
 
+  // Charger les actualités depuis l'API
+  useEffect(() => {
+    const loadActualites = async () => {
+      try {
+        setLoadingActualites(true);
+        const data = await fetchResourceData('actualites');
+        
+        if (data) {
+          const rawArray = Array.isArray(data) ? data : [data];
+          // Trier par date (plus récentes en premier) et limiter à 6 pour le carousel
+          const sorted = rawArray
+            .map((item: any) => ({
+              _id: String(item._id || ''),
+              title: item.title || '',
+              excerpt: item.excerpt || item.summary || '',
+              content: item.content || '',
+              image: item.image || ONPG_IMAGES.president,
+              category: item.category || 'ACTUALITÉS',
+              publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
+              author: item.author || 'ONPG',
+              readTime: item.readTime || 3,
+              featured: item.featured || false
+            }))
+            .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+            .slice(0, 6);
+          
+          setActualites(sorted);
+        }
+      } catch (error) {
+        console.error('Erreur chargement actualités:', error);
+        setActualites([]);
+      } finally {
+        setLoadingActualites(false);
+      }
+    };
+    
+    loadActualites();
+  }, []);
+
   // Auto-défilement naturel avec séquence logique
   useEffect(() => {
+    if (actualites.length === 0) return;
+    
     const interval = setInterval(() => {
       if (!isAnimating) {
         setIsAnimating(true);
         // Durée totale de l'animation séquentielle
         setTimeout(() => {
-          setCurrentIndex((prev) => (prev + 1) % NEWS_DATA.length);
+          setCurrentIndex((prev) => (prev + 1) % actualites.length);
           setIsAnimating(false);
         }, 1000); // Animation complète en 1 seconde
       }
     }, 7000); // Changement toutes les 7 secondes pour rythme naturel
 
     return () => clearInterval(interval);
-  }, [isAnimating]);
+  }, [isAnimating, actualites.length]);
 
   // Calculer les actualités visibles (3 ou 4 selon l'animation)
   const getVisibleNews = () => {
+    if (actualites.length === 0) return [];
+    
     const result = [];
     // Toujours 3 cartes de base
     for (let i = 0; i < 3; i++) {
-      const index = (currentIndex + i) % NEWS_DATA.length;
-      result.push(NEWS_DATA[index]);
+      const index = (currentIndex + i) % actualites.length;
+      result.push(actualites[index]);
     }
 
     // Pendant l'animation, ajouter la 4ème carte qui arrive
-    if (isAnimating) {
-      const nextIndex = (currentIndex + 3) % NEWS_DATA.length;
-      result.push(NEWS_DATA[nextIndex]);
+    if (isAnimating && actualites.length > 3) {
+      const nextIndex = (currentIndex + 3) % actualites.length;
+      result.push(actualites[nextIndex]);
     }
 
     return result;
   };
 
   const visibleNews = getVisibleNews();
+
+  // Formater la date pour l'affichage
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const month = months[date.getMonth()];
+    return { day: day.toString(), month };
+  };
 
   // Pause élégante au survol
   const [isHovered] = useState(false);
@@ -182,28 +179,28 @@ const AccueilONPG = () => {
       title: 'Protection de la Santé Publique',
       description: 'Garantir la qualité et la sécurité des médicaments au Gabon',
       color: '#00A651',
-      link: '/missions/sante-publique'
+      link: '/ordre/sante-publique'
     },
     {
       icon: '👥',
       title: 'Défense des Pharmaciens',
       description: 'Représenter et défendre les intérêts professionnels',
       color: '#008F45',
-      link: '/missions/defense-professionnelle'
+      link: '/ordre/defense-professionnelle'
     },
     {
       icon: '🎓',
       title: 'Formation Continue',
       description: 'Assurer le développement des compétences',
       color: '#2ECC71',
-      link: '/missions/formation'
+      link: '/pratique/formation-continue'
     },
     {
       icon: '⚖️',
       title: 'Régulation Éthique',
       description: 'Contrôler et réguler l\'exercice professionnel',
       color: '#27AE60',
-      link: '/missions/reglementation'
+      link: '/pratique/deontologie'
     }
   ];
 
@@ -386,34 +383,62 @@ const AccueilONPG = () => {
 
           {/* Grille avec seulement 3 articles */}
           <div className="news-grid">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="news-card">
-                <div className="news-image">
-                  <img src={ONPG_IMAGES.president} alt={`Actualité ${i}`} />
-                  <div className="news-image-overlay"></div>
-                  <div className="news-date">
-                    <span className="date-day">{15 + i}</span>
-                    <span className="date-month">Déc</span>
+            {loadingActualites ? (
+              // Skeleton loading
+              [1, 2, 3].map(i => (
+                <div key={i} className="news-card" style={{ opacity: 0.6 }}>
+                  <div className="news-image">
+                    <div style={{ width: '100%', height: '100%', background: '#f0f0f0' }}></div>
                   </div>
-                  <div className="news-category" style={{ backgroundColor: '#27ae60' }}>
-                    <span className="category-text">Actualités</span>
+                  <div className="news-content">
+                    <h3 className="news-title" style={{ background: '#f0f0f0', height: '20px', borderRadius: '4px' }}></h3>
+                    <p className="news-excerpt" style={{ background: '#f0f0f0', height: '60px', borderRadius: '4px', marginTop: '10px' }}></p>
                   </div>
                 </div>
-                <div className="news-content">
-                  <h3 className="news-title">Actualité importante #{i}</h3>
-                  <p className="news-excerpt">Découvrez les dernières nouvelles et informations importantes de l'ONPG...</p>
-                  <div className="news-meta">
-                    <span className="meta-author">ONPG</span>
-                    <span className="meta-separator">•</span>
-                    <span className="meta-read-time">{3 + i} min</span>
+              ))
+            ) : actualites.length === 0 ? (
+              <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: '#666' }}>
+                Aucune actualité disponible pour le moment.
+              </p>
+            ) : (
+              actualites.slice(0, 3).map((actualite) => {
+                const dateFormatted = formatDate(actualite.publishedAt);
+                return (
+                  <div key={actualite._id} className="news-card">
+                    <div className="news-image">
+                      <img 
+                        src={actualite.image || ONPG_IMAGES.president} 
+                        alt={actualite.title} 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = ONPG_IMAGES.president;
+                        }}
+                      />
+                      <div className="news-image-overlay"></div>
+                      <div className="news-date">
+                        <span className="date-day">{dateFormatted.day}</span>
+                        <span className="date-month">{dateFormatted.month}</span>
+                      </div>
+                      <div className="news-category" style={{ backgroundColor: '#27ae60' }}>
+                        <span className="category-text">{actualite.category || 'ACTUALITÉS'}</span>
+                      </div>
+                    </div>
+                    <div className="news-content">
+                      <h3 className="news-title">{actualite.title}</h3>
+                      <p className="news-excerpt">{actualite.excerpt || 'Découvrez les dernières nouvelles et informations importantes de l\'ONPG...'}</p>
+                      <div className="news-meta">
+                        <span className="meta-author">{actualite.author || 'ONPG'}</span>
+                        <span className="meta-separator">•</span>
+                        <span className="meta-read-time">{actualite.readTime || 3} min</span>
+                      </div>
+                      <Link to={`/ressources/actualites/${actualite._id}`} className="news-link">
+                        <span className="link-text">Lire l'article</span>
+                        <span className="link-arrow">→</span>
+                      </Link>
+                    </div>
                   </div>
-                  <Link to={`/ressources/actualites`} className="news-link">
-                    <span className="link-text">Lire l'article</span>
-                    <span className="link-arrow">→</span>
-                  </Link>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            )}
           </div>
 
           {/* Bouton voir toutes les actualités */}
@@ -465,22 +490,6 @@ const AccueilONPG = () => {
                 <div className="benefit-ultra">
                   <span className="benefit-icon-ultra">🏆</span>
                   <span className="benefit-text-ultra">Qualité</span>
-                </div>
-              </div>
-
-              {/* Stats en ligne ultra-compacts */}
-              <div className="formation-stats-ultra">
-                <div className="stat-ultra">
-                  <span className="stat-number-ultra">500+</span>
-                  <span className="stat-label-ultra">formés</span>
-                </div>
-                <div className="stat-ultra">
-                  <span className="stat-number-ultra">98%</span>
-                  <span className="stat-label-ultra">satisfaits</span>
-                </div>
-                <div className="stat-ultra">
-                  <span className="stat-number-ultra">50+</span>
-                  <span className="stat-label-ultra">sessions/an</span>
                 </div>
               </div>
 
@@ -545,15 +554,15 @@ const AccueilONPG = () => {
 
             {/* Grille de contact WOW */}
             <div className="contact-cta-grid-professional">
-              <a href="tel:+24101020304" className="contact-cta-item-professional contact-link">
+              <a href="tel:+24176502032" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
                   <div className="contact-cta-icon-professional">📞</div>
                   <div className="icon-glow-professional"></div>
                 </div>
                 <div className="contact-content-professional">
                   <h3 className="contact-item-title-professional">Par téléphone</h3>
-                  <p className="contact-info-professional">+241 01 02 03 04</p>
-                  <small className="contact-note-professional">Lundi au vendredi, 8h-17h</small>
+                  <p className="contact-info-professional">076 50 20 32</p>
+                  <small className="contact-note-professional">Lundi au vendredi, 08:30–17:30</small>
                 </div>
                 <div className="contact-decoration-professional"></div>
               </a>
@@ -571,29 +580,28 @@ const AccueilONPG = () => {
                 <div className="contact-decoration-professional"></div>
               </a>
 
-              <a href="https://www.google.com/maps/search/?api=1&query=Libreville,Gabon" target="_blank" rel="noopener noreferrer" className="contact-cta-item-professional contact-link">
+              <a href="https://www.google.com/maps/search/?api=1&query=CC4J%2BWC6+Montee+Louis+Libreville+Gabon" target="_blank" rel="noopener noreferrer" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
                   <div className="contact-cta-icon-professional">📍</div>
                   <div className="icon-glow-professional"></div>
                 </div>
                 <div className="contact-content-professional">
                   <h3 className="contact-item-title-professional">Sur place</h3>
-                  <p className="contact-info-professional">Libreville, Gabon</p>
-                  <small className="contact-note-professional">Sur rendez-vous</small>
+                  <p className="contact-info-professional">CC4J+WC6, Montee Louis, Libreville</p>
+                  <small className="contact-note-professional">Après le ministère de la corruption</small>
                 </div>
                 <div className="contact-decoration-professional"></div>
               </a>
             </div>
 
-
-              {/* CTA principal WOW */}
+            {/* Bouton Nous contacter */}
             <div className="contact-main-cta-professional">
-              <Link to="/contact" className="btn-contact-primary-professional">
+              <Link to="/pratique/contact" className="btn-contact-primary-professional">
                 <span className="btn-text-professional">Nous contacter</span>
                 <span className="btn-arrow-professional">→</span>
-                </Link>
-
+              </Link>
             </div>
+
           </div>
 
           {/* Particules WOW en arrière-plan */}

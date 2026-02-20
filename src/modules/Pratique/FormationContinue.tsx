@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './FormationContinue.css';
+import './Pratique.css';
 
 interface Formation {
   _id?: string;
@@ -67,7 +68,8 @@ const FormationContinue = () => {
 
   return (
     <div className="pratique-page">
-      <section className="pratique-hero">
+      {/* Hero Section - Style similaire à Déontologie */}
+      <section className="pratique-hero" style={{ background: 'linear-gradient(135deg, #2ECC71 0%, #27AE60 100%)' }}>
         <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
@@ -108,18 +110,37 @@ const FormationContinue = () => {
         </div>
       </section>
 
+      {/* Contenu principal */}
       <section className="section-content">
         <div className="section-container">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '3rem' }}>Chargement des formations...</div>
+            <div style={{ textAlign: 'center', padding: '3rem', fontSize: '1.2rem', color: '#666' }}>
+              Chargement des formations...
+            </div>
           ) : activeFormations.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
-              <p>Aucune formation disponible pour le moment.</p>
+            <div style={{ 
+              textAlign: 'center', 
+              padding: '3rem', 
+              color: '#666',
+              maxWidth: '600px',
+              margin: '0 auto',
+              backgroundColor: 'white',
+              borderRadius: '16px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+            }}>
+              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📚</div>
+              <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#00A651' }}>
+                Aucune formation disponible
+              </h2>
+              <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
+                Le catalogue de formations sera bientôt disponible.
+                Revenez prochainement pour découvrir nos programmes de formation continue.
+              </p>
             </div>
           ) : (
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
               gap: '2rem',
               padding: '2rem 0'
             }}>
@@ -128,14 +149,22 @@ const FormationContinue = () => {
                   key={formation._id}
                   style={{
                     backgroundColor: 'white',
-                    borderRadius: '12px',
+                    borderRadius: '16px',
                     padding: '2rem',
                     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    transition: 'transform 0.2s',
-                    border: formation.featured ? '3px solid #00A651' : '1px solid #eee'
+                    transition: 'all 0.3s',
+                    border: formation.featured ? '3px solid #00A651' : '1px solid #e0e0e0',
+                    display: 'flex',
+                    flexDirection: 'column'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-5px)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 166, 81, 0.2)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                  }}
                 >
                   {formation.featured && (
                     <div style={{
@@ -146,27 +175,56 @@ const FormationContinue = () => {
                       fontSize: '0.9rem',
                       fontWeight: 'bold',
                       display: 'inline-block',
-                      marginBottom: '1rem'
+                      marginBottom: '1rem',
+                      alignSelf: 'flex-start'
                     }}>
                       ⭐ À la une
                     </div>
                   )}
-                  <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: '#00A651' }}>
+                  <h3 style={{ 
+                    fontSize: '1.6rem', 
+                    marginBottom: '1rem', 
+                    color: '#00A651',
+                    fontWeight: '700',
+                    lineHeight: '1.3'
+                  }}>
                     {formation.title}
                   </h3>
-                  <p style={{ color: '#666', marginBottom: '1rem', lineHeight: '1.6' }}>
+                  <p style={{ 
+                    color: '#555', 
+                    marginBottom: '1.5rem', 
+                    lineHeight: '1.7',
+                    fontSize: '1rem',
+                    flex: 1
+                  }}>
                     {formation.description}
                   </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                    <span style={{ fontSize: '0.9rem', color: '#999' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: '0.75rem', 
+                    marginBottom: '1rem' 
+                  }}>
+                    <span style={{ 
+                      fontSize: '0.9rem', 
+                      color: '#666',
+                      backgroundColor: '#f8f9fa',
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
                       ⏱️ {formation.duration}
                     </span>
                     {formation.category && (
                       <span style={{
                         fontSize: '0.9rem',
-                        backgroundColor: '#f0f0f0',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '12px'
+                        backgroundColor: '#e8f5e9',
+                        color: '#00A651',
+                        padding: '0.4rem 0.8rem',
+                        borderRadius: '8px',
+                        fontWeight: '600'
                       }}>
                         {formation.category}
                       </span>
@@ -174,29 +232,43 @@ const FormationContinue = () => {
                   </div>
                   {formation.showPrice && formation.price && (
                     <div style={{
-                      fontSize: '1.2rem',
+                      fontSize: '1.3rem',
                       fontWeight: 'bold',
                       color: '#00A651',
-                      marginBottom: '1rem'
+                      marginBottom: '1rem',
+                      padding: '0.75rem',
+                      backgroundColor: '#f0f9f4',
+                      borderRadius: '8px',
+                      textAlign: 'center'
                     }}>
                       {formation.price.toLocaleString()} FCFA
                     </div>
                   )}
-                  {formation.instructor && (
-                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-                      <strong>Formateur :</strong> {formation.instructor}
-                    </p>
-                  )}
-                  {formation.date && (
-                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-                      <strong>Date :</strong> {new Date(formation.date).toLocaleDateString('fr-FR')}
-                    </p>
-                  )}
-                  {formation.location && (
-                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1rem' }}>
-                      <strong>Lieu :</strong> {formation.location}
-                    </p>
-                  )}
+                  <div style={{ 
+                    marginTop: 'auto',
+                    paddingTop: '1rem',
+                    borderTop: '1px solid #e0e0e0'
+                  }}>
+                    {formation.instructor && (
+                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
+                        <strong style={{ color: '#00A651' }}>Formateur :</strong> {formation.instructor}
+                      </p>
+                    )}
+                    {formation.date && (
+                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
+                        <strong style={{ color: '#00A651' }}>Date :</strong> {new Date(formation.date).toLocaleDateString('fr-FR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    )}
+                    {formation.location && (
+                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0' }}>
+                        <strong style={{ color: '#00A651' }}>Lieu :</strong> {formation.location}
+                      </p>
+                    )}
+                  </div>
                   {formation.content && (
                     <div style={{
                       marginTop: '1rem',
@@ -204,7 +276,8 @@ const FormationContinue = () => {
                       backgroundColor: '#f8f9fa',
                       borderRadius: '8px',
                       fontSize: '0.9rem',
-                      color: '#555'
+                      color: '#555',
+                      lineHeight: '1.6'
                     }}>
                       {formation.content}
                     </div>
@@ -220,4 +293,3 @@ const FormationContinue = () => {
 };
 
 export default FormationContinue;
-

@@ -226,10 +226,13 @@ p {
 .onpg-layout {
   color: var(--onpg-ink);
   background: linear-gradient(180deg, var(--onpg-surface) 0%, var(--onpg-surface-2) 45%, var(--onpg-surface) 100%);
+  /* Pas de height ou overflow pour éviter le double scroll */
+  min-height: 100vh;
 }
 
 .onpg-layout .onpg-main-content {
   background: transparent !important;
+  /* Pas de height ou overflow pour éviter le double scroll */
 }
 
 .onpg-layout .container {

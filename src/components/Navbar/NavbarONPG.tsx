@@ -55,7 +55,6 @@ const NavbarONPG = () => {
       id: 'ordre',
       dropdown: [
         { path: '/ordre/a-propos', label: 'À propos' },
-        { path: '/ordre/instance', label: 'Instance' },
         { path: '/ordre/organigramme', label: 'Organigramme' },
         { path: '/ordre/conseil-national', label: 'Conseil National' }
       ]

@@ -10,6 +10,9 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 interface PageMock {
   _id?: string;
   pageId: string;
@@ -34,9 +37,13 @@ const PageMocks = () => {
     featured: false,
     excerpt: '',
     isActive: true,
-    order: 1
+    order: 1,
+    image: '',
+    backgroundImage: ''
   });
 
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingBackground, setUploadingBackground] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   const collections = [
@@ -120,6 +127,51 @@ const PageMocks = () => {
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
       alert('❌ Erreur lors de la suppression');
+    }
+  };
+
+  const handleImageUpload = async (file: File, type: 'image' | 'backgroundImage') => {
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      alert("Configuration d'upload image manquante. Veuillez définir VITE_CLOUDINARY_CLOUD_NAME et VITE_CLOUDINARY_UPLOAD_PRESET.");
+      return;
+    }
+
+    if (type === 'image') {
+      setUploadingImage(true);
+    } else {
+      setUploadingBackground(true);
+    }
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: 'POST',
+          body: formDataUpload
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.secure_url) {
+        setFormData((prev) => ({ ...prev, [type]: data.secure_url }));
+      } else {
+        console.error('Erreur upload Cloudinary:', data);
+        alert("Erreur lors de l'envoi de l'image");
+      }
+    } catch (err) {
+      console.error('Erreur upload Cloudinary:', err);
+      alert("Erreur lors de l'envoi de l'image");
+    } finally {
+      if (type === 'image') {
+        setUploadingImage(false);
+      } else {
+        setUploadingBackground(false);
+      }
     }
   };
 
@@ -281,6 +333,60 @@ const PageMocks = () => {
                     rows={3}
                     placeholder="Résumé court du contenu"
                   />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Image principale</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file, 'image');
+                      }}
+                      disabled={uploadingImage}
+                    />
+                    {formData.image && (
+                      <div style={{ marginTop: '10px' }}>
+                        <img src={formData.image} alt="Preview" style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px' }} />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, image: '' })}
+                          style={{ marginLeft: '10px', padding: '5px 10px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    )}
+                    {uploadingImage && <p style={{ color: '#666', fontSize: '0.9rem' }}>Upload en cours...</p>}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Image d'arrière-plan (pour actualités)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleImageUpload(file, 'backgroundImage');
+                      }}
+                      disabled={uploadingBackground}
+                    />
+                    {formData.backgroundImage && (
+                      <div style={{ marginTop: '10px' }}>
+                        <img src={formData.backgroundImage} alt="Preview" style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '8px' }} />
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, backgroundImage: '' })}
+                          style={{ marginLeft: '10px', padding: '5px 10px', background: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    )}
+                    {uploadingBackground && <p style={{ color: '#666', fontSize: '0.9rem' }}>Upload en cours...</p>}
+                  </div>
                 </div>
 
                 <div className="form-group">

@@ -313,8 +313,14 @@
 
 .missions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .missions-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .mission-card {
@@ -389,8 +395,14 @@
 
 .valeurs-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .valeurs-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .valeur-card {

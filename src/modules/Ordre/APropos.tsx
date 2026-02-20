@@ -261,10 +261,6 @@ const APropos = () => {
               </p>
 
               <div className="organisation-links">
-                <Link to="/ordre/instance" className="org-link">
-                  <span className="link-icon">🏛️</span>
-                  Découvrir nos instances
-                </Link>
                 <Link to="/ordre/organigramme" className="org-link">
                   <span className="link-icon">📊</span>
                   Voir l'organigramme

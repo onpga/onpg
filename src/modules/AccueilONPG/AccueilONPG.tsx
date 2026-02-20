@@ -54,7 +54,7 @@ const AccueilONPG = () => {
               title: item.title || '',
               excerpt: item.excerpt || item.summary || '',
               content: item.content || '',
-              image: item.image || ONPG_IMAGES.president,
+              image: item.backgroundImage || item.image || ONPG_IMAGES.president,
               category: item.category || 'ACTUALITÉS',
               publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
               author: item.author || 'ONPG',

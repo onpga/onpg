@@ -147,7 +147,7 @@
 /* Filtres */
 .membres-filters {
   background: white;
-  padding: 30px 20px;
+  padding: 15px 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -157,15 +157,21 @@
 .membres-filters .filters-container {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
 }
 
 .membres-filters .search-section {
-  margin-bottom: 20px;
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 0;
 }
 
 .membres-filters .search-form {
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 }
 
 .membres-filters .search-input-wrapper {
@@ -210,10 +216,11 @@
 
 .membres-filters .filters-row {
   display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
+  gap: 15px;
   align-items: center;
-  justify-content: center;
+  flex-wrap: wrap;
+  flex: 1;
+  min-width: 300px;
 }
 
 .membres-filters .filter-group {

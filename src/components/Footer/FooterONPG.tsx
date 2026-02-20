@@ -44,12 +44,11 @@ const FooterONPG = () => {
           <div className="onpg-footer-section">
             <h4>Informations</h4>
             <ul>
-              <li><Link to="/ordre/missions">Nos missions</Link></li>
-              <li><Link to="/ordre/organisation">Organisation</Link></li>
-              <li><Link to="/membres/formation">Formation continue</Link></li>
-              <li><Link to="/ressources/publications">Publications</Link></li>
+              <li><Link to="/ordre/a-propos">À propos</Link></li>
+              <li><Link to="/ordre/organigramme">Organigramme</Link></li>
+              <li><Link to="/pratique/formation-continue">Formation continue</Link></li>
               <li><Link to="/ressources/actualites">Actualités</Link></li>
-              <li><Link to="/contact">Contact</Link></li>
+              <li><Link to="/pratique/contact">Contact</Link></li>
             </ul>
           </div>
 

@@ -53,3 +53,6 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
 export default PharmacienSidebar;
 
 
+
+
+

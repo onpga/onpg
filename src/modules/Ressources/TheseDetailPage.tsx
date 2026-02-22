@@ -11,3 +11,6 @@ const TheseDetailPage = () => (
 export default TheseDetailPage;
 
 
+
+
+

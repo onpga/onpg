@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import './ArticleDetail.css';
 
 interface Article {
@@ -380,7 +381,7 @@ const ArticleDetail = () => {
       <article className="article-container">
         <section className="article-hero">
           <div className="article-hero-image">
-            <img src={article.featuredImage} alt={article.title} />
+            <img src={getImageWithFallback(article.featuredImage, 'article')} alt={article.title} />
             <div className="article-hero-overlay">
               <div className="container">
                 <div className="article-header-content">
@@ -544,7 +545,7 @@ const ArticleDetail = () => {
                       className="similar-article-card"
                     >
                       <div className="similar-article-image">
-                        <img src={simArticle.featuredImage} alt={simArticle.title} />
+                        <img src={getImageWithFallback(simArticle.featuredImage, 'article')} alt={simArticle.title} />
                         {simArticle.readTime <= 3 && (
                           <span className="quick-read-badge" title="Lecture rapide">
                             ⚡ {simArticle.readTime} min
@@ -631,7 +632,7 @@ const ArticleDetail = () => {
                 className="suggested-article-item"
               >
                 <div className="suggested-article-image">
-                  <img src={article.featuredImage} alt={article.title} />
+                  <img src={getImageWithFallback(article.featuredImage, 'article')} alt={article.title} />
                 </div>
                 <div className="suggested-article-info">
                   <h4>{article.title}</h4>

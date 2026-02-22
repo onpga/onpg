@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonArticle } from '../../components/Skeleton';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import './Actualites.css';
 
 interface Article {
@@ -180,18 +181,19 @@ const Actualites = () => {
                 to={`/actualites/${article.slug}`}
                 className="featured-article-card"
               >
-                {article.featuredImage && (
-                  <div className="featured-article-image">
-                    <img src={article.featuredImage} alt={article.title} />
-                    {article.featured && <div className="featured-badge">À la une</div>}
-                    <div
-                      className="article-category-badge"
-                      style={{ backgroundColor: getCategoryColor(article.category) }}
-                    >
-                      {getCategoryLabel(article.category)}
-                    </div>
+                <div className="featured-article-image">
+                  <img 
+                    src={getImageWithFallback(article.featuredImage, 'article')} 
+                    alt={article.title}
+                  />
+                  {article.featured && <div className="featured-badge">À la une</div>}
+                  <div
+                    className="article-category-badge"
+                    style={{ backgroundColor: getCategoryColor(article.category) }}
+                  >
+                    {getCategoryLabel(article.category)}
                   </div>
-                )}
+                </div>
                 <div className="featured-article-content">
                   <h3>{article.title}</h3>
                   <p>{article.excerpt}</p>
@@ -221,17 +223,18 @@ const Actualites = () => {
                 to={`/actualites/${article.slug}`}
                 className="article-card"
               >
-                {article.featuredImage && (
-                  <div className="article-image">
-                    <img src={article.featuredImage} alt={article.title} />
-                    <div
-                      className="article-category-badge-small"
-                      style={{ backgroundColor: getCategoryColor(article.category) }}
-                    >
-                      {getCategoryLabel(article.category)}
-                    </div>
+                <div className="article-image">
+                  <img 
+                    src={getImageWithFallback(article.featuredImage, 'article')} 
+                    alt={article.title}
+                  />
+                  <div
+                    className="article-category-badge-small"
+                    style={{ backgroundColor: getCategoryColor(article.category) }}
+                  >
+                    {getCategoryLabel(article.category)}
                   </div>
-                )}
+                </div>
                 <div className="article-content">
                   <h3>{article.title}</h3>
                   <p>{article.excerpt}</p>

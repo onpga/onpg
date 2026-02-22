@@ -97,3 +97,6 @@ const PharmacienDashboard = () => {
 export default PharmacienDashboard;
 
 
+
+
+

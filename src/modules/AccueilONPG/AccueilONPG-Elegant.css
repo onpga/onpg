@@ -187,19 +187,26 @@
 
 .president-photo-professional {
   width: 100%;
-  height: 480px;
+  height: 420px;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   display: block;
+  /* Optimisation pour la netteté des photos */
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-  image-rendering: high-quality;
+  image-rendering: auto;
   -ms-interpolation-mode: bicubic;
+  /* Amélioration du rendu */
+  image-rendering: high-quality;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Performance et netteté */
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   will-change: transform;
+  /* Filtre pour améliorer la netteté perçue */
+  filter: contrast(1.05) brightness(1.02);
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

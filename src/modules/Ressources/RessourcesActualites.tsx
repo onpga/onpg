@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonArticle } from '../../components/Skeleton';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import './Actualites.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -399,17 +400,18 @@ const RessourcesActualites = () => {
                   to={`/ressources/actualites/${articleId}`}
                   className="notion-card"
                 >
-                  {article.image && (
-                    <div className="notion-card-image">
-                      <img src={article.image} alt={article.title} />
-                      <div
-                        className="notion-card-badge"
-                        style={{ backgroundColor: getCategoryColor(article.category) }}
-                      >
-                        {getCategoryLabel(article.category)}
-                      </div>
+                  <div className="notion-card-image">
+                    <img 
+                      src={getImageWithFallback(article.image, 'article')} 
+                      alt={article.title}
+                    />
+                    <div
+                      className="notion-card-badge"
+                      style={{ backgroundColor: getCategoryColor(article.category) }}
+                    >
+                      {getCategoryLabel(article.category)}
                     </div>
-                  )}
+                  </div>
                   <div className="notion-card-content">
                     <div className="notion-card-meta">
                       <span className="notion-card-category">{article.category}</span>

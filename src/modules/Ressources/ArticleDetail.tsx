@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -212,7 +213,7 @@ const ArticleDetail = () => {
 
           {/* Featured Image */}
           <div className="article-hero-image">
-            <img src={article.image} alt={article.title} />
+            <img src={getImageWithFallback(article.image, 'article')} alt={article.title} />
             {article.featured && (
               <div className="featured-overlay">
                 <span className="featured-text">⭐ Article à la une</span>

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import ONPGLayout from './components/Layout/ONPGLayout';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
@@ -174,8 +174,8 @@ function App() {
                     <Route path="/ressources/communiques/:id" element={<CommuniqueDetail />} />
                     <Route path="/ressources/photos" element={<Photos />} />
                     <Route path="/ressources/videos" element={<Videos />} />
-                    <Route path="/trouver-pharmacie" element={<TrouverPharmacie />} />
-                    <Route path="/pharmacies" element={<TrouverPharmacie />} />
+                    <Route path="/trouver-pharmacie" element={<Navigate to="/pratique/pharmacies" replace />} />
+                    <Route path="/pharmacies" element={<Navigate to="/pratique/pharmacies" replace />} />
                     <Route path="/ressources/articles" element={<RessourcesArticles />} />
                     <Route path="/ressources/articles/:id" element={<ArticleDetailPage />} />
                     <Route path="/ressources/theses" element={<Theses />} />

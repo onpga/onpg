@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
+import { ProfileImage } from '../../components/ProfileImage/ProfileImage';
 import './SectionA.css';
 
 interface Pharmacien {
@@ -156,20 +157,12 @@ const SectionA = () => {
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                 >
-                  <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                    <img
-                      src={pharmacien.photo || 'https://via.placeholder.com/150'}
-                      alt={`${pharmacien.prenom} ${pharmacien.nom}`}
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        border: '3px solid #00A651',
-                        marginBottom: '0.5rem'
-                      }}
-                    />
-                  </div>
+                  <ProfileImage
+                    src={pharmacien.photo}
+                    alt={`${pharmacien.prenom} ${pharmacien.nom}`}
+                    borderColor="#00A651"
+                    size={120}
+                  />
                   <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
                     Dr. {pharmacien.prenom} {pharmacien.nom}
                   </h3>

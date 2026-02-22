@@ -313,8 +313,14 @@
 
 .missions-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+  .missions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -618,7 +624,7 @@
 .org-structure {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   position: relative;
 }
 
@@ -639,22 +645,9 @@
   box-shadow: 0 12px 35px rgba(0, 166, 81, 0.15);
 }
 
+/* Flèche orange supprimée */
 .org-level::before {
-  content: '';
-  position: absolute;
-  left: -20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 20px solid white;
-  transition: all 0.3s ease;
-}
-
-.org-level:hover::before {
-  border-right-color: #00A651;
+  display: none;
 }
 
 .org-title {
@@ -666,8 +659,29 @@
 
 .org-subtitle {
   font-size: 0.9rem;
-  color: #6c757d;
-  font-weight: 500;
+  color: #00A651;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* Espacement et couleur pour les nombres */
+.org-number {
+  color: #00A651;
+  font-weight: 700;
+  margin-right: 0.4em;
+  display: inline-block;
+}
+
+.org-subtitle .org-number {
+  color: #008F45;
+  font-weight: 700;
+  margin-right: 0.4em;
+}
+
+.org-title .org-number {
+  color: #00A651;
+  font-weight: 700;
+  margin-right: 0.4em;
 }
 
 /* Navigation par onglets */

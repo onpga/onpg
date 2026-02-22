@@ -144,14 +144,68 @@
   left: 10%;
 }
 
+/* Wrapper pour les filtres et le bouton */
+.filters-wrapper {
+  position: relative;
+  z-index: 100;
+}
+
 /* Filtres */
 .membres-filters {
   background: white;
-  padding: 15px 20px;
+  padding: 10px 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
-  z-index: 100;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.membres-filters.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.membres-filters.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Bouton pour afficher/masquer les filtres */
+.toggle-filters-btn {
+  position: sticky;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #00A651;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  z-index: 102;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.toggle-filters-btn:hover {
+  background: #008F45;
+  transform: translateX(-50%) translateY(2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.filters-wrapper:has(.membres-filters.hidden) .toggle-filters-btn {
+  border-radius: 0 0 8px 8px;
 }
 
 .membres-filters .filters-container {
@@ -159,13 +213,14 @@
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
+  position: relative;
 }
 
 .membres-filters .search-section {
   flex: 1;
-  min-width: 250px;
+  min-width: 200px;
   margin-bottom: 0;
 }
 
@@ -182,10 +237,10 @@
 
 .membres-filters .search-input {
   width: 100%;
-  padding: 15px 50px 15px 20px;
+  padding: 10px 45px 10px 15px;
   border: 2px solid #e0e0e0;
-  border-radius: 30px;
-  font-size: 1rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
   transition: all 0.3s;
 }
 
@@ -201,13 +256,20 @@
   background: #00A651;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 8px 12px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.3s;
+  width: 32px;
+  height: 32px;
+}
+
+.membres-filters .search-button svg {
+  width: 16px;
+  height: 16px;
 }
 
 .membres-filters .search-button:hover {
@@ -216,11 +278,11 @@
 
 .membres-filters .filters-row {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
   flex-wrap: wrap;
   flex: 1;
-  min-width: 300px;
+  min-width: 250px;
 }
 
 .membres-filters .filter-group {
@@ -236,10 +298,10 @@
 }
 
 .membres-filters .filter-group select {
-  padding: 10px 15px;
+  padding: 8px 12px;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   background: white;
   cursor: pointer;
   transition: border-color 0.3s;
@@ -298,23 +360,24 @@
 }
 
 .membres-filters .sort-controls select {
-  padding: 8px 15px;
+  padding: 8px 12px;
   border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
   background: white;
   cursor: pointer;
 }
 
 .membres-filters .clear-filters-btn {
-  padding: 10px 20px;
+  padding: 8px 15px;
   background: #e74c3c;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   transition: background 0.3s;
+  white-space: nowrap;
 }
 
 .membres-filters .clear-filters-btn:hover {
@@ -323,7 +386,8 @@
 
 /* Contenu principal */
 .tableau-content {
-  padding: 40px 20px;
+  padding: 20px 20px 40px;
+  margin-top: 0;
 }
 
 .tableau-content .section-container {
@@ -335,8 +399,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
   border-bottom: 2px solid #e0e0e0;
 }
 
@@ -374,10 +438,10 @@
 }
 
 .membres-table th {
-  padding: 15px;
+  padding: 12px 15px;
   text-align: left;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -392,8 +456,9 @@
 }
 
 .membres-table td {
-  padding: 15px;
+  padding: 12px 15px;
   color: #333;
+  font-size: 0.9rem;
 }
 
 .membres-table .member-number {

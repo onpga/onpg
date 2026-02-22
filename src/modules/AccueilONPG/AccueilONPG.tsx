@@ -4,6 +4,7 @@ import HeroONPG from './components/HeroONPG';
 import AnimatedSection from '../../components/AnimatedSection';
 import ONPG_CONFIG from '../../config/onpg-config';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './AccueilONPG.css';
 import './AccueilONPG-Elegant.css';
@@ -50,13 +51,11 @@ const AccueilONPG = () => {
           // Trier par date (plus récentes en premier) et limiter à 6 pour le carousel
           const sorted = rawArray
             .map((item: any) => {
-              // Priorité: backgroundImage > image > fallback président
-              const imageUrl = item.backgroundImage || item.image || ONPG_IMAGES.president;
-              console.log('📸 Actualité:', item.title, {
-                backgroundImage: item.backgroundImage || '❌',
-                image: item.image || '❌',
-                finalImage: imageUrl
-              });
+              // Priorité: backgroundImage > image > fallback article (PAS la présidente)
+              const imageUrl = getImageWithFallback(
+                item.backgroundImage || item.image || item.featuredImage,
+                'article'
+              );
               return {
                 _id: String(item._id || ''),
                 title: item.title || '',
@@ -412,8 +411,8 @@ const AccueilONPG = () => {
             ) : (
               actualites.slice(0, 3).map((actualite) => {
                 const dateFormatted = formatDate(actualite.publishedAt);
-                // Utiliser backgroundImage en priorité, puis image, puis fallback
-                const imageUrl = actualite.image || ONPG_IMAGES.president;
+                // Utiliser l'image de l'actualité ou fallback article (PAS la présidente)
+                const imageUrl = getImageWithFallback(actualite.image, 'article');
                 return (
                   <div key={actualite._id} className="news-card">
                     <div className="news-image">
@@ -421,7 +420,8 @@ const AccueilONPG = () => {
                         src={imageUrl} 
                         alt={actualite.title} 
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = ONPG_IMAGES.president;
+                          // Si l'image échoue, utiliser le fallback article
+                          (e.target as HTMLImageElement).src = getImageWithFallback(null, 'article');
                         }}
                       />
                       <div className="news-image-overlay"></div>
@@ -767,3 +767,4 @@ Et vive le Gabon !`;
 };
 
 export default AccueilONPG;
+// Force Vite to recompile

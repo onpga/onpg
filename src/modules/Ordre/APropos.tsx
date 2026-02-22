@@ -279,17 +279,17 @@ const APropos = () => {
                 </div>
                 <div className="org-level conseil">
                   <div className="org-title">Conseil National</div>
-                  <div className="org-subtitle">25 membres élus</div>
+                  <div className="org-subtitle"><span className="org-number">25</span> membres élus</div>
                 </div>
                 <div className="org-level sections">
-                  <div className="org-title">4 Sections Professionnelles</div>
+                  <div className="org-title"><span className="org-number">4</span> Sections Professionnelles</div>
                   <div className="org-subtitle">A, B, C, D</div>
                 </div>
                 <div className="org-level membres">
                   <div className="org-title">Membres</div>
                   <div className="org-subtitle">
                     {nombrePharmaciens !== null 
-                      ? `${nombrePharmaciens} pharmacien${nombrePharmaciens > 1 ? 's' : ''}`
+                      ? <><span className="org-number">{nombrePharmaciens}</span> pharmacien{nombrePharmaciens > 1 ? 's' : ''}</>
                       : 'Pharmaciens inscrits'}
                   </div>
                 </div>

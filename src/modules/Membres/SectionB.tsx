@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
+import { ProfileIcon } from '../../utils/profileIcon';
 import './SectionB.css';
 
 interface Pharmacien {
@@ -141,28 +142,20 @@ const SectionB = () => {
                   onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                   onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                 >
-                  <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                    <img
-                      src={pharmacien.photo || 'https://via.placeholder.com/150'}
-                      alt={`${pharmacien.prenom} ${pharmacien.nom}`}
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        borderRadius: '50%',
-                        objectFit: 'cover',
-                        border: '3px solid #3498db',
-                        marginBottom: '0.5rem'
-                      }}
-                    />
-                  </div>
-                  <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
-                    Dr. {pharmacien.prenom} {pharmacien.nom}
-                  </h3>
-                  {pharmacien.role && (
-                    <p style={{ textAlign: 'center', color: '#666', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                      {pharmacien.role}
-                    </p>
-                  )}
+                  <ProfileImage
+                    src={pharmacien.photo}
+                    alt={`${pharmacien.prenom} ${pharmacien.nom}`}
+                    borderColor="#3498db"
+                    size={120}
+                  />
+                    <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
+                      Dr. {pharmacien.prenom} {pharmacien.nom}
+                    </h3>
+                    {pharmacien.role && (
+                      <p style={{ textAlign: 'center', color: '#666', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                        {pharmacien.role}
+                      </p>
+                    )}
                   {pharmacien.these && (
                     <p style={{ textAlign: 'center', color: '#999', fontSize: '0.85rem', fontStyle: 'italic' }}>
                       {pharmacien.these}

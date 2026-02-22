@@ -82,8 +82,8 @@ export const ONPG_IMAGES = {
 
   // Photo présidente (public_id exact depuis Cloudinary)
   // IMPORTANT : ne pas changer ce public_id sans mettre à jour l'image dans Cloudinary
-  // Qualité maximale SANS redimensionnement pour préserver la netteté originale
-  president: `${CLOUDINARY_BASE}/q_100,f_auto/onpg/hero/presidente`,
+  // Optimisation pour la netteté : taille réduite pour meilleure qualité, format auto, qualité maximale
+  president: `${CLOUDINARY_BASE}/w_400,h_500,c_fill,q_100,f_auto,dpr_2.0/onpg/hero/presidente`,
 
   // Images pour les liens rapides
   quickLinkInscription: `${CLOUDINARY_BASE}/onpg/hero/portrait-female-pharmacist-working-drugstore`,
@@ -91,7 +91,13 @@ export const ONPG_IMAGES = {
   quickLinkEcologie: `${CLOUDINARY_BASE}/onpg/hero/hero-2`,
   quickLinkNouveaux: `${CLOUDINARY_BASE}/onpg/hero/hero-3`,
   quickLinkAnnuaire: `${CLOUDINARY_BASE}/onpg/hero/african-american-woman-pharmacist-standing-with-serious-expression-pharmacy`,
-  quickLinkVenteLigne: `${CLOUDINARY_BASE}/onpg/hero/portrait-female-pharmacist-working-drugstore (1)`
+  quickLinkVenteLigne: `${CLOUDINARY_BASE}/onpg/hero/portrait-female-pharmacist-working-drugstore (1)`,
+
+  // Image de fallback par défaut (logo stylisé pour les sections sans image)
+  fallback: `${CLOUDINARY_BASE}/w_400,h_300,c_fill,q_80,f_auto,b_rgb:00A651/e_grayscale/onpg/hero/hero-1`,
+  
+  // Image de fallback pour les articles/actualités (image générique d'article)
+  fallbackArticle: `${CLOUDINARY_BASE}/w_600,h_400,c_fill,q_85,f_auto/onpg/hero/hero-1`
 };
 
 export default ONPG_IMAGES;

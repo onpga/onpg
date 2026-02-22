@@ -106,7 +106,7 @@ const NavbarONPG = () => {
       ]
     },
     {
-      path: '/pharmacies',
+      path: '/pratique/pharmacies',
       label: 'Trouver une pharmacie',
       icon: '',
       isButton: true,

@@ -6,6 +6,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchResourceData } from '../../utils/pageMocksApi';
+import { getImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
 
 interface ResourceDetailProps {
@@ -96,11 +97,9 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
             )}
           </div>
 
-          {resource.image && (
-            <div className="article-hero-image">
-              <img src={resource.image} alt={resource.title} />
-            </div>
-          )}
+          <div className="article-hero-image">
+            <img src={getImageWithFallback(resource.image, 'article')} alt={resource.title} />
+          </div>
         </div>
       </header>
 

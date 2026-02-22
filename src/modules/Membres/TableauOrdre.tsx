@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './TableauOrdre.css';
@@ -20,6 +20,9 @@ const TableauOrdre = () => {
   const [sortBy, setSortBy] = useState<'nom' | 'prenom'>('nom');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [filtersVisible, setFiltersVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const filtersRef = useRef<HTMLDivElement>(null);
 
   const membersPerPage = 12;
 
@@ -101,6 +104,32 @@ const TableauOrdre = () => {
     setCurrentPage(1);
   };
 
+  // Gestion du scroll pour masquer/afficher les filtres
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Masquer les filtres quand on scroll vers le bas, les afficher quand on scroll vers le haut
+      if (currentScrollY > 100) { // Seuil de 100px pour éviter les changements trop fréquents
+        if (currentScrollY > lastScrollY && filtersVisible) {
+          // Scroll vers le bas - masquer
+          setFiltersVisible(false);
+        } else if (currentScrollY < lastScrollY && !filtersVisible) {
+          // Scroll vers le haut - afficher
+          setFiltersVisible(true);
+        }
+      } else {
+        // Toujours afficher en haut de page
+        setFiltersVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, filtersVisible]);
+
   if (loading) {
     return (
       <div className="membres-page">
@@ -137,9 +166,13 @@ const TableauOrdre = () => {
       </section>
 
       {/* Filtres et contrôles */}
-      <div className="membres-filters">
-        <div className="filters-container">
-          <div className="search-section">
+      <div className="filters-wrapper">
+        <div 
+          ref={filtersRef}
+          className={`membres-filters ${filtersVisible ? 'visible' : 'hidden'}`}
+        >
+          <div className="filters-container">
+            <div className="search-section">
             <form onSubmit={handleSearch} className="search-form">
               <div className="search-input-wrapper">
                 <input
@@ -185,7 +218,16 @@ const TableauOrdre = () => {
               🗑️ Effacer les filtres
             </button>
           </div>
+          </div>
         </div>
+        {/* Bouton pour afficher/masquer les filtres */}
+        <button 
+          className="toggle-filters-btn"
+          onClick={() => setFiltersVisible(!filtersVisible)}
+          title={filtersVisible ? 'Masquer les filtres' : 'Afficher les filtres'}
+        >
+          {filtersVisible ? '▲' : '▼'} Filtres
+        </button>
       </div>
 
       {/* Contenu principal */}

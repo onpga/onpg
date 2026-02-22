@@ -36,7 +36,7 @@ const FooterONPG = () => {
               <li><Link to="/membres">Membres</Link></li>
               <li><Link to="/pratique">Pratique</Link></li>
               <li><Link to="/ressources">Ressources</Link></li>
-              <li><Link to="/pharmacies">Trouver une pharmacie</Link></li>
+              <li><Link to="/pratique/pharmacies">Trouver une pharmacie</Link></li>
             </ul>
           </div>
 

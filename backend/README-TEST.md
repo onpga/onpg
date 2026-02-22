@@ -64,3 +64,6 @@ Si le script échoue :
 - Vérifier les logs du backend pour voir les erreurs détaillées
 
 
+
+
+

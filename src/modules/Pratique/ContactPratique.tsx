@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import './ContactPratique.css';
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://backendonpg-production.up.railway.app/api'
+    : 'http://localhost:3001/api');
+
 const ContactPratique = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -9,11 +15,44 @@ const ContactPratique = () => {
     subject: '',
     message: ''
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implémenter l'envoi du formulaire
-    alert('Formulaire de contact en cours de développement');
+    setSuccessMessage(null);
+    setErrorMessage(null);
+
+    try {
+      setSubmitting(true);
+      const response = await fetch(`${API_URL}/public/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Erreur lors de l’envoi du message');
+      }
+
+      setSuccessMessage("Votre message a bien été envoyé. L'ONPG vous répondra dans les meilleurs délais.");
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: ''
+      });
+    } catch (error: any) {
+      console.error('Erreur envoi contact:', error);
+      setErrorMessage("Une erreur est survenue lors de l'envoi du message. Merci de réessayer plus tard.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -118,6 +157,12 @@ const ContactPratique = () => {
       <section className="contact-form-section">
         <div className="container">
           <h2 className="section-title">Envoyez-nous un message</h2>
+          {successMessage && (
+            <p className="contact-success">{successMessage}</p>
+          )}
+          {errorMessage && (
+            <p className="contact-error">{errorMessage}</p>
+          )}
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
               <div className="form-group">
@@ -184,7 +229,7 @@ const ContactPratique = () => {
               ></textarea>
             </div>
             <button type="submit" className="submit-btn">
-              Envoyer le message
+              {submitting ? 'Envoi en cours...' : 'Envoyer le message'}
             </button>
           </form>
         </div>

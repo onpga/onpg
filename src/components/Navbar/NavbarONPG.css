@@ -1025,9 +1025,12 @@
     transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: #00A651 rgba(0, 0, 0, 0.1);
+    /* Amélioration du scroll */
+    overscroll-behavior: contain;
   }
 
   .onpg-nav-menu::-webkit-scrollbar {
@@ -1094,20 +1097,38 @@
     background: rgba(248, 249, 250, 0.9);
     border-radius: 0;
     margin: 0;
+    padding: 0;
     opacity: 1;
     visibility: visible;
     transform: none;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     border-left: 4px solid transparent;
   }
 
   .onpg-dropdown.open {
-    max-height: 600px;
+    max-height: 1000px;
+    padding: 0.5rem 0;
     border-left-color: #00A651;
     animation: slideDownDropdown 0.3s ease-out;
+  }
+  
+  /* Flèche visible seulement en mobile */
+  .nav-arrow.mobile-only {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .nav-arrow.mobile-only {
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-arrow.mobile-only.open {
+      transform: rotate(180deg);
+    }
   }
 
   @keyframes slideDownDropdown {
@@ -1126,12 +1147,35 @@
     font-size: 0.95rem;
     color: #495057;
     transition: all 0.2s ease;
+    display: block;
+    width: 100%;
   }
 
-  .dropdown-link:active {
+  .dropdown-link:active,
+  .dropdown-link:hover {
     background: rgba(0, 166, 81, 0.15);
     color: #00A651;
     padding-left: 3.5rem !important;
+  }
+  
+  /* Amélioration du scroll dans le menu mobile */
+  .onpg-nav-menu::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00A651, #008F45);
+    border-radius: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #008F45, #00A651);
   }
 }
 

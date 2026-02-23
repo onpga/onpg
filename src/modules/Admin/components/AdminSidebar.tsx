@@ -22,7 +22,11 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-header">
-        <img src={ONPG_IMAGES.logo} alt="ONPG" className="sidebar-logo" />
+        <img
+          src={ONPG_IMAGES.logo}
+          alt="ONPG"
+          className="sidebar-logo"
+        />
         <h2>Espace admin ONPG</h2>
       </div>
 
@@ -45,6 +49,9 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         </Link>
         <Link to="/admin/deontologie" className={`nav-item ${currentPage === 'deontologie' ? 'active' : ''}`}>
           ⚖️ Déontologie
+        </Link>
+        <Link to="/admin/messages" className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}>
+          💬 Messages de contact
         </Link>
         <Link to="/admin/analytics" className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}>
           📈 Analytics

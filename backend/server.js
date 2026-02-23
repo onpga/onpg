@@ -218,6 +218,42 @@ app.get('/api/public/pharmacies', async (req, res) => {
   }
 });
 
+// ============================================
+// FORMULAIRE DE CONTACT PUBLIC
+// ============================================
+
+// POST /api/public/contact - enregistrement d'un message de contact simple
+app.post('/api/public/contact', async (req, res) => {
+  try {
+    const { name, email, phone, subject, message } = req.body;
+
+    if (!name || !email || !subject || !message) {
+      return res
+        .status(400)
+        .json({ success: false, error: 'Nom, email, sujet et message sont requis' });
+    }
+
+    const doc = {
+      name,
+      email,
+      phone: phone || '',
+      subject,
+      message,
+      source: 'site-public',
+      status: 'new', // new, read, archived
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('contact_messages').insertOne(doc);
+
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('Erreur enregistrement message de contact:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
 // GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
 app.get('/api/public/:collection/:id', async (req, res) => {
   try {
@@ -277,6 +313,27 @@ app.get('/api/admin/:collection', authenticateAdmin, async (req, res) => {
     res.json({ success: true, data });
   } catch (error) {
     console.error(`Erreur chargement ${req.params.collection}:`, error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// ============================================
+// ADMIN - MESSAGES DE CONTACT
+// ============================================
+
+// Liste des messages de contact récents
+app.get('/api/admin/contact-messages', authenticateAdmin, async (req, res) => {
+  try {
+    const data = await db
+      .collection('contact_messages')
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .toArray();
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Erreur chargement contact_messages:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

@@ -167,6 +167,22 @@ const NavbarONPG = () => {
   const [pratiqueDropdownOpen, setPratiqueDropdownOpen] = useState(false);
   const [ressourcesDropdownOpen, setRessourcesDropdownOpen] = useState(false);
 
+  // Ouvrir tous les dropdowns en mobile quand le menu s'ouvre
+  useEffect(() => {
+    if (mobileMenuOpen && window.innerWidth <= 768) {
+      setOrdreDropdownOpen(true);
+      setMembresDropdownOpen(true);
+      setPratiqueDropdownOpen(true);
+      setRessourcesDropdownOpen(true);
+    } else if (!mobileMenuOpen) {
+      // Fermer tous les dropdowns quand le menu se ferme
+      setOrdreDropdownOpen(false);
+      setMembresDropdownOpen(false);
+      setPratiqueDropdownOpen(false);
+      setRessourcesDropdownOpen(false);
+    }
+  }, [mobileMenuOpen]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implémenter la recherche
@@ -361,7 +377,29 @@ const NavbarONPG = () => {
                   <Link
                     to={item.path}
                     className="onpg-nav-link"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => {
+                      // En mobile seulement : empêcher la navigation et toggle le dropdown
+                      if (window.innerWidth <= 768 && item.hasDropdown) {
+                        e.preventDefault();
+                        switch (item.id) {
+                          case 'ordre':
+                            setOrdreDropdownOpen(!ordreDropdownOpen);
+                            break;
+                          case 'membres':
+                            setMembresDropdownOpen(!membresDropdownOpen);
+                            break;
+                          case 'pratique':
+                            setPratiqueDropdownOpen(!pratiqueDropdownOpen);
+                            break;
+                          case 'ressources':
+                            setRessourcesDropdownOpen(!ressourcesDropdownOpen);
+                            break;
+                        }
+                      } else if (!item.hasDropdown) {
+                        // Fermer le menu mobile seulement pour les liens sans dropdown
+                        setMobileMenuOpen(false);
+                      }
+                    }}
                   >
                     {/* Icône moderne avec fond animé */}
                     {item.icon && (
@@ -385,7 +423,17 @@ const NavbarONPG = () => {
                     {/* Flèche avec animation */}
                     {item.hasDropdown && (
                       <div className="nav-arrow-wrapper">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="nav-arrow">
+                        <svg 
+                          width="12" 
+                          height="12" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className={`nav-arrow mobile-only ${(item.id === 'ordre' && ordreDropdownOpen) ||
+                                                   (item.id === 'membres' && membresDropdownOpen) ||
+                                                   (item.id === 'pratique' && pratiqueDropdownOpen) ||
+                                                   (item.id === 'ressources' && ressourcesDropdownOpen) ? 'open' : ''}`}
+                        >
                           <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </div>

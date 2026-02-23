@@ -103,6 +103,7 @@ const Logs = lazy(() => import('./modules/Admin/Logs'));
 const Projects = lazy(() => import('./modules/Admin/Projects/Projects'));
 const ProjectForm = lazy(() => import('./modules/Admin/Projects/ProjectForm'));
 const PageMocks = lazy(() => import('./modules/Admin/PageMocks'));
+const ContactMessagesAdmin = lazy(() => import('./modules/Admin/ContactMessagesAdmin'));
 
 // Composant de chargement simple
 const LoadingSpinner = () => (
@@ -132,6 +133,7 @@ function App() {
             <Route path="/admin/pharmaciens" element={<PharmaciensAdmin />} />
             <Route path="/admin/formations" element={<FormationsAdmin />} />
             <Route path="/admin/deontologie" element={<DeontologieAdmin />} />
+            <Route path="/admin/messages" element={<ContactMessagesAdmin />} />
 
             {/* Routes Pharmacien (sans Layout) */}
             <Route path="/pharmacien/dashboard" element={<PharmacienDashboard />} />

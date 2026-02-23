@@ -98,7 +98,7 @@ const Deontologie = () => {
       <section className="section-content">
         <div className="section-container">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '3rem' }}>Chargement...</div>
+            <div className="deontologie-loading">Chargement...</div>
           ) : !deontologie || !deontologie.pdfUrl ? (
             <div className="deontologie-empty">
               <p>Aucun document de déontologie disponible pour le moment.</p>

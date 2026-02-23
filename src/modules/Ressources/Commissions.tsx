@@ -70,6 +70,7 @@ const Commissions = () => {
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const commissionsPerPage = 6;
 
@@ -126,53 +127,117 @@ const Commissions = () => {
         </div>
       </section>
 
-      <div className="ressources-container">
-        <aside className="ressources-sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Recherche</h3>
-            <form className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Nom, description..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-              </div>
-            </form>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Catégorie</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedCategory === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('Toutes')}
-              >
-                Toutes les catégories
-              </button>
-              {Array.from(new Set(commissions.map(c => c.category))).map(category => (
-                <button
-                  key={category}
-                  className={`category-filter ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
-
-        <main className="ressources-main">
-          <nav className="breadcrumb">
+      <div className="ressources-container-modern">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
             <Link to="/">Accueil</Link>
             <span className="breadcrumb-separator">›</span>
             <Link to="/ressources">Ressources</Link>
             <span className="breadcrumb-separator">›</span>
             <span className="breadcrumb-current">Commissions</span>
           </nav>
+
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredCommissions.length} commission{filteredCommissions.length > 1 ? 's' : ''} trouvée{filteredCommissions.length > 1 ? 's' : ''}
+                </h2>
+                <div className="results-meta-modern">
+                  Page {currentPage} sur {totalPages}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <form className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom, description..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Catégorie */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Catégorie</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedCategory === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(commissions.map(c => c.category))).map(category => (
+                      <button
+                        key={category}
+                        className={`filter-chip-modern ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                        <span className="chip-count">
+                          ({commissions.filter(c => c.category === category).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('Toutes');
+                }} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.activeCommissions}</span>
+                    <span className="stat-mini-label">Actives</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.totalMeetings}</span>
+                    <span className="stat-mini-label">Réunions</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.totalReports}</span>
+                    <span className="stat-mini-label">Rapports</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="commissions-list">
             {currentCommissions.map(commission => (

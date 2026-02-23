@@ -32,6 +32,7 @@ const RessourcesActualites = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const allTags = Array.from(new Set(articles.flatMap(a => a.tags || [])));
 
@@ -325,119 +326,265 @@ const RessourcesActualites = () => {
     setFilteredArticles(filtered);
   };
 
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('all');
+    setSelectedTag('');
+  };
+
   return (
-    <div className="actualites-page notion-layout">
-      <header className="notion-header">
-        <div className="container">
-          <div className="notion-header-badge">Actualités</div>
-          <h1>Actualités ONPG</h1>
-          <p className="notion-subtitle">Restez informé des dernières actualités de l'Ordre National des Pharmaciens du Gabon</p>
+    <div className="ressources-page">
+      {/* Hero Section */}
+      <section className="ressources-hero">
+        <div className="hero-content">
+          <div className="hero-text">
+            <h1 className="hero-title">
+              <span className="hero-title-main">Actualités</span>
+              <span className="hero-title-subtitle">ONPG</span>
+            </h1>
+            <p className="hero-description">
+              Restez informé des dernières actualités, communiqués et innovations de l'Ordre National des Pharmaciens du Gabon.
+              Informations officielles, guides pratiques et actualités pharmaceutiques.
+            </p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="hero-stats">
+            <div className="stat-card">
+              <div className="stat-number">{filteredArticles.length}</div>
+              <div className="stat-label">Articles</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{filteredArticles.filter(a => a.featured).length}</div>
+              <div className="stat-label">À la une</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-number">{categories.length - 1}</div>
+              <div className="stat-label">Catégories</div>
+            </div>
+          </div>
         </div>
-      </header>
 
-      <section className="notion-filters">
-        <div className="container">
-          <div className="notion-search">
-            <input
-              type="text"
-              placeholder="Rechercher un article..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="notion-search-input"
-            />
-          </div>
-
-          <div className="notion-filters-row">
-            <div className="notion-categories">
-              {categories.map(cat => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  className={`notion-category-btn ${selectedCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat.id)}
-                >
-                  {cat.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {allTags.length > 0 && (
-            <div className="notion-tags">
-              {allTags.slice(0, 10).map(tag => (
-                <button
-                  key={tag}
-                  type="button"
-                  className={`notion-tag ${selectedTag === tag ? 'active' : ''}`}
-                  onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Background Pattern */}
+        <div className="hero-bg-pattern">
+          <div className="pattern-shape shape-1"></div>
+          <div className="pattern-shape shape-2"></div>
+          <div className="pattern-shape shape-3"></div>
         </div>
       </section>
 
-      <section className="notion-articles">
-        <div className="container">
+      {/* Main Content */}
+      <div className="ressources-container-modern">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
+            <Link to="/">Accueil</Link>
+            <span className="breadcrumb-separator">›</span>
+            <Link to="/ressources">Ressources</Link>
+            <span className="breadcrumb-separator">›</span>
+            <span className="breadcrumb-current">Actualités</span>
+          </nav>
+
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''} trouvé{filteredArticles.length > 1 ? 's' : ''}
+                </h2>
+                <div className="results-meta-modern">
+                  {filteredArticles.filter(a => a.featured).length > 0 && `${filteredArticles.filter(a => a.featured).length} à la une`}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <div className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par titre, contenu, tags..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Catégorie */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Catégorie</label>
+                  <div className="filter-chips-modern">
+                    {categories.map(cat => (
+                      <button
+                        key={cat.id}
+                        className={`filter-chip-modern ${selectedCategory === cat.id ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(cat.id)}
+                        style={selectedCategory === cat.id ? {
+                          background: `linear-gradient(135deg, ${getCategoryColor(cat.id)}, ${getCategoryColor(cat.id)}dd)`
+                        } : {}}
+                      >
+                        {cat.label}
+                        {cat.id !== 'all' && (
+                          <span className="chip-count">
+                            ({articles.filter(a => a.category === cat.id).length})
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Tags */}
+                {allTags.length > 0 && (
+                  <div className="filter-group-modern">
+                    <label className="filter-label-modern">Tags</label>
+                    <div className="filter-chips-modern">
+                      <button
+                        className={`filter-chip-modern ${selectedTag === '' ? 'active' : ''}`}
+                        onClick={() => setSelectedTag('')}
+                      >
+                        Tous les tags
+                      </button>
+                      {allTags.slice(0, 15).map(tag => (
+                        <button
+                          key={tag}
+                          className={`filter-chip-modern ${selectedTag === tag ? 'active' : ''}`}
+                          onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
+                        >
+                          #{tag}
+                          <span className="chip-count">
+                            ({articles.filter(a => a.tags && a.tags.includes(tag)).length})
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={clearFilters} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{filteredArticles.filter(a => a.featured).length}</span>
+                    <span className="stat-mini-label">À la une</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{categories.length - 1}</span>
+                    <span className="stat-mini-label">Catégories</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{allTags.length}</span>
+                    <span className="stat-mini-label">Tags</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Articles Grid */}
           {loading ? (
-            <div className="notion-grid">
+            <div className="articles-grid-modern">
+              <SkeletonArticle />
+              <SkeletonArticle />
               <SkeletonArticle />
             </div>
           ) : filteredArticles.length === 0 ? (
-            <div className="notion-empty">
-              <p>Aucune actualité disponible</p>
+            <div className="empty-state-modern">
+              <div className="empty-icon">📰</div>
+              <h3>Aucun article trouvé</h3>
+              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+              <button onClick={clearFilters} className="empty-action-btn">
+                Réinitialiser les filtres
+              </button>
             </div>
           ) : (
-            <div className="notion-grid">
+            <div className="articles-grid-modern">
               {filteredArticles.map(article => {
                 const articleId = String(article._id);
-                console.log('🔗 Lien vers article ID:', articleId);
                 return (
-                <Link
-                  key={articleId}
-                  to={`/ressources/actualites/${articleId}`}
-                  className="notion-card"
-                >
-                  <div className="notion-card-image">
-                    <img 
-                      src={getImageWithFallback(article.image, 'article')} 
-                      alt={article.title}
-                    />
-                    <div
-                      className="notion-card-badge"
-                      style={{ backgroundColor: getCategoryColor(article.category) }}
-                    >
-                      {getCategoryLabel(article.category)}
-                    </div>
-                  </div>
-                  <div className="notion-card-content">
-                    <div className="notion-card-meta">
-                      <span className="notion-card-category">{article.category}</span>
-                      <span className="notion-card-pole">{article.pole}</span>
-                    </div>
-                    <h3>{article.title}</h3>
-                    <p>{article.excerpt}</p>
-                    <div className="notion-card-footer">
-                      <span>{new Date(article.publishedAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</span>
-                      <span>{article.readTime} min</span>
-                    </div>
-                    {article.tags && article.tags.length > 0 && (
-                      <div className="notion-card-tags">
-                        {article.tags.slice(0, 3).map(tag => (
-                          <span key={tag} className="notion-card-tag">#{tag}</span>
-                        ))}
+                  <Link
+                    key={articleId}
+                    to={`/ressources/actualites/${articleId}`}
+                    className={`article-card-modern ${article.featured ? 'featured' : ''}`}
+                  >
+                    <div className="article-card-image-modern">
+                      <img 
+                        src={getImageWithFallback(article.image, 'article')} 
+                        alt={article.title}
+                      />
+                      {article.featured && (
+                        <div className="featured-badge-modern">⭐ À la une</div>
+                      )}
+                      <div
+                        className="article-category-badge-modern"
+                        style={{ backgroundColor: getCategoryColor(article.category) }}
+                      >
+                        {getCategoryLabel(article.category)}
                       </div>
-                    )}
-                  </div>
-                </Link>
+                    </div>
+                    <div className="article-card-content-modern">
+                      <div className="article-card-meta-modern">
+                        <span className="article-date-modern">
+                          {new Date(article.publishedAt).toLocaleDateString('fr-FR', { 
+                            day: 'numeric', 
+                            month: 'long',
+                            year: 'numeric'
+                          })}
+                        </span>
+                        <span className="article-readtime-modern">{article.readTime} min de lecture</span>
+                      </div>
+                      <h3 className="article-card-title-modern">{article.title}</h3>
+                      <p className="article-card-excerpt-modern">{article.excerpt}</p>
+                      {article.tags && article.tags.length > 0 && (
+                        <div className="article-card-tags-modern">
+                          {article.tags.slice(0, 4).map(tag => (
+                            <span key={tag} className="article-tag-modern">#{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                      <div className="article-card-footer-modern">
+                        <div className="article-author-modern">
+                          <span className="author-name">{article.author?.name || 'ONPG'}</span>
+                          <span className="author-role">{article.author?.role || 'Équipe Communication'}</span>
+                        </div>
+                        <span className="read-more-modern">Lire l'article →</span>
+                      </div>
+                    </div>
+                  </Link>
                 );
               })}
             </div>
           )}
-        </div>
-      </section>
+        </main>
+      </div>
     </div>
   );
 };

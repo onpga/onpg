@@ -8,7 +8,7 @@ interface ProfileImageProps {
   size?: number;
 }
 
-export const ProfileImage: React.FC<ProfileImageProps> = ({ 
+const ProfileImage: React.FC<ProfileImageProps> = ({ 
   src, 
   alt, 
   borderColor, 
@@ -39,4 +39,7 @@ export const ProfileImage: React.FC<ProfileImageProps> = ({
     </div>
   );
 };
+
+export { ProfileImage };
+export default ProfileImage;
 

@@ -70,6 +70,7 @@ const Decrets = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'date' | 'number' | 'downloads'>('date');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const decretsPerPage = 6;
 
@@ -193,154 +194,9 @@ const Decrets = () => {
       </section>
 
       {/* Main Content */}
-      <div className="ressources-container">
-        {/* Sidebar */}
-        <aside className="ressources-sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Recherche</h3>
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Numéro, titre, contenu..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-                <button type="submit" className="search-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Catégorie</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedCategory === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('Toutes')}
-              >
-                Toutes les catégories
-              </button>
-              {Array.from(new Set(decrets.map(d => d.category))).map(category => (
-                <button
-                  key={category}
-                  className={`category-filter ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                  <span className="category-count">
-                    ({decrets.filter(d => d.category === category).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Statut</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedStatus === 'Tous' ? 'active' : ''}`}
-                onClick={() => setSelectedStatus('Tous')}
-              >
-                Tous les statuts
-              </button>
-              {['active', 'modified', 'abrogated'].map(status => (
-                <button
-                  key={status}
-                  className={`category-filter ${selectedStatus === status ? 'active' : ''}`}
-                  onClick={() => setSelectedStatus(status)}
-                >
-                  {getStatusLabel(status as Decret['status'])}
-                  <span className="category-count">
-                    ({decrets.filter(d => d.status === status).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Année</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedYear === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedYear('Toutes')}
-              >
-                Toutes les années
-              </button>
-              {Array.from(new Set(decrets.map(d => new Date(d.publicationDate).getFullYear().toString()))).sort().reverse().map(year => (
-                <button
-                  key={year}
-                  className={`category-filter ${selectedYear === year ? 'active' : ''}`}
-                  onClick={() => setSelectedYear(year)}
-                >
-                  {year}
-                  <span className="category-count">
-                    ({decrets.filter(d => new Date(d.publicationDate).getFullYear().toString() === year).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Trier par</h3>
-            <div className="sort-options">
-              <button
-                className={`sort-option ${sortBy === 'date' ? 'active' : ''}`}
-                onClick={() => setSortBy('date')}
-              >
-                📅 Plus récent
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'number' ? 'active' : ''}`}
-                onClick={() => setSortBy('number')}
-              >
-                🔢 Par numéro
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'downloads' ? 'active' : ''}`}
-                onClick={() => setSortBy('downloads')}
-              >
-                ⬇️ Plus téléchargé
-              </button>
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <button onClick={clearFilters} className="clear-filters-btn">
-              🗑️ Effacer les filtres
-            </button>
-          </div>
-
-          {/* Statistiques des décrets */}
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Métriques</h3>
-            <div className="decret-stats">
-              <div className="stat-item">
-                <span className="stat-value">{stats.featuredDecrets}</span>
-                <span className="stat-label">À la une</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.categoriesCount}</span>
-                <span className="stat-label">Catégories</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.yearsRange}</span>
-                <span className="stat-label">Période</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-
-        {/* Main content */}
-        <main className="ressources-main">
-          <nav className="breadcrumb">
+      <div className="ressources-container-modern">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
             <Link to="/">Accueil</Link>
             <span className="breadcrumb-separator">›</span>
             <Link to="/ressources">Ressources</Link>
@@ -348,15 +204,180 @@ const Decrets = () => {
             <span className="breadcrumb-current">Décrets</span>
           </nav>
 
-          <div className="results-header">
-            <h2 className="results-title">
-              {filteredDecrets.length} décret{filteredDecrets.length > 1 ? 's' : ''}
-              {searchQuery && ` pour "${searchQuery}"`}
-              {selectedCategory !== 'Toutes' && ` - ${selectedCategory}`}
-              {selectedStatus !== 'Tous' && ` (${getStatusLabel(selectedStatus as Decret['status'])})`}
-            </h2>
-            <div className="results-meta">
-              Page {currentPage} sur {totalPages}
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredDecrets.length} décret{filteredDecrets.length > 1 ? 's' : ''} trouvé{filteredDecrets.length > 1 ? 's' : ''}
+                </h2>
+                <div className="results-meta-modern">
+                  Page {currentPage} sur {totalPages}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <form onSubmit={handleSearch} className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par numéro, titre, contenu..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Catégorie */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Catégorie</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedCategory === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(decrets.map(d => d.category))).map(category => (
+                      <button
+                        key={category}
+                        className={`filter-chip-modern ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                        <span className="chip-count">
+                          ({decrets.filter(d => d.category === category).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Statut */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Statut</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedStatus === 'Tous' ? 'active' : ''}`}
+                      onClick={() => setSelectedStatus('Tous')}
+                    >
+                      Tous
+                    </button>
+                    {['active', 'modified', 'abrogated'].map(status => (
+                      <button
+                        key={status}
+                        className={`filter-chip-modern ${selectedStatus === status ? 'active' : ''}`}
+                        onClick={() => setSelectedStatus(status)}
+                        style={selectedStatus === status ? {
+                          background: `linear-gradient(135deg, ${getStatusColor(status as Decret['status'])}, ${getStatusColor(status as Decret['status'])}dd)`
+                        } : {}}
+                      >
+                        {getStatusLabel(status as Decret['status'])}
+                        <span className="chip-count">
+                          ({decrets.filter(d => d.status === status).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Année */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Année</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedYear === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedYear('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(decrets.map(d => new Date(d.publicationDate).getFullYear().toString()))).sort().reverse().slice(0, 10).map(year => (
+                      <button
+                        key={year}
+                        className={`filter-chip-modern ${selectedYear === year ? 'active' : ''}`}
+                        onClick={() => setSelectedYear(year)}
+                      >
+                        {year}
+                        <span className="chip-count">
+                          ({decrets.filter(d => new Date(d.publicationDate).getFullYear().toString() === year).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tri */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Trier par</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'date' ? 'active' : ''}`}
+                      onClick={() => setSortBy('date')}
+                    >
+                      📅 Plus récent
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'number' ? 'active' : ''}`}
+                      onClick={() => setSortBy('number')}
+                    >
+                      🔢 Par numéro
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'downloads' ? 'active' : ''}`}
+                      onClick={() => setSortBy('downloads')}
+                    >
+                      ⬇️ Plus téléchargé
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={clearFilters} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.featuredDecrets}</span>
+                    <span className="stat-mini-label">À la une</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.categoriesCount}</span>
+                    <span className="stat-mini-label">Catégories</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.yearsRange}</span>
+                    <span className="stat-mini-label">Période</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

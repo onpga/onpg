@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
-import { ProfileIcon } from '../../utils/profileIcon';
+import { ProfileImage } from '../../components/ProfileImage';
 import './SectionB.css';
 
 interface Pharmacien {
@@ -109,38 +109,23 @@ const SectionB = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
-              style={{ fontSize: '1.1rem', padding: '0.75rem' }}
             />
           </div>
         </div>
       </div>
 
-      <section className="section-content">
+      <section className="section-b-content">
         <div className="section-container">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>
+            <div className="loading-state">Chargement...</div>
           ) : filteredPharmaciens.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>Aucun pharmacien trouvé</div>
+            <div className="empty-state">Aucun pharmacien trouvé</div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: '1.5rem',
-              padding: '2rem 0'
-            }}>
+            <div className="pharmaciens-grid">
               {filteredPharmaciens.map((pharmacien) => (
                 <div
                   key={pharmacien._id}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    transition: 'transform 0.2s',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  className="pharmacien-card"
                 >
                   <ProfileImage
                     src={pharmacien.photo}
@@ -148,16 +133,16 @@ const SectionB = () => {
                     borderColor="#3498db"
                     size={120}
                   />
-                    <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
-                      Dr. {pharmacien.prenom} {pharmacien.nom}
-                    </h3>
-                    {pharmacien.role && (
-                      <p style={{ textAlign: 'center', color: '#666', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
-                        {pharmacien.role}
-                      </p>
-                    )}
+                  <h3 className="pharmacien-name">
+                    Dr. {pharmacien.prenom} {pharmacien.nom}
+                  </h3>
+                  {pharmacien.role && (
+                    <p className="pharmacien-role">
+                      {pharmacien.role}
+                    </p>
+                  )}
                   {pharmacien.these && (
-                    <p style={{ textAlign: 'center', color: '#999', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                    <p className="pharmacien-these">
                       {pharmacien.these}
                     </p>
                   )}

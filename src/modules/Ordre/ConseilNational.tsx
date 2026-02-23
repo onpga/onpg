@@ -87,70 +87,24 @@ const ConseilNational = () => {
         </div>
       </section>
 
-      <section className="conseil-members-section" style={{ padding: '3rem 0' }}>
+      <section className="conseil-members-section">
         <div className="section-container">
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '2rem',
-            padding: '2rem 0'
-          }}>
+          <div className="conseil-members-grid">
             {conseilMembers.map((member) => (
               <div
                 key={member.id}
+                className={`conseil-member-card ${member.role === 'Présidente' || member.role === 'Président' ? 'president' : ''}`}
                 onClick={() => setSelectedMember(member)}
-                style={{
-                  backgroundColor: 'white',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s, box-shadow 0.2s'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                }}
               >
-                <div style={{ marginBottom: '1rem' }}>
+                <div className="conseil-member-photo-wrapper">
                   <img
                     src={member.photo}
                     alt={member.name}
-                    style={{
-                      width: '150px',
-                      height: '150px',
-                      borderRadius: '50%',
-                      objectFit: 'cover',
-                      border: '4px solid #00A651',
-                      margin: '0 auto'
-                    }}
+                    className="conseil-member-photo"
                   />
                 </div>
-                <h3 style={{
-                  margin: '0.5rem 0',
-                  fontSize: '1.3rem',
-                  fontWeight: 'bold',
-                  color: '#333'
-                }}>
-                  {member.name}
-                </h3>
-                <div style={{
-                  marginTop: '0.5rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: member.role === 'Présidente' || member.role === 'Président' 
-                    ? '#00A651' 
-                    : '#3498db',
-                  color: 'white',
-                  borderRadius: '20px',
-                  display: 'inline-block',
-                  fontSize: '0.95rem',
-                  fontWeight: 'bold'
-                }}>
+                <h3 className="conseil-member-name">{member.name}</h3>
+                <div className={`conseil-member-role ${member.role === 'Présidente' || member.role === 'Président' ? 'role-president' : 'role-conseiller'}`}>
                   {member.role}
                 </div>
               </div>
@@ -162,71 +116,26 @@ const ConseilNational = () => {
       {/* Modal de détail */}
       {selectedMember && (
         <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
-          }}
+          className="conseil-modal-overlay"
           onClick={() => setSelectedMember(null)}
         >
           <div
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              padding: '2rem',
-              maxWidth: '500px',
-              width: '90%',
-              textAlign: 'center'
-            }}
+            className="conseil-modal-content"
             onClick={(e) => e.stopPropagation()}
           >
             <button
+              className="conseil-modal-close"
               onClick={() => setSelectedMember(null)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'none',
-                border: 'none',
-                fontSize: '1.5rem',
-                cursor: 'pointer',
-                padding: '0.5rem'
-              }}
             >
               ✕
             </button>
             <img
               src={selectedMember.photo}
               alt={selectedMember.name}
-              style={{
-                width: '150px',
-                height: '150px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '4px solid #00A651',
-                marginBottom: '1rem'
-              }}
+              className="conseil-modal-photo"
             />
-            <h2 style={{ margin: '0.5rem 0', fontSize: '1.5rem' }}>{selectedMember.name}</h2>
-            <div style={{
-              marginTop: '0.5rem',
-              padding: '0.5rem 1rem',
-              backgroundColor: selectedMember.role === 'Présidente' || selectedMember.role === 'Président'
-                ? '#00A651'
-                : '#3498db',
-              color: 'white',
-              borderRadius: '20px',
-              display: 'inline-block',
-              fontSize: '1rem',
-              fontWeight: 'bold'
-            }}>
+            <h2 className="conseil-modal-name">{selectedMember.name}</h2>
+            <div className={`conseil-modal-role ${selectedMember.role === 'Présidente' || selectedMember.role === 'Président' ? 'role-president' : 'role-conseiller'}`}>
               {selectedMember.role}
             </div>
           </div>

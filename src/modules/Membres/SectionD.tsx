@@ -115,7 +115,7 @@ const SectionD = () => {
         </div>
       </div>
 
-      <section className="section-content">
+      <section className="section-d-content">
         <div className="section-container">
           {loading ? (
             <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>
@@ -145,7 +145,7 @@ const SectionD = () => {
                   <ProfileImage
                     src={pharmacien.photo}
                     alt={`${pharmacien.prenom} ${pharmacien.nom}`}
-                    borderColor="#9b59b6"
+                    borderColor="#e67e22"
                     size={120}
                   />
                     <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>

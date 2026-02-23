@@ -75,6 +75,7 @@ const Communiques = () => {
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [sortBy, setSortBy] = useState<'date' | 'type'>('date');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const communiquesPerPage = 8;
 
@@ -170,159 +171,9 @@ const Communiques = () => {
       </section>
 
       {/* Main Content */}
-      <div className="ressources-container">
-        {/* Sidebar */}
-        <aside className="ressources-sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Rechercher</h3>
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Rechercher un communiqué..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-                <button type="submit" className="search-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Type de communiqué</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter all-types ${selectedType === 'Tous' ? 'active' : ''}`}
-                onClick={() => setSelectedType('Tous')}
-              >
-                <span className="filter-icon">📋</span>
-                <span className="filter-text">Tous les types</span>
-                <span className="category-count">
-                  ({communiques.length})
-                </span>
-              </button>
-              {Object.entries(typeLabels).map(([key, label]) => (
-                <button
-                  key={key}
-                  className={`category-filter type-filter ${selectedType === key ? 'active' : ''}`}
-                  onClick={() => setSelectedType(key)}
-                  style={{
-                    '--type-color': typeColors[key as keyof typeof typeColors]
-                  } as React.CSSProperties}
-                >
-                  <span className="filter-icon">
-                    {key === 'urgent' && '🚨'}
-                    {key === 'presse' && '📢'}
-                    {key === 'information' && 'ℹ️'}
-                    {key === 'administratif' && '📋'}
-                  </span>
-                  <span className="filter-text">{label}</span>
-                  <span className="category-count">
-                    ({communiques.filter(c => c.type === key).length})
-                  </span>
-                  {key === 'urgent' && communiques.filter(c => c.type === key).length > 0 && (
-                    <span className="urgent-indicator">●</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Catégorie</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedCategory === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('Toutes')}
-              >
-                Toutes les catégories
-              </button>
-              {Array.from(new Set(communiques.map(c => c.category))).map(category => (
-                <button
-                  key={category}
-                  className={`category-filter ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                  <span className="category-count">
-                    ({communiques.filter(c => c.category === category).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Trier par</h3>
-            <div className="sort-options">
-              <button
-                className={`sort-option ${sortBy === 'date' ? 'active' : ''}`}
-                onClick={() => setSortBy('date')}
-              >
-                📅 Plus récent
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'type' ? 'active' : ''}`}
-                onClick={() => setSortBy('type')}
-              >
-                📋 Par type
-              </button>
-            </div>
-          </div>
-
-          {/* Statistiques des communiqués */}
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">📊 Métriques</h3>
-            <div className="communiques-stats">
-              <div className="stat-item">
-                <div className="stat-icon">📄</div>
-                <div className="stat-info">
-                  <span className="stat-value">{stats.totalCommuniques}</span>
-                  <span className="stat-label">Total</span>
-                </div>
-              </div>
-              <div className="stat-item urgent-stat">
-                <div className="stat-icon">🚨</div>
-                <div className="stat-info">
-                  <span className="stat-value">{stats.urgentCommuniques}</span>
-                  <span className="stat-label">Urgents</span>
-                </div>
-                {stats.urgentCommuniques > 0 && (
-                  <div className="urgent-pulse-dot"></div>
-                )}
-              </div>
-              <div className="stat-item">
-                <div className="stat-icon">📅</div>
-                <div className="stat-info">
-                  <span className="stat-value">{stats.thisMonth}</span>
-                  <span className="stat-label">Ce mois</span>
-                </div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-icon">⭐</div>
-                <div className="stat-info">
-                  <span className="stat-value">{stats.featuredCommuniques}</span>
-                  <span className="stat-label">À la une</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <button onClick={clearFilters} className="clear-filters-btn">
-              🗑️ Effacer les filtres
-            </button>
-          </div>
-        </aside>
-
-        {/* Main content */}
-        <main className="ressources-main">
-          <nav className="breadcrumb">
+      <div className="ressources-container-modern">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
             <Link to="/">Accueil</Link>
             <span className="breadcrumb-separator">›</span>
             <Link to="/ressources">Ressources</Link>
@@ -330,14 +181,160 @@ const Communiques = () => {
             <span className="breadcrumb-current">Communiqués</span>
           </nav>
 
-          <div className="results-header">
-            <h2 className="results-title">
-              {filteredCommuniques.length} communiqué{filteredCommuniques.length > 1 ? 's' : ''}
-              {searchQuery && ` pour "${searchQuery}"`}
-              {selectedType !== 'Tous' && ` de type ${typeLabels[selectedType as keyof typeof typeLabels]}`}
-            </h2>
-            <div className="results-meta">
-              Page {currentPage} sur {totalPages}
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredCommuniques.length} communiqué{filteredCommuniques.length > 1 ? 's' : ''} trouvé{filteredCommuniques.length > 1 ? 's' : ''}
+                  {stats.urgentCommuniques > 0 && (
+                    <span className="urgent-badge-header">🚨 {stats.urgentCommuniques} urgent{stats.urgentCommuniques > 1 ? 's' : ''}</span>
+                  )}
+                </h2>
+                <div className="results-meta-modern">
+                  Page {currentPage} sur {totalPages}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <form onSubmit={handleSearch} className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par titre, référence, contenu..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Type */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Type</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedType === 'Tous' ? 'active' : ''}`}
+                      onClick={() => setSelectedType('Tous')}
+                    >
+                      Tous
+                    </button>
+                    {Object.entries(typeLabels).map(([key, label]) => (
+                      <button
+                        key={key}
+                        className={`filter-chip-modern ${selectedType === key ? 'active' : ''}`}
+                        onClick={() => setSelectedType(key)}
+                        style={selectedType === key ? {
+                          background: `linear-gradient(135deg, ${typeColors[key as keyof typeof typeColors]}, ${typeColors[key as keyof typeof typeColors]}dd)`
+                        } : {}}
+                      >
+                        {key === 'urgent' && '🚨'}
+                        {key === 'presse' && '📢'}
+                        {key === 'information' && 'ℹ️'}
+                        {key === 'administratif' && '📋'}
+                        {label}
+                        <span className="chip-count">
+                          ({communiques.filter(c => c.type === key).length})
+                        </span>
+                        {key === 'urgent' && communiques.filter(c => c.type === key).length > 0 && (
+                          <span className="urgent-indicator-chip">●</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Catégorie */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Catégorie</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedCategory === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(communiques.map(c => c.category))).map(category => (
+                      <button
+                        key={category}
+                        className={`filter-chip-modern ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                        <span className="chip-count">
+                          ({communiques.filter(c => c.category === category).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tri */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Trier par</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'date' ? 'active' : ''}`}
+                      onClick={() => setSortBy('date')}
+                    >
+                      📅 Plus récent
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'type' ? 'active' : ''}`}
+                      onClick={() => setSortBy('type')}
+                    >
+                      📋 Par type
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={clearFilters} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini urgent-stat-mini">
+                    <span className="stat-mini-value">{stats.urgentCommuniques}</span>
+                    <span className="stat-mini-label">Urgents</span>
+                    {stats.urgentCommuniques > 0 && <span className="urgent-pulse-dot"></span>}
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.thisMonth}</span>
+                    <span className="stat-mini-label">Ce mois</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.featuredCommuniques}</span>
+                    <span className="stat-mini-label">À la une</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

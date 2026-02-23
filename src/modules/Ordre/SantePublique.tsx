@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
-import './AProposOrdre.css';
-import '../Pratique/Pratique.css';
+import './SantePublique.css';
 
 const SantePublique = () => {
   return (
     <div className="pratique-page">
       {/* Hero Section - Style similaire à Déontologie */}
-      <section className="pratique-hero" style={{ background: 'linear-gradient(135deg, #00A651 0%, #008F45 100%)' }}>
+      <section className="pratique-hero">
         <div className="hero-content">
           <div className="hero-text">
             <h1 className="hero-title">
@@ -51,172 +50,76 @@ const SantePublique = () => {
       {/* Contenu principal */}
       <section className="section-content">
         <div className="section-container">
-          <div style={{
-            maxWidth: '900px',
-            margin: '0 auto',
-            padding: '2rem',
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-          }}>
-            <h2 style={{ 
-              fontSize: '2rem', 
-              marginBottom: '1.5rem', 
-              color: '#00A651',
-              fontWeight: '700'
-            }}>
+          <div className="sante-publique-card">
+            <h2 className="sante-publique-title">
               Notre Mission
             </h2>
-            <p style={{ 
-              fontSize: '1.1rem', 
-              color: '#333', 
-              marginBottom: '2rem', 
-              lineHeight: '1.8' 
-            }}>
+            <p className="sante-publique-description">
               L'Ordre National des Pharmaciens du Gabon (ONPG) a pour mission fondamentale 
               de protéger la santé publique en garantissant la qualité, la sécurité et 
               l'efficacité des médicaments et produits de santé disponibles au Gabon.
             </p>
 
-            <h3 style={{ 
-              fontSize: '1.6rem', 
-              marginTop: '2.5rem', 
-              marginBottom: '1.5rem', 
-              color: '#00A651',
-              fontWeight: '600'
-            }}>
+            <h3 className="sante-publique-subtitle">
               Nos Actions
             </h3>
-            <div style={{ marginBottom: '2rem' }}>
-              <div style={{
-                padding: '1.5rem',
-                marginBottom: '1rem',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '12px',
-                borderLeft: '4px solid #00A651'
-              }}>
-                <h4 style={{ 
-                  fontSize: '1.2rem', 
-                  marginBottom: '0.75rem', 
-                  color: '#00A651',
-                  fontWeight: '600'
-                }}>
+            <div>
+              <div className="sante-publique-action-card">
+                <h4 className="sante-publique-action-title">
                   Contrôle de la qualité des médicaments
                 </h4>
-                <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.7', margin: 0 }}>
+                <p className="sante-publique-action-description">
                   Veiller à ce que tous les médicaments commercialisés respectent les normes 
                   de qualité et de sécurité établies.
                 </p>
               </div>
 
-              <div style={{
-                padding: '1.5rem',
-                marginBottom: '1rem',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '12px',
-                borderLeft: '4px solid #00A651'
-              }}>
-                <h4 style={{ 
-                  fontSize: '1.2rem', 
-                  marginBottom: '0.75rem', 
-                  color: '#00A651',
-                  fontWeight: '600'
-                }}>
+              <div className="sante-publique-action-card">
+                <h4 className="sante-publique-action-title">
                   Lutte contre les médicaments falsifiés
                 </h4>
-                <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.7', margin: 0 }}>
+                <p className="sante-publique-action-description">
                   Mettre en place des mécanismes de détection et de prévention contre 
                   les médicaments contrefaits ou falsifiés.
                 </p>
               </div>
 
-              <div style={{
-                padding: '1.5rem',
-                marginBottom: '1rem',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '12px',
-                borderLeft: '4px solid #00A651'
-              }}>
-                <h4 style={{ 
-                  fontSize: '1.2rem', 
-                  marginBottom: '0.75rem', 
-                  color: '#00A651',
-                  fontWeight: '600'
-                }}>
+              <div className="sante-publique-action-card">
+                <h4 className="sante-publique-action-title">
                   Surveillance pharmaceutique
                 </h4>
-                <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.7', margin: 0 }}>
+                <p className="sante-publique-action-description">
                   Assurer une veille active sur les effets indésirables et les problèmes 
                   de sécurité liés aux médicaments.
                 </p>
               </div>
 
-              <div style={{
-                padding: '1.5rem',
-                marginBottom: '1rem',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '12px',
-                borderLeft: '4px solid #00A651'
-              }}>
-                <h4 style={{ 
-                  fontSize: '1.2rem', 
-                  marginBottom: '0.75rem', 
-                  color: '#00A651',
-                  fontWeight: '600'
-                }}>
+              <div className="sante-publique-action-card">
+                <h4 className="sante-publique-action-title">
                   Formation et sensibilisation
                 </h4>
-                <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.7', margin: 0 }}>
+                <p className="sante-publique-action-description">
                   Informer les professionnels de santé et le public sur les bonnes pratiques 
                   d'utilisation des médicaments.
                 </p>
               </div>
 
-              <div style={{
-                padding: '1.5rem',
-                marginBottom: '1rem',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '12px',
-                borderLeft: '4px solid #00A651'
-              }}>
-                <h4 style={{ 
-                  fontSize: '1.2rem', 
-                  marginBottom: '0.75rem', 
-                  color: '#00A651',
-                  fontWeight: '600'
-                }}>
+              <div className="sante-publique-action-card">
+                <h4 className="sante-publique-action-title">
                   Réglementation
                 </h4>
-                <p style={{ fontSize: '1rem', color: '#555', lineHeight: '1.7', margin: 0 }}>
+                <p className="sante-publique-action-description">
                   Participer à l'élaboration et à l'application des textes réglementaires 
                   relatifs à la pharmacie et aux médicaments.
                 </p>
               </div>
             </div>
 
-            <h3 style={{ 
-              fontSize: '1.6rem', 
-              marginTop: '2.5rem', 
-              marginBottom: '1.5rem', 
-              color: '#00A651',
-              fontWeight: '600'
-            }}>
+            <h3 className="sante-publique-subtitle">
               Engagement
             </h3>
-            <div style={{
-              padding: '2rem',
-              backgroundColor: 'linear-gradient(135deg, #f0f9f4 0%, #e8f5e9 100%)',
-              backgroundColor: '#f0f9f4',
-              borderRadius: '12px',
-              border: '2px solid #00A651'
-            }}>
-              <p style={{ 
-                fontSize: '1.1rem', 
-                color: '#333', 
-                lineHeight: '1.8', 
-                margin: 0,
-                fontWeight: '500'
-              }}>
+            <div className="sante-publique-engagement">
+              <p className="sante-publique-engagement-text">
                 L'ONPG s'engage à travailler en étroite collaboration avec les autorités 
                 sanitaires, les professionnels de santé et les patients pour garantir 
                 un accès sécurisé aux médicaments de qualité au Gabon.
@@ -227,52 +130,12 @@ const SantePublique = () => {
       </section>
 
       {/* Navigation */}
-      <section style={{ padding: '3rem 2rem', textAlign: 'center', backgroundColor: '#f8f9fa' }}>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link 
-            to="/" 
-            style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: 'white',
-              color: '#00A651',
-              textDecoration: 'none',
-              borderRadius: '8px',
-              border: '2px solid #00A651',
-              fontWeight: '600',
-              transition: 'all 0.3s'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#00A651';
-              e.currentTarget.style.color = 'white';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'white';
-              e.currentTarget.style.color = '#00A651';
-            }}
-          >
+      <section className="sante-publique-nav">
+        <div className="sante-publique-nav-buttons">
+          <Link to="/" className="sante-publique-nav-btn secondary">
             ← Retour à l'accueil
           </Link>
-          <Link 
-            to="/ordre/a-propos" 
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: 'linear-gradient(135deg, #00A651 0%, #008F45 100%)',
-              color: 'white',
-              textDecoration: 'none',
-              borderRadius: '8px',
-              fontWeight: '600',
-              transition: 'transform 0.3s',
-              boxShadow: '0 4px 12px rgba(0, 166, 81, 0.3)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 166, 81, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 166, 81, 0.3)';
-            }}
-          >
+          <Link to="/ordre/a-propos" className="sante-publique-nav-btn primary">
             En savoir plus sur l'Ordre →
           </Link>
         </div>

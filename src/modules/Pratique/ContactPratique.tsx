@@ -78,7 +78,7 @@ const ContactPratique = () => {
                 CC4J+WC6, Montee Louis<br />
                 Libreville, Gabon
               </p>
-              <p className="contact-note">Après le ministère de la corruption</p>
+              <p className="contact-note">Après le Ministère de la Promotion de la Bonne Gouvernance</p>
             </div>
 
           </div>

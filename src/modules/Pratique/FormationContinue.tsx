@@ -138,12 +138,7 @@ const FormationContinue = () => {
               </p>
             </div>
           ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
-              gap: '2rem',
-              padding: '2rem 0'
-            }}>
+            <div className="formations-grid">
               {activeFormations.map((formation) => (
                 <div
                   key={formation._id}
@@ -160,33 +155,12 @@ const FormationContinue = () => {
                   <p className="formation-description">
                     {formation.description}
                   </p>
-                  <div style={{ 
-                    display: 'flex', 
-                    flexWrap: 'wrap', 
-                    gap: '0.75rem', 
-                    marginBottom: '1rem' 
-                  }}>
-                    <span style={{ 
-                      fontSize: '0.9rem', 
-                      color: '#666',
-                      backgroundColor: '#f8f9fa',
-                      padding: '0.4rem 0.8rem',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
+                  <div className="formation-meta">
+                    <span className="formation-meta-item">
                       ⏱️ {formation.duration}
                     </span>
                     {formation.category && (
-                      <span style={{
-                        fontSize: '0.9rem',
-                        backgroundColor: '#e8f5e9',
-                        color: '#00A651',
-                        padding: '0.4rem 0.8rem',
-                        borderRadius: '8px',
-                        fontWeight: '600'
-                      }}>
+                      <span className="formation-category">
                         {formation.category}
                       </span>
                     )}

@@ -109,6 +109,7 @@ const Theses = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'year' | 'citations' | 'downloads'>('year');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const thesesPerPage = 6;
 
@@ -235,176 +236,10 @@ const Theses = () => {
       </section>
 
       {/* Main Content */}
-      <div className="ressources-container">
-        {/* Sidebar */}
-        <aside className="ressources-sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Recherche</h3>
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Titre, auteur, mots-clés..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-                <button type="submit" className="search-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Université</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedUniversity === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedUniversity('Toutes')}
-              >
-                Toutes les universités
-              </button>
-              {universities.map(university => (
-                <button
-                  key={university.id}
-                  className={`category-filter ${selectedUniversity === university.name ? 'active' : ''}`}
-                  onClick={() => setSelectedUniversity(university.name)}
-                >
-                  {university.name}
-                  <span className="category-count">({university.thesesCount})</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Grade</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedDegree === 'Tous' ? 'active' : ''}`}
-                onClick={() => setSelectedDegree('Tous')}
-              >
-                Tous les grades
-              </button>
-              {['master', 'phd', 'doctorate'].map(degree => (
-                <button
-                  key={degree}
-                  className={`category-filter ${selectedDegree === degree ? 'active' : ''}`}
-                  onClick={() => setSelectedDegree(degree)}
-                >
-                  {getDegreeLabel(degree as Thesis['degree'])}
-                  <span className="category-count">
-                    ({theses.filter(t => t.degree === degree).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Spécialité</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedSpecialty === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedSpecialty('Toutes')}
-              >
-                Toutes les spécialités
-              </button>
-              {Array.from(new Set(theses.map(t => t.specialty))).map(specialty => (
-                <button
-                  key={specialty}
-                  className={`category-filter ${selectedSpecialty === specialty ? 'active' : ''}`}
-                  onClick={() => setSelectedSpecialty(specialty)}
-                >
-                  {specialty}
-                  <span className="category-count">
-                    ({theses.filter(t => t.specialty === specialty).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Année</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedYear === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedYear('Toutes')}
-              >
-                Toutes les années
-              </button>
-              {Array.from(new Set(theses.map(t => t.year.toString()))).sort().reverse().map(year => (
-                <button
-                  key={year}
-                  className={`category-filter ${selectedYear === year ? 'active' : ''}`}
-                  onClick={() => setSelectedYear(year)}
-                >
-                  {year}
-                  <span className="category-count">
-                    ({theses.filter(t => t.year.toString() === year).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Trier par</h3>
-            <div className="sort-options">
-              <button
-                className={`sort-option ${sortBy === 'year' ? 'active' : ''}`}
-                onClick={() => setSortBy('year')}
-              >
-                📅 Plus récent
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'citations' ? 'active' : ''}`}
-                onClick={() => setSortBy('citations')}
-              >
-                📊 Plus cité
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'downloads' ? 'active' : ''}`}
-                onClick={() => setSortBy('downloads')}
-              >
-                ⬇️ Plus téléchargé
-              </button>
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <button onClick={clearFilters} className="clear-filters-btn">
-              🗑️ Effacer les filtres
-            </button>
-          </div>
-
-          {/* Statistiques des thèses */}
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Statistiques</h3>
-            <div className="thesis-stats">
-              <div className="stat-item">
-                <span className="stat-value">{stats.featuredTheses}</span>
-                <span className="stat-label">À la une</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.universitiesCount}</span>
-                <span className="stat-label">Universités</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.yearsRange}</span>
-                <span className="stat-label">Période</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-
+      <div className="ressources-container-modern">
         {/* Main content */}
-        <main className="ressources-main">
-          <nav className="breadcrumb">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
             <Link to="/">Accueil</Link>
             <span className="breadcrumb-separator">›</span>
             <Link to="/ressources">Ressources</Link>
@@ -412,15 +247,200 @@ const Theses = () => {
             <span className="breadcrumb-current">Thèses</span>
           </nav>
 
-          <div className="results-header">
-            <h2 className="results-title">
-              {filteredTheses.length} thèse{filteredTheses.length > 1 ? 's' : ''}
-              {searchQuery && ` pour "${searchQuery}"`}
-              {selectedUniversity !== 'Toutes' && ` - ${selectedUniversity}`}
-              {selectedDegree !== 'Tous' && ` (${getDegreeLabel(selectedDegree as Thesis['degree'])})`}
-            </h2>
-            <div className="results-meta">
-              Page {currentPage} sur {totalPages}
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredTheses.length} thèse{filteredTheses.length > 1 ? 's' : ''} trouvée{filteredTheses.length > 1 ? 's' : ''}
+                </h2>
+                <div className="results-meta-modern">
+                  Page {currentPage} sur {totalPages}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <form onSubmit={handleSearch} className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par titre, auteur, mots-clés..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Université */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Université</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedUniversity === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedUniversity('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {universities.map(university => (
+                      <button
+                        key={university.id}
+                        className={`filter-chip-modern ${selectedUniversity === university.name ? 'active' : ''}`}
+                        onClick={() => setSelectedUniversity(university.name)}
+                      >
+                        {university.name}
+                        <span className="chip-count">({university.thesesCount})</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Grade */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Grade</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedDegree === 'Tous' ? 'active' : ''}`}
+                      onClick={() => setSelectedDegree('Tous')}
+                    >
+                      Tous
+                    </button>
+                    {['master', 'phd', 'doctorate'].map(degree => (
+                      <button
+                        key={degree}
+                        className={`filter-chip-modern ${selectedDegree === degree ? 'active' : ''}`}
+                        onClick={() => setSelectedDegree(degree)}
+                      >
+                        {getDegreeLabel(degree as Thesis['degree'])}
+                        <span className="chip-count">
+                          ({theses.filter(t => t.degree === degree).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Spécialité */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Spécialité</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedSpecialty === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedSpecialty('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(theses.map(t => t.specialty))).map(specialty => (
+                      <button
+                        key={specialty}
+                        className={`filter-chip-modern ${selectedSpecialty === specialty ? 'active' : ''}`}
+                        onClick={() => setSelectedSpecialty(specialty)}
+                      >
+                        {specialty}
+                        <span className="chip-count">
+                          ({theses.filter(t => t.specialty === specialty).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Année */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Année</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedYear === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedYear('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(theses.map(t => t.year.toString()))).sort().reverse().slice(0, 10).map(year => (
+                      <button
+                        key={year}
+                        className={`filter-chip-modern ${selectedYear === year ? 'active' : ''}`}
+                        onClick={() => setSelectedYear(year)}
+                      >
+                        {year}
+                        <span className="chip-count">
+                          ({theses.filter(t => t.year.toString() === year).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tri */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Trier par</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'year' ? 'active' : ''}`}
+                      onClick={() => setSortBy('year')}
+                    >
+                      📅 Plus récent
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'citations' ? 'active' : ''}`}
+                      onClick={() => setSortBy('citations')}
+                    >
+                      📊 Plus cité
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'downloads' ? 'active' : ''}`}
+                      onClick={() => setSortBy('downloads')}
+                    >
+                      ⬇️ Plus téléchargé
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={clearFilters} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.featuredTheses}</span>
+                    <span className="stat-mini-label">À la une</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.universitiesCount}</span>
+                    <span className="stat-mini-label">Universités</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.yearsRange}</span>
+                    <span className="stat-mini-label">Période</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

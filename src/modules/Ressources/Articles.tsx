@@ -108,6 +108,7 @@ const Articles = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'date' | 'citations' | 'downloads'>('date');
   const [currentPage, setCurrentPage] = useState(1);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const articlesPerPage = 6;
 
@@ -241,176 +242,10 @@ const Articles = () => {
       </section>
 
       {/* Main Content */}
-      <div className="ressources-container">
-        {/* Sidebar */}
-        <aside className="ressources-sidebar">
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Recherche avancée</h3>
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Titre, auteur, mots-clés..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-                <button type="submit" className="search-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Journal</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedJournal === 'Tous' ? 'active' : ''}`}
-                onClick={() => setSelectedJournal('Tous')}
-              >
-                Tous les journaux
-              </button>
-              {journals.map(journal => (
-                <button
-                  key={journal.id}
-                  className={`category-filter ${selectedJournal === journal.name ? 'active' : ''}`}
-                  onClick={() => setSelectedJournal(journal.name)}
-                >
-                  {journal.name}
-                  <span className="category-count">({journal.articlesCount})</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Catégorie</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedCategory === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('Toutes')}
-              >
-                Toutes les catégories
-              </button>
-              {Array.from(new Set(articles.map(a => a.category))).map(category => (
-                <button
-                  key={category}
-                  className={`category-filter ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                  <span className="category-count">
-                    ({articles.filter(a => a.category === category).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Type de publication</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedType === 'Tous' ? 'active' : ''}`}
-                onClick={() => setSelectedType('Tous')}
-              >
-                Tous les types
-              </button>
-              {['article', 'review', 'case-report', 'letter'].map(type => (
-                <button
-                  key={type}
-                  className={`category-filter ${selectedType === type ? 'active' : ''}`}
-                  onClick={() => setSelectedType(type)}
-                >
-                  {getPublicationTypeLabel(type as Article['publicationType'])}
-                  <span className="category-count">
-                    ({articles.filter(a => a.publicationType === type).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Année</h3>
-            <div className="category-filters">
-              <button
-                className={`category-filter ${selectedYear === 'Toutes' ? 'active' : ''}`}
-                onClick={() => setSelectedYear('Toutes')}
-              >
-                Toutes les années
-              </button>
-              {Array.from(new Set(articles.map(a => a.year.toString()))).sort().reverse().map(year => (
-                <button
-                  key={year}
-                  className={`category-filter ${selectedYear === year ? 'active' : ''}`}
-                  onClick={() => setSelectedYear(year)}
-                >
-                  {year}
-                  <span className="category-count">
-                    ({articles.filter(a => a.year.toString() === year).length})
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Trier par</h3>
-            <div className="sort-options">
-              <button
-                className={`sort-option ${sortBy === 'date' ? 'active' : ''}`}
-                onClick={() => setSortBy('date')}
-              >
-                📅 Plus récent
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'citations' ? 'active' : ''}`}
-                onClick={() => setSortBy('citations')}
-              >
-                📊 Plus cité
-              </button>
-              <button
-                className={`sort-option ${sortBy === 'downloads' ? 'active' : ''}`}
-                onClick={() => setSortBy('downloads')}
-              >
-                ⬇️ Plus téléchargé
-              </button>
-            </div>
-          </div>
-
-          <div className="sidebar-section">
-            <button onClick={clearFilters} className="clear-filters-btn">
-              🗑️ Effacer les filtres
-            </button>
-          </div>
-
-          {/* Statistiques de la bibliothèque */}
-          <div className="sidebar-section">
-            <h3 className="sidebar-title">Métriques</h3>
-            <div className="library-stats">
-              <div className="stat-item">
-                <span className="stat-value">{stats.featuredArticles}</span>
-                <span className="stat-label">À la une</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.categoriesCount}</span>
-                <span className="stat-label">Catégories</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-value">{stats.yearsRange}</span>
-                <span className="stat-label">Années</span>
-              </div>
-            </div>
-          </div>
-        </aside>
-
+      <div className="ressources-container-modern">
         {/* Main content */}
-        <main className="ressources-main">
-          <nav className="breadcrumb">
+        <main className="ressources-main-modern">
+          <nav className="breadcrumb-modern">
             <Link to="/">Accueil</Link>
             <span className="breadcrumb-separator">›</span>
             <Link to="/ressources">Ressources</Link>
@@ -418,15 +253,200 @@ const Articles = () => {
             <span className="breadcrumb-current">Articles</span>
           </nav>
 
-          <div className="results-header">
-            <h2 className="results-title">
-              {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''}
-              {searchQuery && ` pour "${searchQuery}"`}
-              {selectedJournal !== 'Tous' && ` dans ${selectedJournal}`}
-              {selectedCategory !== 'Toutes' && ` - ${selectedCategory}`}
-            </h2>
-            <div className="results-meta">
-              Page {currentPage} sur {totalPages}
+          {/* Filtres horizontaux modernes */}
+          <div className="filters-modern-container">
+            <div className="filters-header-modern">
+              <div className="filters-header-left">
+                <h2 className="results-title-modern">
+                  {filteredArticles.length} article{filteredArticles.length > 1 ? 's' : ''} trouvé{filteredArticles.length > 1 ? 's' : ''}
+                </h2>
+                <div className="results-meta-modern">
+                  Page {currentPage} sur {totalPages}
+                </div>
+              </div>
+              <button 
+                className="toggle-filters-btn-modern"
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                aria-label="Toggle filters"
+              >
+                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
+                <span>Filtres</span>
+              </button>
+            </div>
+
+            {/* Barre de recherche principale */}
+            <form onSubmit={handleSearch} className="search-bar-modern">
+              <div className="search-input-wrapper-modern">
+                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Rechercher par titre, auteur, mots-clés..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input-modern"
+                />
+                {searchQuery && (
+                  <button 
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="clear-search-btn"
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </form>
+
+            {/* Filtres collapsibles */}
+            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
+              <div className="filters-grid-modern">
+                {/* Filtre Journal */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Journal</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedJournal === 'Tous' ? 'active' : ''}`}
+                      onClick={() => setSelectedJournal('Tous')}
+                    >
+                      Tous
+                    </button>
+                    {journals.map(journal => (
+                      <button
+                        key={journal.id}
+                        className={`filter-chip-modern ${selectedJournal === journal.name ? 'active' : ''}`}
+                        onClick={() => setSelectedJournal(journal.name)}
+                      >
+                        {journal.name}
+                        <span className="chip-count">({journal.articlesCount})</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Catégorie */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Catégorie</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedCategory === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(articles.map(a => a.category))).map(category => (
+                      <button
+                        key={category}
+                        className={`filter-chip-modern ${selectedCategory === category ? 'active' : ''}`}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                        <span className="chip-count">
+                          ({articles.filter(a => a.category === category).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Type */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Type</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedType === 'Tous' ? 'active' : ''}`}
+                      onClick={() => setSelectedType('Tous')}
+                    >
+                      Tous
+                    </button>
+                    {['article', 'review', 'case-report', 'letter'].map(type => (
+                      <button
+                        key={type}
+                        className={`filter-chip-modern ${selectedType === type ? 'active' : ''}`}
+                        onClick={() => setSelectedType(type)}
+                      >
+                        {getPublicationTypeLabel(type as Article['publicationType'])}
+                        <span className="chip-count">
+                          ({articles.filter(a => a.publicationType === type).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Filtre Année */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Année</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${selectedYear === 'Toutes' ? 'active' : ''}`}
+                      onClick={() => setSelectedYear('Toutes')}
+                    >
+                      Toutes
+                    </button>
+                    {Array.from(new Set(articles.map(a => a.year.toString()))).sort().reverse().slice(0, 10).map(year => (
+                      <button
+                        key={year}
+                        className={`filter-chip-modern ${selectedYear === year ? 'active' : ''}`}
+                        onClick={() => setSelectedYear(year)}
+                      >
+                        {year}
+                        <span className="chip-count">
+                          ({articles.filter(a => a.year.toString() === year).length})
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tri */}
+                <div className="filter-group-modern">
+                  <label className="filter-label-modern">Trier par</label>
+                  <div className="filter-chips-modern">
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'date' ? 'active' : ''}`}
+                      onClick={() => setSortBy('date')}
+                    >
+                      📅 Plus récent
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'citations' ? 'active' : ''}`}
+                      onClick={() => setSortBy('citations')}
+                    >
+                      📊 Plus cité
+                    </button>
+                    <button
+                      className={`filter-chip-modern ${sortBy === 'downloads' ? 'active' : ''}`}
+                      onClick={() => setSortBy('downloads')}
+                    >
+                      ⬇️ Plus téléchargé
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions filtres */}
+              <div className="filters-actions-modern">
+                <button onClick={clearFilters} className="clear-filters-btn-modern">
+                  <span>🗑️</span> Effacer tous les filtres
+                </button>
+                <div className="filters-stats-modern">
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.featuredArticles}</span>
+                    <span className="stat-mini-label">À la une</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.categoriesCount}</span>
+                    <span className="stat-mini-label">Catégories</span>
+                  </div>
+                  <div className="stat-mini">
+                    <span className="stat-mini-value">{stats.yearsRange}</span>
+                    <span className="stat-mini-label">Années</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 

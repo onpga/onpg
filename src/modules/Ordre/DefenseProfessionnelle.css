@@ -1,8 +1,9 @@
 /* ============================================
-   DÉONTOLOGIE - DESIGN ÉPOUSTOUFLANT PREMIUM
+   DÉFENSE PROFESSIONNELLE - DESIGN ÉPOUSTOUFLANT PREMIUM
    ============================================ */
 
-@import './Pratique.css';
+@import './AProposOrdre.css';
+@import '../Pratique/Pratique.css';
 
 /* ============================================
    HERO SECTION - PREMIUM
@@ -15,7 +16,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 30%, #7d3c98 60%, #9b59b6 100%) !important;
+  background: linear-gradient(135deg, #008F45 0%, #006637 30%, #00A651 60%, #008F45 100%) !important;
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   color: white;
@@ -230,7 +231,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(155, 89, 182, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 143, 69, 0.2), transparent);
 }
 
 .section-content .section-container {
@@ -240,12 +241,8 @@
   z-index: 1;
 }
 
-/* ============================================
-   DÉONTOLOGIE CARD - PREMIUM
-   ============================================ */
-
-.deontologie-card {
-  max-width: 1000px;
+.defense-professionnelle-card {
+  max-width: 900px;
   margin: 0 auto;
   padding: 3rem 2.5rem;
   background: linear-gradient(135deg, #ffffff, #f8f9fa);
@@ -254,104 +251,222 @@
     0 15px 50px rgba(0, 0, 0, 0.1),
     0 5px 20px rgba(0, 0, 0, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(155, 89, 182, 0.1);
+  border: 2px solid rgba(0, 143, 69, 0.1);
   position: relative;
   overflow: hidden;
 }
 
-.deontologie-card::before {
+.defense-professionnelle-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #9b59b6, #8e44ad, #7d3c98, #9b59b6);
+  background: linear-gradient(90deg, #008F45, #006637, #00A651, #008F45);
   background-size: 200% 100%;
   animation: gradientShift 3s ease infinite;
 }
 
-.deontologie-title {
+.defense-professionnelle-title {
   font-size: 2.2rem;
   margin-bottom: 1.5rem;
-  color: #9b59b6;
+  color: #008F45;
   font-weight: 700;
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: linear-gradient(135deg, #008F45, #006637);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1.3;
 }
 
-.deontologie-description {
+.defense-professionnelle-description {
   font-size: 1.15rem;
   color: #1a252f;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   line-height: 1.8;
 }
 
-.deontologie-updated {
-  font-size: 1rem;
-  color: #6c757d;
-  margin-bottom: 2rem;
-  padding: 0.8rem 1.2rem;
-  background: rgba(155, 89, 182, 0.1);
-  border-radius: 12px;
-  display: inline-block;
+.defense-professionnelle-subtitle {
+  font-size: 1.7rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  color: #008F45;
   font-weight: 600;
+  background: linear-gradient(135deg, #008F45, #006637);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.deontologie-pdf-container {
-  margin-top: 2rem;
+.defense-professionnelle-action-card {
+  padding: 2rem 1.8rem;
+  margin-bottom: 1.2rem;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
   border-radius: 18px;
+  border-left: 5px solid #008F45;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
   overflow: hidden;
   box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.1),
-    0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 2px solid rgba(155, 89, 182, 0.1);
-  background: white;
+    0 4px 15px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.defense-professionnelle-action-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 143, 69, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.defense-professionnelle-action-card:hover {
+  transform: translateX(8px) translateY(-4px);
+  box-shadow: 
+    0 10px 30px rgba(0, 143, 69, 0.15),
+    0 5px 15px rgba(0, 0, 0, 0.1);
+  border-left-color: #006637;
+  border-left-width: 6px;
+}
+
+.defense-professionnelle-action-card:hover::before {
+  left: 100%;
+}
+
+.defense-professionnelle-action-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.9rem;
+  color: #008F45;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.defense-professionnelle-action-card:hover .defense-professionnelle-action-title {
+  color: #006637;
+}
+
+.defense-professionnelle-action-description {
+  font-size: 1.05rem;
+  color: #495057;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.defense-professionnelle-engagement {
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #f0f9f4, #e8f5e9);
+  border-radius: 18px;
+  border: 2px solid #008F45;
+  margin-top: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 25px rgba(0, 143, 69, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.defense-professionnelle-engagement::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #008F45, #006637, #00A651, #008F45);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+}
+
+.defense-professionnelle-engagement-text {
+  font-size: 1.15rem;
+  color: #1a252f;
+  line-height: 1.8;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ============================================
+   NAVIGATION - PREMIUM
+   ============================================ */
+
+.defense-professionnelle-nav {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   position: relative;
 }
 
-.deontologie-iframe {
-  width: 100%;
-  height: 800px;
-  border: none;
-  display: block;
-  transition: all 0.3s ease;
+.defense-professionnelle-nav-buttons {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.deontologie-pdf-container:hover .deontologie-iframe {
-  box-shadow: inset 0 0 20px rgba(155, 89, 182, 0.1);
-}
-
-.deontologie-actions {
-  padding: 2rem;
-  text-align: center;
-  background: linear-gradient(135deg, #f8f9fa, #ffffff);
-  border-top: 2px solid rgba(155, 89, 182, 0.1);
-}
-
-.deontologie-download-btn {
+.defense-professionnelle-nav-btn {
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 1.2rem 2.5rem;
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
-  color: white;
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 
-    0 6px 20px rgba(155, 89, 182, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 0.5rem;
   position: relative;
   overflow: hidden;
+  font-size: 1rem;
 }
 
-.deontologie-download-btn::before {
+.defense-professionnelle-nav-btn.secondary {
+  background: white;
+  color: #008F45;
+  border: 2px solid #008F45;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.defense-professionnelle-nav-btn.secondary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(0, 143, 69, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.defense-professionnelle-nav-btn.secondary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.defense-professionnelle-nav-btn.secondary:hover {
+  background: #008F45;
+  color: white;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 
+    0 8px 25px rgba(0, 143, 69, 0.3),
+    0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.defense-professionnelle-nav-btn.primary {
+  background: linear-gradient(135deg, #008F45, #006637);
+  color: white;
+  border: 2px solid transparent;
+  box-shadow: 
+    0 6px 20px rgba(0, 143, 69, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.defense-professionnelle-nav-btn.primary::before {
   content: '';
   position: absolute;
   top: 0;
@@ -362,63 +477,20 @@
   transition: left 0.6s ease;
 }
 
-.deontologie-download-btn:hover::before {
+.defense-professionnelle-nav-btn.primary:hover::before {
   left: 100%;
 }
 
-.deontologie-download-btn:hover {
+.defense-professionnelle-nav-btn.primary:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 
-    0 10px 30px rgba(155, 89, 182, 0.4),
+    0 10px 30px rgba(0, 143, 69, 0.4),
     0 5px 15px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #8e44ad, #9b59b6);
-}
-
-.deontologie-loading {
-  text-align: center;
-  padding: 4rem 2rem;
-  font-size: 1.3rem;
-  color: #6c757d;
-  font-weight: 600;
-}
-
-.deontologie-empty {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 
-    0 10px 40px rgba(0, 0, 0, 0.08),
-    0 2px 8px rgba(0, 0, 0, 0.04);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.deontologie-empty p {
-  font-size: 1.2rem;
-  color: #6c757d;
-  line-height: 1.7;
 }
 
 /* ============================================
    RESPONSIVE - MOBILE
    ============================================ */
-
-@media (max-width: 1024px) {
-  .pratique-hero {
-    min-height: 45vh;
-    padding: 3rem 2rem 2.5rem;
-  }
-  
-  .pratique-hero .hero-stats {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
-  }
-  
-  .deontologie-iframe {
-    height: 600px;
-  }
-}
 
 @media (max-width: 768px) {
   .pratique-hero {
@@ -440,22 +512,30 @@
     padding: 3rem 1.5rem;
   }
   
-  .deontologie-card {
+  .defense-professionnelle-card {
     padding: 2.5rem 2rem;
   }
   
-  .deontologie-title {
+  .defense-professionnelle-title {
     font-size: 1.8rem;
   }
   
-  .deontologie-iframe {
-    height: 500px;
+  .defense-professionnelle-subtitle {
+    font-size: 1.5rem;
   }
   
-  .deontologie-download-btn {
+  .defense-professionnelle-action-card {
+    padding: 1.8rem 1.5rem;
+  }
+  
+  .defense-professionnelle-nav-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .defense-professionnelle-nav-btn {
     width: 100%;
     justify-content: center;
-    padding: 1rem 2rem;
   }
 }
 
@@ -469,21 +549,16 @@
     font-size: 1.8rem;
   }
   
-  .deontologie-card {
+  .defense-professionnelle-card {
     padding: 2rem 1.5rem;
   }
   
-  .deontologie-title {
+  .defense-professionnelle-title {
     font-size: 1.6rem;
   }
   
-  .deontologie-iframe {
-    height: 400px;
-  }
-  
-  .deontologie-download-btn {
-    font-size: 1rem;
-    padding: 1rem 1.5rem;
+  .defense-professionnelle-action-title {
+    font-size: 1.15rem;
   }
 }
 
@@ -491,11 +566,12 @@
   .pratique-hero,
   .pratique-hero::after,
   .pratique-hero .stat-card,
-  .deontologie-download-btn {
+  .defense-professionnelle-action-card {
     animation: none;
   }
   
-  .deontologie-download-btn:hover {
-    transform: translateY(-2px) scale(1.02);
+  .defense-professionnelle-action-card:hover {
+    transform: translateX(4px);
   }
 }
+

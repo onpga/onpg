@@ -69,12 +69,8 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
           <span className="user-avatar">👤</span>
           <div>
             <p className="user-name">{user?.username || 'Admin'}</p>
-            <p className="user-role">{user?.role || 'Administrateur'}</p>
           </div>
         </div>
-        <button onClick={logout} className="logout-btn">
-          🚪 Déconnexion
-        </button>
       </div>
     </aside>
   );

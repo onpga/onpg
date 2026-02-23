@@ -1,0 +1,427 @@
+/* ============================================
+   ONPG DESIGN SYSTEM - PREMIUM 9/10+
+   Système de design centralisé pour excellence visuelle
+   ============================================ */
+
+:root {
+  /* ============================================
+     COULEURS - SYSTÈME COMPLET
+     ============================================ */
+  
+  /* Couleurs primaires ONPG - Palette harmonieuse */
+  --onpg-green-50: #E8F5EE;
+  --onpg-green-100: #B8E6D3;
+  --onpg-green-200: #8FD9B8;
+  --onpg-green-300: #66CC9D;
+  --onpg-green-400: #3DBF82;
+  --onpg-green-500: #00A651; /* Couleur principale */
+  --onpg-green-600: #008F45;
+  --onpg-green-700: #007A3D;
+  --onpg-green-800: #006535;
+  --onpg-green-900: #00502D;
+  
+  /* Sémantique primaire */
+  --onpg-primary: var(--onpg-green-500);
+  --onpg-primary-dark: var(--onpg-green-600);
+  --onpg-primary-light: var(--onpg-green-400);
+  --onpg-primary-soft: var(--onpg-green-100);
+  --onpg-primary-muted: var(--onpg-green-50);
+  
+  /* Couleurs d'état */
+  --onpg-success: #00A651;
+  --onpg-error: #E74C3C;
+  --onpg-warning: #F39C12;
+  --onpg-info: #3498DB;
+  
+  /* Neutres - Échelle complète */
+  --onpg-gray-50: #F8F9FA;
+  --onpg-gray-100: #E9ECEF;
+  --onpg-gray-200: #DEE2E6;
+  --onpg-gray-300: #CED4DA;
+  --onpg-gray-400: #ADB5BD;
+  --onpg-gray-500: #6C757D;
+  --onpg-gray-600: #495057;
+  --onpg-gray-700: #343A40;
+  --onpg-gray-800: #212529;
+  --onpg-gray-900: #1A252F;
+  
+  /* Couleurs de section */
+  --section-a-color: #00A651;
+  --section-b-color: #3498DB;
+  --section-c-color: #E74C3C;
+  --section-d-color: #9B59B6;
+  
+  /* ============================================
+     TYPOGRAPHIE - SYSTÈME MODULAIRE
+     ============================================ */
+  
+  /* Font families */
+  --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-secondary: 'Inter', -apple-system, sans-serif;
+  
+  /* Font sizes - Scale modulaire */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-lg: 1.125rem;    /* 18px */
+  --font-size-xl: 1.25rem;     /* 20px */
+  --font-size-2xl: 1.5rem;     /* 24px */
+  --font-size-3xl: 1.875rem;   /* 30px */
+  --font-size-4xl: 2.25rem;    /* 36px */
+  --font-size-5xl: 3rem;       /* 48px */
+  --font-size-6xl: 3.75rem;    /* 60px */
+  
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  
+  /* ============================================
+     ESPACEMENTS - SYSTÈME BASÉ SUR 8PX
+     ============================================ */
+  
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
+  --space-32: 8rem;    /* 128px */
+  
+  /* ============================================
+     BORDER RADIUS
+     ============================================ */
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+  
+  /* ============================================
+     OMBRES - SYSTÈME ÉLEVATION
+     ============================================ */
+  
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 20px 60px rgba(0, 0, 0, 0.2);
+  
+  /* Ombres colorées ONPG */
+  --shadow-primary-sm: 0 4px 12px rgba(0, 166, 81, 0.2);
+  --shadow-primary-md: 0 8px 24px rgba(0, 166, 81, 0.3);
+  --shadow-primary-lg: 0 12px 32px rgba(0, 166, 81, 0.4);
+  
+  /* ============================================
+     TRANSITIONS ET ANIMATIONS
+     ============================================ */
+  
+  --transition-fast: 0.15s;
+  --transition-normal: 0.3s;
+  --transition-slow: 0.6s;
+  
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --easing-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  --easing-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ============================================
+     BREAKPOINTS
+     ============================================ */
+  
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  
+  /* ============================================
+     Z-INDEX SCALE
+     ============================================ */
+  
+  --z-base: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+}
+
+/* ============================================
+   RESPECT DES PRÉFÉRENCES UTILISATEUR
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   UTILITAIRES GLOBAUX
+   ============================================ */
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 var(--space-8);
+  }
+}
+
+/* Grilles */
+.grid {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-4,
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards premium */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-normal) var(--easing-standard);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Buttons premium */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-normal) var(--easing-standard);
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--onpg-primary), var(--onpg-primary-dark));
+  color: white;
+  box-shadow: var(--shadow-primary-sm);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-primary-md);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Inputs premium */
+.input {
+  width: 100%;
+  padding: var(--space-4) var(--space-6);
+  border: 2px solid var(--onpg-primary-soft);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  transition: all var(--transition-normal) var(--easing-standard);
+  background: var(--onpg-primary-muted);
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--onpg-primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 166, 81, 0.1);
+}
+
+.input::placeholder {
+  color: var(--onpg-gray-400);
+}
+
+/* Animations premium */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* Classes utilitaires d'animation */
+.animate-fade-in {
+  animation: fadeIn 0.6s var(--easing-standard);
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s var(--easing-standard);
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s var(--easing-standard);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s var(--easing-standard);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--onpg-primary), var(--onpg-primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform var(--transition-normal) var(--easing-standard),
+              box-shadow var(--transition-normal) var(--easing-standard);
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+}
+

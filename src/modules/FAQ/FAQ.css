@@ -291,5 +291,39 @@
     flex-direction: column;
     align-items: stretch;
   }
+
+  .faq-hero {
+    padding: 3rem 1rem !important;
+  }
+
+  .faq-hero .container {
+    padding: 0 var(--space-4) !important;
+  }
+
+  .search-bar {
+    padding: 0 var(--space-4) !important;
+  }
+
+  .faq-item {
+    margin-bottom: var(--space-3) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-hero h1 {
+    font-size: clamp(1.5rem, 5vw, 2rem) !important;
+  }
+
+  .faq-hero .hero-subtitle {
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
+  }
+
+  .faq-question {
+    padding: var(--space-3) var(--space-4) !important;
+  }
+
+  .question-text {
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+  }
 }
 

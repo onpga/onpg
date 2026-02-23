@@ -396,6 +396,29 @@
   .pharmacy-btn {
     flex: 1;
   }
+
+  .section-a-hero {
+    padding: 3rem 1rem !important;
+  }
+
+  .section-a-content {
+    padding: var(--space-6) var(--space-4) !important;
+  }
+
+  .pharmacies-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .membres-hero .hero-title {
+    font-size: clamp(1.75rem, 5vw, 2rem) !important;
+  }
+
+  .stat-number {
+    font-size: clamp(1.5rem, 4vw, 1.75rem) !important;
+  }
 }
 
 

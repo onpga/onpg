@@ -147,56 +147,17 @@ const FormationContinue = () => {
               {activeFormations.map((formation) => (
                 <div
                   key={formation._id}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '16px',
-                    padding: '2rem',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    transition: 'all 0.3s',
-                    border: formation.featured ? '3px solid #00A651' : '1px solid #e0e0e0',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-5px)';
-                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 166, 81, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                  }}
+                  className={`formation-card ${formation.featured ? 'featured' : ''}`}
                 >
                   {formation.featured && (
-                    <div style={{
-                      backgroundColor: '#00A651',
-                      color: 'white',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '20px',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
-                      display: 'inline-block',
-                      marginBottom: '1rem',
-                      alignSelf: 'flex-start'
-                    }}>
+                    <div className="formation-badge">
                       ⭐ À la une
                     </div>
                   )}
-                  <h3 style={{ 
-                    fontSize: '1.6rem', 
-                    marginBottom: '1rem', 
-                    color: '#00A651',
-                    fontWeight: '700',
-                    lineHeight: '1.3'
-                  }}>
+                  <h3 className="formation-title">
                     {formation.title}
                   </h3>
-                  <p style={{ 
-                    color: '#555', 
-                    marginBottom: '1.5rem', 
-                    lineHeight: '1.7',
-                    fontSize: '1rem',
-                    flex: 1
-                  }}>
+                  <p className="formation-description">
                     {formation.description}
                   </p>
                   <div style={{ 
@@ -231,32 +192,19 @@ const FormationContinue = () => {
                     )}
                   </div>
                   {formation.showPrice && formation.price && (
-                    <div style={{
-                      fontSize: '1.3rem',
-                      fontWeight: 'bold',
-                      color: '#00A651',
-                      marginBottom: '1rem',
-                      padding: '0.75rem',
-                      backgroundColor: '#f0f9f4',
-                      borderRadius: '8px',
-                      textAlign: 'center'
-                    }}>
+                    <div className="formation-price">
                       {formation.price.toLocaleString()} FCFA
                     </div>
                   )}
-                  <div style={{ 
-                    marginTop: 'auto',
-                    paddingTop: '1rem',
-                    borderTop: '1px solid #e0e0e0'
-                  }}>
+                  <div className="formation-meta">
                     {formation.instructor && (
-                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-                        <strong style={{ color: '#00A651' }}>Formateur :</strong> {formation.instructor}
+                      <p className="formation-meta-item">
+                        <strong>Formateur :</strong> {formation.instructor}
                       </p>
                     )}
                     {formation.date && (
-                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
-                        <strong style={{ color: '#00A651' }}>Date :</strong> {new Date(formation.date).toLocaleDateString('fr-FR', {
+                      <p className="formation-meta-item">
+                        <strong>Date :</strong> {new Date(formation.date).toLocaleDateString('fr-FR', {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric'
@@ -264,21 +212,13 @@ const FormationContinue = () => {
                       </p>
                     )}
                     {formation.location && (
-                      <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0' }}>
-                        <strong style={{ color: '#00A651' }}>Lieu :</strong> {formation.location}
+                      <p className="formation-meta-item">
+                        <strong>Lieu :</strong> {formation.location}
                       </p>
                     )}
                   </div>
                   {formation.content && (
-                    <div style={{
-                      marginTop: '1rem',
-                      padding: '1rem',
-                      backgroundColor: '#f8f9fa',
-                      borderRadius: '8px',
-                      fontSize: '0.9rem',
-                      color: '#555',
-                      lineHeight: '1.6'
-                    }}>
+                    <div className="formation-content">
                       {formation.content}
                     </div>
                   )}

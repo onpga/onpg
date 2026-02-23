@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './NavbarONPG.css';
@@ -12,6 +12,8 @@ const NavbarONPG = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
+  const menuRef = useRef<HTMLUListElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   // Empêcher le menu de navigation (barre verte) de se cacher lors du scroll
   useEffect(() => {
@@ -38,6 +40,44 @@ const NavbarONPG = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  // Fermer le menu au clic extérieur et bloquer le scroll
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      // Bloquer le scroll du body
+      document.body.style.overflow = 'hidden';
+      
+      const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as HTMLElement;
+        if (
+          menuRef.current &&
+          !menuRef.current.contains(target) &&
+          overlayRef.current &&
+          overlayRef.current.contains(target) &&
+          !target.closest('.onpg-mobile-toggle')
+        ) {
+          setMobileMenuOpen(false);
+        }
+      };
+
+      const handleEscape = (event: KeyboardEvent) => {
+        if (event.key === 'Escape') {
+          setMobileMenuOpen(false);
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+
+      return () => {
+        document.body.style.overflow = '';
+        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener('keydown', handleEscape);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
 
   const navItems = [
     {
@@ -250,7 +290,20 @@ const NavbarONPG = () => {
             <div className="progress-bar"></div>
           </div>
 
-          <ul className={`onpg-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
+          {/* Overlay pour fermer le menu */}
+          {mobileMenuOpen && (
+            <div
+              ref={overlayRef}
+              className="mobile-menu-overlay"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-hidden="true"
+            />
+          )}
+
+          <ul 
+            ref={menuRef}
+            className={`onpg-nav-menu ${mobileMenuOpen ? 'open' : ''}`}
+          >
             {navItems.map((item) => {
               const isActive = location.pathname === item.path || 
                 (item.path !== '/' && location.pathname.startsWith(item.path));

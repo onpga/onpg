@@ -84,6 +84,30 @@
   .communique-card h3 {
     font-size: 1.2rem;
   }
+
+  .communiques-hero h1 {
+    font-size: clamp(2rem, 5vw, 2.5rem) !important;
+  }
+
+  .communiques-hero p {
+    font-size: clamp(1rem, 3vw, 1.2rem) !important;
+  }
+
+  .communiques-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+    padding: var(--space-6) var(--space-4) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .communiques-hero {
+    padding: 3rem 1rem !important;
+  }
+
+  .communique-card {
+    padding: var(--space-4) !important;
+  }
 }
 
 

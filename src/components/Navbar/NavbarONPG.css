@@ -973,11 +973,33 @@
 
   .onpg-mobile-toggle {
     display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    right: 1.5rem;
+    right: 1rem;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1001;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(0, 166, 81, 0.2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .onpg-mobile-toggle:hover {
+    background: rgba(0, 166, 81, 0.1);
+    border-color: #00A651;
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 166, 81, 0.2);
+  }
+
+  .onpg-mobile-toggle:active {
+    transform: translateY(-50%) scale(0.95);
   }
 
   .onpg-navbar-container {
@@ -989,31 +1011,71 @@
     top: 0;
     left: -100%;
     width: 85%;
-    max-width: 350px;
+    max-width: 380px;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.98);
+    background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     flex-direction: column;
     align-items: stretch;
-    padding: 5rem 0 2rem;
+    padding: 4.5rem 0 2rem;
     box-shadow: 
-      4px 0 30px rgba(0, 0, 0, 0.15),
+      4px 0 40px rgba(0, 0, 0, 0.2),
       inset -1px 0 0 rgba(0, 0, 0, 0.05);
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #00A651 rgba(0, 0, 0, 0.1);
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .onpg-nav-menu::-webkit-scrollbar-thumb {
+    background: #00A651;
+    border-radius: 3px;
   }
 
   .onpg-nav-menu.open {
     left: 0;
+    animation: slideInMenu 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideInMenu {
+    from {
+      left: -100%;
+      opacity: 0;
+    }
+    to {
+      left: 0;
+      opacity: 1;
+    }
   }
 
   .onpg-nav-link {
-    padding: 1.2rem 2rem;
+    padding: 1.4rem 2rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     color: #2C3E50;
     text-shadow: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 56px;
+  }
+
+  .onpg-nav-link:active {
+    background: rgba(0, 166, 81, 0.1);
+    transform: translateX(4px);
   }
 
   .onpg-nav-link::before {
@@ -1029,7 +1091,7 @@
   .onpg-dropdown {
     position: static;
     box-shadow: none;
-    background: rgba(248, 249, 250, 0.8);
+    background: rgba(248, 249, 250, 0.9);
     border-radius: 0;
     margin: 0;
     opacity: 1;
@@ -1039,25 +1101,62 @@
     overflow: hidden;
     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
+    border-left: 4px solid transparent;
   }
 
   .onpg-dropdown.open {
-    max-height: 500px;
+    max-height: 600px;
+    border-left-color: #00A651;
+    animation: slideDownDropdown 0.3s ease-out;
+  }
+
+  @keyframes slideDownDropdown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .dropdown-link {
+    padding: 1rem 2rem 1rem 3rem !important;
+    font-size: 0.95rem;
+    color: #495057;
+    transition: all 0.2s ease;
+  }
+
+  .dropdown-link:active {
+    background: rgba(0, 166, 81, 0.15);
+    color: #00A651;
+    padding-left: 3.5rem !important;
   }
 }
 
-/* Overlay mobile */
-.onpg-nav-menu.open::before {
-  content: '';
+/* Overlay mobile amélioré */
+.mobile-menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  z-index: -1;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999;
+  animation: fadeInOverlay 0.3s ease-out;
+  cursor: pointer;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ============================================
@@ -1368,40 +1467,63 @@
   100% { transform: translateX(400%); }
 }
 
-/* Bouton hamburger amélioré */
+/* Bouton hamburger amélioré - UX Premium */
 .hamburger-icon {
-  width: 24px;
-  height: 18px;
+  width: 26px;
+  height: 20px;
   position: relative;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .hamburger-line {
   display: block;
   width: 100%;
-  height: 2px;
-  background: #2c3e50;
-  border-radius: 1px;
+  height: 3px;
+  background: linear-gradient(90deg, #2c3e50, #00A651);
+  border-radius: 2px;
   position: absolute;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform-origin: center;
 }
 
-.hamburger-line:nth-child(1) { top: 0; }
-.hamburger-line:nth-child(2) { top: 8px; }
-.hamburger-line:nth-child(3) { bottom: 0; }
+.hamburger-line:nth-child(1) { 
+  top: 0; 
+  width: 100%;
+}
+
+.hamburger-line:nth-child(2) { 
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80%;
+  margin-left: auto;
+}
+
+.hamburger-line:nth-child(3) { 
+  bottom: 0;
+  width: 100%;
+}
 
 .hamburger-line.open:nth-child(1) {
-  transform: rotate(45deg);
-  top: 8px;
+  transform: rotate(45deg) translateY(8.5px);
+  top: 50%;
+  width: 100%;
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
 }
 
 .hamburger-line.open:nth-child(2) {
   opacity: 0;
+  transform: translateY(-50%) scale(0);
+  width: 0;
 }
 
 .hamburger-line.open:nth-child(3) {
-  transform: rotate(-45deg);
-  bottom: 8px;
+  transform: rotate(-45deg) translateY(-8.5px);
+  bottom: 50%;
+  width: 100%;
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
 }
 
 /* Icônes de navigation avec fond animé */

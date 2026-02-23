@@ -1,0 +1,525 @@
+/* ============================================
+   RESPONSIVE GLOBAL - MOBILE FIRST - ULTRA PREMIUM
+   Améliorations responsive pour toutes les pages
+   Version améliorée avec meilleure UX
+   ============================================ */
+
+/* ============================================
+   BREAKPOINTS STANDARDS
+   ============================================ */
+/* 
+   Mobile: < 640px
+   Tablet: 640px - 1024px
+   Desktop: > 1024px
+*/
+
+/* ============================================
+   CONTAINERS ET LAYOUTS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .container,
+  .section-container {
+    padding: 0 var(--space-4) !important;
+    max-width: 100% !important;
+  }
+
+  .hero-content {
+    padding: 0 var(--space-4) !important;
+    flex-direction: column !important;
+    gap: var(--space-6) !important;
+  }
+
+  /* Empêcher le débordement horizontal */
+  body {
+    overflow-x: hidden !important;
+  }
+
+  * {
+    max-width: 100% !important;
+  }
+
+  img, video, iframe {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ============================================
+   HERO SECTIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .hero-title,
+  .hero-title-main,
+  h1 {
+    font-size: clamp(1.75rem, 6vw, 2.5rem) !important;
+    line-height: 1.2 !important;
+    margin-bottom: var(--space-4) !important;
+  }
+
+  .hero-title-subtitle {
+    font-size: clamp(1rem, 4vw, 1.25rem) !important;
+    display: block !important;
+    margin-top: var(--space-2) !important;
+  }
+
+  .hero-description,
+  .hero-subtitle {
+    font-size: clamp(0.875rem, 3vw, 1rem) !important;
+    padding: 0 !important;
+    line-height: 1.6 !important;
+    margin-bottom: var(--space-6) !important;
+  }
+
+  .hero-stats {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: var(--space-3) !important;
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .stat-card {
+    flex: 1 1 calc(50% - var(--space-3)) !important;
+    min-width: 120px !important;
+    padding: var(--space-4) var(--space-3) !important;
+    text-align: center !important;
+  }
+
+  .stat-number {
+    font-size: clamp(1.5rem, 5vw, 2rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  .stat-label {
+    font-size: clamp(0.75rem, 2.5vw, 0.875rem) !important;
+    margin-top: var(--space-2) !important;
+  }
+
+  .hero-highlights {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: var(--space-3) !important;
+  }
+
+  .highlight-item {
+    width: 100% !important;
+    text-align: center !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-size: clamp(0.875rem, 2.5vw, 0.95rem) !important;
+  }
+}
+
+/* ============================================
+   GRIDES ET LAYOUTS
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .missions-grid,
+  .engagements-grid,
+  .news-grid,
+  .formations-grid,
+  .pharmacies-grid,
+  .membres-cards-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: var(--space-4) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .missions-grid,
+  .engagements-grid,
+  .news-grid,
+  .formations-grid,
+  .pharmacies-grid,
+  .membres-cards-grid,
+  .contact-info-grid,
+  .communiques-grid,
+  .conseil-members-grid,
+  .organigramme-nodes {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+    padding: var(--space-4) !important;
+  }
+
+  /* Améliorer les cartes sur mobile */
+  .mission-card,
+  .news-card,
+  .formation-card,
+  .pharmacy-card,
+  .pharmacien-card,
+  .communique-card,
+  .deontologie-card,
+  .contact-info-card,
+  .engagement-card {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .mission-card,
+  .news-card,
+  .formation-card,
+  .pharmacy-card,
+  .pharmacien-card,
+  .communique-card,
+  .deontologie-card,
+  .contact-info-card {
+    padding: var(--space-4) !important;
+  }
+
+  .mission-icon,
+  .news-image,
+  .formation-image {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 200px !important;
+  }
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+
+@media (max-width: 768px) {
+  .table-responsive,
+  .table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .membres-table,
+  table {
+    font-size: clamp(0.75rem, 2vw, 0.875rem) !important;
+    min-width: 600px !important;
+    width: 100% !important;
+  }
+
+  .membres-table th,
+  .membres-table td,
+  table th,
+  table td {
+    padding: var(--space-2) var(--space-3) !important;
+    white-space: nowrap !important;
+  }
+
+  .membres-table th {
+    font-size: clamp(0.75rem, 2vw, 0.8rem) !important;
+  }
+}
+
+/* ============================================
+   FILTRES ET RECHERCHE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .membres-filters,
+  .pratique-filters,
+  .communiques-filters,
+  .faq-filters-section {
+    padding: var(--space-3) var(--space-4) !important;
+    position: relative !important;
+  }
+
+  .filters-container {
+    flex-direction: column !important;
+    gap: var(--space-3) !important;
+    width: 100% !important;
+  }
+
+  .search-input,
+  .search-input-wrapper,
+  .search-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .filter-group {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: var(--space-2) !important;
+  }
+
+  .filter-group label {
+    font-size: clamp(0.875rem, 2.5vw, 0.95rem) !important;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    width: 100% !important;
+    font-size: clamp(0.875rem, 2.5vw, 0.95rem) !important;
+    padding: var(--space-3) var(--space-4) !important;
+  }
+
+  .checkbox-filters {
+    flex-direction: column !important;
+    gap: var(--space-2) !important;
+    width: 100% !important;
+  }
+
+  .checkbox-label {
+    width: 100% !important;
+    font-size: clamp(0.875rem, 2.5vw, 0.95rem) !important;
+  }
+
+  .toggle-filters-btn {
+    width: 100% !important;
+    border-radius: 0 0 12px 12px !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-size: clamp(0.875rem, 2.5vw, 0.95rem) !important;
+  }
+}
+
+/* ============================================
+   NAVIGATION ET HEADERS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .hero-content {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .hero-text {
+    width: 100% !important;
+  }
+
+  .hero-animation {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   TEXTES ET TYPOGRAPHIE
+   ============================================ */
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: clamp(1.75rem, 5vw, 2.5rem) !important;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem) !important;
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 3vw, 1.5rem) !important;
+  }
+
+  p {
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+  }
+}
+
+/* ============================================
+   BOUTONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .btn,
+  .btn-primary,
+  .btn-secondary {
+    width: 100% !important;
+    padding: var(--space-4) var(--space-6) !important;
+    font-size: var(--font-size-base) !important;
+  }
+
+  .pharmacy-btn,
+  .formation-btn {
+    width: 100% !important;
+    margin-bottom: var(--space-2) !important;
+  }
+}
+
+/* ============================================
+   FORMULAIRES
+   ============================================ */
+
+@media (max-width: 768px) {
+  .contact-form,
+  .search-form {
+    padding: var(--space-4) !important;
+  }
+
+  .form-group {
+    margin-bottom: var(--space-4) !important;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  textarea,
+  select {
+    width: 100% !important;
+    padding: var(--space-3) var(--space-4) !important;
+    font-size: var(--font-size-base) !important;
+  }
+}
+
+/* ============================================
+   SIDEBARS
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .ressources-sidebar,
+  .sidebar {
+    position: static !important;
+    width: 100% !important;
+    margin-bottom: var(--space-6) !important;
+  }
+
+  .ressources-container {
+    flex-direction: column !important;
+  }
+}
+
+/* ============================================
+   MODALS ET OVERLAYS
+   ============================================ */
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: var(--space-4) !important;
+    padding: var(--space-4) !important;
+  }
+}
+
+/* ============================================
+   IMAGES ET MÉDIAS
+   ============================================ */
+
+@media (max-width: 768px) {
+  img,
+  video,
+  iframe {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  .president-photo-professional,
+  .president-photo {
+    width: 100% !important;
+    max-width: 280px !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    display: block !important;
+  }
+
+  .pharmacy-photo img,
+  .pharmacien-photo,
+  .conseil-member-photo,
+  .profile-image {
+    width: 100% !important;
+    max-width: 180px !important;
+    height: auto !important;
+    margin: 0 auto !important;
+  }
+
+  .news-image,
+  .formation-image,
+  .article-image {
+    width: 100% !important;
+    height: 200px !important;
+    object-fit: cover !important;
+  }
+
+  .deontologie-iframe,
+  iframe {
+    width: 100% !important;
+    height: 400px !important;
+    max-height: 70vh !important;
+  }
+}
+
+/* ============================================
+   SPACING GLOBAL
+   ============================================ */
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-8) 0 !important;
+  }
+
+  .section-content {
+    padding: var(--space-4) 0 !important;
+  }
+}
+
+/* ============================================
+   UTILITAIRES MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: block !important;
+  }
+
+  .text-center-mobile {
+    text-align: center !important;
+  }
+
+  .full-width-mobile {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   TOUCH TARGETS (Accessibilité mobile)
+   ============================================ */
+
+@media (max-width: 768px) {
+  button,
+  a.btn,
+  .clickable {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
+
+/* ============================================
+   HORIZONTAL SCROLL (pour tables)
+   ============================================ */
+
+@media (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: thin !important;
+  }
+
+  .table-wrapper::-webkit-scrollbar {
+    height: 8px !important;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: var(--onpg-gray-100) !important;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--onpg-primary) !important;
+    border-radius: 4px !important;
+  }
+}
+

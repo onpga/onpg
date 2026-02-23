@@ -14,4 +14,34 @@
   background: linear-gradient(90deg, #9b59b6 0%, #8e44ad 100%);
 }
 
+/* Responsive spécifique Déontologie */
+@media (max-width: 768px) {
+  .deontologie-card {
+    padding: var(--space-6) var(--space-4) !important;
+  }
+
+  .deontologie-title {
+    font-size: clamp(1.5rem, 4vw, 2rem) !important;
+  }
+
+  .deontologie-iframe {
+    height: 500px !important;
+  }
+
+  .deontologie-download-btn {
+    width: 100% !important;
+    padding: var(--space-4) var(--space-6) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .deontologie-iframe {
+    height: 400px !important;
+  }
+
+  .deontologie-card {
+    padding: var(--space-4) var(--space-3) !important;
+  }
+}
+
 

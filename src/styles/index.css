@@ -1,5 +1,17 @@
+/* Import du Design System Premium */
+@import './design-system.css';
+
+/* Import des améliorations Premium pour toutes les pages */
+@import './premium-enhancements.css';
+
+/* Import des améliorations spécifiques par page */
+@import './page-specific-enhancements.css';
+
 /* Import des améliorations UX pour les boutons */
 @import './button-enhancements.css';
+
+/* Import des améliorations Responsive pour mobile */
+@import './responsive.css';
 
 /* Variables CSS - Charte graphique CIPS */
 :root {

@@ -466,6 +466,37 @@
   .children-nodes {
     flex-direction: column;
   }
+
+  .organigramme-section {
+    padding: 2rem 1rem !important;
+  }
+
+  .organigramme-node {
+    padding: var(--space-4) !important;
+    margin-bottom: var(--space-4) !important;
+  }
+
+  .organigramme-node-title {
+    font-size: clamp(1rem, 3vw, 1.25rem) !important;
+  }
+
+  .organigramme-node-subtitle {
+    font-size: clamp(0.875rem, 2.5vw, 1rem) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ordre-hero .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .ordre-hero .hero-title-subtitle {
+    font-size: 1.5rem !important;
+  }
+
+  .organigramme-node {
+    padding: var(--space-3) !important;
+  }
 }
 
 

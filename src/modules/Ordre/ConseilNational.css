@@ -661,6 +661,35 @@
   .member-list-details {
     justify-content: center;
   }
+
+  .conseil-members-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4) !important;
+  }
+
+  .conseil-member-card {
+    padding: var(--space-4) !important;
+  }
+
+  .conseil-member-photo {
+    width: 120px !important;
+    height: 120px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ordre-hero .hero-title {
+    font-size: 2rem !important;
+  }
+
+  .conseil-member-card {
+    padding: var(--space-3) !important;
+  }
+
+  .conseil-member-photo {
+    width: 100px !important;
+    height: 100px !important;
+  }
 }
 
 

@@ -146,16 +146,7 @@ const SectionA = () => {
               {filteredPharmaciens.map((pharmacien) => (
                 <div
                   key={pharmacien._id}
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: '12px',
-                    padding: '1.5rem',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                    transition: 'transform 0.2s',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  className="pharmacien-card"
                 >
                   <ProfileImage
                     src={pharmacien.photo}
@@ -163,16 +154,16 @@ const SectionA = () => {
                     borderColor="#00A651"
                     size={120}
                   />
-                  <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>
+                  <h3 className="pharmacien-name">
                     Dr. {pharmacien.prenom} {pharmacien.nom}
                   </h3>
                   {pharmacien.role && (
-                    <p style={{ textAlign: 'center', color: '#666', marginBottom: '0.5rem', fontSize: '0.95rem' }}>
+                    <p className="pharmacien-role">
                       {pharmacien.role}
                     </p>
                   )}
                   {pharmacien.these && (
-                    <p style={{ textAlign: 'center', color: '#999', fontSize: '0.85rem', fontStyle: 'italic' }}>
+                    <p className="pharmacien-these">
                       {pharmacien.these}
                     </p>
                   )}

@@ -100,28 +100,21 @@ const Deontologie = () => {
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>Chargement...</div>
           ) : !deontologie || !deontologie.pdfUrl ? (
-            <div style={{ textAlign: 'center', padding: '3rem', color: '#666' }}>
+            <div className="deontologie-empty">
               <p>Aucun document de déontologie disponible pour le moment.</p>
             </div>
           ) : (
-            <div style={{
-              maxWidth: '900px',
-              margin: '0 auto',
-              padding: '2rem',
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
-              <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#00A651' }}>
+            <div className="deontologie-card">
+              <h2 className="deontologie-title">
                 {deontologie.title}
               </h2>
               {deontologie.description && (
-                <p style={{ fontSize: '1.1rem', color: '#666', marginBottom: '1.5rem', lineHeight: '1.6' }}>
+                <p className="deontologie-description">
                   {deontologie.description}
                 </p>
               )}
               {deontologie.lastUpdated && (
-                <p style={{ fontSize: '0.9rem', color: '#999', marginBottom: '1.5rem' }}>
+                <p className="deontologie-updated">
                   Dernière mise à jour : {new Date(deontologie.lastUpdated).toLocaleDateString('fr-FR', {
                     year: 'numeric',
                     month: 'long',
@@ -129,38 +122,20 @@ const Deontologie = () => {
                   })}
                 </p>
               )}
-              <div style={{
-                border: '2px solid #00A651',
-                borderRadius: '8px',
-                padding: '2rem',
-                textAlign: 'center',
-                backgroundColor: '#f8f9fa'
-              }}>
+              <div className="deontologie-pdf-container">
                 <iframe
                   src={deontologie.pdfUrl}
                   width="100%"
                   height="800px"
-                  style={{ border: 'none', borderRadius: '8px' }}
+                  className="deontologie-iframe"
                   title={deontologie.title}
                 />
-                <div style={{ marginTop: '1.5rem' }}>
+                <div className="deontologie-actions">
                   <a
                     href={deontologie.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-block',
-                      padding: '0.75rem 2rem',
-                      backgroundColor: '#00A651',
-                      color: 'white',
-                      textDecoration: 'none',
-                      borderRadius: '8px',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold',
-                      transition: 'background-color 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#006637'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#00A651'}
+                    className="deontologie-download-btn"
                   >
                     📄 Télécharger le PDF
                   </a>

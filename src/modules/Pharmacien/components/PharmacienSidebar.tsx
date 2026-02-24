@@ -27,7 +27,13 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
 
       <nav className="sidebar-nav">
         <Link to="/pharmacien/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
-          📊 Mon Profil
+          📊 Tableau de bord
+        </Link>
+        <Link to="/pharmacien/theses" className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}>
+          📚 Mes Thèses
+        </Link>
+        <Link to="/pharmacien/messages" className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}>
+          ✉️ Messages à l'Ordre
         </Link>
         <Link to="/pharmacien/pharmacies" className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}>
           🏥 Mes Pharmacies
@@ -51,6 +57,7 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
 };
 
 export default PharmacienSidebar;
+
 
 
 

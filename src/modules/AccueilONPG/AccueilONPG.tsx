@@ -33,10 +33,43 @@ const AccueilONPG = () => {
   // État pour le carousel avec 3 blocs et défilement subtil
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  
+  // État pour les photos du site (depuis la base de données)
+  const [siteImages, setSiteImages] = useState({
+    presidentPhoto: ONPG_IMAGES.president,
+    heroImage: ONPG_IMAGES.hero1
+  });
 
   // Mise à jour du canonical pour la page d'accueil ONPG
   useEffect(() => {
     document.title = ONPG_CONFIG.app.title;
+  }, []);
+
+  // Charger les photos du site depuis l'API
+  useEffect(() => {
+    const loadSiteImages = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL ||
+          (import.meta.env.PROD
+            ? 'https://backendonpg-production.up.railway.app/api'
+            : 'http://localhost:3001/api');
+        
+        const response = await fetch(`${API_URL}/public/site-settings`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data) {
+            setSiteImages({
+              presidentPhoto: data.data.presidentPhoto || ONPG_IMAGES.president,
+              heroImage: data.data.heroImage || ONPG_IMAGES.hero1
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Erreur chargement images site:', error);
+        // Garder les images par défaut en cas d'erreur
+      }
+    };
+    loadSiteImages();
   }, []);
 
   // Charger les actualités depuis l'API
@@ -323,7 +356,7 @@ const AccueilONPG = () => {
                   <div className="photo-professional-frame">
                     <div className="photo-professional-border"></div>
                     <img
-                      src={ONPG_IMAGES.president}
+                      src={siteImages.presidentPhoto}
                       alt="Présidente ONPG - Dr Patience Asseko NTOGONO OKE"
                       className="president-photo-professional"
                       loading="eager"

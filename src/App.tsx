@@ -91,6 +91,8 @@ const DeontologieAdmin = lazy(() => import('./modules/Admin/DeontologieAdmin'));
 // Lazy loading des routes Pharmacien
 const PharmacienDashboard = lazy(() => import('./modules/Pharmacien/PharmacienDashboard'));
 const PharmaciesPharmacien = lazy(() => import('./modules/Pharmacien/PharmaciesPharmacien'));
+const PharmacienTheses = lazy(() => import('./modules/Pharmacien/PharmacienTheses'));
+const PharmacienMessages = lazy(() => import('./modules/Pharmacien/PharmacienMessages'));
 const Simulations = lazy(() => import('./modules/Admin/Simulations'));
 const Articles = lazy(() => import('./modules/Admin/Articles'));
 const ArticleForm = lazy(() => import('./modules/Admin/ArticleForm'));
@@ -138,6 +140,8 @@ function App() {
             {/* Routes Pharmacien (sans Layout) */}
             <Route path="/pharmacien/dashboard" element={<PharmacienDashboard />} />
             <Route path="/pharmacien/pharmacies" element={<PharmaciesPharmacien />} />
+            <Route path="/pharmacien/theses" element={<PharmacienTheses />} />
+            <Route path="/pharmacien/messages" element={<PharmacienMessages />} />
             <Route path="/admin/simulations" element={<Simulations />} />
             <Route path="/admin/articles" element={<Articles />} />
             <Route path="/admin/articles/new" element={<ArticleForm />} />

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchResourceData } from '../../utils/pageMocksApi';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './TableauOrdre.css';
 
 // Types pour les membres (simplifié : nom, prenom, section)
@@ -9,6 +10,7 @@ interface Member {
   nom: string;
   prenom: string;
   section: string; // Vide pour le moment
+  photo?: string;
 }
 
 const TableauOrdre = () => {
@@ -37,7 +39,8 @@ const TableauOrdre = () => {
             id: String(pharmacien._id || ''),
             nom: pharmacien.nom || '',
             prenom: pharmacien.prenom || '',
-            section: pharmacien.section || '' // Vide pour le moment
+            section: pharmacien.section || '', // Vide pour le moment
+            photo: pharmacien.photo || ''
           }));
           setMembers(loadedMembers);
           setFilteredMembers(loadedMembers);
@@ -250,6 +253,7 @@ const TableauOrdre = () => {
                 <table className="membres-table">
                   <thead>
                     <tr>
+                      <th>Photo</th>
                       <th>Nom</th>
                       <th>Prénom</th>
                       <th>Section</th>
@@ -257,22 +261,49 @@ const TableauOrdre = () => {
                   </thead>
                   <tbody>
                     {currentMembers.length > 0 ? (
-                      currentMembers.map(member => (
-                        <tr key={member.id} className="member-row">
-                          <td className="member-name-cell">
-                            <strong>{member.nom}</strong>
-                          </td>
-                          <td className="member-name-cell">
-                            {member.prenom}
-                          </td>
-                          <td>
-                            {member.section || <span style={{ color: '#999' }}>—</span>}
-                          </td>
-                        </tr>
-                      ))
+                      currentMembers.map(member => {
+                        const hasValidPhoto =
+                          member.photo &&
+                          member.photo !== 'null' &&
+                          member.photo !== 'undefined';
+                        const photoUrl = hasValidPhoto ? member.photo! : ONPG_IMAGES.fallback;
+
+                        return (
+                          <tr key={member.id} className="member-row">
+                            <td>
+                              <img
+                                src={photoUrl}
+                                alt={`${member.prenom} ${member.nom}`}
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  if (target.src !== ONPG_IMAGES.fallback) {
+                                    target.src = ONPG_IMAGES.fallback;
+                                  }
+                                }}
+                                style={{
+                                  width: '50px',
+                                  height: '50px',
+                                  objectFit: 'cover',
+                                  borderRadius: '50%',
+                                  border: '2px solid #00A651'
+                                }}
+                              />
+                            </td>
+                            <td className="member-name-cell">
+                              <strong>{member.nom}</strong>
+                            </td>
+                            <td className="member-name-cell">
+                              {member.prenom}
+                            </td>
+                            <td>
+                              {member.section || <span style={{ color: '#999' }}>—</span>}
+                            </td>
+                          </tr>
+                        );
+                      })
                     ) : (
                       <tr>
-                        <td colSpan={3} style={{ textAlign: 'center', padding: '2rem' }}>
+                        <td colSpan={4} style={{ textAlign: 'center', padding: '2rem' }}>
                           Aucun pharmacien trouvé
                         </td>
                       </tr>
@@ -285,17 +316,44 @@ const TableauOrdre = () => {
             /* Vue cartes */
             <div className="membres-cards-grid">
               {currentMembers.length > 0 ? (
-                currentMembers.map(member => (
-                  <div key={member.id} className="member-card-tableau">
-                    <div className="member-card-content">
-                      <h3 className="member-card-name">{member.nom}</h3>
-                      <div className="member-card-name">{member.prenom}</div>
-                      <div className="member-card-section">
-                        Section: {member.section || <span style={{ color: '#999' }}>Non assignée</span>}
+                currentMembers.map(member => {
+                  const hasValidPhoto =
+                    member.photo &&
+                    member.photo !== 'null' &&
+                    member.photo !== 'undefined';
+                  const photoUrl = hasValidPhoto ? member.photo! : ONPG_IMAGES.fallback;
+                  return (
+                    <div key={member.id} className="member-card-tableau">
+                      <div className="member-card-content">
+                        <img
+                          src={photoUrl}
+                          alt={`${member.prenom} ${member.nom}`}
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== ONPG_IMAGES.fallback) {
+                              target.src = ONPG_IMAGES.fallback;
+                            }
+                          }}
+                          style={{
+                            width: '80px',
+                            height: '80px',
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            border: '3px solid #00A651',
+                            marginBottom: '1rem',
+                            display: 'block',
+                            margin: '0 auto 1rem'
+                          }}
+                        />
+                        <h3 className="member-card-name">{member.nom}</h3>
+                        <div className="member-card-name">{member.prenom}</div>
+                        <div className="member-card-section">
+                          Section: {member.section || <span style={{ color: '#999' }}>Non assignée</span>}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
                   Aucun pharmacien trouvé

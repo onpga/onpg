@@ -962,6 +962,343 @@
   padding: 0;
 }
 
+/* Messagerie (Messages de contact & espace pharmacien) */
+.messages-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.messages-sidebar {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
+  max-height: calc(100vh - 220px);
+}
+
+.messages-filters {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.messages-filter-btn {
+  flex: 1;
+  padding: 0.45rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.messages-filter-btn.active {
+  background: linear-gradient(135deg, #00A651, #009245);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.4);
+}
+
+.messages-filter-btn:hover:not(.active) {
+  background: #f3f4f6;
+}
+
+.messages-search {
+  margin-bottom: 0.75rem;
+}
+
+.messages-search input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.85rem;
+}
+
+.messages-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 0.25rem;
+}
+
+.message-item {
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0.65rem 0.55rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.message-item + .message-item {
+  margin-top: 0.25rem;
+}
+
+.message-item:hover {
+  background: #f3f4ff;
+}
+
+.message-item.active {
+  background: #e0f2f1;
+  border-left-color: #00A651;
+}
+
+.message-item.unread .message-item-name {
+  font-weight: 700;
+}
+
+.message-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+}
+
+.message-item-name {
+  color: #111827;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.message-item-date {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.message-item-subject {
+  font-size: 0.82rem;
+  color: #111827;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.message-item-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.15rem;
+}
+
+.message-source-pill {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.message-source-pill.public {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.message-source-pill.pharmacien {
+  background: #e6f4ea;
+  color: #0b8043;
+}
+
+.message-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #00A651;
+}
+
+.messages-detail {
+  background: transparent;
+}
+
+.messages-detail-card {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem 1.75rem;
+  min-height: 520px;
+  max-height: calc(100vh - 220px);
+  display: flex;
+  flex-direction: column;
+}
+
+.messages-detail-empty {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+.messages-detail-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.messages-detail-header h2 {
+  margin: 0;
+  font-family: var(--font-poppins);
+  font-size: 1.3rem;
+  color: #111827;
+}
+
+.messages-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.messages-detail-name {
+  font-weight: 600;
+}
+
+.messages-detail-email,
+.messages-detail-phone {
+  color: #6b7280;
+}
+
+.messages-detail-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.messages-detail-date {
+  color: #6b7280;
+}
+
+.messages-detail-body {
+  flex: 1;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+  color: #111827;
+  line-height: 1.6;
+  overflow-y: auto;
+}
+
+.messages-detail-footer {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.messages-detail-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.messages-action-btn {
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.messages-action-btn.primary {
+  background: #00A651;
+  color: white;
+}
+
+.messages-action-btn.secondary {
+  background: #f3f4f6;
+  color: #111827;
+  border-color: #e5e7eb;
+}
+
+.messages-action-btn.secondary:hover {
+  background: #e5e7eb;
+}
+
+.messages-reply-block {
+  margin-top: 0.75rem;
+}
+
+.messages-reply-display {
+  padding: 0.85rem 0.9rem;
+  background: #f3f4ff;
+  border-radius: 10px;
+  border: 1px solid #e0e7ff;
+  font-size: 0.9rem;
+}
+
+.messages-reply-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.4rem;
+}
+
+.messages-reply-content {
+  white-space: pre-wrap;
+  color: #111827;
+}
+
+.messages-reply-meta {
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.messages-reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.messages-reply-form label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.messages-reply-form textarea {
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.messages-reply-form .messages-action-btn {
+  align-self: flex-start;
+}
+
 /* Responsive */
 @media (max-width: 992px) {
   .overview-grid {
@@ -986,6 +1323,19 @@
 
   .dashboard-header h1 {
     font-size: 2rem;
+  }
+
+  .messages-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .messages-sidebar {
+    max-height: none;
+  }
+
+  .messages-detail-card {
+    max-height: none;
+    min-height: 380px;
   }
 
   .stats-grid {

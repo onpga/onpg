@@ -53,6 +53,7 @@ const PharmaciesPharmacien = () => {
   const [loading, setLoading] = useState(true);
   const [editingPharmacie, setEditingPharmacie] = useState<Pharmacie | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [activePharmacieId, setActivePharmacieId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     nom: '',
     ville: '',
@@ -340,19 +341,53 @@ const PharmaciesPharmacien = () => {
           ) : (
             <div className="pharmacies-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
               {pharmacies.map((pharmacie) => (
-                <div key={pharmacie._id} className="pharmacie-card" style={{
-                  background: 'white',
-                  borderRadius: '12px',
-                  padding: '1.5rem',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                }}>
-                  {pharmacie.photo && (
-                    <img 
-                      src={pharmacie.photo} 
-                      alt={pharmacie.nom}
-                      style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px', marginBottom: '1rem' }}
-                    />
-                  )}
+                <div
+                  key={pharmacie._id}
+                  className="pharmacie-card"
+                  onClick={() => {
+                    setActivePharmacieId(pharmacie._id);
+                    setEditingPharmacie(pharmacie);
+                    setFormData({
+                      nom: pharmacie.nom,
+                      ville: pharmacie.ville,
+                      quartier: pharmacie.quartier,
+                      adresse: pharmacie.adresse,
+                      photo: pharmacie.photo,
+                      latitude: pharmacie.latitude?.toString() || '',
+                      longitude: pharmacie.longitude?.toString() || '',
+                      telephone: pharmacie.telephone,
+                      email: pharmacie.email,
+                      horaires: pharmacie.horaires || { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                      garde: pharmacie.garde || false
+                    });
+                    setShowForm(true);
+                  }}
+                  style={{
+                    background: 'white',
+                    borderRadius: '16px',
+                    padding: '1.5rem',
+                    boxShadow: activePharmacieId === pharmacie._id
+                      ? '0 12px 30px rgba(0,166,81,0.3)'
+                      : '0 4px 16px rgba(0,0,0,0.08)',
+                    border: activePharmacieId === pharmacie._id
+                      ? '2px solid #00A651'
+                      : '1px solid rgba(0,0,0,0.06)',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease',
+                    transform: activePharmacieId === pharmacie._id ? 'translateY(-4px)' : 'translateY(0)'
+                  }}
+                >
+                  <img 
+                    src={pharmacie.photo || '/logopharmacie.jpg'} 
+                    alt={pharmacie.nom}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== window.location.origin + '/logopharmacie.jpg') {
+                        target.src = '/logopharmacie.jpg';
+                      }
+                    }}
+                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1rem' }}
+                  />
                   <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>
                     {pharmacie.nom}
                     {pharmacie.garde && (
@@ -411,7 +446,10 @@ const PharmaciesPharmacien = () => {
                     </div>
                   )}
 
-                  <div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <div
+                    style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <button 
                       className="btn-secondary"
                       onClick={() => {

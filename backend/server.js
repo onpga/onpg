@@ -273,6 +273,23 @@ app.get('/api/public/:collection/:id', async (req, res) => {
   }
 });
 
+// Route publique pour récupérer les paramètres du site (photos d'accueil)
+app.get('/api/public/site-settings', async (req, res) => {
+  try {
+    const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+    res.json({ 
+      success: true, 
+      data: settings || { 
+        presidentPhoto: '', 
+        heroImage: '' 
+      } 
+    });
+  } catch (error) {
+    console.error('Erreur chargement site-settings:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
 // Routes publiques pour récupérer TOUTES les données actives d'une collection
 app.get('/api/public/:collection', async (req, res) => {
   try {
@@ -334,6 +351,32 @@ app.get('/api/admin/contact-messages', authenticateAdmin, async (req, res) => {
     res.json({ success: true, data });
   } catch (error) {
     console.error('Erreur chargement contact_messages:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// Mettre à jour le statut d'un message de contact (new, read, archived)
+app.put('/api/admin/contact-messages/:id/status', authenticateAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const allowedStatuses = ['new', 'read', 'archived'];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ success: false, error: 'Statut invalide' });
+    }
+
+    const result = await db.collection('contact_messages').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Message non trouvé' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur mise à jour statut message de contact:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });
@@ -422,7 +465,15 @@ app.delete('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => 
 app.get('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) => {
   try {
     const pharmacies = await db.collection('pharmacies')
-      .find({ pharmacienId: req.pharmacienId, isActive: true })
+      .find({ 
+        pharmacienId: { 
+          $in: [
+            req.pharmacienId, 
+            (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+          ].filter(Boolean)
+        }, 
+        isActive: true 
+      })
       .sort({ createdAt: -1 })
       .toArray();
     res.json({ success: true, data: pharmacies });
@@ -474,7 +525,13 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
       email: email || '',
       horaires: horaires || {},
       garde: garde === true || garde === 'true',
-      pharmacienId: req.pharmacienId,
+      pharmacienId: (() => { 
+        try { 
+          return new ObjectId(req.pharmacienId); 
+        } catch { 
+          return req.pharmacienId; 
+        } 
+      })(),
       messages: [],
       isActive: true,
       createdAt: new Date(),
@@ -496,7 +553,12 @@ app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
     // Vérifier que la pharmacie appartient au pharmacien
     const existing = await db.collection('pharmacies').findOne({
       _id: new ObjectId(req.params.id),
-      pharmacienId: req.pharmacienId
+      pharmacienId: { 
+        $in: [
+          req.pharmacienId, 
+          (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+        ].filter(Boolean)
+      }
     });
     
     if (!existing) {
@@ -525,7 +587,15 @@ app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
     };
 
     await db.collection('pharmacies').updateOne(
-      { _id: new ObjectId(req.params.id), pharmacienId: req.pharmacienId },
+      { 
+        _id: new ObjectId(req.params.id), 
+        pharmacienId: { 
+          $in: [
+            req.pharmacienId, 
+            (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+          ].filter(Boolean)
+        }
+      },
       { $set: updateData }
     );
 
@@ -541,7 +611,12 @@ app.delete('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req,
   try {
     const result = await db.collection('pharmacies').deleteOne({
       _id: new ObjectId(req.params.id),
-      pharmacienId: req.pharmacienId
+      pharmacienId: { 
+        $in: [
+          req.pharmacienId, 
+          (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+        ].filter(Boolean)
+      }
     });
     
     if (result.deletedCount === 0) {
@@ -567,7 +642,12 @@ app.post('/api/pharmacien/pharmacies/:id/messages', authenticatePharmacien, asyn
     // Vérifier que la pharmacie appartient au pharmacien
     const pharmacie = await db.collection('pharmacies').findOne({
       _id: new ObjectId(req.params.id),
-      pharmacienId: req.pharmacienId
+      pharmacienId: { 
+        $in: [
+          req.pharmacienId, 
+          (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+        ].filter(Boolean)
+      }
     });
     
     if (!pharmacie) {
@@ -601,7 +681,12 @@ app.delete('/api/pharmacien/pharmacies/:id/messages/:messageId', authenticatePha
   try {
     const pharmacie = await db.collection('pharmacies').findOne({
       _id: new ObjectId(req.params.id),
-      pharmacienId: req.pharmacienId
+      pharmacienId: { 
+        $in: [
+          req.pharmacienId, 
+          (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+        ].filter(Boolean)
+      }
     });
     
     if (!pharmacie) {
@@ -619,6 +704,268 @@ app.delete('/api/pharmacien/pharmacies/:id/messages/:messageId', authenticatePha
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur suppression message:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT mettre à jour le profil pharmacien
+app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
+  try {
+    const { email, telephone, adresse, photo } = req.body;
+    
+    const updateData = {};
+    if (email !== undefined) updateData.email = email;
+    if (telephone !== undefined) updateData.telephone = telephone;
+    if (adresse !== undefined) updateData.adresse = adresse;
+    if (photo !== undefined) updateData.photo = photo;
+    
+    updateData.updatedAt = new Date();
+
+    await db.collection('users').updateOne(
+      { _id: new ObjectId(req.pharmacienId) },
+      { $set: updateData }
+    );
+
+    // Mettre à jour aussi dans la collection pharmaciens si elle existe
+    await db.collection('pharmaciens').updateOne(
+      { _id: new ObjectId(req.pharmacienId) },
+      { $set: { ...updateData, photo: photo || updateData.photo } },
+      { upsert: false }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur mise à jour profil pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT mettre à jour le mot de passe du pharmacien
+app.put('/api/pharmacien/password', authenticatePharmacien, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, error: 'Mot de passe actuel et nouveau mot de passe requis' });
+    }
+
+    const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId), isActive: true });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, error: 'Mot de passe actuel incorrect' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await db.collection('users').updateOne(
+      { _id: new ObjectId(req.pharmacienId) },
+      { $set: { password: hashedPassword, updatedAt: new Date() } }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur mise à jour mot de passe pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// GET mini tableau de bord pharmacien (stats)
+app.get('/api/pharmacien/stats', authenticatePharmacien, async (req, res) => {
+  try {
+    const pharmacienFilter = {
+      $in: [
+        req.pharmacienId,
+        (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+      ].filter(Boolean)
+    };
+
+    const [pharmaciesCount, thesesCount, messagesCount] = await Promise.all([
+      db.collection('pharmacies').countDocuments({ pharmacienId: pharmacienFilter, isActive: true }),
+      db.collection('pharmacien_theses').countDocuments({ pharmacienId: pharmacienFilter }),
+      db.collection('contact_messages').countDocuments({ source: 'pharmacien', pharmacienId: pharmacienFilter })
+    ]);
+
+    res.json({
+      success: true,
+      data: {
+        totalPharmacies: pharmaciesCount,
+        totalTheses: thesesCount,
+        totalMessages: messagesCount
+      }
+    });
+  } catch (error) {
+    console.error('Erreur chargement stats pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// Routes thèses pharmacien
+app.get('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
+  try {
+    const theses = await db.collection('pharmacien_theses')
+      .find({
+        pharmacienId: {
+          $in: [
+            req.pharmacienId,
+            (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+          ].filter(Boolean)
+        }
+      })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    res.json({ success: true, data: theses });
+  } catch (error) {
+    console.error('Erreur chargement thèses pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+app.post('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
+  try {
+    const { titre, resume, annee, fichierUrl } = req.body;
+
+    if (!titre || !fichierUrl) {
+      return res.status(400).json({ success: false, error: 'Titre et fichier PDF requis' });
+    }
+
+    const pharmacienId =
+      (() => { try { return new ObjectId(req.pharmacienId); } catch { return req.pharmacienId; } })();
+
+    const doc = {
+      pharmacienId,
+      titre,
+      resume: resume || '',
+      annee: annee || '',
+      fichierUrl,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('pharmacien_theses').insertOne(doc);
+
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('Erreur création thèse pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+app.delete('/api/pharmacien/theses/:id', authenticatePharmacien, async (req, res) => {
+  try {
+    const result = await db.collection('pharmacien_theses').deleteOne({
+      _id: new ObjectId(req.params.id),
+      pharmacienId: {
+        $in: [
+          req.pharmacienId,
+          (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+        ].filter(Boolean)
+      }
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Thèse non trouvée' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur suppression thèse pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// POST message vers l'Ordre depuis l'espace pharmacien
+app.post('/api/pharmacien/messages', authenticatePharmacien, async (req, res) => {
+  try {
+    const { sujet, message } = req.body;
+
+    if (!sujet || !message) {
+      return res.status(400).json({ success: false, error: 'Sujet et message requis' });
+    }
+
+    const pharmacienId =
+      (() => { try { return new ObjectId(req.pharmacienId); } catch { return req.pharmacienId; } })();
+
+    const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
+
+    const doc = {
+      name: user?.username || 'Pharmacien',
+      email: user?.email || '',
+      phone: user?.telephone || '',
+      subject: sujet,
+      message,
+      source: 'pharmacien',
+      pharmacienId,
+      status: 'new',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('contact_messages').insertOne(doc);
+
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('Erreur envoi message pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// GET liste des messages envoyés par un pharmacien (avec éventuelle réponse de l'Ordre)
+app.get('/api/pharmacien/messages', authenticatePharmacien, async (req, res) => {
+  try {
+    const pharmacienFilter = {
+      $in: [
+        req.pharmacienId,
+        (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+      ].filter(Boolean)
+    };
+
+    const messages = await db.collection('contact_messages')
+      .find({ source: 'pharmacien', pharmacienId: pharmacienFilter })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    res.json({ success: true, data: messages });
+  } catch (error) {
+    console.error('Erreur chargement messages pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// POST réponse de l'Ordre à un message de contact (admin)
+app.post('/api/admin/contact-messages/:id/reply', authenticateAdmin, async (req, res) => {
+  try {
+    const { reply } = req.body;
+
+    if (!reply) {
+      return res.status(400).json({ success: false, error: 'Réponse requise' });
+    }
+
+    const messageId = req.params.id;
+
+    const result = await db.collection('contact_messages').updateOne(
+      { _id: new ObjectId(messageId) },
+      {
+        $set: {
+          reply,
+          replyAt: new Date(),
+          replyBy: 'ordre',
+          updatedAt: new Date()
+        }
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Message non trouvé' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur enregistrement réponse message:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });
@@ -674,6 +1021,51 @@ app.put('/api/admin/pharmacies/:id/pharmacien', authenticateAdmin, async (req, r
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur association pharmacie:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// ============================================
+// ROUTES ADMIN - PARAMÈTRES DU SITE
+// ============================================
+
+// GET paramètres du site (photos d'accueil)
+app.get('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
+  try {
+    const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+    res.json({ 
+      success: true, 
+      data: settings || { 
+        presidentPhoto: '', 
+        heroImage: '' 
+      } 
+    });
+  } catch (error) {
+    console.error('Erreur chargement site-settings:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT mettre à jour les paramètres du site
+app.put('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
+  try {
+    const { presidentPhoto, heroImage } = req.body;
+    
+    await db.collection('site_settings').updateOne(
+      { _id: 'main' },
+      { 
+        $set: { 
+          presidentPhoto: presidentPhoto || '',
+          heroImage: heroImage || '',
+          updatedAt: new Date()
+        } 
+      },
+      { upsert: true }
+    );
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur sauvegarde site-settings:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

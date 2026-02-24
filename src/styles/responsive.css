@@ -444,6 +444,60 @@
 }
 
 /* ============================================
+   ACCUEIL ONPG - BLOCS SPÉCIFIQUES MOBILE
+   (adaptation sans impacter le desktop)
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Bloc "Message de la Présidente" : passer en colonne sur mobile */
+  .president-main-professional-new {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: var(--space-6, 2rem) !important;
+  }
+
+  .president-photo-professional,
+  .president-discourse-block {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .president-discourse-block {
+    margin-top: 1.5rem !important;
+  }
+
+  /* Bloc formation ultra-compact : vertical sur mobile */
+  .formation-content-ultra {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--space-6, 2rem) !important;
+  }
+
+  .formation-left-ultra,
+  .formation-right-ultra {
+    width: 100% !important;
+  }
+
+  .formation-image-wrapper-ultra img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
+  }
+
+  /* Bloc contact de fin de page : cartes sur une colonne */
+  .contact-cta-grid-professional {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: var(--space-4, 1.5rem) !important;
+  }
+
+  .contact-cta-item-professional {
+    width: 100% !important;
+  }
+}
+
+/* ============================================
    SPACING GLOBAL
    ============================================ */
 

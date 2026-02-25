@@ -116,7 +116,7 @@ const PharmacienTheses = () => {
       });
       setMessage({
         type: 'error',
-        text: 'Configuration interne manquante pour l'upload des thèses. Veuillez contacter l'Ordre.'
+        text: 'Configuration interne manquante pour l\'upload des thèses. Veuillez contacter l\'Ordre.'
       });
       return;
     }

@@ -157,6 +157,19 @@ const PharmacienTheses = () => {
         console.log('[THESE UPLOAD] ✅ Upload réussi, URL:', data.url);
         setThesisForm(prev => ({ ...prev, fichierUrl: data.url }));
         setMessage({ type: 'success', text: 'Fichier PDF uploadé avec succès.' });
+        
+        // Si le titre est déjà rempli, enregistrer automatiquement en base
+        if (thesisForm.titre) {
+          console.log('[THESE UPLOAD] 📝 Titre présent, enregistrement automatique en base...');
+          setTimeout(() => {
+            handleThesisSave();
+          }, 500);
+        } else {
+          setMessage({ 
+            type: 'success', 
+            text: 'Fichier PDF uploadé. Veuillez renseigner le titre et cliquer sur "Enregistrer la thèse".' 
+          });
+        }
       } else {
         console.log('[THESE UPLOAD] ❌ Erreur upload');
         setMessage({ 

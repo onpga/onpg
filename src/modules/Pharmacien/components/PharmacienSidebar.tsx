@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import '../../Admin/Dashboard.css';
+import { ONPG_IMAGES } from '../../../utils/cloudinary-onpg';
 
 interface PharmacienSidebarProps {
   currentPage: string;
@@ -21,7 +22,7 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
   return (
     <aside className="admin-sidebar">
       <div className="sidebar-header">
-        <img src="/onpg-logo.png" alt="ONPG" className="sidebar-logo" />
+        <img src={ONPG_IMAGES.logo} alt="ONPG" className="sidebar-logo" />
         <h2>Espace Pharmacien</h2>
       </div>
 

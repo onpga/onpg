@@ -29,6 +29,7 @@ const PharmacienMessages = () => {
   });
   const [sendingMessageOrdre, setSendingMessageOrdre] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [expandedMessageId, setExpandedMessageId] = useState<string | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('admin_user');
@@ -175,6 +176,7 @@ const PharmacienMessages = () => {
                     <tr>
                       <th>Date</th>
                       <th>Sujet</th>
+                      <th>Destinataire</th>
                       <th>Message</th>
                       <th>Réponse de l'Ordre</th>
                     </tr>
@@ -192,7 +194,44 @@ const PharmacienMessages = () => {
                           })}
                         </td>
                         <td>{m.subject}</td>
-                        <td style={{ maxWidth: 300, whiteSpace: 'pre-wrap' }}>{m.message}</td>
+                        <td>Ordre</td>
+                        <td style={{ maxWidth: 300, whiteSpace: 'pre-wrap' }}>
+                          {(() => {
+                            const isExpanded = expandedMessageId === m._id;
+                            const fullText = m.message || '';
+                            const isLong = fullText.length > 120;
+                            const displayText =
+                              isExpanded || !isLong
+                                ? fullText
+                                : `${fullText.substring(0, 120)}…`;
+
+                            return (
+                              <>
+                                <div>{displayText}</div>
+                                {isLong && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setExpandedMessageId(isExpanded ? null : m._id)
+                                    }
+                                    style={{
+                                      marginTop: '0.25rem',
+                                      background: 'transparent',
+                                      border: 'none',
+                                      color: '#0369a1',
+                                      cursor: 'pointer',
+                                      padding: 0,
+                                      fontSize: '0.85rem',
+                                      textDecoration: 'underline'
+                                    }}
+                                  >
+                                    {isExpanded ? 'Masquer' : 'Voir plus'}
+                                  </button>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </td>
                         <td style={{ maxWidth: 300, whiteSpace: 'pre-wrap' }}>
                           {m.reply ? (
                             <>

@@ -21,7 +21,8 @@ const DB_NAME = 'onpg';
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // On autorise aussi les en-têtes utilisés par l'espace pharmacien (x-user-id, x-user-data)
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id, x-user-data');
 
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
@@ -68,6 +69,50 @@ const authenticateAdmin = (req, res, next) => {
     return res.status(401).json({ success: false, error: 'Non autorisé' });
   }
   next();
+};
+
+// Authentification pharmacien (vérifie le rôle et le token) – utilisée pour les routes /api/pharmacien/*
+const authenticatePharmacien = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+    if (!token || token !== process.env.ADMIN_TOKEN) {
+      return res.status(401).json({ success: false, error: 'Non autorisé' });
+    }
+
+    // Récupérer l'utilisateur depuis le header x-user-id (envoyé par le frontend après login)
+    const userId = req.headers['x-user-id'];
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Utilisateur non identifié' });
+    }
+
+    let user;
+    try {
+      user = await db.collection('users').findOne({ _id: new ObjectId(userId), isActive: true });
+    } catch (err) {
+      // Si userId n'est pas un ObjectId valide, essayer de le trouver par username
+      const storedUser = req.headers['x-user-data'];
+      if (storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          user = await db.collection('users').findOne({ username: userData.username, isActive: true });
+        } catch (e) {
+          return res.status(401).json({ success: false, error: 'Utilisateur non identifié' });
+        }
+      } else {
+        return res.status(401).json({ success: false, error: 'Utilisateur non identifié' });
+      }
+    }
+
+    if (!user || user.role !== 'pharmacien') {
+      return res.status(403).json({ success: false, error: 'Accès réservé aux pharmaciens' });
+    }
+
+    req.pharmacienId = String(user._id);
+    next();
+  } catch (error) {
+    console.error('[backend_pharmacie] Erreur authentification pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
 };
 
 // Route d'authentification admin (login) basée sur la collection users
@@ -256,6 +301,68 @@ app.delete('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => 
     res.json({ success: true });
   } catch (error) {
     console.error(`Erreur suppression ${req.params.collection}/${req.params.id}:`, error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// ============================================================
+// ROUTES PHARMACIEN - MESSAGES AVEC L'ORDRE
+// ============================================================
+
+// POST message vers l'Ordre depuis l'espace pharmacien
+app.post('/api/pharmacien/messages', authenticatePharmacien, async (req, res) => {
+  try {
+    const { sujet, message } = req.body;
+
+    if (!sujet || !message) {
+      return res.status(400).json({ success: false, error: 'Sujet et message requis' });
+    }
+
+    const pharmacienId =
+      (() => { try { return new ObjectId(req.pharmacienId); } catch { return req.pharmacienId; } })();
+
+    const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
+
+    const doc = {
+      name: user?.username || 'Pharmacien',
+      email: user?.email || '',
+      phone: user?.telephone || '',
+      subject: sujet,
+      message,
+      source: 'pharmacien',
+      pharmacienId,
+      status: 'new',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('contact_messages').insertOne(doc);
+
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('[backend_pharmacie] Erreur envoi message pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// GET liste des messages envoyés par un pharmacien (avec éventuelle réponse de l'Ordre)
+app.get('/api/pharmacien/messages', authenticatePharmacien, async (req, res) => {
+  try {
+    const pharmacienFilter = {
+      $in: [
+        req.pharmacienId,
+        (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+      ].filter(Boolean)
+    };
+
+    const messages = await db.collection('contact_messages')
+      .find({ source: 'pharmacien', pharmacienId: pharmacienFilter })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    res.json({ success: true, data: messages });
+  } catch (error) {
+    console.error('[backend_pharmacie] Erreur chargement messages pharmacien:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PharmacienSidebar from './components/PharmacienSidebar';
 import '../Admin/Dashboard.css';
@@ -85,6 +85,10 @@ const PharmaciesPharmacien = () => {
   });
   const [showMessageForm, setShowMessageForm] = useState(false);
 
+  // Références pour faire défiler automatiquement vers les formulaires
+  const formRef = useRef<HTMLDivElement | null>(null);
+  const messageFormRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     const storedUser = localStorage.getItem('admin_user');
     if (!storedUser) {
@@ -100,6 +104,23 @@ const PharmaciesPharmacien = () => {
 
     loadPharmacies();
   }, [navigate]);
+
+  // Quand on ouvre le formulaire pharmacie, on fait défiler la page jusqu'à lui
+  useEffect(() => {
+    if (showForm && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Sécurité : forcer aussi le scroll de la fenêtre tout en bas
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  }, [showForm]);
+
+  // Même chose pour le formulaire de message / alerte
+  useEffect(() => {
+    if (showMessageForm && messageFormRef.current) {
+      messageFormRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+  }, [showMessageForm]);
 
   const loadPharmacies = async () => {
     try {
@@ -503,7 +524,9 @@ const PharmaciesPharmacien = () => {
 
           {/* Formulaire pharmacie - INLINE sur la même page */}
           {showForm && (
-            <div style={{
+            <div
+              ref={formRef}
+              style={{
               background: 'white',
               padding: '2rem',
               borderRadius: '16px',
@@ -706,7 +729,9 @@ const PharmaciesPharmacien = () => {
 
           {/* Formulaire message - INLINE sur la même page */}
           {showMessageForm && (
-            <div style={{
+            <div
+              ref={messageFormRef}
+              style={{
               background: 'white',
               padding: '2rem',
               borderRadius: '16px',

@@ -312,6 +312,53 @@ app.get('/api/public/:collection', async (req, res) => {
   }
 });
 
+// ============================================
+// ADMIN - MESSAGES DE CONTACT
+// ============================================
+
+// Liste des messages de contact récents
+app.get('/api/admin/contact-messages', authenticateAdmin, async (req, res) => {
+  try {
+    const data = await db
+      .collection('contact_messages')
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .toArray();
+
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('Erreur chargement contact_messages:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// Mettre à jour le statut d'un message de contact (new, read, archived)
+app.put('/api/admin/contact-messages/:id/status', authenticateAdmin, async (req, res) => {
+  try {
+    const { status } = req.body;
+    const allowedStatuses = ['new', 'read', 'archived'];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({ success: false, error: 'Statut invalide' });
+    }
+
+    const result = await db.collection('contact_messages').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { status, updatedAt: new Date() } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Message non trouvé' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur mise à jour statut message de contact:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
 // Routes admin pour gérer les collections
 
 // GET toutes les données d'une collection

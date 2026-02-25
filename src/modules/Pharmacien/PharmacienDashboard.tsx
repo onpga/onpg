@@ -380,12 +380,17 @@ const PharmacienDashboard = () => {
 
   if (!user) return null;
 
+  const displayFirstName =
+    (user.prenoms && String(user.prenoms).split(' ')[0]) ||
+    (user.username && String(user.username)) ||
+    'Pharmacien';
+
   return (
     <div className="admin-layout">
       <PharmacienSidebar currentPage="dashboard" />
       <main className="admin-main">
         <div className="admin-content">
-          <h1>Mon Profil</h1>
+          <h1>Bonjour {displayFirstName}</h1>
           
           <div className="dashboard-stats">
             <div className="stat-card">

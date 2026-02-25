@@ -138,7 +138,9 @@ app.post('/api/auth/login', async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        nom: user.nom || null,
+        prenoms: user.prenoms || null
       }
     });
   } catch (error) {

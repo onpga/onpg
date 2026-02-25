@@ -124,44 +124,25 @@ const PharmacienTheses = () => {
     }
     console.log('[THESE UPLOAD] ✅ Taille valide');
 
-    // Upload direct vers Cloudinary avec signature (pas de preset nécessaire)
-    console.log('[THESE UPLOAD] ✅ Configuration Cloudinary OK');
-
+    // SIMPLE : Envoyer le fichier au backend, il s'occupe de tout
     setThesisSaving(true);
-    console.log('[THESE UPLOAD] 📤 Début upload vers Cloudinary avec signature...');
+    console.log('[THESE UPLOAD] 📤 Upload via backend...');
     try {
-      // Générer la signature Cloudinary
-      const timestamp = Math.round(Date.now() / 1000);
-      const paramsToSign = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
-      
-      // Utiliser Web Crypto API pour générer la signature SHA-1
-      const encoder = new TextEncoder();
-      const data = encoder.encode(paramsToSign);
-      const hashBuffer = await crypto.subtle.digest('SHA-1', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      const token = localStorage.getItem('admin_token');
+      const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+      const userId = currentUser._id;
 
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('api_key', CLOUDINARY_API_KEY);
-      formDataUpload.append('timestamp', timestamp.toString());
-      formDataUpload.append('signature', signature);
-      formDataUpload.append('resource_type', 'raw'); // Pour les PDFs
+      const formData = new FormData();
+      formData.append('pdf', file);
 
-      console.log('[THESE UPLOAD] 🌐 Appel Cloudinary avec signature:', {
-        url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
-        cloudName: CLOUDINARY_CLOUD_NAME,
-        apiKey: CLOUDINARY_API_KEY,
-        timestamp: timestamp
+      const res = await fetch(`${API_URL}/pharmacien/theses/upload-pdf`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-user-id': userId
+        },
+        body: formData
       });
-
-      const res = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
-        {
-          method: 'POST',
-          body: formDataUpload
-        }
-      );
 
       console.log('[THESE UPLOAD] 📥 Réponse Cloudinary:', {
         status: res.status,
@@ -170,22 +151,17 @@ const PharmacienTheses = () => {
       });
 
       const data = await res.json();
-      console.log('[THESE UPLOAD] 📦 Données Cloudinary:', {
-        hasSecureUrl: !!data.secure_url,
-        secureUrl: data.secure_url ? data.secure_url.substring(0, 50) + '...' : null,
-        error: data.error || null,
-        fullResponse: data
-      });
+      console.log('[THESE UPLOAD] 📥 Réponse backend:', data);
 
-      if (data.secure_url) {
-        console.log('[THESE UPLOAD] ✅ Upload réussi, URL:', data.secure_url);
-        setThesisForm(prev => ({ ...prev, fichierUrl: data.secure_url }));
-        setMessage({ type: 'success', text: 'Fichier PDF de la thèse uploadé avec succès.' });
+      if (data.success && data.url) {
+        console.log('[THESE UPLOAD] ✅ Upload réussi, URL:', data.url);
+        setThesisForm(prev => ({ ...prev, fichierUrl: data.url }));
+        setMessage({ type: 'success', text: 'Fichier PDF uploadé avec succès.' });
       } else {
-        console.log('[THESE UPLOAD] ❌ Pas d\'URL dans la réponse Cloudinary');
+        console.log('[THESE UPLOAD] ❌ Erreur upload');
         setMessage({ 
           type: 'error', 
-          text: `Erreur lors de l'upload du PDF. ${data.error ? `Détail: ${data.error.message || data.error}` : ''}` 
+          text: data.error || 'Erreur lors de l\'upload du PDF.' 
         });
       }
     } catch (err: any) {

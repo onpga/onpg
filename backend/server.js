@@ -6,6 +6,7 @@ const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const multer = require('multer');
 require('dotenv').config({ path: path.join(__dirname, 'backend-config.env') });
 
 const app = express();
@@ -28,6 +29,13 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// Configuration multer pour les uploads de fichiers
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 } // 20 Mo max
+});
 
 let db;
 
@@ -977,31 +985,16 @@ app.get('/api/pharmacien/stats', authenticatePharmacien, async (req, res) => {
   }
 });
 
-// POST upload PDF thèse via backend (fallback si Cloudinary frontend non disponible)
-app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, async (req, res) => {
+// POST upload PDF thèse - SIMPLE : reçoit le fichier, upload vers Cloudinary, retourne l'URL
+app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.single('pdf'), async (req, res) => {
   try {
-    const { fileBase64, fileName } = req.body;
-
-    if (!fileBase64 || !fileName) {
-      return res.status(400).json({ success: false, error: 'Fichier PDF requis (base64)' });
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'Fichier PDF requis' });
     }
 
     // Vérifier que c'est un PDF
-    if (!fileName.toLowerCase().endsWith('.pdf')) {
+    if (req.file.mimetype !== 'application/pdf') {
       return res.status(400).json({ success: false, error: 'Le fichier doit être un PDF' });
-    }
-
-    // Convertir base64 en buffer
-    const base64Data = fileBase64.replace(/^data:application\/pdf;base64,/, '');
-    const fileBuffer = Buffer.from(base64Data, 'base64');
-
-    // Limite de 20 Mo
-    const MAX_SIZE = 20 * 1024 * 1024;
-    if (fileBuffer.length > MAX_SIZE) {
-      return res.status(400).json({ 
-        success: false, 
-        error: `Fichier trop volumineux (${(fileBuffer.length / 1024 / 1024).toFixed(1)} Mo). Maximum: 20 Mo` 
-      });
     }
 
     // Credentials Cloudinary en dur
@@ -1009,82 +1002,42 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, async (req
     const CLOUDINARY_API_KEY = '311692364197472';
     const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
 
-    // Utiliser signature Cloudinary au lieu de preset (upload direct à la racine)
-    try {
-      const crypto = require('crypto');
-      const timestamp = Math.round(new Date().getTime() / 1000);
-      
-      // Générer la signature
-      const paramsToSign = {
-        timestamp: timestamp.toString(),
-        folder: '' // Upload à la racine
-      };
-      
-      const signatureString = Object.keys(paramsToSign)
-        .sort()
-        .map(key => `${key}=${paramsToSign[key]}`)
-        .join('&') + CLOUDINARY_API_SECRET;
-      
-      const signature = crypto
-        .createHash('sha1')
-        .update(signatureString)
-        .digest('hex');
+    // Générer signature Cloudinary
+    const crypto = require('crypto');
+    const timestamp = Math.round(Date.now() / 1000);
+    const signatureString = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+    const signature = crypto.createHash('sha1').update(signatureString).digest('hex');
 
-      // Essayer d'utiliser form-data si disponible
-      let FormDataClass;
-      try {
-        FormDataClass = require('form-data');
-      } catch {
-        throw new Error('form-data non disponible');
-      }
-
-      const formData = new FormDataClass();
-      formData.append('file', fileBuffer, {
-        filename: fileName,
-        contentType: 'application/pdf'
-      });
-      formData.append('api_key', CLOUDINARY_API_KEY);
-      formData.append('timestamp', timestamp.toString());
-      formData.append('signature', signature);
-      formData.append('resource_type', 'raw'); // Pour les PDFs
-
-      const axios = require('axios');
-      const cloudinaryRes = await axios.post(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
-        formData,
-        {
-          headers: formData.getHeaders()
-        }
-      );
-
-      const cloudinaryData = cloudinaryRes.data;
-
-      if (cloudinaryData.secure_url) {
-        return res.json({ 
-          success: true, 
-          url: cloudinaryData.secure_url,
-          method: 'cloudinary'
-        });
-      }
-    } catch (cloudinaryError) {
-      console.error('Erreur upload Cloudinary backend:', cloudinaryError);
-      // Continuer avec le fallback
-    }
-
-    // Fallback: stocker temporairement l'URL en base64 dans MongoDB
-    // Pour une solution permanente, il faudrait utiliser GridFS ou un autre stockage
-    // Pour l'instant, on retourne l'URL data: pour que le frontend puisse l'utiliser
-    const dataUrl = `data:application/pdf;base64,${base64Data}`;
-    
-    res.json({ 
-      success: true, 
-      url: dataUrl,
-      method: 'base64',
-      warning: 'Fichier stocké temporairement. Configuration Cloudinary recommandée pour un stockage permanent.'
+    // Upload vers Cloudinary
+    const FormData = require('form-data');
+    const formData = new FormData();
+    formData.append('file', req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: 'application/pdf'
     });
+    formData.append('api_key', CLOUDINARY_API_KEY);
+    formData.append('timestamp', timestamp.toString());
+    formData.append('signature', signature);
+    formData.append('resource_type', 'raw');
+
+    const axios = require('axios');
+    const cloudinaryRes = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+      formData,
+      { headers: formData.getHeaders() }
+    );
+
+    if (cloudinaryRes.data.secure_url) {
+      return res.json({ 
+        success: true, 
+        url: cloudinaryRes.data.secure_url
+      });
+    } else {
+      return res.status(500).json({ success: false, error: 'Erreur upload Cloudinary' });
+    }
   } catch (error) {
-    console.error('Erreur upload PDF thèse backend:', error);
-    res.status(500).json({ success: false, error: 'Erreur serveur lors de l\'upload' });
+    console.error('Erreur upload PDF:', error);
+    res.status(500).json({ success: false, error: error.message || 'Erreur serveur' });
   }
 });
 

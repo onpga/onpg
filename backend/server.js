@@ -1006,51 +1006,69 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, async (req
 
     // Credentials Cloudinary en dur
     const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
-    const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
     const CLOUDINARY_API_KEY = '311692364197472';
     const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
 
-    if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET) {
+    // Utiliser signature Cloudinary au lieu de preset (upload direct à la racine)
+    try {
+      const crypto = require('crypto');
+      const timestamp = Math.round(new Date().getTime() / 1000);
+      
+      // Générer la signature
+      const paramsToSign = {
+        timestamp: timestamp.toString(),
+        folder: '' // Upload à la racine
+      };
+      
+      const signatureString = Object.keys(paramsToSign)
+        .sort()
+        .map(key => `${key}=${paramsToSign[key]}`)
+        .join('&') + CLOUDINARY_API_SECRET;
+      
+      const signature = crypto
+        .createHash('sha1')
+        .update(signatureString)
+        .digest('hex');
+
+      // Essayer d'utiliser form-data si disponible
+      let FormDataClass;
       try {
-        // Essayer d'utiliser form-data si disponible, sinon utiliser fetch avec FormData natif
-        let FormDataClass;
-        try {
-          FormDataClass = require('form-data');
-        } catch {
-          // Si form-data n'est pas installé, on utilisera le fallback base64
-          throw new Error('form-data non disponible');
-        }
-
-        const formData = new FormDataClass();
-        formData.append('file', fileBuffer, {
-          filename: fileName,
-          contentType: 'application/pdf'
-        });
-        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
-        // Utiliser fetch natif (Node.js 18+) ou axios
-        const axios = require('axios');
-        const cloudinaryRes = await axios.post(
-          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
-          formData,
-          {
-            headers: formData.getHeaders()
-          }
-        );
-
-        const cloudinaryData = cloudinaryRes.data;
-
-        if (cloudinaryData.secure_url) {
-          return res.json({ 
-            success: true, 
-            url: cloudinaryData.secure_url,
-            method: 'cloudinary'
-          });
-        }
-      } catch (cloudinaryError) {
-        console.error('Erreur upload Cloudinary backend:', cloudinaryError);
-        // Continuer avec le fallback
+        FormDataClass = require('form-data');
+      } catch {
+        throw new Error('form-data non disponible');
       }
+
+      const formData = new FormDataClass();
+      formData.append('file', fileBuffer, {
+        filename: fileName,
+        contentType: 'application/pdf'
+      });
+      formData.append('api_key', CLOUDINARY_API_KEY);
+      formData.append('timestamp', timestamp.toString());
+      formData.append('signature', signature);
+      formData.append('resource_type', 'raw'); // Pour les PDFs
+
+      const axios = require('axios');
+      const cloudinaryRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+        formData,
+        {
+          headers: formData.getHeaders()
+        }
+      );
+
+      const cloudinaryData = cloudinaryRes.data;
+
+      if (cloudinaryData.secure_url) {
+        return res.json({ 
+          success: true, 
+          url: cloudinaryData.secure_url,
+          method: 'cloudinary'
+        });
+      }
+    } catch (cloudinaryError) {
+      console.error('Erreur upload Cloudinary backend:', cloudinaryError);
+      // Continuer avec le fallback
     }
 
     // Fallback: stocker temporairement l'URL en base64 dans MongoDB

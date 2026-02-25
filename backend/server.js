@@ -1019,31 +1019,19 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
     const CLOUDINARY_API_KEY = '311692364197472';
     const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
 
-    // Générer signature Cloudinary avec access_mode public
-    const crypto = require('crypto');
-    const timestamp = Math.round(Date.now() / 1000);
-    const paramsToSign = {
-      timestamp: timestamp.toString(),
-      access_mode: 'public'
-    };
-    const signatureString = Object.keys(paramsToSign)
-      .sort()
-      .map(key => `${key}=${paramsToSign[key]}`)
-      .join('&') + CLOUDINARY_API_SECRET;
-    const signature = crypto.createHash('sha1').update(signatureString).digest('hex');
+    // Utiliser un preset unsigned pour éviter les problèmes de signature
+    // Le preset doit être configuré dans Cloudinary avec "Signing mode: Unsigned"
+    const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
-    // Upload vers Cloudinary
+    // Upload vers Cloudinary avec preset unsigned
     const FormData = require('form-data');
     const formData = new FormData();
     formData.append('file', req.file.buffer, {
       filename: req.file.originalname,
       contentType: 'application/pdf'
     });
-    formData.append('api_key', CLOUDINARY_API_KEY);
-    formData.append('timestamp', timestamp.toString());
-    formData.append('signature', signature);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     formData.append('resource_type', 'raw');
-    formData.append('access_mode', 'public');
 
     const axios = require('axios');
     const cloudinaryRes = await axios.post(

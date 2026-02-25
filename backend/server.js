@@ -1053,7 +1053,152 @@ app.get('/api/admin/pharmacies', authenticateAdmin, async (req, res) => {
   }
 });
 
-// PUT associer une pharmacie à un pharmacien (admin)
+// POST créer une nouvelle pharmacie (admin)
+app.post('/api/admin/pharmacies', authenticateAdmin, async (req, res) => {
+  try {
+    const {
+      nom,
+      ville,
+      quartier,
+      adresse,
+      photo,
+      latitude,
+      longitude,
+      telephone,
+      email,
+      horaires,
+      garde,
+      pharmacienId
+    } = req.body;
+
+    if (!nom || !ville || !adresse) {
+      return res.status(400).json({ success: false, error: 'Nom, ville et adresse requis' });
+    }
+
+    const doc = {
+      nom,
+      ville,
+      quartier: quartier || '',
+      adresse,
+      photo: photo || '',
+      location:
+        latitude && longitude
+          ? {
+              type: 'Point',
+              coordinates: [parseFloat(longitude), parseFloat(latitude)]
+            }
+          : null,
+      latitude: latitude ? parseFloat(latitude) : null,
+      longitude: longitude ? parseFloat(longitude) : null,
+      telephone: telephone || '',
+      email: email || '',
+      horaires: horaires || {},
+      garde: garde === true || garde === 'true',
+      pharmacienId: pharmacienId
+        ? (() => {
+            try {
+              return new ObjectId(pharmacienId);
+            } catch {
+              return pharmacienId;
+            }
+          })()
+        : null,
+      messages: [],
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('pharmacies').insertOne(doc);
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('Erreur création pharmacie admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT modifier une pharmacie (admin)
+app.put('/api/admin/pharmacies/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const {
+      nom,
+      ville,
+      quartier,
+      adresse,
+      photo,
+      latitude,
+      longitude,
+      telephone,
+      email,
+      horaires,
+      garde,
+      pharmacienId
+    } = req.body;
+
+    const updateData = {
+      ...(nom && { nom }),
+      ...(ville && { ville }),
+      ...(quartier !== undefined && { quartier }),
+      ...(adresse && { adresse }),
+      ...(photo !== undefined && { photo }),
+      ...(latitude && longitude && {
+        location: {
+          type: 'Point',
+          coordinates: [parseFloat(longitude), parseFloat(latitude)]
+        },
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude)
+      }),
+      ...(telephone !== undefined && { telephone }),
+      ...(email !== undefined && { email }),
+      ...(horaires && { horaires }),
+      ...(garde !== undefined && { garde: garde === true || garde === 'true' }),
+      updatedAt: new Date()
+    };
+
+    if (pharmacienId !== undefined) {
+      updateData.pharmacienId = pharmacienId
+        ? (() => {
+            try {
+              return new ObjectId(pharmacienId);
+            } catch {
+              return pharmacienId;
+            }
+          })()
+        : null;
+    }
+
+    await db.collection('pharmacies').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: updateData }
+    );
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur modification pharmacie admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// DELETE supprimer une pharmacie (admin)
+app.delete('/api/admin/pharmacies/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const result = await db.collection('pharmacies').deleteOne({
+      _id: new ObjectId(req.params.id)
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Pharmacie non trouvée' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur suppression pharmacie admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT associer une pharmacie à un pharmacien (admin) - raccourci dédié
 app.put('/api/admin/pharmacies/:id/pharmacien', authenticateAdmin, async (req, res) => {
   try {
     const { pharmacienId } = req.body;

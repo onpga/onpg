@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import './Dashboard.css';
 
@@ -19,8 +19,11 @@ interface Pharmacie {
   photo?: string;
   pharmacienId?: string;
   pharmacienNom?: string;
-  isActive: boolean;
-  createdAt: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  garde?: boolean;
+  isActive?: boolean;
+  createdAt?: string;
 }
 
 interface Pharmacien {
@@ -36,6 +39,22 @@ const PharmaciesAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [associatingPharmacie, setAssociatingPharmacie] = useState<string | null>(null);
   const [selectedPharmacienId, setSelectedPharmacienId] = useState('');
+  const [pharmacienSearch, setPharmacienSearch] = useState('');
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingPharmacie, setEditingPharmacie] = useState<Pharmacie | null>(null);
+  const [formData, setFormData] = useState({
+    nom: '',
+    ville: '',
+    quartier: '',
+    adresse: '',
+    telephone: '',
+    email: '',
+    latitude: '',
+    longitude: '',
+    garde: false,
+    pharmacienId: ''
+  });
 
   useEffect(() => {
     loadData();
@@ -107,6 +126,130 @@ const PharmaciesAdmin = () => {
     return `${pharmacien.prenom} ${pharmacien.nom}`;
   };
 
+  const openCreateForm = () => {
+    setEditingPharmacie(null);
+    setFormData({
+      nom: '',
+      ville: '',
+      quartier: '',
+      adresse: '',
+      telephone: '',
+      email: '',
+      latitude: '',
+      longitude: '',
+      garde: false,
+      pharmacienId: ''
+    });
+    setShowForm(true);
+  };
+
+  const openEditForm = (pharmacie: Pharmacie) => {
+    setEditingPharmacie(pharmacie);
+    setFormData({
+      nom: pharmacie.nom || '',
+      ville: pharmacie.ville || '',
+      quartier: pharmacie.quartier || '',
+      adresse: pharmacie.adresse || '',
+      telephone: pharmacie.telephone || '',
+      email: pharmacie.email || '',
+      latitude: pharmacie.latitude != null ? String(pharmacie.latitude) : '',
+      longitude: pharmacie.longitude != null ? String(pharmacie.longitude) : '',
+      garde: pharmacie.garde || false,
+      pharmacienId: pharmacie.pharmacienId ? String(pharmacie.pharmacienId) : ''
+    });
+    setShowForm(true);
+  };
+
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmitPharmacie = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('admin_token');
+      const isEdit = !!editingPharmacie;
+      const url = isEdit
+        ? `${API_URL}/admin/pharmacies/${editingPharmacie!._id}`
+        : `${API_URL}/admin/pharmacies`;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const payload: any = {
+        nom: formData.nom,
+        ville: formData.ville,
+        quartier: formData.quartier,
+        adresse: formData.adresse,
+        telephone: formData.telephone,
+        email: formData.email,
+        garde: formData.garde
+      };
+
+      if (formData.latitude) payload.latitude = formData.latitude;
+      if (formData.longitude) payload.longitude = formData.longitude;
+      if (formData.pharmacienId) payload.pharmacienId = formData.pharmacienId;
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        console.error('Erreur création / édition pharmacie:', data);
+        alert(data.error || 'Erreur lors de la sauvegarde de la pharmacie');
+        return;
+      }
+
+      await loadData();
+      setShowForm(false);
+      setEditingPharmacie(null);
+    } catch (error) {
+      console.error('Erreur sauvegarde pharmacie:', error);
+      alert('Erreur serveur lors de la sauvegarde de la pharmacie');
+    }
+  };
+
+  const handleDeletePharmacie = async (pharmacie: Pharmacie) => {
+    if (!window.confirm(`Supprimer la pharmacie « ${pharmacie.nom} » ?`)) return;
+    try {
+      const token = localStorage.getItem('admin_token');
+      const response = await fetch(`${API_URL}/admin/pharmacies/${pharmacie._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        console.error('Erreur suppression pharmacie:', data);
+        alert(data.error || 'Erreur lors de la suppression de la pharmacie');
+        return;
+      }
+      await loadData();
+    } catch (error) {
+      console.error('Erreur suppression pharmacie:', error);
+      alert('Erreur serveur lors de la suppression de la pharmacie');
+    }
+  };
+
+  const filteredPharmaciens = pharmaciens.filter((p) => {
+    const q = pharmacienSearch.trim().toLowerCase();
+    if (!q) return true;
+    const fullName = `${p.prenom} ${p.nom}`.toLowerCase();
+    const username = (p.username || '').toLowerCase();
+    return fullName.includes(q) || username.includes(q);
+  });
+
   return (
     <div className="admin-layout">
       <AdminSidebar currentPage="pharmacies" />
@@ -114,8 +257,19 @@ const PharmaciesAdmin = () => {
         <div className="admin-content">
           <h1>🏥 Gestion des Pharmacies</h1>
           <p style={{ fontSize: '1.1rem', marginBottom: '2rem', color: '#666' }}>
-            Liste de toutes les pharmacies. Vous pouvez associer une pharmacie à un pharmacien.
+            Liste de toutes les pharmacies enregistrées. Vous pouvez créer, modifier, supprimer et associer
+            chaque pharmacie à un pharmacien de l’Ordre.
           </p>
+
+          <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              className="btn-primary"
+              style={{ padding: '0.6rem 1.4rem', fontSize: '1rem' }}
+              onClick={openCreateForm}
+            >
+              ➕ Nouvelle pharmacie
+            </button>
+          </div>
 
           {loading ? (
             <p>Chargement...</p>
@@ -171,14 +325,28 @@ const PharmaciesAdmin = () => {
                         </td>
                         <td style={{ padding: '1rem' }}>
                           <button
+                            onClick={() => openEditForm(pharmacie)}
+                            className="btn-secondary"
+                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', marginRight: '0.5rem' }}
+                          >
+                            ✏️ Modifier
+                          </button>
+                          <button
                             onClick={() => {
                               setAssociatingPharmacie(pharmacie._id);
                               setSelectedPharmacienId(pharmacie.pharmacienId || '');
                             }}
                             className="btn-secondary"
-                            style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}
+                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', marginRight: '0.5rem' }}
                           >
                             🔗 Associer
+                          </button>
+                          <button
+                            onClick={() => handleDeletePharmacie(pharmacie)}
+                            className="btn-secondary"
+                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', color: '#b91c1c' }}
+                          >
+                            🗑 Supprimer
                           </button>
                         </td>
                       </tr>
@@ -221,13 +389,26 @@ const PharmaciesAdmin = () => {
                   <label style={{ fontSize: '1.1rem', marginBottom: '0.5rem', display: 'block' }}>
                     Sélectionner un pharmacien
                   </label>
+                  <input
+                    type="text"
+                    placeholder="Rechercher par nom ou pseudo..."
+                    value={pharmacienSearch}
+                    onChange={(e) => setPharmacienSearch(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '0.6rem 0.75rem',
+                      fontSize: '0.95rem',
+                      marginTop: '0.25rem',
+                      marginBottom: '0.5rem'
+                    }}
+                  />
                   <select
                     value={selectedPharmacienId}
                     onChange={(e) => setSelectedPharmacienId(e.target.value)}
                     style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
                   >
                     <option value="">— Aucun —</option>
-                    {pharmaciens.map((p) => (
+                    {filteredPharmaciens.map((p) => (
                       <option key={p._id} value={p._id}>
                         {p.prenom} {p.nom} {p.username && `(${p.username})`}
                       </option>
@@ -250,6 +431,171 @@ const PharmaciesAdmin = () => {
                     Annuler
                   </button>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Modal création / édition de pharmacie */}
+          {showForm && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(0, 0, 0, 0.5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000
+              }}
+              onClick={() => {
+                setShowForm(false);
+                setEditingPharmacie(null);
+              }}
+            >
+              <div
+                style={{
+                  background: 'white',
+                  padding: '2rem',
+                  borderRadius: '12px',
+                  maxWidth: '700px',
+                  width: '95%',
+                  maxHeight: '90vh',
+                  overflowY: 'auto'
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>
+                  {editingPharmacie ? 'Modifier la pharmacie' : 'Créer une nouvelle pharmacie'}
+                </h2>
+                <form onSubmit={handleSubmitPharmacie} className="settings-form">
+                  <div className="form-group">
+                    <label>Nom de la pharmacie</label>
+                    <input
+                      type="text"
+                      name="nom"
+                      value={formData.nom}
+                      onChange={handleFormChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Ville</label>
+                      <input
+                        type="text"
+                        name="ville"
+                        value={formData.ville}
+                        onChange={handleFormChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Quartier</label>
+                      <input
+                        type="text"
+                        name="quartier"
+                        value={formData.quartier}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Adresse complète</label>
+                    <textarea
+                      name="adresse"
+                      value={formData.adresse}
+                      onChange={handleFormChange}
+                      rows={2}
+                      required
+                    />
+                  </div>
+                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Téléphone</label>
+                      <input
+                        type="text"
+                        name="telephone"
+                        value={formData.telephone}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Latitude (optionnel)</label>
+                      <input
+                        type="text"
+                        name="latitude"
+                        value={formData.latitude}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                    <div className="form-group" style={{ flex: 1 }}>
+                      <label>Longitude (optionnel)</label>
+                      <input
+                        type="text"
+                        name="longitude"
+                        value={formData.longitude}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <input
+                        type="checkbox"
+                        name="garde"
+                        checked={formData.garde}
+                        onChange={handleFormChange}
+                      />
+                      Pharmacie de garde
+                    </label>
+                  </div>
+                  <div className="form-group">
+                    <label>Associer à un pharmacien de l’Ordre (optionnel)</label>
+                    <select
+                      name="pharmacienId"
+                      value={formData.pharmacienId}
+                      onChange={handleFormChange}
+                    >
+                      <option value="">— Aucun —</option>
+                      {pharmaciens.map((p) => (
+                        <option key={p._id} value={p._id}>
+                          {p.prenom} {p.nom} {p.username && `(${p.username})`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                    <button type="submit" className="btn-primary" style={{ flex: 1 }}>
+                      💾 Enregistrer
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      style={{ flex: 1 }}
+                      onClick={() => {
+                        setShowForm(false);
+                        setEditingPharmacie(null);
+                      }}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           )}

@@ -30,6 +30,9 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
         <Link to="/pharmacien/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
           📊 Tableau de bord
         </Link>
+        <Link to="/pharmacien/dashboard" className={`nav-item ${currentPage === 'profile' ? 'active' : ''}`}>
+          👤 Gérer mon profil
+        </Link>
         <Link to="/pharmacien/theses" className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}>
           📚 Mes Thèses
         </Link>

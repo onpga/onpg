@@ -1014,70 +1014,18 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
       return res.status(400).json({ success: false, error: 'Le fichier doit être un PDF' });
     }
 
-    // Credentials Cloudinary en dur
-    const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
-    const CLOUDINARY_API_KEY = '311692364197472';
-    const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
-
-    // Utiliser un preset unsigned pour éviter les problèmes de signature
-    // Le preset doit être configuré dans Cloudinary avec "Signing mode: Unsigned"
-    const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
-
-    console.log('[UPLOAD PDF] Début upload vers Cloudinary:', {
-      cloudName: CLOUDINARY_CLOUD_NAME,
-      preset: CLOUDINARY_UPLOAD_PRESET,
-      fileName: req.file.originalname,
-      fileSize: req.file.size,
-      mimeType: req.file.mimetype
+    // Stockage direct en base64 dans MongoDB - SIMPLE et FONCTIONNEL
+    console.log('[UPLOAD PDF] Stockage PDF en base64');
+    const base64Data = req.file.buffer.toString('base64');
+    const dataUrl = `data:application/pdf;base64,${base64Data}`;
+    
+    return res.json({ 
+      success: true, 
+      url: dataUrl
     });
-
-    // Upload vers Cloudinary avec preset unsigned
-    const FormData = require('form-data');
-    const formData = new FormData();
-    formData.append('file', req.file.buffer, {
-      filename: req.file.originalname,
-      contentType: 'application/pdf'
-    });
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    formData.append('resource_type', 'raw');
-
-    const axios = require('axios');
-    const cloudinaryRes = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
-      formData,
-      { 
-        headers: formData.getHeaders(),
-        maxContentLength: Infinity,
-        maxBodyLength: Infinity
-      }
-    );
-
-    console.log('[UPLOAD PDF] Réponse Cloudinary:', {
-      status: cloudinaryRes.status,
-      hasSecureUrl: !!cloudinaryRes.data?.secure_url,
-      error: cloudinaryRes.data?.error || null,
-      data: cloudinaryRes.data
-    });
-
-    if (cloudinaryRes.data?.secure_url) {
-      return res.json({ 
-        success: true, 
-        url: cloudinaryRes.data.secure_url
-      });
-    } else {
-      const errorMsg = cloudinaryRes.data?.error?.message || 'Erreur upload Cloudinary';
-      console.error('[UPLOAD PDF] Erreur Cloudinary:', errorMsg);
-      return res.status(500).json({ success: false, error: errorMsg });
-    }
   } catch (error) {
-    console.error('[UPLOAD PDF] Erreur exception:', {
-      message: error.message,
-      response: error.response?.data || null,
-      status: error.response?.status || null,
-      stack: error.stack
-    });
-    const errorMsg = error.response?.data?.error?.message || error.message || 'Erreur serveur';
-    res.status(500).json({ success: false, error: errorMsg });
+    console.error('[UPLOAD PDF] ❌ Erreur exception:', error.message);
+    res.status(500).json({ success: false, error: error.message || 'Erreur serveur' });
   }
 });
 

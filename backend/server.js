@@ -1011,10 +1011,17 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
     const CLOUDINARY_API_KEY = '311692364197472';
     const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
 
-    // Générer signature Cloudinary
+    // Générer signature Cloudinary avec access_mode public
     const crypto = require('crypto');
     const timestamp = Math.round(Date.now() / 1000);
-    const signatureString = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+    const paramsToSign = {
+      timestamp: timestamp.toString(),
+      access_mode: 'public'
+    };
+    const signatureString = Object.keys(paramsToSign)
+      .sort()
+      .map(key => `${key}=${paramsToSign[key]}`)
+      .join('&') + CLOUDINARY_API_SECRET;
     const signature = crypto.createHash('sha1').update(signatureString).digest('hex');
 
     // Upload vers Cloudinary
@@ -1028,6 +1035,7 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
     formData.append('timestamp', timestamp.toString());
     formData.append('signature', signature);
     formData.append('resource_type', 'raw');
+    formData.append('access_mode', 'public');
 
     const axios = require('axios');
     const cloudinaryRes = await axios.post(

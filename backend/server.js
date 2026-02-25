@@ -1023,6 +1023,14 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
     // Le preset doit être configuré dans Cloudinary avec "Signing mode: Unsigned"
     const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
+    console.log('[UPLOAD PDF] Début upload vers Cloudinary:', {
+      cloudName: CLOUDINARY_CLOUD_NAME,
+      preset: CLOUDINARY_UPLOAD_PRESET,
+      fileName: req.file.originalname,
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype
+    });
+
     // Upload vers Cloudinary avec preset unsigned
     const FormData = require('form-data');
     const formData = new FormData();
@@ -1037,20 +1045,39 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
     const cloudinaryRes = await axios.post(
       `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
       formData,
-      { headers: formData.getHeaders() }
+      { 
+        headers: formData.getHeaders(),
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity
+      }
     );
 
-    if (cloudinaryRes.data.secure_url) {
+    console.log('[UPLOAD PDF] Réponse Cloudinary:', {
+      status: cloudinaryRes.status,
+      hasSecureUrl: !!cloudinaryRes.data?.secure_url,
+      error: cloudinaryRes.data?.error || null,
+      data: cloudinaryRes.data
+    });
+
+    if (cloudinaryRes.data?.secure_url) {
       return res.json({ 
         success: true, 
         url: cloudinaryRes.data.secure_url
       });
     } else {
-      return res.status(500).json({ success: false, error: 'Erreur upload Cloudinary' });
+      const errorMsg = cloudinaryRes.data?.error?.message || 'Erreur upload Cloudinary';
+      console.error('[UPLOAD PDF] Erreur Cloudinary:', errorMsg);
+      return res.status(500).json({ success: false, error: errorMsg });
     }
   } catch (error) {
-    console.error('Erreur upload PDF:', error);
-    res.status(500).json({ success: false, error: error.message || 'Erreur serveur' });
+    console.error('[UPLOAD PDF] Erreur exception:', {
+      message: error.message,
+      response: error.response?.data || null,
+      status: error.response?.status || null,
+      stack: error.stack
+    });
+    const errorMsg = error.response?.data?.error?.message || error.message || 'Erreur serveur';
+    res.status(500).json({ success: false, error: errorMsg });
   }
 });
 

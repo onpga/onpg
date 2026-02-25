@@ -91,7 +91,7 @@ const Theses = () => {
         pages: item.pages || 0,
         language: item.language || 'fr',
         specialty: item.specialty || 'Pharmacie',
-        defenseDate: item.defenseDate || new Date().toISOString().split('T')[0],
+        defenseDate: item.defenseDate || '',
         juryMembers: item.juryMembers || [],
         downloads: item.downloads || 0,
         citations: item.citations || 0,
@@ -474,36 +474,47 @@ const Theses = () => {
                     </Link>
                   </h3>
 
-                  <div className="thesis-author">
-                    <strong>Candidat :</strong> {thesis.author}
-                  </div>
+                  <div className="thesis-meta-grid">
+                    <div className="thesis-meta-item">
+                      <span className="meta-label">👤 Candidat</span>
+                      <span className="meta-value">{thesis.author}</span>
+                    </div>
 
-                  <div className="thesis-director">
-                    <strong>Directeur :</strong> {thesis.director}
-                  </div>
+                    {thesis.director && (
+                      <div className="thesis-meta-item">
+                        <span className="meta-label">🎓 Directeur</span>
+                        <span className="meta-value">{thesis.director}</span>
+                      </div>
+                    )}
 
-                  <div className="thesis-university">
-                    <strong>Université :</strong> {thesis.university} - {thesis.faculty}
-                  </div>
+                    <div className="thesis-meta-item">
+                      <span className="meta-label">🏛️ Université</span>
+                      <span className="meta-value">{thesis.university}</span>
+                    </div>
 
-                  <div className="thesis-defense">
-                    <strong>Soutenance :</strong> {new Date(thesis.defenseDate).toLocaleDateString('fr-FR', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
-                  </div>
-
-                  <p className="thesis-abstract">{thesis.abstract}</p>
-
-                  <div className="thesis-keywords">
-                    <strong>Mots-clés :</strong>
-                    <div className="keywords-list">
-                      {thesis.keywords.slice(0, 4).map(keyword => (
-                        <span key={keyword} className="keyword-tag">#{keyword}</span>
-                      ))}
+                    <div className="thesis-meta-item">
+                      <span className="meta-label">📅 Année</span>
+                      <span className="meta-value">{thesis.year}</span>
                     </div>
                   </div>
+
+                  {thesis.abstract && (
+                    <div className="thesis-abstract-section">
+                      <h4 className="abstract-title">📄 Résumé</h4>
+                      <p className="thesis-abstract">{thesis.abstract}</p>
+                    </div>
+                  )}
+
+                  {thesis.keywords && thesis.keywords.length > 0 && (
+                    <div className="thesis-keywords">
+                      <strong className="keywords-label">🏷️ Mots-clés :</strong>
+                      <div className="keywords-list">
+                        {thesis.keywords.map(keyword => (
+                          <span key={keyword} className="keyword-tag">#{keyword}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="thesis-footer">

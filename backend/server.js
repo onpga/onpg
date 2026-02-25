@@ -398,23 +398,31 @@ app.get('/api/public/:collection', async (req, res) => {
 
           const currentYear = new Date().getFullYear();
           const parsedYear = t.annee ? parseInt(String(t.annee), 10) : currentYear;
+          
+          // Convertir mots-clés string en array si nécessaire
+          let keywords = [];
+          if (t.motsCles) {
+            keywords = typeof t.motsCles === 'string' 
+              ? t.motsCles.split(',').map(k => k.trim()).filter(k => k)
+              : Array.isArray(t.motsCles) ? t.motsCles : [];
+          }
 
           return {
             _id: t._id,
             title: t.titre || '',
             author,
-            director: '',
-            university: '',
+            director: t.directeur || '',
+            university: t.universite || '',
             faculty: '',
             department: '',
             degree: 'phd',
             year: Number.isNaN(parsedYear) ? currentYear : parsedYear,
             abstract: t.resume || '',
-            keywords: [],
+            keywords: keywords,
             pages: 0,
             language: 'fr',
             specialty: 'Pharmacie',
-            defenseDate: t.annee ? `${t.annee}-01-01` : new Date().toISOString().split('T')[0],
+            defenseDate: '', // Ne pas mettre de date si on a juste l'année
             juryMembers: [],
             downloads: 0,
             citations: 0,
@@ -1082,10 +1090,10 @@ app.get('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
 
 app.post('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
   try {
-    const { titre, resume, annee, fichierUrl } = req.body;
+    const { titre, resume, annee, universite, motsCles, directeur, fichierUrl } = req.body;
 
-    if (!fichierUrl) {
-      return res.status(400).json({ success: false, error: 'Fichier PDF requis' });
+    if (!fichierUrl || !titre || !annee || !universite) {
+      return res.status(400).json({ success: false, error: 'Titre, année, université et fichier PDF requis' });
     }
 
     const pharmacienId =
@@ -1096,9 +1104,12 @@ app.post('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
 
     const doc = {
       pharmacienId,
-      titre: titre || 'Thèse',
+      titre,
       resume: resume || '',
-      annee: annee || '',
+      annee,
+      universite,
+      directeur: directeur || '',
+      motsCles: motsCles || '',
       fichierUrl,
       pharmacienNom: pharmacien?.nom || '',
       pharmacienPrenoms: pharmacien?.prenoms || '',

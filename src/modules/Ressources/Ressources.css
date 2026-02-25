@@ -4183,25 +4183,81 @@
   font-style: italic;
 }
 
-.thesis-abstract {
-  color: rgba(0, 0, 0, 0.8);
-  line-height: 1.6;
+/* Grille de métadonnées moderne */
+.thesis-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: rgba(0, 166, 81, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 166, 81, 0.1);
+}
+
+.thesis-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.thesis-meta-item .meta-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.thesis-meta-item .meta-value {
   font-size: 0.95rem;
-  margin-bottom: 1rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-weight: 600;
+  color: #1a252f;
+  line-height: 1.4;
+}
+
+/* Section résumé améliorée */
+.thesis-abstract-section {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.05), rgba(0, 166, 81, 0.02));
+  border-radius: 12px;
+  border-left: 4px solid #00A651;
+}
+
+.thesis-abstract-section .abstract-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00A651;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.thesis-abstract {
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 1.8;
+  font-size: 1rem;
+  margin: 0;
+  text-align: justify;
 }
 
 .thesis-keywords {
   margin-bottom: 1rem;
 }
 
-.thesis-keywords strong {
+.thesis-keywords {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.thesis-keywords .keywords-label {
   color: #1a252f;
   font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
   display: block;
 }
 
@@ -4371,9 +4427,19 @@
     font-size: 1rem;
   }
 
+  .thesis-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .thesis-abstract-section {
+    padding: 1rem;
+  }
+
   .thesis-abstract {
     font-size: 0.9rem;
-    -webkit-line-clamp: 2;
+    line-height: 1.6;
   }
 
   .thesis-author,

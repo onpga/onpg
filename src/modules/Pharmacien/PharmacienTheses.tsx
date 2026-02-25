@@ -29,6 +29,9 @@ const PharmacienTheses = () => {
     titre: '',
     resume: '',
     annee: '',
+    universite: '',
+    motsCles: '',
+    directeur: '',
     fichierUrl: ''
   });
 
@@ -180,7 +183,7 @@ const PharmacienTheses = () => {
             if (saveData.success) {
               console.log('[THESE UPLOAD] ✅ Thèse enregistrée en base');
               setMessage({ type: 'success', text: 'Thèse uploadée et enregistrée avec succès.' });
-              setThesisForm({ titre: '', resume: '', annee: '', fichierUrl: '' });
+              setThesisForm({ titre: '', resume: '', annee: '', universite: '', motsCles: '', directeur: '', fichierUrl: '' });
               await loadTheses();
             } else {
               console.log('[THESE UPLOAD] ❌ Erreur enregistrement:', saveData.error);
@@ -224,9 +227,14 @@ const PharmacienTheses = () => {
       fichierUrl: thesisForm.fichierUrl ? thesisForm.fichierUrl.substring(0, 50) + '...' : null
     });
 
-    if (!thesisForm.fichierUrl) {
-      console.log('[THESE SAVE] ❌ Validation échouée: fichier PDF manquant');
-      setMessage({ type: 'error', text: 'Veuillez uploader le fichier PDF.' });
+    if (!thesisForm.fichierUrl || !thesisForm.titre || !thesisForm.annee || !thesisForm.universite) {
+      console.log('[THESE SAVE] ❌ Validation échouée');
+      const missing = [];
+      if (!thesisForm.titre) missing.push('le titre');
+      if (!thesisForm.annee) missing.push('l\'année');
+      if (!thesisForm.universite) missing.push('l\'université');
+      if (!thesisForm.fichierUrl) missing.push('le fichier PDF');
+      setMessage({ type: 'error', text: `Veuillez renseigner ${missing.join(', ')}.` });
       return;
     }
     console.log('[THESE SAVE] ✅ Validation OK');
@@ -340,7 +348,7 @@ const PharmacienTheses = () => {
               </div>
 
               <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="thesisAnnee">Année</label>
+                <label htmlFor="thesisAnnee">Année *</label>
                 <input
                   type="text"
                   id="thesisAnnee"
@@ -352,7 +360,43 @@ const PharmacienTheses = () => {
               </div>
 
               <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="thesisResume">Résumé (facultatif)</label>
+                <label htmlFor="thesisUniversite">Université *</label>
+                <input
+                  type="text"
+                  id="thesisUniversite"
+                  placeholder="Ex: Université Omar Bongo"
+                  value={thesisForm.universite}
+                  onChange={(e) => setThesisForm({ ...thesisForm, universite: e.target.value })}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="thesisDirecteur">Directeur de thèse (optionnel)</label>
+                <input
+                  type="text"
+                  id="thesisDirecteur"
+                  placeholder="Ex: Pr. Jean Dupont"
+                  value={thesisForm.directeur}
+                  onChange={(e) => setThesisForm({ ...thesisForm, directeur: e.target.value })}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="thesisMotsCles">Mots-clés (optionnel)</label>
+                <input
+                  type="text"
+                  id="thesisMotsCles"
+                  placeholder="Ex: pharmacie, médicament, santé"
+                  value={thesisForm.motsCles}
+                  onChange={(e) => setThesisForm({ ...thesisForm, motsCles: e.target.value })}
+                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="thesisResume">Résumé (optionnel)</label>
                 <textarea
                   id="thesisResume"
                   value={thesisForm.resume}
@@ -388,7 +432,7 @@ const PharmacienTheses = () => {
                 <button
                   className="action-btn"
                   type="button"
-                  onClick={() => setThesisForm({ titre: '', resume: '', annee: '', fichierUrl: '' })}
+                  onClick={() => setThesisForm({ titre: '', resume: '', annee: '', universite: '', motsCles: '', directeur: '', fichierUrl: '' })}
                 >
                   Réinitialiser
                 </button>

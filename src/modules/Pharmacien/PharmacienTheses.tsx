@@ -123,11 +123,13 @@ const PharmacienTheses = () => {
     }
     console.log('[THESE UPLOAD] ✅ Taille valide');
 
-    // Si Cloudinary n'est pas disponible côté frontend, utiliser le backend
-    const useBackendUpload = !CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET;
+    // ⚠️ Pour les thèses, on force désormais l'upload via le backend,
+    // même si Cloudinary est configuré côté frontend, afin d'éviter
+    // les problèmes de preset / configuration et centraliser la logique.
+    const useBackendUpload = true;
     
     if (useBackendUpload) {
-      console.log('[THESE UPLOAD] ⚠️ Cloudinary frontend non disponible, utilisation du backend');
+      console.log('[THESE UPLOAD] ⚠️ Utilisation forcée de l’upload via backend pour les thèses');
       setThesisSaving(true);
       try {
         // Convertir le fichier en base64

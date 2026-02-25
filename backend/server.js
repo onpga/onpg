@@ -1004,9 +1004,11 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, async (req
       });
     }
 
-    // Essayer d'uploader vers Cloudinary si les credentials sont disponibles
-    const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
-    const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
+    // Credentials Cloudinary en dur
+    const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+    const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
+    const CLOUDINARY_API_KEY = '311692364197472';
+    const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
 
     if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET) {
       try {

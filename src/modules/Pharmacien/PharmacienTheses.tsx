@@ -9,8 +9,9 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '';
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '';
+// Credentials Cloudinary en dur
+const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
 // Limite de taille pour les PDF de thèses (en Mo)
 const MAX_THESE_PDF_SIZE_MB = 20;

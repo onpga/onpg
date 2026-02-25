@@ -3,11 +3,11 @@
  */
 
 export const ONPG_CONFIG = {
-  // Cloudinary
+  // Cloudinary - Credentials en dur
   cloudinary: {
     cloudName: 'dduvinjnu',
-    apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY || '',
-    apiSecret: import.meta.env.VITE_CLOUDINARY_API_SECRET || '',
+    apiKey: '311692364197472',
+    apiSecret: 'YlKz6EoFE2hiETe6hH3H2lTsvlk',
     uploadPreset: 'onpg_uploads'
   },
 

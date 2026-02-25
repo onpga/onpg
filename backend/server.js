@@ -44,9 +44,20 @@ MongoClient.connect(MONGODB_URI)
 
 // Collections disponibles (chaque page a sa propre collection)
 const RESOURCE_COLLECTIONS = [
-  'actualites', 'articles', 'communiques', 'decisions', 
-  'decrets', 'lois', 'commissions', 'theses', 'photos', 'videos', 'pharmaciens',
-  'formations', 'deontologie'
+  'actualites',
+  'articles',
+  'communiques',
+  'decisions',
+  'decrets',
+  'lois',
+  'commissions',
+  'theses',
+  'photos',
+  'videos',
+  'pharmaciens',
+  'formations',
+  'deontologie',
+  'pharmacies' // permet aussi de gérer les pharmacies via les routes génériques admin
 ];
 
 // Authentification admin par token (simple)
@@ -260,7 +271,44 @@ app.post('/api/public/contact', async (req, res) => {
 app.get('/api/public/:collection/:id', async (req, res) => {
   try {
     const { collection, id } = req.params;
-    
+
+    // Cas particulier pour les thèses : on lit dans la collection pharmacien_theses
+    if (collection === 'theses') {
+      try {
+        const thesis = await db.collection('pharmacien_theses').findOne({ _id: new ObjectId(id) });
+        if (!thesis) {
+          return res.json({ success: true, data: null });
+        }
+
+        // Récupérer les infos du pharmacien auteur
+        let author = 'Pharmacien';
+        try {
+          const pharmacien = await db.collection('users').findOne({ _id: thesis.pharmacienId });
+          if (pharmacien) {
+            const prenoms = pharmacien.prenoms || '';
+            const nom = pharmacien.nom || '';
+            author = (prenoms || nom) ? `${prenoms} ${nom}`.trim() : (pharmacien.username || 'Pharmacien');
+          }
+        } catch {
+          // En cas d'erreur, on garde l'auteur par défaut
+        }
+
+        const mapped = {
+          _id: thesis._id,
+          title: thesis.titre || '',
+          author,
+          abstract: thesis.resume || '',
+          year: thesis.annee || '',
+          pdfUrl: thesis.fichierUrl || ''
+        };
+
+        return res.json({ success: true, data: mapped });
+      } catch (err) {
+        console.error(`Erreur chargement thèse publique/${id}:`, err);
+        return res.status(500).json({ success: false, error: 'Erreur serveur' });
+      }
+    }
+
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
@@ -296,7 +344,84 @@ app.get('/api/public/site-settings', async (req, res) => {
 app.get('/api/public/:collection', async (req, res) => {
   try {
     const { collection } = req.params;
-    
+
+    // Cas particulier pour les thèses publiques : on expose les thèses des pharmaciens
+    if (collection === 'theses') {
+      try {
+        const theses = await db.collection('pharmacien_theses')
+          .find({})
+          .sort({ createdAt: -1 })
+          .toArray();
+
+        const pharmacienIds = [
+          ...new Set(
+            theses
+              .map(t => t.pharmacienId)
+              .filter(Boolean)
+              .map(id => String(id))
+          )
+        ];
+
+        let usersById = new Map();
+        if (pharmacienIds.length > 0) {
+          const objectIds = pharmacienIds.map(id => {
+            try {
+              return new ObjectId(id);
+            } catch {
+              return null;
+            }
+          }).filter(Boolean);
+
+          const users = await db.collection('users')
+            .find({ _id: { $in: objectIds } })
+            .toArray();
+
+          usersById = new Map(users.map(u => [String(u._id), u]));
+        }
+
+        const data = theses.map(t => {
+          const user = usersById.get(String(t.pharmacienId));
+          let author = 'Pharmacien';
+          if (user) {
+            const prenoms = user.prenoms || '';
+            const nom = user.nom || '';
+            author = (prenoms || nom) ? `${prenoms} ${nom}`.trim() : (user.username || 'Pharmacien');
+          }
+
+          const currentYear = new Date().getFullYear();
+          const parsedYear = t.annee ? parseInt(String(t.annee), 10) : currentYear;
+
+          return {
+            _id: t._id,
+            title: t.titre || '',
+            author,
+            director: '',
+            university: '',
+            faculty: '',
+            department: '',
+            degree: 'phd',
+            year: Number.isNaN(parsedYear) ? currentYear : parsedYear,
+            abstract: t.resume || '',
+            keywords: [],
+            pages: 0,
+            language: 'fr',
+            specialty: 'Pharmacie',
+            defenseDate: t.annee ? `${t.annee}-01-01` : new Date().toISOString().split('T')[0],
+            juryMembers: [],
+            downloads: 0,
+            citations: 0,
+            featured: false,
+            pdfUrl: t.fichierUrl || ''
+          };
+        });
+
+        return res.json({ success: true, data });
+      } catch (err) {
+        console.error('Erreur chargement thèses publiques:', err);
+        return res.status(500).json({ success: false, error: 'Erreur serveur' });
+      }
+    }
+
     // Vérifier que la collection existe
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });

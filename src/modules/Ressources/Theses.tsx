@@ -25,6 +25,7 @@ interface Thesis {
   downloads: number;
   citations: number;
   featured: boolean;
+  pdfUrl?: string;
 }
 
 interface University {
@@ -94,7 +95,8 @@ const Theses = () => {
         juryMembers: item.juryMembers || [],
         downloads: item.downloads || 0,
         citations: item.citations || 0,
-        featured: item.featured || false
+        featured: item.featured || false,
+        pdfUrl: item.pdfUrl || item.fichierUrl || ''
       }));
 
       setTheses(mapped);
@@ -512,12 +514,30 @@ const Theses = () => {
                   </div>
 
                   <div className="thesis-actions">
-                    <Link to={`/ressources/theses/${thesis.id}`} className="thesis-read-more">
-                      📖 Consulter la thèse →
-                    </Link>
-                    <button className="thesis-download-btn">
-                      ⬇️ Télécharger PDF
-                    </button>
+                    {thesis.pdfUrl ? (
+                      <>
+                        <a
+                          href={thesis.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="thesis-read-more"
+                        >
+                          📖 Consulter la thèse →
+                        </a>
+                        <a
+                          href={thesis.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="thesis-download-btn"
+                        >
+                          ⬇️ Télécharger le PDF
+                        </a>
+                      </>
+                    ) : (
+                      <span className="thesis-read-more" style={{ opacity: 0.6 }}>
+                        PDF non disponible
+                      </span>
+                    )}
                   </div>
                 </div>
               </article>

@@ -12,6 +12,10 @@ const API_URL =
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '';
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '';
 
+// Limite de taille pour les PDF de thèses (en Mo)
+const MAX_THESE_PDF_SIZE_MB = 20;
+const MAX_THESE_PDF_SIZE_BYTES = MAX_THESE_PDF_SIZE_MB * 1024 * 1024;
+
 const PharmacienTheses = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -71,8 +75,33 @@ const PharmacienTheses = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Vérifier le type de fichier
+    if (file.type !== 'application/pdf') {
+      setMessage({
+        type: 'error',
+        text: 'Merci de sélectionner un fichier PDF uniquement.'
+      });
+      e.target.value = '';
+      return;
+    }
+
+    // Limiter la taille du fichier pour éviter les échecs silencieux côté Cloudinary
+    if (file.size > MAX_THESE_PDF_SIZE_BYTES) {
+      const sizeMo = (file.size / (1024 * 1024)).toFixed(1);
+      setMessage({
+        type: 'error',
+        text: `Le fichier est trop volumineux (${sizeMo} Mo). Taille maximale autorisée : ${MAX_THESE_PDF_SIZE_MB} Mo.`
+      });
+      e.target.value = '';
+      return;
+    }
+
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      setMessage({ type: 'error', text: 'Configuration Cloudinary manquante pour l\'upload de thèse.' });
+      setMessage({
+        type: 'error',
+        text: 'Configuration interne manquante pour l’upload des thèses. Veuillez contacter l’Ordre.'
+      });
+      e.target.value = '';
       return;
     }
 
@@ -203,7 +232,7 @@ const PharmacienTheses = () => {
               </div>
 
               <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label>Fichier PDF de la thèse *</label>
+                <label>Fichier PDF de la thèse * (max. {MAX_THESE_PDF_SIZE_MB} Mo)</label>
                 <input
                   type="file"
                   accept="application/pdf"

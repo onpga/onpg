@@ -72,44 +72,68 @@ const PharmacienTheses = () => {
   };
 
   const handleThesisUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('[THESE UPLOAD] Début handleThesisUpload');
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log('[THESE UPLOAD] ❌ Aucun fichier sélectionné');
+      return;
+    }
+
+    console.log('[THESE UPLOAD] 📄 Fichier sélectionné:', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      sizeMo: (file.size / (1024 * 1024)).toFixed(2) + ' Mo'
+    });
 
     // Vérifier le type de fichier
     if (file.type !== 'application/pdf') {
+      console.log('[THESE UPLOAD] ❌ Type de fichier invalide:', file.type);
       setMessage({
         type: 'error',
         text: 'Merci de sélectionner un fichier PDF uniquement.'
       });
-      e.target.value = '';
       return;
     }
+    console.log('[THESE UPLOAD] ✅ Type PDF valide');
 
     // Limiter la taille du fichier pour éviter les échecs silencieux côté Cloudinary
     if (file.size > MAX_THESE_PDF_SIZE_BYTES) {
       const sizeMo = (file.size / (1024 * 1024)).toFixed(1);
+      console.log('[THESE UPLOAD] ❌ Fichier trop volumineux:', sizeMo, 'Mo (max:', MAX_THESE_PDF_SIZE_MB, 'Mo)');
       setMessage({
         type: 'error',
-        text: `Le fichier est trop volumineux (${sizeMo} Mo). Taille maximale autorisée : ${MAX_THESE_PDF_SIZE_MB} Mo.`
+        text: `Le fichier est trop volumineux (${sizeMo} Mo). Taille maximale autorisée : ${MAX_THESE_PDF_SIZE_MB} Mo.`
       });
-      e.target.value = '';
       return;
     }
+    console.log('[THESE UPLOAD] ✅ Taille valide');
 
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      console.log('[THESE UPLOAD] ❌ Configuration Cloudinary manquante:', {
+        hasCloudName: !!CLOUDINARY_CLOUD_NAME,
+        hasPreset: !!CLOUDINARY_UPLOAD_PRESET
+      });
       setMessage({
         type: 'error',
-        text: 'Configuration interne manquante pour l’upload des thèses. Veuillez contacter l’Ordre.'
+        text: 'Configuration interne manquante pour l'upload des thèses. Veuillez contacter l'Ordre.'
       });
-      e.target.value = '';
       return;
     }
+    console.log('[THESE UPLOAD] ✅ Configuration Cloudinary OK');
 
     setThesisSaving(true);
+    console.log('[THESE UPLOAD] 📤 Début upload vers Cloudinary...');
     try {
       const formDataUpload = new FormData();
       formDataUpload.append('file', file);
       formDataUpload.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      console.log('[THESE UPLOAD] 🌐 Appel Cloudinary:', {
+        url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+        cloudName: CLOUDINARY_CLOUD_NAME,
+        hasPreset: !!CLOUDINARY_UPLOAD_PRESET
+      });
 
       const res = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
@@ -119,34 +143,84 @@ const PharmacienTheses = () => {
         }
       );
 
+      console.log('[THESE UPLOAD] 📥 Réponse Cloudinary:', {
+        status: res.status,
+        statusText: res.statusText,
+        ok: res.ok
+      });
+
       const data = await res.json();
+      console.log('[THESE UPLOAD] 📦 Données Cloudinary:', {
+        hasSecureUrl: !!data.secure_url,
+        secureUrl: data.secure_url ? data.secure_url.substring(0, 50) + '...' : null,
+        error: data.error || null,
+        fullResponse: data
+      });
+
       if (data.secure_url) {
+        console.log('[THESE UPLOAD] ✅ Upload réussi, URL:', data.secure_url);
         setThesisForm(prev => ({ ...prev, fichierUrl: data.secure_url }));
         setMessage({ type: 'success', text: 'Fichier PDF de la thèse uploadé avec succès.' });
       } else {
-        setMessage({ type: 'error', text: 'Erreur lors de l\'upload du PDF.' });
+        console.log('[THESE UPLOAD] ❌ Pas d\'URL dans la réponse Cloudinary');
+        setMessage({ 
+          type: 'error', 
+          text: `Erreur lors de l'upload du PDF. ${data.error ? `Détail: ${data.error.message || data.error}` : ''}` 
+        });
       }
-    } catch (err) {
-      console.error('Erreur upload thèse:', err);
-      setMessage({ type: 'error', text: 'Erreur lors de l\'upload du PDF.' });
+    } catch (err: any) {
+      console.error('[THESE UPLOAD] ❌ Erreur exception:', err);
+      console.error('[THESE UPLOAD] ❌ Stack:', err?.stack);
+      setMessage({ 
+        type: 'error', 
+        text: `Erreur lors de l'upload du PDF: ${err?.message || 'Erreur inconnue'}` 
+      });
     } finally {
       setThesisSaving(false);
-      e.target.value = '';
+      console.log('[THESE UPLOAD] 🏁 Fin handleThesisUpload');
+      // On NE vide plus le champ pour que le navigateur affiche bien le nom du fichier choisi
     }
   };
 
   const handleThesisSave = async () => {
+    console.log('[THESE SAVE] Début handleThesisSave');
     setMessage(null);
 
+    console.log('[THESE SAVE] 📋 Données du formulaire:', {
+      titre: thesisForm.titre,
+      annee: thesisForm.annee,
+      resume: thesisForm.resume ? thesisForm.resume.substring(0, 50) + '...' : '',
+      hasFichierUrl: !!thesisForm.fichierUrl,
+      fichierUrl: thesisForm.fichierUrl ? thesisForm.fichierUrl.substring(0, 50) + '...' : null
+    });
+
     if (!thesisForm.titre || !thesisForm.fichierUrl) {
+      console.log('[THESE SAVE] ❌ Validation échouée:', {
+        hasTitre: !!thesisForm.titre,
+        hasFichierUrl: !!thesisForm.fichierUrl
+      });
       setMessage({ type: 'error', text: 'Veuillez renseigner au minimum le titre et uploader le fichier PDF.' });
       return;
     }
+    console.log('[THESE SAVE] ✅ Validation OK');
 
     try {
       setThesisSaving(true);
       const token = localStorage.getItem('admin_token');
       const userId = user._id;
+
+      console.log('[THESE SAVE] 🔐 Authentification:', {
+        hasToken: !!token,
+        tokenLength: token?.length || 0,
+        userId: userId,
+        apiUrl: API_URL
+      });
+
+      console.log('[THESE SAVE] 🌐 Appel API:', {
+        url: `${API_URL}/pharmacien/theses`,
+        method: 'POST',
+        body: thesisForm
+      });
 
       const response = await fetch(`${API_URL}/pharmacien/theses`, {
         method: 'POST',
@@ -158,8 +232,18 @@ const PharmacienTheses = () => {
         body: JSON.stringify(thesisForm)
       });
 
+      console.log('[THESE SAVE] 📥 Réponse API:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
       const data = await response.json();
+      console.log('[THESE SAVE] 📦 Données API:', data);
+
       if (data.success) {
+        console.log('[THESE SAVE] ✅ Thèse enregistrée avec succès');
         setMessage({ type: 'success', text: 'Thèse enregistrée avec succès.' });
         setThesisForm({
           titre: '',
@@ -169,13 +253,19 @@ const PharmacienTheses = () => {
         });
         await loadTheses();
       } else {
+        console.log('[THESE SAVE] ❌ Erreur API:', data.error);
         setMessage({ type: 'error', text: data.error || 'Erreur lors de l\'enregistrement de la thèse.' });
       }
-    } catch (error) {
-      console.error('Erreur sauvegarde thèse:', error);
-      setMessage({ type: 'error', text: 'Erreur de connexion au serveur.' });
+    } catch (error: any) {
+      console.error('[THESE SAVE] ❌ Erreur exception:', error);
+      console.error('[THESE SAVE] ❌ Stack:', error?.stack);
+      setMessage({ 
+        type: 'error', 
+        text: `Erreur de connexion au serveur: ${error?.message || 'Erreur inconnue'}` 
+      });
     } finally {
       setThesisSaving(false);
+      console.log('[THESE SAVE] 🏁 Fin handleThesisSave');
     }
   };
 

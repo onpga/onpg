@@ -155,21 +155,42 @@ const PharmacienTheses = () => {
 
       if (data.success && data.url) {
         console.log('[THESE UPLOAD] ✅ Upload réussi, URL:', data.url);
-        setThesisForm(prev => ({ ...prev, fichierUrl: data.url }));
-        setMessage({ type: 'success', text: 'Fichier PDF uploadé avec succès.' });
+        const updatedForm = { ...thesisForm, fichierUrl: data.url };
+        setThesisForm(updatedForm);
         
-        // Si le titre est déjà rempli, enregistrer automatiquement en base
-        if (thesisForm.titre) {
-          console.log('[THESE UPLOAD] 📝 Titre présent, enregistrement automatique en base...');
-          setTimeout(() => {
-            handleThesisSave();
-          }, 500);
-        } else {
-          setMessage({ 
-            type: 'success', 
-            text: 'Fichier PDF uploadé. Veuillez renseigner le titre et cliquer sur "Enregistrer la thèse".' 
-          });
-        }
+        // Enregistrement automatique en base avec tous les champs
+        console.log('[THESE UPLOAD] 💾 Enregistrement automatique en base...');
+        setTimeout(async () => {
+          try {
+            const token = localStorage.getItem('admin_token');
+            const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+            const userId = currentUser._id;
+
+            const response = await fetch(`${API_URL}/pharmacien/theses`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'x-user-id': userId
+              },
+              body: JSON.stringify(updatedForm)
+            });
+
+            const saveData = await response.json();
+            if (saveData.success) {
+              console.log('[THESE UPLOAD] ✅ Thèse enregistrée en base');
+              setMessage({ type: 'success', text: 'Thèse uploadée et enregistrée avec succès.' });
+              setThesisForm({ titre: '', resume: '', annee: '', fichierUrl: '' });
+              await loadTheses();
+            } else {
+              console.log('[THESE UPLOAD] ❌ Erreur enregistrement:', saveData.error);
+              setMessage({ type: 'error', text: saveData.error || 'Erreur lors de l\'enregistrement.' });
+            }
+          } catch (err: any) {
+            console.error('[THESE UPLOAD] ❌ Erreur enregistrement:', err);
+            setMessage({ type: 'error', text: 'Erreur lors de l\'enregistrement en base.' });
+          }
+        }, 500);
       } else {
         console.log('[THESE UPLOAD] ❌ Erreur upload');
         setMessage({ 
@@ -203,18 +224,9 @@ const PharmacienTheses = () => {
       fichierUrl: thesisForm.fichierUrl ? thesisForm.fichierUrl.substring(0, 50) + '...' : null
     });
 
-    if (!thesisForm.titre || !thesisForm.fichierUrl) {
-      console.log('[THESE SAVE] ❌ Validation échouée:', {
-        hasTitre: !!thesisForm.titre,
-        hasFichierUrl: !!thesisForm.fichierUrl
-      });
-      let errorMsg = 'Veuillez renseigner ';
-      const missing = [];
-      if (!thesisForm.titre) missing.push('le titre');
-      if (!thesisForm.fichierUrl) missing.push('uploader le fichier PDF');
-      errorMsg += missing.join(' et ');
-      errorMsg += '.';
-      setMessage({ type: 'error', text: errorMsg });
+    if (!thesisForm.fichierUrl) {
+      console.log('[THESE SAVE] ❌ Validation échouée: fichier PDF manquant');
+      setMessage({ type: 'error', text: 'Veuillez uploader le fichier PDF.' });
       return;
     }
     console.log('[THESE SAVE] ✅ Validation OK');

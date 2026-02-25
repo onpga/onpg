@@ -505,6 +505,15 @@ app.get('/api/admin/:collection', authenticateAdmin, async (req, res) => {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
     
+    // Cas particulier pour les thèses : on lit depuis pharmacien_theses
+    if (collection === 'theses') {
+      const theses = await db.collection('pharmacien_theses')
+        .find({})
+        .sort({ createdAt: -1 })
+        .toArray();
+      return res.json({ success: true, data: theses });
+    }
+    
     const data = await db.collection(collection)
       .find({})
       .sort({ order: 1, createdAt: -1 })
@@ -1067,19 +1076,25 @@ app.post('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
   try {
     const { titre, resume, annee, fichierUrl } = req.body;
 
-    if (!titre || !fichierUrl) {
-      return res.status(400).json({ success: false, error: 'Titre et fichier PDF requis' });
+    if (!fichierUrl) {
+      return res.status(400).json({ success: false, error: 'Fichier PDF requis' });
     }
 
     const pharmacienId =
       (() => { try { return new ObjectId(req.pharmacienId); } catch { return req.pharmacienId; } })();
 
+    // Récupérer les infos du pharmacien
+    const pharmacien = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
+
     const doc = {
       pharmacienId,
-      titre,
+      titre: titre || 'Thèse',
       resume: resume || '',
       annee: annee || '',
       fichierUrl,
+      pharmacienNom: pharmacien?.nom || '',
+      pharmacienPrenoms: pharmacien?.prenoms || '',
+      pharmacienUsername: pharmacien?.username || '',
       createdAt: new Date(),
       updatedAt: new Date()
     };

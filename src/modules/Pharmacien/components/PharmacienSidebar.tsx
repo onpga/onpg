@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import '../../Admin/Dashboard.css';
 import { ONPG_IMAGES } from '../../../utils/cloudinary-onpg';
 
@@ -8,6 +9,7 @@ interface PharmacienSidebarProps {
 
 const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
   
   const logout = () => {
     localStorage.removeItem('admin_token');
@@ -20,26 +22,62 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
     : null;
 
   return (
-    <aside className="admin-sidebar">
+    <>
+    {/* Bouton hamburger mobile */}
+    <button
+      type="button"
+      className="pharmacien-sidebar-toggle"
+      onClick={() => setIsOpen(!isOpen)}
+      aria-label="Ouvrir le menu pharmacien"
+    >
+      <span />
+      <span />
+      <span />
+    </button>
+
+    {/* Overlay clicable pour fermer sur mobile */}
+    {isOpen && <div className="sidebar-overlay" onClick={() => setIsOpen(false)} />}
+
+    <aside className={`admin-sidebar ${isOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-header">
         <img src={ONPG_IMAGES.logo} alt="ONPG" className="sidebar-logo" />
         <h2>Espace Pharmacien</h2>
       </div>
 
       <nav className="sidebar-nav">
-        <Link to="/pharmacien/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
+        <Link
+          to="/pharmacien/dashboard"
+          className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setIsOpen(false)}
+        >
           📊 Tableau de bord
         </Link>
-        <Link to="/pharmacien/dashboard" className={`nav-item ${currentPage === 'profile' ? 'active' : ''}`}>
+        <Link
+          to="/pharmacien/dashboard"
+          className={`nav-item ${currentPage === 'profile' ? 'active' : ''}`}
+          onClick={() => setIsOpen(false)}
+        >
           👤 Gérer mon profil
         </Link>
-        <Link to="/pharmacien/theses" className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}>
+        <Link
+          to="/pharmacien/theses"
+          className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}
+          onClick={() => setIsOpen(false)}
+        >
           📚 Mes Thèses
         </Link>
-        <Link to="/pharmacien/messages" className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}>
+        <Link
+          to="/pharmacien/messages"
+          className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}
+          onClick={() => setIsOpen(false)}
+        >
           ✉️ Messages à l'Ordre
         </Link>
-        <Link to="/pharmacien/pharmacies" className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}>
+        <Link
+          to="/pharmacien/pharmacies"
+          className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}
+          onClick={() => setIsOpen(false)}
+        >
           🏥 Mes Pharmacies
         </Link>
       </nav>
@@ -52,11 +90,18 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
             <p className="user-role">Pharmacien</p>
           </div>
         </div>
-        <button onClick={logout} className="logout-btn">
+        <button
+          onClick={() => {
+            setIsOpen(false);
+            logout();
+          }}
+          className="logout-btn"
+        >
           🚪 Déconnexion
         </button>
       </div>
     </aside>
+    </>
   );
 };
 

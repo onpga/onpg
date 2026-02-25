@@ -47,6 +47,19 @@ const PharmacienTheses = () => {
     loadTheses(userData);
   }, [navigate]);
 
+  // Scroll automatique vers le message quand il apparaît
+  useEffect(() => {
+    if (message) {
+      // Attendre un peu pour que le DOM soit mis à jour
+      setTimeout(() => {
+        const messageElement = document.querySelector('.message');
+        if (messageElement) {
+          messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 100);
+    }
+  }, [message]);
+
   const loadTheses = async (currentUser = user) => {
     try {
       setLoadingTheses(true);
@@ -116,8 +129,9 @@ const PharmacienTheses = () => {
       });
       setMessage({
         type: 'error',
-        text: 'Configuration interne manquante pour l\'upload des thèses. Veuillez contacter l\'Ordre.'
+        text: '⚠️ Configuration d\'upload manquante. Impossible d\'uploader le fichier PDF. Veuillez contacter l\'administrateur de l\'Ordre pour résoudre ce problème.'
       });
+      // Ne pas bloquer complètement, mais afficher un message clair
       return;
     }
     console.log('[THESE UPLOAD] ✅ Configuration Cloudinary OK');
@@ -199,7 +213,13 @@ const PharmacienTheses = () => {
         hasTitre: !!thesisForm.titre,
         hasFichierUrl: !!thesisForm.fichierUrl
       });
-      setMessage({ type: 'error', text: 'Veuillez renseigner au minimum le titre et uploader le fichier PDF.' });
+      let errorMsg = 'Veuillez renseigner ';
+      const missing = [];
+      if (!thesisForm.titre) missing.push('le titre');
+      if (!thesisForm.fichierUrl) missing.push('uploader le fichier PDF');
+      errorMsg += missing.join(' et ');
+      errorMsg += '.';
+      setMessage({ type: 'error', text: errorMsg });
       return;
     }
     console.log('[THESE SAVE] ✅ Validation OK');
@@ -279,7 +299,21 @@ const PharmacienTheses = () => {
           <h1>📚 Mes Thèses</h1>
 
           {message && (
-            <div className={`message ${message.type}`} style={{ marginBottom: '1rem' }}>
+            <div 
+              className={`message ${message.type}`} 
+              style={{ 
+                marginBottom: '1.5rem',
+                padding: '1rem 1.5rem',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                fontWeight: message.type === 'error' ? '600' : '500',
+                border: message.type === 'error' ? '2px solid #ef4444' : '2px solid #10b981',
+                backgroundColor: message.type === 'error' ? '#fef2f2' : '#f0fdf4',
+                color: message.type === 'error' ? '#991b1b' : '#065f46',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}
+            >
+              {message.type === 'error' ? '❌ ' : '✅ '}
               {message.text}
             </div>
           )}

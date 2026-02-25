@@ -380,10 +380,22 @@ const PharmacienDashboard = () => {
 
   if (!user) return null;
 
-  const displayFirstName =
-    (user.prenoms && String(user.prenoms).split(' ')[0]) ||
-    (user.username && String(user.username)) ||
-    'Pharmacien';
+  // Prénom à afficher : on privilégie le champ prenoms renvoyé par le backend,
+  // sinon on essaie de le déduire du pseudo (ex: "aadji" -> "Adji"), sinon on tombe
+  // sur le username, puis sur "Pharmacien".
+  let displayFirstName: string;
+  if (user.prenoms) {
+    displayFirstName = String(user.prenoms).split(' ')[0];
+  } else if (user.username && String(user.username).length > 1) {
+    const uname = String(user.username);
+    const candidate = uname.slice(1); // supprime l'initiale du nom
+    displayFirstName =
+      candidate.charAt(0).toUpperCase() + candidate.slice(1);
+  } else if (user.username) {
+    displayFirstName = String(user.username);
+  } else {
+    displayFirstName = 'Pharmacien';
+  }
 
   return (
     <div className="admin-layout">

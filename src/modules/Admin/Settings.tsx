@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
 import './Settings.css';
 import './Dashboard.css';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -22,8 +23,10 @@ const Settings = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [siteImages, setSiteImages] = useState({
-    presidentPhoto: '',
-    heroImage: ''
+    // On initialise avec les mêmes valeurs par défaut que la page d'accueil,
+    // pour que l'admin voie immédiatement ce qui est utilisé sur le site.
+    presidentPhoto: ONPG_IMAGES.president,
+    heroImage: ONPG_IMAGES.hero1
   });
   const [uploadingPresident, setUploadingPresident] = useState(false);
   const [uploadingHero, setUploadingHero] = useState(false);
@@ -48,8 +51,9 @@ const Settings = () => {
         const data = await response.json();
         if (data.success && data.data) {
           setSiteImages({
-            presidentPhoto: data.data.presidentPhoto || '',
-            heroImage: data.data.heroImage || ''
+            // Si rien n'est encore enregistré en base, on garde les images par défaut
+            presidentPhoto: data.data.presidentPhoto || ONPG_IMAGES.president,
+            heroImage: data.data.heroImage || ONPG_IMAGES.hero1
           });
         }
       }

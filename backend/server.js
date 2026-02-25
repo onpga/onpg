@@ -977,6 +977,97 @@ app.get('/api/pharmacien/stats', authenticatePharmacien, async (req, res) => {
   }
 });
 
+// POST upload PDF thèse via backend (fallback si Cloudinary frontend non disponible)
+app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, async (req, res) => {
+  try {
+    const { fileBase64, fileName } = req.body;
+
+    if (!fileBase64 || !fileName) {
+      return res.status(400).json({ success: false, error: 'Fichier PDF requis (base64)' });
+    }
+
+    // Vérifier que c'est un PDF
+    if (!fileName.toLowerCase().endsWith('.pdf')) {
+      return res.status(400).json({ success: false, error: 'Le fichier doit être un PDF' });
+    }
+
+    // Convertir base64 en buffer
+    const base64Data = fileBase64.replace(/^data:application\/pdf;base64,/, '');
+    const fileBuffer = Buffer.from(base64Data, 'base64');
+
+    // Limite de 20 Mo
+    const MAX_SIZE = 20 * 1024 * 1024;
+    if (fileBuffer.length > MAX_SIZE) {
+      return res.status(400).json({ 
+        success: false, 
+        error: `Fichier trop volumineux (${(fileBuffer.length / 1024 / 1024).toFixed(1)} Mo). Maximum: 20 Mo` 
+      });
+    }
+
+    // Essayer d'uploader vers Cloudinary si les credentials sont disponibles
+    const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+    const CLOUDINARY_UPLOAD_PRESET = process.env.CLOUDINARY_UPLOAD_PRESET;
+
+    if (CLOUDINARY_CLOUD_NAME && CLOUDINARY_UPLOAD_PRESET) {
+      try {
+        // Essayer d'utiliser form-data si disponible, sinon utiliser fetch avec FormData natif
+        let FormDataClass;
+        try {
+          FormDataClass = require('form-data');
+        } catch {
+          // Si form-data n'est pas installé, on utilisera le fallback base64
+          throw new Error('form-data non disponible');
+        }
+
+        const formData = new FormDataClass();
+        formData.append('file', fileBuffer, {
+          filename: fileName,
+          contentType: 'application/pdf'
+        });
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        // Utiliser fetch natif (Node.js 18+) ou axios
+        const axios = require('axios');
+        const cloudinaryRes = await axios.post(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+          formData,
+          {
+            headers: formData.getHeaders()
+          }
+        );
+
+        const cloudinaryData = cloudinaryRes.data;
+
+        if (cloudinaryData.secure_url) {
+          return res.json({ 
+            success: true, 
+            url: cloudinaryData.secure_url,
+            method: 'cloudinary'
+          });
+        }
+      } catch (cloudinaryError) {
+        console.error('Erreur upload Cloudinary backend:', cloudinaryError);
+        // Continuer avec le fallback
+      }
+    }
+
+    // Fallback: stocker temporairement l'URL en base64 dans MongoDB
+    // Pour une solution permanente, il faudrait utiliser GridFS ou un autre stockage
+    // Pour l'instant, on retourne l'URL data: pour que le frontend puisse l'utiliser
+    const dataUrl = `data:application/pdf;base64,${base64Data}`;
+    
+    res.json({ 
+      success: true, 
+      url: dataUrl,
+      method: 'base64',
+      warning: 'Fichier stocké temporairement. Configuration Cloudinary recommandée pour un stockage permanent.'
+    });
+  } catch (error) {
+    console.error('Erreur upload PDF thèse backend:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur lors de l\'upload' });
+  }
+});
+
 // Routes thèses pharmacien
 app.get('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
   try {

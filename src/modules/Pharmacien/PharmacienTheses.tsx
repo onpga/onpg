@@ -122,17 +122,75 @@ const PharmacienTheses = () => {
     }
     console.log('[THESE UPLOAD] ✅ Taille valide');
 
-    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      console.log('[THESE UPLOAD] ❌ Configuration Cloudinary manquante:', {
-        hasCloudName: !!CLOUDINARY_CLOUD_NAME,
-        hasPreset: !!CLOUDINARY_UPLOAD_PRESET
-      });
-      setMessage({
-        type: 'error',
-        text: '⚠️ Configuration d\'upload manquante. Impossible d\'uploader le fichier PDF. Veuillez contacter l\'administrateur de l\'Ordre pour résoudre ce problème.'
-      });
-      // Ne pas bloquer complètement, mais afficher un message clair
-      return;
+    // Si Cloudinary n'est pas disponible côté frontend, utiliser le backend
+    const useBackendUpload = !CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET;
+    
+    if (useBackendUpload) {
+      console.log('[THESE UPLOAD] ⚠️ Cloudinary frontend non disponible, utilisation du backend');
+      setThesisSaving(true);
+      try {
+        // Convertir le fichier en base64
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          try {
+            const base64 = e.target?.result as string;
+            const token = localStorage.getItem('admin_token');
+            const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
+            const userId = currentUser._id;
+
+            console.log('[THESE UPLOAD] 📤 Upload via backend...');
+            const response = await fetch(`${API_URL}/pharmacien/theses/upload-pdf`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                'x-user-id': userId
+              },
+              body: JSON.stringify({
+                fileBase64: base64,
+                fileName: file.name
+              })
+            });
+
+            const data = await response.json();
+            console.log('[THESE UPLOAD] 📥 Réponse backend:', data);
+
+            if (data.success && data.url) {
+              console.log('[THESE UPLOAD] ✅ Upload réussi via backend, URL:', data.url);
+              setThesisForm(prev => ({ ...prev, fichierUrl: data.url }));
+              setMessage({ 
+                type: 'success', 
+                text: `Fichier PDF uploadé avec succès${data.method === 'base64' ? ' (stockage temporaire)' : ''}.` 
+              });
+            } else {
+              console.log('[THESE UPLOAD] ❌ Erreur upload backend');
+              setMessage({ 
+                type: 'error', 
+                text: data.error || 'Erreur lors de l\'upload du PDF via le serveur.' 
+              });
+            }
+          } catch (err: any) {
+            console.error('[THESE UPLOAD] ❌ Erreur upload backend:', err);
+            setMessage({ 
+              type: 'error', 
+              text: `Erreur lors de l'upload du PDF: ${err?.message || 'Erreur inconnue'}` 
+            });
+          } finally {
+            setThesisSaving(false);
+          }
+        };
+        reader.onerror = () => {
+          setMessage({ type: 'error', text: 'Erreur lors de la lecture du fichier.' });
+          setThesisSaving(false);
+        };
+        reader.readAsDataURL(file);
+        return; // Sortir de la fonction, le reste sera géré dans reader.onload
+      } catch (err: any) {
+        console.error('[THESE UPLOAD] ❌ Erreur préparation upload backend:', err);
+        setMessage({ type: 'error', text: `Erreur: ${err?.message || 'Erreur inconnue'}` });
+        setThesisSaving(false);
+        return;
+      }
     }
     console.log('[THESE UPLOAD] ✅ Configuration Cloudinary OK');
 

@@ -137,6 +137,10 @@ const PharmacienTheses = () => {
 
       const formData = new FormData();
       formData.append('pdf', file);
+      // Envoyer le titre si disponible pour générer un nom de fichier personnalisé
+      if (thesisForm.titre) {
+        formData.append('titre', thesisForm.titre);
+      }
 
       const res = await fetch(`${API_URL}/pharmacien/theses/upload-pdf`, {
         method: 'POST',

@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
   next();
 });
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Configuration multer pour les uploads de fichiers
@@ -316,7 +316,7 @@ app.get('/api/public/:collection/:id', async (req, res) => {
         return res.status(500).json({ success: false, error: 'Erreur serveur' });
       }
     }
-
+    
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
@@ -437,7 +437,7 @@ app.get('/api/public/:collection', async (req, res) => {
         return res.status(500).json({ success: false, error: 'Erreur serveur' });
       }
     }
-
+    
     // Vérifier que la collection existe
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
@@ -514,12 +514,57 @@ app.get('/api/admin/:collection', authenticateAdmin, async (req, res) => {
     }
     
     // Cas particulier pour les thèses : on lit depuis pharmacien_theses
+    // et on enrichit avec le nom/prénom du pharmacien auteur
     if (collection === 'theses') {
       const theses = await db.collection('pharmacien_theses')
         .find({})
         .sort({ createdAt: -1 })
         .toArray();
-      return res.json({ success: true, data: theses });
+
+      const pharmacienIds = [
+        ...new Set(
+          theses
+            .map(t => t.pharmacienId)
+            .filter(Boolean)
+            .map(id => String(id))
+        )
+      ];
+
+      let usersById = new Map();
+      if (pharmacienIds.length > 0) {
+        const objectIds = pharmacienIds.map(id => {
+          try {
+            return new ObjectId(id);
+          } catch {
+            return null;
+          }
+        }).filter(Boolean);
+
+        const users = await db.collection('users')
+          .find({ _id: { $in: objectIds } })
+          .toArray();
+
+        usersById = new Map(users.map(u => [String(u._id), u]));
+      }
+
+      const data = theses.map(t => {
+        const user = usersById.get(String(t.pharmacienId));
+        let pharmacienNomComplet = 'Pharmacien';
+        if (user) {
+          const prenoms = user.prenoms || '';
+          const nom = user.nom || '';
+          pharmacienNomComplet = (prenoms || nom)
+            ? `${prenoms} ${nom}`.trim()
+            : (user.username || 'Pharmacien');
+        }
+
+        return {
+          ...t,
+          pharmacienNomComplet
+        };
+      });
+
+      return res.json({ success: true, data });
     }
     
     const data = await db.collection(collection)
@@ -1014,17 +1059,31 @@ app.post('/api/pharmacien/theses/upload-pdf', authenticatePharmacien, upload.sin
       return res.status(400).json({ success: false, error: 'Le fichier doit être un PDF' });
     }
 
-    // Stockage direct en base64 dans MongoDB - SIMPLE et FONCTIONNEL
-    console.log('[UPLOAD PDF] Stockage PDF en base64');
+    // Ancien comportement : on renvoie toujours un data:URL base64
+    // pour garantir la compatibilité même si Cloudinary pose problème.
+    console.log('[UPLOAD PDF] 📦 MODE BASE64 UNIQUEMENT (sans Cloudinary)');
+    console.log('[UPLOAD PDF] 📋 Informations fichier:', {
+      fileNameOriginal: req.file.originalname,
+      fileSize: `${(req.file.size / 1024 / 1024).toFixed(2)} Mo`,
+      mimeType: req.file.mimetype,
+      bufferLength: req.file.buffer.length
+    });
+
+    // Génération de l'URL base64
     const base64Data = req.file.buffer.toString('base64');
+    const base64Size = (base64Data.length / 1024 / 1024).toFixed(2);
+    console.log('[UPLOAD PDF] 📊 Taille base64:', `${base64Size} Mo`);
     const dataUrl = `data:application/pdf;base64,${base64Data}`;
+    console.log('[UPLOAD PDF] ✅ Base64 généré avec succès');
+    console.log('[UPLOAD PDF] ============================================');
     
     return res.json({ 
       success: true, 
-      url: dataUrl
+      url: dataUrl,
+      method: 'base64'
     });
   } catch (error) {
-    console.error('[UPLOAD PDF] ❌ Erreur exception:', error.message);
+    console.error('[UPLOAD PDF] ❌ Erreur:', error.message);
     res.status(500).json({ success: false, error: error.message || 'Erreur serveur' });
   }
 });
@@ -1450,7 +1509,81 @@ app.put('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
   }
 });
 
+// Fonction pour vérifier/créer le preset Cloudinary
+async function ensureCloudinaryPreset() {
+  const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+  const CLOUDINARY_API_KEY = '311692364197472';
+  const CLOUDINARY_API_SECRET = 'YlKz6EoFE2hiETe6hH3H2lTsvlk';
+  const PRESET_NAME = 'onpg_uploads';
+
+  try {
+    const axios = require('axios');
+    const crypto = require('crypto');
+    
+    // Vérifier si le preset existe en essayant de le lister
+    const timestamp = Math.round(Date.now() / 1000);
+    const paramsToSign = `timestamp=${timestamp}${CLOUDINARY_API_SECRET}`;
+    const signature = crypto.createHash('sha1').update(paramsToSign).digest('hex');
+    
+    const listUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload_presets?api_key=${CLOUDINARY_API_KEY}&timestamp=${timestamp}&signature=${signature}`;
+    
+    try {
+      const listRes = await axios.get(listUrl);
+      const presets = listRes.data || [];
+      const presetExists = presets.some(p => p.name === PRESET_NAME);
+      
+      if (presetExists) {
+        console.log('✅ Preset Cloudinary existe déjà:', PRESET_NAME);
+        return;
+      }
+    } catch (listError) {
+      console.log('⚠️  Impossible de vérifier les presets (permissions insuffisantes)');
+    }
+
+    // Essayer de créer le preset
+    const createTimestamp = Math.round(Date.now() / 1000);
+    const createParams = {
+      name: PRESET_NAME,
+      unsigned: 'true',
+      resource_type: 'raw',
+      folder: '',
+      timestamp: createTimestamp.toString()
+    };
+    
+    const createSignatureString = Object.keys(createParams)
+      .sort()
+      .map(key => `${key}=${createParams[key]}`)
+      .join('&') + CLOUDINARY_API_SECRET;
+    
+    const createSignature = crypto.createHash('sha1').update(createSignatureString).digest('hex');
+
+    const formData = new (require('form-data'))();
+    formData.append('name', PRESET_NAME);
+    formData.append('unsigned', 'true');
+    formData.append('resource_type', 'raw');
+    formData.append('api_key', CLOUDINARY_API_KEY);
+    formData.append('timestamp', createTimestamp.toString());
+    formData.append('signature', createSignature);
+
+    await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload_presets`,
+      formData,
+      { headers: formData.getHeaders() }
+    );
+    
+    console.log('✅ Preset Cloudinary créé:', PRESET_NAME);
+  } catch (error) {
+    console.log('⚠️  Preset Cloudinary non créé automatiquement. Pour le créer manuellement:');
+    console.log('   1. Va sur https://cloudinary.com/console');
+    console.log('   2. Settings → Upload → Add upload preset');
+    console.log('   3. Nom: onpg_uploads | Signing mode: Unsigned | Resource type: Raw');
+    console.log('   Le fallback base64 fonctionne en attendant.');
+  }
+}
+
 // Démarrage serveur
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Serveur backend démarré sur le port ${PORT}`);
+  // Créer le preset Cloudinary au démarrage
+  await ensureCloudinaryPreset();
 });

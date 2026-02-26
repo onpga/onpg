@@ -58,6 +58,34 @@ const mockUniversities: University[] = [
 ];
 
 
+// Génère un nom de fichier propre pour le téléchargement
+const buildDownloadFileName = (thesis: Thesis) => {
+  const sanitize = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // enlever accents
+      .replace(/[^a-z0-9]/g, '_') // tout le reste -> underscores
+      .replace(/_+/g, '_') // compacter les underscores
+      .replace(/^_+|_+$/g, ''); // retirer les _ au début/fin
+
+  const parts: string[] = ['these'];
+
+  if (thesis.title) {
+    parts.push(sanitize(thesis.title));
+  }
+
+  if (thesis.author) {
+    parts.push(sanitize(thesis.author));
+  }
+
+  if (thesis.year) {
+    parts.push(String(thesis.year));
+  }
+
+  return parts.join('_') + '.pdf';
+};
+
 const Theses = () => {
   const [theses, setTheses] = useState<Thesis[]>([]);
   const [universities, setUniversities] = useState<University[]>(mockUniversities);
@@ -478,19 +506,19 @@ const Theses = () => {
                     <div className="thesis-meta-item">
                       <span className="meta-label">👤 Candidat</span>
                       <span className="meta-value">{thesis.author}</span>
-                    </div>
+                  </div>
 
                     {thesis.director && (
                       <div className="thesis-meta-item">
                         <span className="meta-label">🎓 Directeur</span>
                         <span className="meta-value">{thesis.director}</span>
-                      </div>
+                  </div>
                     )}
 
                     <div className="thesis-meta-item">
                       <span className="meta-label">🏛️ Université</span>
                       <span className="meta-value">{thesis.university}</span>
-                    </div>
+                  </div>
 
                     <div className="thesis-meta-item">
                       <span className="meta-label">📅 Année</span>
@@ -501,19 +529,19 @@ const Theses = () => {
                   {thesis.abstract && (
                     <div className="thesis-abstract-section">
                       <h4 className="abstract-title">📄 Résumé</h4>
-                      <p className="thesis-abstract">{thesis.abstract}</p>
+                  <p className="thesis-abstract">{thesis.abstract}</p>
                     </div>
                   )}
 
                   {thesis.keywords && thesis.keywords.length > 0 && (
-                    <div className="thesis-keywords">
+                  <div className="thesis-keywords">
                       <strong className="keywords-label">🏷️ Mots-clés :</strong>
-                      <div className="keywords-list">
+                    <div className="keywords-list">
                         {thesis.keywords.map(keyword => (
-                          <span key={keyword} className="keyword-tag">#{keyword}</span>
-                        ))}
-                      </div>
+                        <span key={keyword} className="keyword-tag">#{keyword}</span>
+                      ))}
                     </div>
+                  </div>
                   )}
                 </div>
 
@@ -527,18 +555,21 @@ const Theses = () => {
                   <div className="thesis-actions">
                     {thesis.pdfUrl ? (
                       <>
-                        <a
-                          href={thesis.pdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          to={`/ressources/theses/${thesis.id}/pdf`}
+                          state={{
+                            pdfUrl: thesis.pdfUrl,
+                            title: thesis.title,
+                            author: thesis.author,
+                            year: thesis.year
+                          }}
                           className="thesis-read-more"
                         >
                           📖 Consulter la thèse →
-                        </a>
+                        </Link>
                         <a
                           href={thesis.pdfUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          download={buildDownloadFileName(thesis)}
                           className="thesis-download-btn"
                         >
                           ⬇️ Télécharger le PDF

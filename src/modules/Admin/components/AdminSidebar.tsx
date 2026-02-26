@@ -38,6 +38,9 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         <Link to="/admin/resources" className={`nav-item ${currentPage === 'resources' ? 'active' : ''}`}>
           📚 Ressources
         </Link>
+        <Link to="/admin/theses" className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}>
+          📄 Thèses
+        </Link>
         <Link to="/admin/pharmacies" className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}>
           🏥 Pharmacies
         </Link>

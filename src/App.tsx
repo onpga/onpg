@@ -19,6 +19,7 @@ const RessourcesArticles = lazy(() => import('./modules/Ressources/Articles'));
 const ArticleDetailPage = lazy(() => import('./modules/Ressources/ArticleDetailPage'));
 const Theses = lazy(() => import('./modules/Ressources/Theses'));
 const TheseDetail = lazy(() => import('./modules/Ressources/TheseDetailPage'));
+const ThesePdfViewer = lazy(() => import('./modules/Ressources/ThesePdfViewer'));
 const Decrets = lazy(() => import('./modules/Ressources/Decrets'));
 const DecretDetail = lazy(() => import('./modules/Ressources/DecretDetailPage'));
 const Decisions = lazy(() => import('./modules/Ressources/Decisions'));
@@ -102,6 +103,7 @@ const Settings = lazy(() => import('./modules/Admin/Settings'));
 const Jobs = lazy(() => import('./modules/Admin/Jobs'));
 const JobForm = lazy(() => import('./modules/Admin/JobForm'));
 const Logs = lazy(() => import('./modules/Admin/Logs'));
+const ThesesAdmin = lazy(() => import('./modules/Admin/ThesesAdmin'));
 const Projects = lazy(() => import('./modules/Admin/Projects/Projects'));
 const ProjectForm = lazy(() => import('./modules/Admin/Projects/ProjectForm'));
 const PageMocks = lazy(() => import('./modules/Admin/PageMocks'));
@@ -155,6 +157,7 @@ function App() {
             <Route path="/admin/calendar" element={<Calendar />} />
             <Route path="/admin/idea-blocks" element={<IdeaBlocks />} />
             <Route path="/admin/logs" element={<Logs />} />
+            <Route path="/admin/theses" element={<ThesesAdmin />} />
             <Route path="/admin/settings" element={<Settings />} />
             <Route path="/admin/resources" element={<PageMocks />} />
             
@@ -186,6 +189,7 @@ function App() {
                     <Route path="/ressources/articles/:id" element={<ArticleDetailPage />} />
                     <Route path="/ressources/theses" element={<Theses />} />
                     <Route path="/ressources/theses/:id" element={<TheseDetail />} />
+                    <Route path="/ressources/theses/:id/pdf" element={<ThesePdfViewer />} />
                     <Route path="/ressources/decrets" element={<Decrets />} />
                     <Route path="/ressources/decrets/:id" element={<DecretDetail />} />
                     <Route path="/ressources/decisions" element={<Decisions />} />

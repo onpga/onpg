@@ -509,6 +509,25 @@ app.get('/api/admin/:collection', authenticateAdmin, async (req, res) => {
   try {
     const { collection } = req.params;
     
+    // Cas très spécifique : paramètres du site (photos d'accueil)
+    // Cette "collection" n'est pas une vraie collection déclarée dans RESOURCE_COLLECTIONS
+    // mais un document unique dans site_settings avec _id = 'main'.
+    if (collection === 'site-settings') {
+      try {
+        const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+        return res.json({
+          success: true,
+          data: settings || {
+            presidentPhoto: '',
+            heroImage: ''
+          }
+        });
+      } catch (err) {
+        console.error('Erreur chargement admin site-settings via route générique:', err);
+        return res.status(500).json({ success: false, error: 'Erreur serveur' });
+      }
+    }
+    
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }

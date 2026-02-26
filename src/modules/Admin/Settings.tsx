@@ -44,19 +44,28 @@ const Settings = () => {
 
   const loadSiteImages = async () => {
     try {
+      console.log('[ADMIN SETTINGS] 🔄 Chargement des images du site...');
       const token = localStorage.getItem('admin_token');
       const response = await fetch(`${API_URL}/admin/site-settings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
         const data = await response.json();
+        console.log('[ADMIN SETTINGS] ✅ Réponse /admin/site-settings:', data);
         if (data.success && data.data) {
+          addLog('✅ Images chargées depuis la base (site-settings)');
           setSiteImages({
             // Si rien n'est encore enregistré en base, on garde les images par défaut
             presidentPhoto: data.data.presidentPhoto || ONPG_IMAGES.president,
             heroImage: data.data.heroImage || ONPG_IMAGES.hero1
           });
+        } else {
+          addLog('ℹ️ Aucune image personnalisée trouvée, utilisation des valeurs par défaut');
+          console.log('[ADMIN SETTINGS] ℹ️ Données site-settings absentes ou invalides, images par défaut utilisées.');
         }
+      } else {
+        console.warn('[ADMIN SETTINGS] ❌ HTTP error sur /admin/site-settings:', response.status, response.statusText);
+        addLog(`❌ Erreur HTTP ${response.status} lors du chargement des images du site`);
       }
     } catch (error) {
       console.error('Erreur chargement images site:', error);

@@ -20,7 +20,7 @@ const FooterONPG = () => {
                 className="onpg-footer-logo-img"
               />
             </div>
-            <h3>Ordre National de Pharmacie du Gabon</h3>
+            <h3>Ordre National des Pharmaciens du Gabon</h3>
             <p>
               Institution officielle chargée de la régulation et de la promotion 
               de la profession pharmaceutique au Gabon.
@@ -83,7 +83,7 @@ const FooterONPG = () => {
             <span> | </span>
             <Link to="/cgu">CGU</Link>
           </div>
-          <p>&copy; {new Date().getFullYear()} Ordre National de Pharmacie du Gabon. Tous droits réservés.</p>
+          <p>&copy; {new Date().getFullYear()} Ordre National des Pharmaciens du Gabon. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

@@ -109,9 +109,10 @@
 
 .onpg-footer-section p {
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff !important; /* Texte blanc bien contrasté sur fond vert */
   margin-bottom: 1rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 
@@ -261,10 +262,11 @@
 }
 
 .onpg-footer-bottom p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  color: #ffffff !important; /* blanc pur, priorité maximale */
+  font-size: 1rem;
   margin: 0;
-  font-weight: 400;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); /* renforce la netteté sur le fond vert */
 }
 
 @media (max-width: 768px) {

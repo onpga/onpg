@@ -16,73 +16,10 @@ const HeroONPG = () => {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
-  const [uploadedHeroImage, setUploadedHeroImage] = useState<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const heroRef = useRef<HTMLElement>(null);
 
-  // Slides hero avec URLs Cloudinary directes (hero-1 à hero-5)
-  const heroSlides: HeroSlide[] = [
-    {
-      image: ONPG_IMAGES.heroMichal, // Utiliser michal-parzuchowski qui existe
-      title: 'Ordre National de Pharmacie du Gabon',
-      subtitle: 'Excellence, professionnalisme et innovation au service de la santé',
-      buttonText: 'Découvrir nos missions',
-      buttonLink: '/ordre/missions'
-    },
-    {
-      image: ONPG_IMAGES.hero2,
-      title: 'Protection de la Santé Publique',
-      subtitle: 'Garantir la qualité et la sécurité des médicaments au Gabon',
-      buttonText: 'Nos engagements',
-      buttonLink: '/ordre/missions'
-    },
-    {
-      image: ONPG_IMAGES.hero3,
-      title: 'Formation et Développement',
-      subtitle: 'Accompagner les professionnels de santé dans leur carrière',
-      buttonText: 'Formation continue',
-      buttonLink: '/membres/formation'
-    },
-    {
-      image: ONPG_IMAGES.heroTheTonik, // Utiliser the-tonik qui existe
-      title: 'Innovation Pharmaceutique',
-      subtitle: 'Promouvoir les avancées technologiques dans le domaine de la santé',
-      buttonText: 'Nos initiatives',
-      buttonLink: '/ressources/publications'
-    },
-    {
-      image: ONPG_IMAGES.heroPexelsKarola, // Utiliser pexels-karola qui existe
-      title: 'Régulation Professionnelle',
-      subtitle: 'Définir et faire respecter les normes de la profession pharmaceutique',
-      buttonText: 'En savoir plus',
-      buttonLink: '/pratique/reglementation'
-    }
-  ];
-
-  // Charger l'image hero uploadée depuis l'API
-  useEffect(() => {
-    const loadHeroImage = async () => {
-      try {
-        const API_URL = import.meta.env.VITE_API_URL ||
-          (import.meta.env.PROD
-            ? 'https://backendonpg-production.up.railway.app/api'
-            : 'http://localhost:3001/api');
-        
-        const response = await fetch(`${API_URL}/public/site-settings`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.data && data.data.heroImage) {
-            setUploadedHeroImage(data.data.heroImage);
-          }
-        }
-      } catch (error) {
-        console.error('Erreur chargement image hero:', error);
-      }
-    };
-    loadHeroImage();
-  }, []);
-
-  // Construire les slides avec l'image hero uploadée en premier si elle existe
+  // Construire les slides avec les 5 images par défaut uniquement
   useEffect(() => {
     const defaultSlides: HeroSlide[] = [
       {
@@ -121,25 +58,9 @@ const HeroONPG = () => {
         buttonLink: '/pratique/reglementation'
       }
     ];
-
-    let finalSlides = [...defaultSlides];
     
-    // Si une image hero a été uploadée, l'utiliser comme première slide
-    if (uploadedHeroImage && uploadedHeroImage.trim() !== '') {
-      finalSlides = [
-        {
-          image: uploadedHeroImage,
-          title: 'Ordre National de Pharmacie du Gabon',
-          subtitle: 'Excellence, professionnalisme et innovation au service de la santé',
-          buttonText: 'Découvrir nos missions',
-          buttonLink: '/ordre/missions'
-        },
-        ...defaultSlides
-      ];
-    }
-    
-    setSlides(finalSlides);
-  }, [uploadedHeroImage]);
+    setSlides(defaultSlides);
+  }, []);
 
   // Auto-play du carousel
   useEffect(() => {

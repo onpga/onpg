@@ -15,6 +15,8 @@ const HeroONPG = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+  const [uploadedHeroImage, setUploadedHeroImage] = useState<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const heroRef = useRef<HTMLElement>(null);
 
@@ -57,10 +59,87 @@ const HeroONPG = () => {
     }
   ];
 
-  // Charger les slides au montage
+  // Charger l'image hero uploadée depuis l'API
   useEffect(() => {
-    setSlides(heroSlides);
+    const loadHeroImage = async () => {
+      try {
+        const API_URL = import.meta.env.VITE_API_URL ||
+          (import.meta.env.PROD
+            ? 'https://backendonpg-production.up.railway.app/api'
+            : 'http://localhost:3001/api');
+        
+        const response = await fetch(`${API_URL}/public/site-settings`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data && data.data.heroImage) {
+            setUploadedHeroImage(data.data.heroImage);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur chargement image hero:', error);
+      }
+    };
+    loadHeroImage();
   }, []);
+
+  // Construire les slides avec l'image hero uploadée en premier si elle existe
+  useEffect(() => {
+    const defaultSlides: HeroSlide[] = [
+      {
+        image: ONPG_IMAGES.heroMichal,
+        title: 'Ordre National de Pharmacie du Gabon',
+        subtitle: 'Excellence, professionnalisme et innovation au service de la santé',
+        buttonText: 'Découvrir nos missions',
+        buttonLink: '/ordre/missions'
+      },
+      {
+        image: ONPG_IMAGES.hero2,
+        title: 'Protection de la Santé Publique',
+        subtitle: 'Garantir la qualité et la sécurité des médicaments au Gabon',
+        buttonText: 'Nos engagements',
+        buttonLink: '/ordre/missions'
+      },
+      {
+        image: ONPG_IMAGES.hero3,
+        title: 'Formation et Développement',
+        subtitle: 'Accompagner les professionnels de santé dans leur carrière',
+        buttonText: 'Formation continue',
+        buttonLink: '/membres/formation'
+      },
+      {
+        image: ONPG_IMAGES.heroTheTonik,
+        title: 'Innovation Pharmaceutique',
+        subtitle: 'Promouvoir les avancées technologiques dans le domaine de la santé',
+        buttonText: 'Nos initiatives',
+        buttonLink: '/ressources/publications'
+      },
+      {
+        image: ONPG_IMAGES.heroPexelsKarola,
+        title: 'Régulation Professionnelle',
+        subtitle: 'Définir et faire respecter les normes de la profession pharmaceutique',
+        buttonText: 'En savoir plus',
+        buttonLink: '/pratique/reglementation'
+      }
+    ];
+
+    let finalSlides = [...defaultSlides];
+    
+    // Si une image hero a été uploadée, l'utiliser comme première slide
+    if (uploadedHeroImage && uploadedHeroImage.trim() !== '') {
+      finalSlides = [
+        {
+          image: uploadedHeroImage,
+          title: 'Ordre National de Pharmacie du Gabon',
+          subtitle: 'Excellence, professionnalisme et innovation au service de la santé',
+          buttonText: 'Découvrir nos missions',
+          buttonLink: '/ordre/missions'
+        },
+        ...defaultSlides
+      ];
+    }
+    
+    setSlides(finalSlides);
+  }, [uploadedHeroImage]);
 
   // Auto-play du carousel
   useEffect(() => {
@@ -156,16 +235,31 @@ const HeroONPG = () => {
             className="hero-onpg-preload"
             aria-hidden="true"
             role="presentation"
+            onError={(e) => {
+              // Empêcher les multiples tentatives
+              const target = e.target as HTMLImageElement;
+              if (!target.dataset.errorHandled) {
+                target.dataset.errorHandled = 'true';
+                setFailedImages(prev => new Set(prev).add(slide.image));
+                console.warn('Image hero introuvable:', slide.image);
+              }
+            }}
           />
         ))}
         {/* Afficher l'image actuelle */}
-        {slides.map((slide, index) => (
-          <div
-            key={`bg-${index}`}
-            className={`hero-onpg-bg-image ${index === currentSlide ? 'active' : 'hidden'}`}
-            style={{ backgroundImage: `url(${slide.image})` }}
-          />
-        ))}
+        {slides.map((slide, index) => {
+          const imageFailed = failedImages.has(slide.image);
+          return (
+            <div
+              key={`bg-${index}`}
+              className={`hero-onpg-bg-image ${index === currentSlide ? 'active' : 'hidden'}`}
+              style={{ 
+                backgroundImage: imageFailed ? 'none' : `url(${slide.image})`,
+                backgroundColor: imageFailed ? '#27ae60' : 'transparent'
+              }}
+            />
+          );
+        })}
         <div className="hero-onpg-overlay" />
         <div className="hero-onpg-bg-pattern" />
       </div>

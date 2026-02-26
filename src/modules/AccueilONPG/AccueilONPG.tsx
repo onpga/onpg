@@ -360,7 +360,15 @@ const AccueilONPG = () => {
                       alt="Présidente ONPG - Dr Patience Asseko NTOGONO OKE"
                       className="president-photo-professional"
                       loading="eager"
-                      fetchPriority="high"
+                      fetchpriority="high"
+                      onError={(e) => {
+                        // Empêcher les multiples tentatives
+                        const target = e.target as HTMLImageElement;
+                        if (!target.dataset.errorHandled) {
+                          target.dataset.errorHandled = 'true';
+                          console.warn('Image présidente introuvable:', siteImages.presidentPhoto);
+                        }
+                      }}
                     />
 
                     {/* Badge Institutionnel */}
@@ -548,17 +556,19 @@ const AccueilONPG = () => {
             <div className="formation-right-ultra">
               <div className="formation-image-wrapper-ultra">
                 <img
-                  src={ONPG_IMAGES.hero4}
+                  src={siteImages.heroImage || ONPG_IMAGES.hero4}
                   alt="Formation Continue ONPG"
                   onError={(e) => {
+                    // Empêcher les multiples tentatives
                     const target = e.target as HTMLImageElement;
-                    // Essayer d'abord une autre image existante
-                    target.src = ONPG_IMAGES.president;
-                  }}
-                  onErrorCapture={(e) => {
-                    const target = e.currentTarget as HTMLImageElement;
-                    // Si ça ne marche pas, utiliser le placeholder
-                    target.src = 'https://via.placeholder.com/450x350/27ae60/ffffff?text=Formation+Continue+ONPG';
+                    if (!target.dataset.errorHandled) {
+                      target.dataset.errorHandled = 'true';
+                      // Essayer d'abord une autre image existante
+                      target.src = ONPG_IMAGES.hero4;
+                    } else {
+                      // Si ça ne marche toujours pas, utiliser le placeholder
+                      target.src = 'https://via.placeholder.com/450x350/27ae60/ffffff?text=Formation+Continue+ONPG';
+                    }
                   }}
                   loading="lazy"
                 />

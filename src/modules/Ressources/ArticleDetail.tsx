@@ -4,6 +4,7 @@ import { getImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
 import './Actualites.css';
 import { fetchResourceById } from '../../utils/pageMocksApi';
+import { updateMetaTag, updateOpenGraph, updateTwitterCard, updateCanonical } from '../../utils/seo';
 
 interface RessourceArticle {
   _id: string;
@@ -97,11 +98,52 @@ const ArticleDetail = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Incrémenter les vues
+  // Mettre à jour les meta tags pour le partage social
   useEffect(() => {
     if (article) {
-      // Simulation d'incrémentation des vues
-      console.log('Vue incrémentée pour l\'article:', article.id);
+      // Utiliser l'URL absolue avec le domaine
+      const currentUrl = window.location.href;
+      const baseUrl = window.location.origin;
+      // S'assurer que l'image est une URL absolue
+      let imageUrl = article.image || 'https://res.cloudinary.com/dduvinjnu/image/upload/LOGO_ONPG_gvlag2.png';
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        imageUrl = `https://res.cloudinary.com/dduvinjnu/image/upload/${imageUrl}`;
+      }
+      const description = article.excerpt || article.content?.substring(0, 200) || 'Découvrez cet article sur le site de l\'ONPG';
+
+      // Title et description
+      document.title = `${article.title} | ONPG - Actualités`;
+      updateMetaTag('description', description);
+
+      // Canonical
+      updateCanonical(currentUrl);
+
+      // Open Graph pour Facebook
+      updateOpenGraph({
+        title: article.title,
+        description: description,
+        image: imageUrl,
+        url: currentUrl,
+        type: 'article'
+      });
+      
+      // Site name
+      updateMetaTag('og:site_name', 'ONPG - Ordre National de Pharmacie du Gabon', 'property');
+
+      // Twitter Card
+      updateTwitterCard({
+        title: article.title,
+        description: description,
+        image: imageUrl,
+        card: 'summary_large_image'
+      });
+
+      // Meta tags supplémentaires pour article
+      updateMetaTag('article:published_time', new Date(article.date || Date.now()).toISOString(), 'property');
+      updateMetaTag('article:author', article.author?.name || 'ONPG', 'property');
+      if (article.category) {
+        updateMetaTag('article:section', article.category, 'property');
+      }
     }
   }, [article]);
 
@@ -117,7 +159,16 @@ const ArticleDetail = () => {
     };
 
     if (shareUrls[platform as keyof typeof shareUrls]) {
-      window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
+      // Ouvrir une fenêtre popup au lieu d'un nouvel onglet
+      const width = 600;
+      const height = 700;
+      const left = (window.screen.width - width) / 2;
+      const top = (window.screen.height - height) / 2;
+      window.open(
+        shareUrls[platform as keyof typeof shareUrls],
+        'share',
+        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no`
+      );
     }
   };
 

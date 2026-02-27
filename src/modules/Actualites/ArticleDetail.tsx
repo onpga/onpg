@@ -321,7 +321,16 @@ const ArticleDetail = () => {
     };
 
     if (shareUrls[platform]) {
-      window.open(shareUrls[platform], '_blank', 'noopener,noreferrer,width=600,height=700');
+      // Ouvrir une fenêtre popup centrée au lieu d'un nouvel onglet
+      const width = 600;
+      const height = 700;
+      const left = (window.screen.width - width) / 2;
+      const top = (window.screen.height - height) / 2;
+      window.open(
+        shareUrls[platform],
+        'share',
+        `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no`
+      );
     }
   };
 

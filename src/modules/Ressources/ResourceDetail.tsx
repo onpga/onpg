@@ -5,9 +5,10 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { fetchResourceData } from '../../utils/pageMocksApi';
+import { fetchResourceData, fetchResourceById } from '../../utils/pageMocksApi';
 import { getImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
+import { updateMetaTag, updateOpenGraph, updateTwitterCard, updateCanonical } from '../../utils/seo';
 
 interface ResourceDetailProps {
   collection: string;
@@ -24,7 +25,19 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
   useEffect(() => {
     const loadResource = async () => {
       try {
-        const data = await fetchResourceData(collection);
+        let data;
+        
+        // Essayer d'abord avec fetchResourceById si on a un id
+        if (id) {
+          data = await fetchResourceById(collection, id);
+        } else {
+          // Sinon utiliser fetchResourceData
+          data = await fetchResourceData(collection);
+          if (Array.isArray(data) && data.length > 0) {
+            data = data[0];
+          }
+        }
+        
         if (data && !Array.isArray(data)) {
           setResource(data);
           setLoading(false);
@@ -37,7 +50,59 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
       }
     };
     loadResource();
-  }, [collection, backPath, navigate]);
+  }, [id, collection, backPath, navigate]);
+
+  // Mettre à jour les meta tags pour le partage social
+  useEffect(() => {
+    if (resource) {
+      // Utiliser l'URL absolue avec le domaine
+      const currentUrl = window.location.href;
+      // S'assurer que l'image est une URL absolue
+      let imageUrl = resource.image || resource.featuredImage || 'https://res.cloudinary.com/dduvinjnu/image/upload/LOGO_ONPG_gvlag2.png';
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        imageUrl = `https://res.cloudinary.com/dduvinjnu/image/upload/${imageUrl}`;
+      }
+      const description = resource.excerpt || resource.summary || resource.content?.substring(0, 200) || `Découvrez ${resource.title} sur le site de l'ONPG`;
+
+      // Title et description
+      document.title = `${resource.title} | ONPG - ${title}`;
+      updateMetaTag('description', description);
+
+      // Canonical
+      updateCanonical(currentUrl);
+
+      // Open Graph pour Facebook
+      updateOpenGraph({
+        title: resource.title,
+        description: description,
+        image: imageUrl,
+        url: currentUrl,
+        type: 'article'
+      });
+      
+      // Site name
+      updateMetaTag('og:site_name', 'ONPG - Ordre National de Pharmacie du Gabon', 'property');
+
+      // Twitter Card
+      updateTwitterCard({
+        title: resource.title,
+        description: description,
+        image: imageUrl,
+        card: 'summary_large_image'
+      });
+
+      // Meta tags supplémentaires pour article
+      if (resource.date) {
+        updateMetaTag('article:published_time', new Date(resource.date).toISOString(), 'property');
+      }
+      if (resource.author?.name) {
+        updateMetaTag('article:author', resource.author.name, 'property');
+      }
+      if (resource.category) {
+        updateMetaTag('article:section', resource.category, 'property');
+      }
+    }
+  }, [resource, title]);
 
   if (loading) {
     return (

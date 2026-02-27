@@ -1,0 +1,29 @@
+name: Update Sitemap for GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'public/sitemap.xml'
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Copy sitemap to docs
+        run: |
+          mkdir -p docs
+          cp public/sitemap.xml docs/sitemap.xml
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/sitemap.xml
+          git diff --staged --quiet || git commit -m "Auto-update sitemap.xml for GitHub Pages"
+          git push
+

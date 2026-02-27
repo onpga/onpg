@@ -11,22 +11,28 @@ jobs:
   update-sitemap:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout with submodules
+      - name: Checkout
         uses: actions/checkout@v3
         with:
-          submodules: recursive
+          submodules: false
+
+      - name: Get sitemap from submodule
+        run: |
+          git submodule update --init --recursive public || true
+          if [ ! -f "public/sitemap.xml" ]; then
+            echo "Submodule not available, using existing docs/sitemap.xml"
+          fi
 
       - name: Copy sitemap to docs
         run: |
           mkdir -p docs
           if [ -f "public/sitemap.xml" ]; then
             cp public/sitemap.xml docs/sitemap.xml
-          else
-            echo "public/sitemap.xml not found, checking submodule..."
-            git submodule update --init --recursive
-            cp public/sitemap.xml docs/sitemap.xml
           fi
           touch docs/.nojekyll
+          if [ ! -f "docs/index.html" ]; then
+            echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ONPG Sitemap</title></head><body><h1>Sitemap</h1><p><a href="/onpg/sitemap.xml">sitemap.xml</a></p></body></html>' > docs/index.html
+          fi
 
       - name: Commit and push
         run: |

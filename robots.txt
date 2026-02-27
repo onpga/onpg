@@ -1,20 +1,17 @@
 User-agent: *
+
+# Autoriser tout le site public
 Allow: /
-Disallow: /admin/
-Disallow: /api/
-Disallow: /wiki/
+
+# Ne jamais indexer les espaces d'administration
+Disallow: /admin
+Disallow: /pharmacien
+Disallow: /wiki
 Disallow: /documentation-admin
 
-# Sitemap
-Sitemap: https://www.cips-tech.ga/sitemap.xml
+# Sitemap du site ONPG (servi via GitHub Pages)
+Sitemap: https://onpga.github.io/onpg/sitemap.xml
 
-# Crawl-delay pour éviter la surcharge
+# Optionnel : limiter légèrement la fréquence de crawl
 Crawl-delay: 1
-
-
-
-
-
-
-
 

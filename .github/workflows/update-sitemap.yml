@@ -11,19 +11,22 @@ jobs:
   update-sitemap:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout with submodules
         uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - name: Copy sitemap to docs
         run: |
           mkdir -p docs
           cp public/sitemap.xml docs/sitemap.xml
+          touch docs/.nojekyll
 
       - name: Commit and push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add docs/sitemap.xml
+          git add docs/sitemap.xml docs/.nojekyll
           git diff --staged --quiet || git commit -m "Auto-update sitemap.xml for GitHub Pages"
           git push
 

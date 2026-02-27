@@ -25,17 +25,14 @@ FROM node:20.9.0 AS production
 
 WORKDIR /app
 
+# Install serve globally
+RUN npm install -g serve
+
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
-# Copy the Express server
-COPY server.cjs ./
-COPY package*.json ./
-
-# Install express (lightweight, only production)
-RUN npm install express --production
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the Express server
-CMD ["node", "server.cjs"]
+# Start the server
+CMD ["serve", "-s", "dist", "-l", "3000"]

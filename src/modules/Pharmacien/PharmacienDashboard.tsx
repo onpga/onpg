@@ -9,8 +9,9 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '';
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || '';
+// Configuration Cloudinary alignée avec l'admin (valeurs fixes qui fonctionnent en local et prod)
+const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
 const PharmacienDashboard = () => {
   const navigate = useNavigate();

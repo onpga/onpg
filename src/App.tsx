@@ -45,6 +45,7 @@ const SectionD = lazy(() => import('./modules/Membres/SectionD'));
 
 // Pratique
 const FormationContinue = lazy(() => import('./modules/Pratique/FormationContinue'));
+const FormationContinueDetail = lazy(() => import('./modules/Pratique/FormationContinueDetail'));
 const Deontologie = lazy(() => import('./modules/Pratique/Deontologie'));
 const Pharmacies = lazy(() => import('./modules/Pratique/Pharmacies'));
 const ContactPratique = lazy(() => import('./modules/Pratique/ContactPratique'));
@@ -215,6 +216,7 @@ function App() {
 
                     {/* Pratique */}
                     <Route path="/pratique/formation-continue" element={<FormationContinue />} />
+                    <Route path="/pratique/formation-continue/:id" element={<FormationContinueDetail />} />
                     <Route path="/pratique/deontologie" element={<Deontologie />} />
                     <Route path="/pratique/pharmacies" element={<Pharmacies />} />
                     <Route path="/pratique/contact" element={<ContactPratique />} />

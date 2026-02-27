@@ -9,8 +9,11 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+// Configuration Cloudinary alignée sur la page Admin Settings
+// On évite d'utiliser uniquement les variables d'environnement Vite,
+// qui peuvent ne pas être correctement exposées en production.
+const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
 interface Pharmacien {
   _id?: string;
@@ -37,6 +40,7 @@ const PharmaciensAdmin = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [formData, setFormData] = useState<Pharmacien>({
     nom: '',
     prenom: '',
@@ -149,12 +153,16 @@ const PharmaciensAdmin = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` }
         });
       }
+      setMessage({
+        type: 'success',
+        text: editingItem ? 'Pharmacien mis à jour avec succès.' : 'Pharmacien créé avec succès.'
+      });
       setShowForm(false);
       setEditingItem(null);
       fetchData();
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
-      alert('Erreur lors de la sauvegarde');
+      setMessage({ type: 'error', text: 'Erreur lors de la sauvegarde du pharmacien.' });
     }
   };
 
@@ -593,6 +601,15 @@ const PharmaciensAdmin = () => {
                 </button>
               </div>
             </form>
+          </section>
+        )}
+
+        {/* Message global de confirmation / erreur */}
+        {message && (
+          <section className="dashboard-section">
+            <div className={`message ${message.type}`}>
+              {message.text}
+            </div>
           </section>
         )}
 

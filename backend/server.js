@@ -984,17 +984,55 @@ app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
     
     updateData.updatedAt = new Date();
 
+    // 1) Mettre à jour le document utilisateur (compte pharmacien)
     await db.collection('users').updateOne(
       { _id: new ObjectId(req.pharmacienId) },
       { $set: updateData }
     );
 
-    // Mettre à jour aussi dans la collection pharmaciens si elle existe
-    await db.collection('pharmaciens').updateOne(
-      { _id: new ObjectId(req.pharmacienId) },
-      { $set: { ...updateData, photo: photo || updateData.photo } },
-      { upsert: false }
-    );
+    // 2) Répercuter la nouvelle photo dans la collection "pharmaciens"
+    //    utilisée par le Tableau de l'Ordre et les sections A/B/C/D.
+    //
+    //    Comme les documents "users" et "pharmaciens" n'ont pas le même _id,
+    //    on utilise une clé de correspondance normalisée très simple :
+    //    concaténation de tout le nom sans espaces, en minuscules.
+    if (photo) {
+      const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
+      
+      if (user) {
+        const nom = (user.nom || '').trim();
+        const prenoms = (user.prenoms || '').trim();
+
+        // Clé normalisée côté "users"
+        const normalizedUserKey = (nom + prenoms)
+          .toLowerCase()
+          .replace(/\s+/g, '');
+
+        if (normalizedUserKey) {
+          const pharmaciens = await db.collection('pharmaciens').find({}).toArray();
+          const idsToUpdate = pharmaciens
+            .filter((p) => {
+              const base =
+                (p.nomComplet && String(p.nomComplet).trim()) ||
+                `${p.nom || ''} ${p.prenom || ''}`.trim();
+              if (!base) return false;
+              const normalizedPharmacienKey = String(base)
+                .toLowerCase()
+                .replace(/\s+/g, '');
+              return normalizedPharmacienKey === normalizedUserKey;
+            })
+            .map((p) => p._id)
+            .filter(Boolean);
+
+          if (idsToUpdate.length > 0) {
+            await db.collection('pharmaciens').updateMany(
+              { _id: { $in: idsToUpdate } },
+              { $set: { photo: photo, updatedAt: new Date() } }
+            );
+          }
+        }
+      }
+    }
 
     res.json({ success: true });
   } catch (error) {
@@ -1479,6 +1517,138 @@ app.put('/api/admin/pharmacies/:id/pharmacien', authenticateAdmin, async (req, r
     res.json({ success: true });
   } catch (error) {
     console.error('Erreur association pharmacie:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// ============================================
+// ROUTES ADMIN - PHARMACIENS
+// ============================================
+
+// GET tous les pharmaciens (admin)
+app.get('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
+  try {
+    const pharmaciens = await db.collection('pharmaciens')
+      .find({})
+      .sort({ numeroOrdre: 1, nom: 1 })
+      .toArray();
+
+    res.json({ success: true, data: pharmaciens });
+  } catch (error) {
+    console.error('Erreur chargement pharmaciens admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// POST créer un pharmacien (admin)
+app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
+  try {
+    const {
+      nom,
+      prenom,
+      numeroOrdre,
+      nationalite,
+      section,
+      cotisationsAJour,
+      dateRetardCotisations,
+      isActive,
+      photo,
+      role,
+      these
+    } = req.body;
+
+    if (!nom || !prenom) {
+      return res.status(400).json({ success: false, error: 'Nom et prénom requis' });
+    }
+
+    const doc = {
+      nom,
+      prenom,
+      numeroOrdre: typeof numeroOrdre === 'number' ? numeroOrdre : undefined,
+      nationalite: nationalite || '',
+      section: section || '',
+      cotisationsAJour: cotisationsAJour !== false,
+      dateRetardCotisations: dateRetardCotisations || null,
+      isActive: isActive !== false,
+      photo: photo || '',
+      role: role || '',
+      these: these || '',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.collection('pharmaciens').insertOne(doc);
+    res.json({ success: true, data: { _id: result.insertedId, ...doc } });
+  } catch (error) {
+    console.error('Erreur création pharmacien admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT mettre à jour un pharmacien (admin)
+app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      nom,
+      prenom,
+      numeroOrdre,
+      nationalite,
+      section,
+      cotisationsAJour,
+      dateRetardCotisations,
+      isActive,
+      photo,
+      role,
+      these
+    } = req.body;
+
+    const update = {
+      updatedAt: new Date()
+    };
+
+    if (nom !== undefined) update.nom = nom;
+    if (prenom !== undefined) update.prenom = prenom;
+    if (numeroOrdre !== undefined) update.numeroOrdre = numeroOrdre;
+    if (nationalite !== undefined) update.nationalite = nationalite;
+    if (section !== undefined) update.section = section;
+    if (cotisationsAJour !== undefined) update.cotisationsAJour = cotisationsAJour;
+    if (dateRetardCotisations !== undefined) update.dateRetardCotisations = dateRetardCotisations || null;
+    if (isActive !== undefined) update.isActive = isActive;
+    if (photo !== undefined) update.photo = photo;
+    if (role !== undefined) update.role = role;
+    if (these !== undefined) update.these = these;
+
+    const result = await db.collection('pharmaciens').updateOne(
+      { _id: new ObjectId(id) },
+      { $set: update }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Pharmacien non trouvé' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur mise à jour pharmacien admin:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// DELETE supprimer un pharmacien (admin)
+app.delete('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await db.collection('pharmaciens').deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, error: 'Pharmacien non trouvé' });
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erreur suppression pharmacien admin:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

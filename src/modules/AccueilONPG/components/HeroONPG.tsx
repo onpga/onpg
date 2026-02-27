@@ -58,7 +58,7 @@ const HeroONPG = () => {
         buttonLink: '/pratique/reglementation'
       }
     ];
-    
+
     setSlides(defaultSlides);
   }, []);
 

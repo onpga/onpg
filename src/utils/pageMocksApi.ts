@@ -40,11 +40,24 @@ export async function fetchResourceData(collection: string): Promise<ResourceDat
  */
 export async function fetchResourceById(collection: string, id: string): Promise<ResourceData | null> {
   try {
+    if (!id || id.trim() === '') {
+      console.error(`ID invalide pour ${collection}`);
+      return null;
+    }
+    
     const response = await fetch(`${API_URL}/public/${collection}/${id}`);
+    
+    if (!response.ok) {
+      console.error(`Erreur HTTP ${response.status} pour ${collection}/${id}`);
+      return null;
+    }
+    
     const data = await response.json();
     if (data.success && data.data) {
       return data.data;
     }
+    
+    console.warn(`Aucune donnée trouvée pour ${collection}/${id}`);
     return null;
   } catch (error) {
     console.error(`Erreur chargement ${collection}/${id}:`, error);

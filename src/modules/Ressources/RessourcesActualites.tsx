@@ -333,7 +333,7 @@ const RessourcesActualites = () => {
   };
 
   return (
-    <div className="ressources-page">
+    <div className="actualites-page ressources-page">
       {/* Hero Section */}
       <section className="ressources-hero">
         <div className="hero-content">

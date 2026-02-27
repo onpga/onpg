@@ -203,63 +203,63 @@ const FormationContinue = () => {
                   <p>
                     Essayez de changer de catégorie ou de désactiver le filtre &laquo; À la une &raquo;
                     pour voir davantage de résultats.
-                  </p>
-                </div>
-              ) : (
-                <div className="formations-grid">
+              </p>
+            </div>
+          ) : (
+            <div className="formations-grid">
                   {displayedFormations.map((formation) => (
-                    <div
-                      key={formation._id}
-                      className={`formation-card ${formation.featured ? 'featured' : ''}`}
-                    >
-                      {formation.featured && (
-                        <div className="formation-badge">
-                          ⭐ À la une
-                        </div>
-                      )}
-                      <h3 className="formation-title">
-                        {formation.title}
-                      </h3>
-                      <p className="formation-description">
+                <div
+                  key={formation._id}
+                  className={`formation-card ${formation.featured ? 'featured' : ''}`}
+                >
+                  {formation.featured && (
+                    <div className="formation-badge">
+                      ⭐ À la une
+                    </div>
+                  )}
+                  <h3 className="formation-title">
+                    {formation.title}
+                  </h3>
+                  <p className="formation-description">
                         {truncate(formation.description || formation.content || '', 180)}
+                  </p>
+                  <div className="formation-meta">
+                    <span className="formation-meta-item">
+                      ⏱️ {formation.duration}
+                    </span>
+                    {formation.category && (
+                      <span className="formation-category">
+                        {formation.category}
+                      </span>
+                    )}
+                  </div>
+                  {formation.showPrice && formation.price && (
+                    <div className="formation-price">
+                      {formation.price.toLocaleString()} FCFA
+                    </div>
+                  )}
+                  <div className="formation-meta">
+                    {formation.instructor && (
+                      <p className="formation-meta-item">
+                        <strong>Formateur :</strong> {formation.instructor}
                       </p>
-                      <div className="formation-meta">
-                        <span className="formation-meta-item">
-                          ⏱️ {formation.duration}
-                        </span>
-                        {formation.category && (
-                          <span className="formation-category">
-                            {formation.category}
-                          </span>
-                        )}
-                      </div>
-                      {formation.showPrice && formation.price && (
-                        <div className="formation-price">
-                          {formation.price.toLocaleString()} FCFA
-                        </div>
-                      )}
-                      <div className="formation-meta">
-                        {formation.instructor && (
-                          <p className="formation-meta-item">
-                            <strong>Formateur :</strong> {formation.instructor}
-                          </p>
-                        )}
-                        {formation.date && (
-                          <p className="formation-meta-item">
+                    )}
+                    {formation.date && (
+                      <p className="formation-meta-item">
                             <strong>Date :</strong>{' '}
                             {new Date(formation.date).toLocaleDateString('fr-FR', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
-                            })}
-                          </p>
-                        )}
-                        {formation.location && (
-                          <p className="formation-meta-item">
-                            <strong>Lieu :</strong> {formation.location}
-                          </p>
-                        )}
-                      </div>
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </p>
+                    )}
+                    {formation.location && (
+                      <p className="formation-meta-item">
+                        <strong>Lieu :</strong> {formation.location}
+                      </p>
+                    )}
+                  </div>
                       <div className="formation-actions">
                         <button
                           type="button"

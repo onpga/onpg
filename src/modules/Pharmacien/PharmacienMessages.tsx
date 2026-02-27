@@ -134,7 +134,7 @@ const PharmacienMessages = () => {
         <div className="admin-content">
           <div className="admin-header" style={{ marginBottom: '1.5rem' }}>
             <div>
-              <h1>✉️ Messages à l'Ordre</h1>
+          <h1>✉️ Messages à l'Ordre</h1>
               <p style={{ fontSize: '1.05rem', marginTop: '0.4rem', color: '#666' }}>
                 Envoyez des messages à l'Ordre et consultez les réponses.
               </p>
@@ -167,50 +167,50 @@ const PharmacienMessages = () => {
           {showNewMessageForm && (
             <div className="profile-section" style={{ marginBottom: '2rem' }}>
               <h2 style={{ marginBottom: '1.5rem' }}>Envoyer un message à l'Ordre</h2>
-              <div className="profile-edit-form">
-                <div className="form-group" style={{ marginBottom: '1rem' }}>
-                  <label htmlFor="msgSujet">Sujet *</label>
-                  <input
-                    type="text"
-                    id="msgSujet"
-                    value={messageOrdre.sujet}
-                    onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
+            <div className="profile-edit-form">
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="msgSujet">Sujet *</label>
+                <input
+                  type="text"
+                  id="msgSujet"
+                  value={messageOrdre.sujet}
+                  onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
                     style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
                     placeholder="Ex: Question sur les cotisations"
-                  />
-                </div>
+                />
+              </div>
 
-                <div className="form-group" style={{ marginBottom: '1rem' }}>
-                  <label htmlFor="msgTexte">Message *</label>
-                  <textarea
-                    id="msgTexte"
-                    value={messageOrdre.message}
-                    onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
-                    rows={6}
+              <div className="form-group" style={{ marginBottom: '1rem' }}>
+                <label htmlFor="msgTexte">Message *</label>
+                <textarea
+                  id="msgTexte"
+                  value={messageOrdre.message}
+                  onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
+                  rows={6}
                     style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
                     placeholder="Votre message à l'Ordre..."
-                  />
-                </div>
-
-                <button
-                  className="btn-primary"
-                  onClick={handleSendMessageOrdre}
-                  disabled={sendingMessageOrdre}
-                  style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
-                >
-                  {sendingMessageOrdre ? '✉️ Envoi...' : '✉️ Envoyer le message'}
-                </button>
+                />
               </div>
+
+              <button
+                  className="btn-primary"
+                onClick={handleSendMessageOrdre}
+                disabled={sendingMessageOrdre}
+                  style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
+              >
+                  {sendingMessageOrdre ? '✉️ Envoi...' : '✉️ Envoyer le message'}
+              </button>
             </div>
+          </div>
           )}
 
-          {loading ? (
-            <p>Chargement des messages...</p>
-          ) : messages.length === 0 ? (
+            {loading ? (
+              <p>Chargement des messages...</p>
+            ) : messages.length === 0 ? (
             <div className="messages-detail-empty">
               <p>Aucun message envoyé pour le moment.</p>
             </div>
-          ) : (
+            ) : (
             <div className="messages-layout">
               <aside className="messages-sidebar">
                 <div className="messages-list">
@@ -294,19 +294,19 @@ const PharmacienMessages = () => {
                             </div>
                             {selectedMessage.replyAt && (
                               <div className="messages-reply-meta">
-                                Répondu le{' '}
+                                  Répondu le{' '}
                                 {new Date(selectedMessage.replyAt).toLocaleString('fr-FR', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                                  year: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </div>
-                            )}
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </div>
+                              )}
                           </div>
                         </div>
-                      ) : (
+                          ) : (
                         <div className="messages-reply-block">
                           <div style={{
                             padding: '1rem',
@@ -321,10 +321,10 @@ const PharmacienMessages = () => {
                         </div>
                       )}
                     </footer>
-                  </div>
-                )}
+              </div>
+            )}
               </section>
-            </div>
+          </div>
           )}
         </div>
       </main>

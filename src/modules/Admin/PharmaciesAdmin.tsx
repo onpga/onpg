@@ -453,8 +453,8 @@ const PharmaciesAdmin = () => {
                     {editingPharmacie ? '✏️' : '🏥'}
                   </div>
                   <h2 className="pharmacie-modal-title">
-                    {editingPharmacie ? 'Modifier la pharmacie' : 'Créer une nouvelle pharmacie'}
-                  </h2>
+                  {editingPharmacie ? 'Modifier la pharmacie' : 'Créer une nouvelle pharmacie'}
+                </h2>
                   <button
                     className="pharmacie-modal-close"
                     onClick={() => {
@@ -478,61 +478,61 @@ const PharmaciesAdmin = () => {
                         <span className="pharmacie-label-icon">🏢</span>
                         Nom de la pharmacie <span className="required">*</span>
                       </label>
-                      <input
-                        type="text"
-                        name="nom"
-                        value={formData.nom}
-                        onChange={handleFormChange}
+                    <input
+                      type="text"
+                      name="nom"
+                      value={formData.nom}
+                      onChange={handleFormChange}
                         className="pharmacie-input"
                         placeholder="Ex: Pharmacie Centrale"
-                        required
-                      />
-                    </div>
+                      required
+                    />
+                  </div>
                     <div className="pharmacie-form-row">
                       <div className="pharmacie-form-group" style={{ flex: 1 }}>
                         <label className="pharmacie-label">
                           <span className="pharmacie-label-icon">📍</span>
                           Ville <span className="required">*</span>
                         </label>
-                        <input
-                          type="text"
-                          name="ville"
-                          value={formData.ville}
-                          onChange={handleFormChange}
+                      <input
+                        type="text"
+                        name="ville"
+                        value={formData.ville}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: Libreville"
-                          required
-                        />
-                      </div>
+                        required
+                      />
+                    </div>
                       <div className="pharmacie-form-group" style={{ flex: 1 }}>
                         <label className="pharmacie-label">
                           <span className="pharmacie-label-icon">🏘️</span>
                           Quartier
                         </label>
-                        <input
-                          type="text"
-                          name="quartier"
-                          value={formData.quartier}
-                          onChange={handleFormChange}
+                      <input
+                        type="text"
+                        name="quartier"
+                        value={formData.quartier}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: Mont-Bouët"
-                        />
-                      </div>
+                      />
                     </div>
+                  </div>
                     <div className="pharmacie-form-group">
                       <label className="pharmacie-label">
                         <span className="pharmacie-label-icon">🗺️</span>
                         Adresse complète <span className="required">*</span>
                       </label>
-                      <textarea
-                        name="adresse"
-                        value={formData.adresse}
-                        onChange={handleFormChange}
+                    <textarea
+                      name="adresse"
+                      value={formData.adresse}
+                      onChange={handleFormChange}
                         className="pharmacie-textarea"
                         rows={3}
                         placeholder="Ex: Avenue Léon Mba, près du marché"
-                        required
-                      />
+                      required
+                    />
                     </div>
                   </div>
 
@@ -548,28 +548,28 @@ const PharmaciesAdmin = () => {
                           <span className="pharmacie-label-icon">📱</span>
                           Téléphone
                         </label>
-                        <input
-                          type="text"
-                          name="telephone"
-                          value={formData.telephone}
-                          onChange={handleFormChange}
+                      <input
+                        type="text"
+                        name="telephone"
+                        value={formData.telephone}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: +241 01 23 45 67"
-                        />
-                      </div>
+                      />
+                    </div>
                       <div className="pharmacie-form-group" style={{ flex: 1 }}>
                         <label className="pharmacie-label">
                           <span className="pharmacie-label-icon">✉️</span>
                           Email
                         </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleFormChange}
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: contact@pharmacie.ga"
-                        />
+                      />
                       </div>
                     </div>
                   </div>
@@ -586,28 +586,28 @@ const PharmaciesAdmin = () => {
                           <span className="pharmacie-label-icon">📍</span>
                           Latitude
                         </label>
-                        <input
-                          type="text"
-                          name="latitude"
-                          value={formData.latitude}
-                          onChange={handleFormChange}
+                      <input
+                        type="text"
+                        name="latitude"
+                        value={formData.latitude}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: 0.3921"
-                        />
-                      </div>
+                      />
+                    </div>
                       <div className="pharmacie-form-group" style={{ flex: 1 }}>
                         <label className="pharmacie-label">
                           <span className="pharmacie-label-icon">📍</span>
                           Longitude
                         </label>
-                        <input
-                          type="text"
-                          name="longitude"
-                          value={formData.longitude}
-                          onChange={handleFormChange}
+                      <input
+                        type="text"
+                        name="longitude"
+                        value={formData.longitude}
+                        onChange={handleFormChange}
                           className="pharmacie-input"
                           placeholder="Ex: 9.4546"
-                        />
+                      />
                       </div>
                     </div>
                   </div>
@@ -620,11 +620,11 @@ const PharmaciesAdmin = () => {
                     </div>
                     <div className="pharmacie-form-group">
                       <label className="pharmacie-checkbox-label">
-                        <input
-                          type="checkbox"
-                          name="garde"
-                          checked={formData.garde}
-                          onChange={handleFormChange}
+                      <input
+                        type="checkbox"
+                        name="garde"
+                        checked={formData.garde}
+                        onChange={handleFormChange}
                           className="pharmacie-checkbox"
                         />
                         <span className="pharmacie-checkbox-custom"></span>
@@ -635,26 +635,26 @@ const PharmaciesAdmin = () => {
                             <p>Cette pharmacie assure des gardes de nuit et week-end</p>
                           </div>
                         </div>
-                      </label>
-                    </div>
+                    </label>
+                  </div>
                     <div className="pharmacie-form-group">
                       <label className="pharmacie-label">
                         <span className="pharmacie-label-icon">👤</span>
                         Associer à un pharmacien de l'Ordre
                       </label>
-                      <select
-                        name="pharmacienId"
-                        value={formData.pharmacienId}
-                        onChange={handleFormChange}
+                    <select
+                      name="pharmacienId"
+                      value={formData.pharmacienId}
+                      onChange={handleFormChange}
                         className="pharmacie-select"
-                      >
+                    >
                         <option value="">— Aucun pharmacien —</option>
-                        {pharmaciens.map((p) => (
-                          <option key={p._id} value={p._id}>
-                            {p.prenom} {p.nom} {p.username && `(${p.username})`}
-                          </option>
-                        ))}
-                      </select>
+                      {pharmaciens.map((p) => (
+                        <option key={p._id} value={p._id}>
+                          {p.prenom} {p.nom} {p.username && `(${p.username})`}
+                        </option>
+                      ))}
+                    </select>
                     </div>
                   </div>
 

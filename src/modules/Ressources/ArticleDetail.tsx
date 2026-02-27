@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
-import { fetchResourceData } from '../../utils/pageMocksApi';
+import './Actualites.css';
+import { fetchResourceById } from '../../utils/pageMocksApi';
 
 interface RessourceArticle {
   _id: string;
@@ -37,14 +38,17 @@ const ArticleDetail = () => {
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [readingProgress, setReadingProgress] = useState(0);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     const loadArticle = async () => {
+      if (!id) {
+        navigate('/ressources/actualites');
+        return;
+      }
+
       try {
-        const data = await fetchResourceData('actualites');
-        if (data && !Array.isArray(data)) {
+        const data = await fetchResourceById('actualites', id);
+        if (data) {
           const articleData: RessourceArticle = {
             _id: data._id as string,
             title: data.title || 'Sans titre',
@@ -73,13 +77,13 @@ const ArticleDetail = () => {
           navigate('/ressources/actualites');
         }
       } catch (error) {
-        console.error('❌ Erreur lors du chargement de l’actualité:', error);
+        console.error('❌ Erreur lors du chargement de l\'actualité:', error);
         navigate('/ressources/actualites');
       }
     };
 
     loadArticle();
-  }, [navigate]);
+  }, [id, navigate]);
 
   // Barre de progression de lecture
   useEffect(() => {
@@ -115,14 +119,31 @@ const ArticleDetail = () => {
     if (shareUrls[platform as keyof typeof shareUrls]) {
       window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
     }
-    setShowShareModal(false);
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.href);
-    // Afficher une notification de succès
-    alert('Lien copié dans le presse-papiers !');
-    setShowShareModal(false);
+    // Afficher une notification de succès plus élégante
+    const notification = document.createElement('div');
+    notification.textContent = '✅ Lien copié dans le presse-papiers !';
+    notification.style.cssText = `
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: linear-gradient(135deg, #00A651, #008F45);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 166, 81, 0.3);
+      z-index: 10000;
+      font-weight: 600;
+      animation: slideInRight 0.3s ease;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.style.animation = 'slideOutRight 0.3s ease';
+      setTimeout(() => notification.remove(), 300);
+    }, 3000);
   };
 
   if (loading) {
@@ -179,7 +200,21 @@ const ArticleDetail = () => {
           {/* Meta Information */}
           <div className="article-meta">
             <div className="article-author">
-              <img src={article.author.avatar} alt={article.author.name} className="author-avatar" />
+              {article.author.avatar ? (
+                <img src={article.author.avatar} alt={article.author.name} className="author-avatar" />
+              ) : (
+                <div className="author-avatar" style={{
+                  background: 'linear-gradient(135deg, #00A651, #008F45)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '1.5rem',
+                  fontWeight: '700'
+                }}>
+                  {article.author.name.charAt(0).toUpperCase()}
+                </div>
+              )}
               <div className="author-info">
                 <span className="author-name">{article.author.name}</span>
                 <span className="author-title">{article.author.title}</span>
@@ -245,59 +280,83 @@ const ArticleDetail = () => {
               </div>
             </div>
 
-            {/* Share Section */}
+            {/* Share Section - Design épuré avec icônes uniquement */}
             <div className="article-share">
-              <h3>Partager cet article :</h3>
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '0.5rem' }}>
+                  <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.96 18.34C15.91 18.55 15.88 18.77 15.88 19C15.88 20.66 17.22 22 18.88 22S22 20.66 22 19 20.54 16 18.88 16C18.7 16 18.53 16.03 18.35 16.07L18 16.08Z"/>
+                </svg>
+                Partager
+              </h3>
               <div className="share-buttons">
-                <button onClick={() => handleShare('facebook')} className="share-btn facebook">
+                <button onClick={() => handleShare('facebook')} className="share-btn facebook" aria-label="Partager sur Facebook" title="Partager sur Facebook">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  Facebook
                 </button>
-                <button onClick={() => handleShare('twitter')} className="share-btn twitter">
+                <button onClick={() => handleShare('twitter')} className="share-btn twitter" aria-label="Partager sur Twitter" title="Partager sur Twitter">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
                   </svg>
-                  Twitter
                 </button>
-                <button onClick={() => handleShare('linkedin')} className="share-btn linkedin">
+                <button onClick={() => handleShare('linkedin')} className="share-btn linkedin" aria-label="Partager sur LinkedIn" title="Partager sur LinkedIn">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
                   </svg>
-                  LinkedIn
                 </button>
-                <button onClick={copyToClipboard} className="share-btn copy">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                <button onClick={copyToClipboard} className="share-btn copy" aria-label="Copier le lien" title="Copier le lien">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
                   </svg>
-                  Copier le lien
                 </button>
               </div>
             </div>
 
             {/* Author Bio */}
-            <div className="author-bio">
-              <div className="author-bio-content">
-                <img src={article.author.avatar} alt={article.author.name} className="author-bio-avatar" />
-                <div className="author-bio-text">
-                  <h3>À propos de l'auteur</h3>
-                  <p>{article.author.bio}</p>
-                  <div className="author-social">
-                    <a href={article.author.social.linkedin} className="social-link">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                      </svg>
-                    </a>
-                    <a href={article.author.social.twitter} className="social-link">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
-                      </svg>
-                    </a>
+            {article.author.bio && (
+              <div className="author-bio">
+                <div className="author-bio-content">
+                  {article.author.avatar ? (
+                    <img src={article.author.avatar} alt={article.author.name} className="author-bio-avatar" />
+                  ) : (
+                    <div className="author-bio-avatar" style={{
+                      background: 'linear-gradient(135deg, #00A651, #008F45)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontSize: '2rem',
+                      fontWeight: '700'
+                    }}>
+                      {article.author.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="author-bio-text">
+                    <h3>À propos de l'auteur</h3>
+                    <p>{article.author.bio}</p>
+                    {(article.author.social?.linkedin || article.author.social?.twitter) && (
+                      <div className="author-social">
+                        {article.author.social.linkedin && (
+                          <a href={article.author.social.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                          </a>
+                        )}
+                        {article.author.social.twitter && (
+                          <a href={article.author.social.twitter} target="_blank" rel="noopener noreferrer" className="social-link">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </main>
 
           {/* Sidebar */}
@@ -368,31 +427,11 @@ const ArticleDetail = () => {
         </div>
       </div>
 
-      {/* Article Actions Bar */}
-      <div className="article-actions-bar">
-        <div className="actions-container">
-          <button
-            onClick={() => setIsBookmarked(!isBookmarked)}
-            className={`action-btn bookmark ${isBookmarked ? 'active' : ''}`}
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17 3H7C5.9 3 5 3.9 5 5V21L12 18L19 21V5C19 3.9 18.1 3 17 3Z"/>
-            </svg>
-            {isBookmarked ? 'Sauvegardé' : 'Sauvegarder'}
-          </button>
-
-          <button onClick={() => setShowShareModal(true)} className="action-btn share">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M18 16.08C17.24 16.08 16.56 16.38 16.04 16.85L8.91 12.7C8.96 12.47 9 12.24 9 12S8.96 11.53 8.91 11.3L15.96 7.19C16.5 7.69 17.21 8 18 8C19.66 8 21 6.66 21 5S19.66 2 18 2 15 3.34 15 5C15 5.24 15.04 5.47 15.09 5.7L8.04 9.81C7.5 9.31 6.79 9 6 9C4.34 9 3 10.34 3 12S4.34 15 6 15C6.79 15 7.5 14.69 8.04 14.19L15.96 18.34C15.91 18.55 15.88 18.77 15.88 19C15.88 20.66 17.22 22 18.88 22S22 20.66 22 19 20.54 16 18.88 16C18.7 16 18.53 16.03 18.35 16.07L18 16.08Z"/>
-            </svg>
-            Partager
-          </button>
-
-          <Link to="/ressources/actualites" className="action-btn back">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z"/>
-            </svg>
-            Retour aux actualités
+      {/* Back Section */}
+      <div className="back-section">
+        <div className="container">
+          <Link to="/ressources/actualites" className="back-link">
+            ← Retour aux actualités
           </Link>
         </div>
       </div>

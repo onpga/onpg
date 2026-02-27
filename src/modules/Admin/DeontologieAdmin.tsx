@@ -9,8 +9,10 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+// Aligné avec les autres uploads (photos, hero...) pour éviter les problèmes
+// de variables d'environnement manquantes en prod.
+const CLOUDINARY_CLOUD_NAME = 'dduvinjnu';
+const CLOUDINARY_UPLOAD_PRESET = 'onpg_uploads';
 
 interface Deontologie {
   _id?: string;
@@ -90,7 +92,7 @@ const DeontologieAdmin = () => {
       formData.append('resource_type', 'raw'); // Pour les PDFs
 
       const uploadResponse = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`,
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
         {
           method: 'POST',
           body: formData

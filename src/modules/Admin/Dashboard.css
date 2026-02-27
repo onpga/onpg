@@ -1429,3 +1429,386 @@
   }
 }
 
+/* ============================================
+   Formulaire Pharmacie - Design Amélioré
+   ============================================ */
+
+.pharmacie-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pharmacie-modal-content {
+  background: white;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pharmacie-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem 2.5rem;
+  border-bottom: 2px solid #f0f0f0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 20px 20px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+}
+
+.pharmacie-modal-icon {
+  font-size: 2.5rem;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #00A651 0%, #33C27D 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.3);
+}
+
+.pharmacie-modal-title {
+  font-family: var(--font-poppins);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  flex: 1;
+}
+
+.pharmacie-modal-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.pharmacie-modal-close:hover {
+  background: #e0e0e0;
+  color: #333;
+  transform: rotate(90deg);
+}
+
+.pharmacie-form {
+  padding: 2.5rem;
+}
+
+.pharmacie-form-section {
+  margin-bottom: 2.5rem;
+  padding: 1.75rem;
+  background: #fafafa;
+  border-radius: 16px;
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s ease;
+}
+
+.pharmacie-form-section:hover {
+  border-color: #00A651;
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.08);
+}
+
+.pharmacie-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.pharmacie-section-icon {
+  font-size: 1.5rem;
+}
+
+.pharmacie-section-header h3 {
+  font-family: var(--font-poppins);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #00A651;
+  margin: 0;
+}
+
+.pharmacie-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.pharmacie-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.pharmacie-form-row {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.pharmacie-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-poppins);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.pharmacie-label-icon {
+  font-size: 1.1rem;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.pharmacie-input,
+.pharmacie-textarea,
+.pharmacie-select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-family: var(--font-poppins);
+  font-size: 0.95rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: white;
+  transition: all 0.2s ease;
+  color: #333;
+}
+
+.pharmacie-input:focus,
+.pharmacie-textarea:focus,
+.pharmacie-select:focus {
+  outline: none;
+  border-color: #00A651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.1);
+}
+
+.pharmacie-textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.pharmacie-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid #e8e8e8;
+  transition: all 0.2s ease;
+}
+
+.pharmacie-checkbox-label:hover {
+  border-color: #00A651;
+  background: #f8fff9;
+}
+
+.pharmacie-checkbox {
+  display: none;
+}
+
+.pharmacie-checkbox-custom {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #d0d0d0;
+  border-radius: 6px;
+  background: white;
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all 0.2s ease;
+}
+
+.pharmacie-checkbox:checked + .pharmacie-checkbox-custom {
+  background: #00A651;
+  border-color: #00A651;
+}
+
+.pharmacie-checkbox:checked + .pharmacie-checkbox-custom::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.pharmacie-checkbox-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.pharmacie-checkbox-icon {
+  font-size: 1.5rem;
+  margin-top: 2px;
+}
+
+.pharmacie-checkbox-content strong {
+  display: block;
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.pharmacie-checkbox-content p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.pharmacie-form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid #f0f0f0;
+}
+
+.pharmacie-btn-primary,
+.pharmacie-btn-secondary {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  font-family: var(--font-poppins);
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pharmacie-btn-primary {
+  background: linear-gradient(135deg, #00A651 0%, #33C27D 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 166, 81, 0.3);
+}
+
+.pharmacie-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.4);
+}
+
+.pharmacie-btn-primary:active {
+  transform: translateY(0);
+}
+
+.pharmacie-btn-secondary {
+  background: #f5f5f5;
+  color: #666;
+  border: 2px solid #e0e0e0;
+}
+
+.pharmacie-btn-secondary:hover {
+  background: #e8e8e8;
+  border-color: #d0d0d0;
+  color: #333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pharmacie-modal-content {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 100vh;
+  }
+
+  .pharmacie-modal-header {
+    padding: 1.5rem;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .pharmacie-modal-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+  }
+
+  .pharmacie-modal-title {
+    font-size: 1.4rem;
+  }
+
+  .pharmacie-form {
+    padding: 1.5rem;
+  }
+
+  .pharmacie-form-section {
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pharmacie-form-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pharmacie-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .pharmacie-btn-primary,
+  .pharmacie-btn-secondary {
+    width: 100%;
+  }
+}
+

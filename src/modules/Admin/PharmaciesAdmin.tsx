@@ -438,161 +438,240 @@ const PharmaciesAdmin = () => {
           {/* Modal création / édition de pharmacie */}
           {showForm && (
             <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000
-              }}
+              className="pharmacie-modal-overlay"
               onClick={() => {
                 setShowForm(false);
                 setEditingPharmacie(null);
               }}
             >
               <div
-                style={{
-                  background: 'white',
-                  padding: '2rem',
-                  borderRadius: '12px',
-                  maxWidth: '700px',
-                  width: '95%',
-                  maxHeight: '90vh',
-                  overflowY: 'auto'
-                }}
+                className="pharmacie-modal-content"
                 onClick={(e) => e.stopPropagation()}
               >
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>
-                  {editingPharmacie ? 'Modifier la pharmacie' : 'Créer une nouvelle pharmacie'}
-                </h2>
-                <form onSubmit={handleSubmitPharmacie} className="settings-form">
-                  <div className="form-group">
-                    <label>Nom de la pharmacie</label>
-                    <input
-                      type="text"
-                      name="nom"
-                      value={formData.nom}
-                      onChange={handleFormChange}
-                      required
-                    />
+                <div className="pharmacie-modal-header">
+                  <div className="pharmacie-modal-icon">
+                    {editingPharmacie ? '✏️' : '🏥'}
                   </div>
-                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Ville</label>
+                  <h2 className="pharmacie-modal-title">
+                    {editingPharmacie ? 'Modifier la pharmacie' : 'Créer une nouvelle pharmacie'}
+                  </h2>
+                  <button
+                    className="pharmacie-modal-close"
+                    onClick={() => {
+                      setShowForm(false);
+                      setEditingPharmacie(null);
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmitPharmacie} className="pharmacie-form">
+                  {/* Section Informations principales */}
+                  <div className="pharmacie-form-section">
+                    <div className="pharmacie-section-header">
+                      <span className="pharmacie-section-icon">📋</span>
+                      <h3>Informations principales</h3>
+                    </div>
+                    <div className="pharmacie-form-group">
+                      <label className="pharmacie-label">
+                        <span className="pharmacie-label-icon">🏢</span>
+                        Nom de la pharmacie <span className="required">*</span>
+                      </label>
                       <input
                         type="text"
-                        name="ville"
-                        value={formData.ville}
+                        name="nom"
+                        value={formData.nom}
                         onChange={handleFormChange}
+                        className="pharmacie-input"
+                        placeholder="Ex: Pharmacie Centrale"
                         required
                       />
                     </div>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Quartier</label>
-                      <input
-                        type="text"
-                        name="quartier"
-                        value={formData.quartier}
+                    <div className="pharmacie-form-row">
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">📍</span>
+                          Ville <span className="required">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="ville"
+                          value={formData.ville}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: Libreville"
+                          required
+                        />
+                      </div>
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">🏘️</span>
+                          Quartier
+                        </label>
+                        <input
+                          type="text"
+                          name="quartier"
+                          value={formData.quartier}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: Mont-Bouët"
+                        />
+                      </div>
+                    </div>
+                    <div className="pharmacie-form-group">
+                      <label className="pharmacie-label">
+                        <span className="pharmacie-label-icon">🗺️</span>
+                        Adresse complète <span className="required">*</span>
+                      </label>
+                      <textarea
+                        name="adresse"
+                        value={formData.adresse}
                         onChange={handleFormChange}
+                        className="pharmacie-textarea"
+                        rows={3}
+                        placeholder="Ex: Avenue Léon Mba, près du marché"
+                        required
                       />
                     </div>
-                  </div>
-                  <div className="form-group">
-                    <label>Adresse complète</label>
-                    <textarea
-                      name="adresse"
-                      value={formData.adresse}
-                      onChange={handleFormChange}
-                      rows={2}
-                      required
-                    />
-                  </div>
-                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Téléphone</label>
-                      <input
-                        type="text"
-                        name="telephone"
-                        value={formData.telephone}
-                        onChange={handleFormChange}
-                      />
-                    </div>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleFormChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-row" style={{ display: 'flex', gap: '1rem' }}>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Latitude (optionnel)</label>
-                      <input
-                        type="text"
-                        name="latitude"
-                        value={formData.latitude}
-                        onChange={handleFormChange}
-                      />
-                    </div>
-                    <div className="form-group" style={{ flex: 1 }}>
-                      <label>Longitude (optionnel)</label>
-                      <input
-                        type="text"
-                        name="longitude"
-                        value={formData.longitude}
-                        onChange={handleFormChange}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <input
-                        type="checkbox"
-                        name="garde"
-                        checked={formData.garde}
-                        onChange={handleFormChange}
-                      />
-                      Pharmacie de garde
-                    </label>
-                  </div>
-                  <div className="form-group">
-                    <label>Associer à un pharmacien de l’Ordre (optionnel)</label>
-                    <select
-                      name="pharmacienId"
-                      value={formData.pharmacienId}
-                      onChange={handleFormChange}
-                    >
-                      <option value="">— Aucun —</option>
-                      {pharmaciens.map((p) => (
-                        <option key={p._id} value={p._id}>
-                          {p.prenom} {p.nom} {p.username && `(${p.username})`}
-                        </option>
-                      ))}
-                    </select>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                      💾 Enregistrer
-                    </button>
+                  {/* Section Contact */}
+                  <div className="pharmacie-form-section">
+                    <div className="pharmacie-section-header">
+                      <span className="pharmacie-section-icon">📞</span>
+                      <h3>Coordonnées</h3>
+                    </div>
+                    <div className="pharmacie-form-row">
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">📱</span>
+                          Téléphone
+                        </label>
+                        <input
+                          type="text"
+                          name="telephone"
+                          value={formData.telephone}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: +241 01 23 45 67"
+                        />
+                      </div>
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">✉️</span>
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: contact@pharmacie.ga"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section Localisation */}
+                  <div className="pharmacie-form-section">
+                    <div className="pharmacie-section-header">
+                      <span className="pharmacie-section-icon">🌍</span>
+                      <h3>Localisation GPS (optionnel)</h3>
+                    </div>
+                    <div className="pharmacie-form-row">
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">📍</span>
+                          Latitude
+                        </label>
+                        <input
+                          type="text"
+                          name="latitude"
+                          value={formData.latitude}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: 0.3921"
+                        />
+                      </div>
+                      <div className="pharmacie-form-group" style={{ flex: 1 }}>
+                        <label className="pharmacie-label">
+                          <span className="pharmacie-label-icon">📍</span>
+                          Longitude
+                        </label>
+                        <input
+                          type="text"
+                          name="longitude"
+                          value={formData.longitude}
+                          onChange={handleFormChange}
+                          className="pharmacie-input"
+                          placeholder="Ex: 9.4546"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section Options */}
+                  <div className="pharmacie-form-section">
+                    <div className="pharmacie-section-header">
+                      <span className="pharmacie-section-icon">⚙️</span>
+                      <h3>Options</h3>
+                    </div>
+                    <div className="pharmacie-form-group">
+                      <label className="pharmacie-checkbox-label">
+                        <input
+                          type="checkbox"
+                          name="garde"
+                          checked={formData.garde}
+                          onChange={handleFormChange}
+                          className="pharmacie-checkbox"
+                        />
+                        <span className="pharmacie-checkbox-custom"></span>
+                        <div className="pharmacie-checkbox-content">
+                          <span className="pharmacie-checkbox-icon">🕐</span>
+                          <div>
+                            <strong>Pharmacie de garde</strong>
+                            <p>Cette pharmacie assure des gardes de nuit et week-end</p>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                    <div className="pharmacie-form-group">
+                      <label className="pharmacie-label">
+                        <span className="pharmacie-label-icon">👤</span>
+                        Associer à un pharmacien de l'Ordre
+                      </label>
+                      <select
+                        name="pharmacienId"
+                        value={formData.pharmacienId}
+                        onChange={handleFormChange}
+                        className="pharmacie-select"
+                      >
+                        <option value="">— Aucun pharmacien —</option>
+                        {pharmaciens.map((p) => (
+                          <option key={p._id} value={p._id}>
+                            {p.prenom} {p.nom} {p.username && `(${p.username})`}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="pharmacie-form-actions">
                     <button
                       type="button"
-                      className="btn-secondary"
-                      style={{ flex: 1 }}
+                      className="pharmacie-btn-secondary"
                       onClick={() => {
                         setShowForm(false);
                         setEditingPharmacie(null);
                       }}
                     >
                       Annuler
+                    </button>
+                    <button type="submit" className="pharmacie-btn-primary">
+                      <span>💾</span>
+                      {editingPharmacie ? 'Mettre à jour' : 'Créer la pharmacie'}
                     </button>
                   </div>
                 </form>

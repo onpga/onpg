@@ -245,16 +245,16 @@
    ============================================ */
 
 .deontologie-card {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 2.5rem;
-  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  padding: 0;
+  background: white;
   border-radius: 24px;
   box-shadow: 
-    0 15px 50px rgba(0, 0, 0, 0.1),
-    0 5px 20px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(155, 89, 182, 0.1);
+    0 20px 60px rgba(0, 0, 0, 0.12),
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(155, 89, 182, 0.15);
   position: relative;
   overflow: hidden;
 }
@@ -265,93 +265,213 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
   background: linear-gradient(90deg, #9b59b6, #8e44ad, #7d3c98, #9b59b6);
   background-size: 200% 100%;
   animation: gradientShift 3s ease infinite;
 }
 
+.deontologie-header {
+  padding: 2.5rem 3rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-bottom: 2px solid rgba(155, 89, 182, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.deontologie-header-content {
+  flex: 1;
+  min-width: 300px;
+}
+
 .deontologie-title {
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-  color: #9b59b6;
-  font-weight: 700;
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+  color: #1a252f;
+  font-weight: 800;
   background: linear-gradient(135deg, #9b59b6, #8e44ad);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  line-height: 1.3;
+  line-height: 1.2;
+}
+
+.deontologie-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.deontologie-meta-item {
+  font-size: 0.95rem;
+  color: #6c757d;
+  padding: 0.5rem 1rem;
+  background: rgba(155, 89, 182, 0.08);
+  border-radius: 8px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deontologie-header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.deontologie-download-btn-header,
+.deontologie-view-btn-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.deontologie-download-btn-header {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+}
+
+.deontologie-download-btn-header:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+}
+
+.deontologie-view-btn-header {
+  background: white;
+  color: #9b59b6;
+  border: 2px solid #9b59b6;
+}
+
+.deontologie-view-btn-header:hover {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+}
+
+.btn-icon {
+  font-size: 1.1rem;
+}
+
+.btn-text {
+  font-size: 0.95rem;
+}
+
+.deontologie-description-box {
+  padding: 1.5rem 3rem;
+  background: rgba(155, 89, 182, 0.05);
+  border-bottom: 1px solid rgba(155, 89, 182, 0.1);
 }
 
 .deontologie-description {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   color: #1a252f;
-  margin-bottom: 1.5rem;
   line-height: 1.8;
-}
-
-.deontologie-updated {
-  font-size: 1rem;
-  color: #6c757d;
-  margin-bottom: 2rem;
-  padding: 0.8rem 1.2rem;
-  background: rgba(155, 89, 182, 0.1);
-  border-radius: 12px;
-  display: inline-block;
-  font-weight: 600;
+  margin: 0;
 }
 
 .deontologie-pdf-container {
-  margin-top: 2rem;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.1),
-    0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 2px solid rgba(155, 89, 182, 0.1);
-  background: white;
   position: relative;
+  margin: 0;
+  background: #f5f5f5;
+  border-top: 1px solid rgba(155, 89, 182, 0.1);
+  border-bottom: 1px solid rgba(155, 89, 182, 0.1);
+}
+
+.deontologie-pdf-wrapper {
+  position: relative;
+  width: 100%;
+  background: white;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.05);
 }
 
 .deontologie-iframe {
   width: 100%;
-  height: 800px;
+  height: 900px;
   border: none;
   display: block;
-  transition: all 0.3s ease;
+  background: white;
 }
 
-.deontologie-pdf-container:hover .deontologie-iframe {
-  box-shadow: inset 0 0 20px rgba(155, 89, 182, 0.1);
+.deontologie-pdf-overlay {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  pointer-events: none;
 }
 
-.deontologie-actions {
-  padding: 2rem;
-  text-align: center;
-  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+.deontologie-pdf-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(155, 89, 182, 0.2);
+}
+
+.pdf-icon {
+  font-size: 1.2rem;
+}
+
+.pdf-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #9b59b6;
+}
+
+.deontologie-actions-footer {
+  padding: 2rem 3rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
   border-top: 2px solid rgba(155, 89, 182, 0.1);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.deontologie-download-btn {
+.deontologie-download-btn-footer,
+.deontologie-view-btn-footer {
   display: inline-flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 1.2rem 2.5rem;
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
-  color: white;
-  text-decoration: none;
+  padding: 1rem 2rem;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  text-decoration: none;
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-shadow: 
-    0 6px 20px rgba(155, 89, 182, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
 
-.deontologie-download-btn::before {
+.deontologie-download-btn-footer {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  box-shadow: 
+    0 6px 20px rgba(155, 89, 182, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.deontologie-download-btn-footer::before {
   content: '';
   position: absolute;
   top: 0;
@@ -362,16 +482,30 @@
   transition: left 0.6s ease;
 }
 
-.deontologie-download-btn:hover::before {
+.deontologie-download-btn-footer:hover::before {
   left: 100%;
 }
 
-.deontologie-download-btn:hover {
+.deontologie-download-btn-footer:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 
     0 10px 30px rgba(155, 89, 182, 0.4),
     0 5px 15px rgba(0, 0, 0, 0.15);
   background: linear-gradient(135deg, #8e44ad, #9b59b6);
+}
+
+.deontologie-view-btn-footer {
+  background: white;
+  color: #9b59b6;
+  border: 2px solid #9b59b6;
+  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.2);
+}
+
+.deontologie-view-btn-footer:hover {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.3);
 }
 
 .deontologie-loading {
@@ -415,8 +549,26 @@
     gap: 1.2rem;
   }
   
+  .deontologie-header {
+    padding: 2rem 2rem;
+    flex-direction: column;
+  }
+  
+  .deontologie-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .deontologie-description-box {
+    padding: 1.5rem 2rem;
+  }
+  
   .deontologie-iframe {
-    height: 600px;
+    height: 700px;
+  }
+  
+  .deontologie-actions-footer {
+    padding: 1.5rem 2rem;
   }
 }
 
@@ -441,21 +593,50 @@
   }
   
   .deontologie-card {
-    padding: 2.5rem 2rem;
+    border-radius: 16px;
+  }
+  
+  .deontologie-header {
+    padding: 1.5rem 1.5rem;
   }
   
   .deontologie-title {
     font-size: 1.8rem;
   }
   
-  .deontologie-iframe {
-    height: 500px;
+  .deontologie-header-actions {
+    width: 100%;
+    flex-direction: column;
   }
   
-  .deontologie-download-btn {
+  .deontologie-download-btn-header,
+  .deontologie-view-btn-header {
     width: 100%;
     justify-content: center;
-    padding: 1rem 2rem;
+  }
+  
+  .deontologie-description-box {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .deontologie-description {
+    font-size: 1rem;
+  }
+  
+  .deontologie-iframe {
+    height: 600px;
+  }
+  
+  .deontologie-actions-footer {
+    padding: 1.5rem 1.5rem;
+    flex-direction: column;
+  }
+  
+  .deontologie-download-btn-footer,
+  .deontologie-view-btn-footer {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem 1.5rem;
   }
 }
 
@@ -469,21 +650,52 @@
     font-size: 1.8rem;
   }
   
-  .deontologie-card {
-    padding: 2rem 1.5rem;
+  .deontologie-header {
+    padding: 1.25rem 1.25rem;
   }
   
   .deontologie-title {
     font-size: 1.6rem;
   }
   
-  .deontologie-iframe {
-    height: 400px;
+  .deontologie-meta-item {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
   
-  .deontologie-download-btn {
-    font-size: 1rem;
-    padding: 1rem 1.5rem;
+  .deontologie-description-box {
+    padding: 1rem 1.25rem;
+  }
+  
+  .deontologie-description {
+    font-size: 0.95rem;
+  }
+  
+  .deontologie-iframe {
+    height: 500px;
+  }
+  
+  .deontologie-pdf-overlay {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  
+  .deontologie-pdf-info {
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .pdf-text {
+    font-size: 0.75rem;
+  }
+  
+  .deontologie-actions-footer {
+    padding: 1.25rem 1.25rem;
+  }
+  
+  .deontologie-download-btn-footer,
+  .deontologie-view-btn-footer {
+    font-size: 0.95rem;
+    padding: 0.9rem 1.25rem;
   }
 }
 

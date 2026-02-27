@@ -34,6 +34,8 @@ const PharmaciensAdmin = () => {
   const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [cotisationFilter, setCotisationFilter] = useState<'tous' | 'ajour' | 'retard'>('tous');
+  const [nationaliteFilter, setNationaliteFilter] = useState<'toutes' | 'gabonais' | 'etrangers'>('toutes');
   const [editingItem, setEditingItem] = useState<Pharmacien | null>(null);
   const [viewingItem, setViewingItem] = useState<Pharmacien | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -77,10 +79,52 @@ const PharmaciensAdmin = () => {
     fetchData();
   }, []);
 
-  const filteredPharmaciens = pharmaciens.filter((p) => {
-    const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.numeroOrdre || ''}`.toLowerCase();
-    return haystack.includes(searchQuery.toLowerCase());
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filteredPharmaciens = normalizedQuery
+    ? pharmaciens.filter((p) => {
+        const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.numeroOrdre || ''} ${p.nationalite || ''} ${
+          p.section || ''
+        }`.toLowerCase();
+        return haystack.includes(normalizedQuery);
+      })
+    : pharmaciens;
+
+  const isGabonais = (nationalite?: string) => {
+    if (!nationalite) return false;
+    const n = nationalite.toLowerCase();
+    return n.includes('gabon');
+  };
+
+  const visiblePharmaciens = filteredPharmaciens.filter((p) => {
+    let okCotisation = true;
+    if (cotisationFilter === 'ajour') {
+      okCotisation = p.cotisationsAJour !== false;
+    } else if (cotisationFilter === 'retard') {
+      okCotisation = p.cotisationsAJour === false;
+    }
+
+    let okNat = true;
+    if (nationaliteFilter === 'gabonais') {
+      okNat = isGabonais(p.nationalite);
+    } else if (nationaliteFilter === 'etrangers') {
+      okNat = !!p.nationalite && !isGabonais(p.nationalite);
+    }
+
+    return okCotisation && okNat;
   });
+
+  const totalPharmaciens = pharmaciens.length;
+  const totalCotisationsAjour = pharmaciens.filter(p => p.cotisationsAJour !== false).length;
+  const totalCotisationsRetard = pharmaciens.filter(p => p.cotisationsAJour === false).length;
+  const sectionA = pharmaciens.filter(p => p.section === 'A').length;
+  const sectionB = pharmaciens.filter(p => p.section === 'B').length;
+  const sectionC = pharmaciens.filter(p => p.section === 'C').length;
+  const sectionD = pharmaciens.filter(p => p.section === 'D').length;
+  const totalGabonais = pharmaciens.filter(p => isGabonais(p.nationalite)).length;
+  const totalEtrangers = pharmaciens.filter(
+    p => p.nationalite && !isGabonais(p.nationalite)
+  ).length;
 
   const handleEdit = (pharmacien: Pharmacien) => {
     setEditingItem(pharmacien);
@@ -247,10 +291,18 @@ const PharmaciensAdmin = () => {
             <div>
               <h2>Liste des pharmaciens</h2>
               <p style={{ margin: '0.25rem 0', color: '#666', fontSize: '0.95rem' }}>
-                {pharmaciens.length} pharmacien(s) au total
-                {searchQuery.trim()
-                  ? ` • ${filteredPharmaciens.length} résultat(s) pour "${searchQuery}"`
-                  : ''}
+                {visiblePharmaciens.length} pharmacien(s) affiché(s)
+                {totalPharmaciens > 0 && ` • sur ${totalPharmaciens} au total`}
+                {cotisationFilter === 'retard' && ` • ${totalCotisationsRetard} en retard de cotisation`}
+              </p>
+              <p style={{ margin: 0, color: '#888', fontSize: '0.85rem' }}>
+                Sections A:{' '}{sectionA} • B:{' '}{sectionB} • C:{' '}{sectionC} • D:{' '}{sectionD}
+                {' • '}Cotisations à jour:{' '}{totalCotisationsAjour}{' • '}En retard:{' '}{totalCotisationsRetard}
+                {totalGabonais + totalEtrangers > 0 && (
+                  <>
+                    {' • '}Nationaux:{' '}{totalGabonais}{' • '}Étrangers:{' '}{totalEtrangers}
+                  </>
+                )}
               </p>
             </div>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -267,6 +319,38 @@ const PharmaciensAdmin = () => {
                   border: '2px solid #ddd'
                 }}
               />
+              <select
+                value={cotisationFilter}
+                onChange={(e) => setCotisationFilter(e.target.value as 'tous' | 'ajour' | 'retard')}
+                style={{
+                  padding: '0.55rem 0.9rem',
+                  borderRadius: '999px',
+                  border: '2px solid #ddd',
+                  fontSize: '0.95rem',
+                  minWidth: '180px'
+                }}
+              >
+                <option value="tous">Toutes les cotisations</option>
+                <option value="ajour">Cotisations à jour uniquement</option>
+                <option value="retard">Cotisations en retard</option>
+              </select>
+              <select
+                value={nationaliteFilter}
+                onChange={(e) =>
+                  setNationaliteFilter(e.target.value as 'toutes' | 'gabonais' | 'etrangers')
+                }
+                style={{
+                  padding: '0.55rem 0.9rem',
+                  borderRadius: '999px',
+                  border: '2px solid #ddd',
+                  fontSize: '0.95rem',
+                  minWidth: '180px'
+                }}
+              >
+                <option value="toutes">Toutes les nationalités</option>
+                <option value="gabonais">Nationaux (Gabon)</option>
+                <option value="etrangers">Étrangers</option>
+              </select>
               <button
                 onClick={handleNew}
                 className="btn-primary"
@@ -300,8 +384,14 @@ const PharmaciensAdmin = () => {
                         Aucun pharmacien enregistré
                       </td>
                     </tr>
+                  ) : visiblePharmaciens.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
+                        Aucun pharmacien ne correspond aux critères de recherche / filtrage
+                      </td>
+                    </tr>
                   ) : (
-                    (filteredPharmaciens.length === 0 ? pharmaciens : filteredPharmaciens).map((pharmacien) => (
+                    visiblePharmaciens.map((pharmacien) => (
                       <tr key={pharmacien._id}>
                         <td>
                           {pharmacien.photo ? (

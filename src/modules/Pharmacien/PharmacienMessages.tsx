@@ -23,13 +23,14 @@ const PharmacienMessages = () => {
   const [user, setUser] = useState<any>(null);
   const [messages, setMessages] = useState<PharmacienMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messageOrdre, setMessageOrdre] = useState({
     sujet: '',
     message: ''
   });
   const [sendingMessageOrdre, setSendingMessageOrdre] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [expandedMessageId, setExpandedMessageId] = useState<string | null>(null);
+  const [showNewMessageForm, setShowNewMessageForm] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('admin_user');
@@ -62,7 +63,11 @@ const PharmacienMessages = () => {
       });
       const data = await res.json();
       if (data.success) {
-        setMessages(data.data || []);
+        const list: PharmacienMessage[] = data.data || [];
+        setMessages(list);
+        if (!selectedId && list.length > 0) {
+          setSelectedId(list[0]._id);
+        }
       } else {
         setMessages([]);
       }
@@ -101,6 +106,7 @@ const PharmacienMessages = () => {
       if (data.success) {
         setFeedback({ type: 'success', text: 'Message envoyé à l\'Ordre avec succès.' });
         setMessageOrdre({ sujet: '', message: '' });
+        setShowNewMessageForm(false);
         await loadMessages();
       } else {
         setFeedback({ type: 'error', text: data.error || 'Erreur lors de l\'envoi du message.' });
@@ -113,6 +119,12 @@ const PharmacienMessages = () => {
     }
   };
 
+  const selectedMessage = messages.find((m) => m._id === selectedId) || null;
+
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
   if (!user) return null;
 
   return (
@@ -120,146 +132,200 @@ const PharmacienMessages = () => {
       <PharmacienSidebar currentPage="messages" />
       <main className="admin-main">
         <div className="admin-content">
-          <h1>✉️ Messages à l'Ordre</h1>
+          <div className="admin-header" style={{ marginBottom: '1.5rem' }}>
+            <div>
+              <h1>✉️ Messages à l'Ordre</h1>
+              <p style={{ fontSize: '1.05rem', marginTop: '0.4rem', color: '#666' }}>
+                Envoyez des messages à l'Ordre et consultez les réponses.
+              </p>
+            </div>
+            <button
+              className="btn-primary"
+              onClick={() => setShowNewMessageForm(!showNewMessageForm)}
+              style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
+            >
+              {showNewMessageForm ? '✕ Annuler' : '➕ Nouveau message'}
+            </button>
+          </div>
 
           {feedback && (
-            <div className={`message ${feedback.type}`} style={{ marginBottom: '1rem' }}>
+            <div
+              className={`message ${feedback.type}`}
+              style={{
+                marginBottom: '1.5rem',
+                padding: '1rem',
+                borderRadius: '10px',
+                background: feedback.type === 'success' ? '#d1fae5' : '#fee2e2',
+                color: feedback.type === 'success' ? '#065f46' : '#991b1b',
+                border: `1px solid ${feedback.type === 'success' ? '#10b981' : '#ef4444'}`
+              }}
+            >
               {feedback.text}
             </div>
           )}
 
-          <div className="profile-section">
-            <h2>Envoyer un message à l'Ordre</h2>
-            <div className="profile-edit-form">
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="msgSujet">Sujet *</label>
-                <input
-                  type="text"
-                  id="msgSujet"
-                  value={messageOrdre.sujet}
-                  onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
-                />
-              </div>
+          {showNewMessageForm && (
+            <div className="profile-section" style={{ marginBottom: '2rem' }}>
+              <h2 style={{ marginBottom: '1.5rem' }}>Envoyer un message à l'Ordre</h2>
+              <div className="profile-edit-form">
+                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                  <label htmlFor="msgSujet">Sujet *</label>
+                  <input
+                    type="text"
+                    id="msgSujet"
+                    value={messageOrdre.sujet}
+                    onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+                    placeholder="Ex: Question sur les cotisations"
+                  />
+                </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="msgTexte">Message *</label>
-                <textarea
-                  id="msgTexte"
-                  value={messageOrdre.message}
-                  onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
-                  rows={6}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
-                />
-              </div>
+                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                  <label htmlFor="msgTexte">Message *</label>
+                  <textarea
+                    id="msgTexte"
+                    value={messageOrdre.message}
+                    onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
+                    rows={6}
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+                    placeholder="Votre message à l'Ordre..."
+                  />
+                </div>
 
-              <button
-                className="action-btn primary"
-                onClick={handleSendMessageOrdre}
-                disabled={sendingMessageOrdre}
-              >
-                {sendingMessageOrdre ? '✉️ Envoi...' : '✉️ Envoyer le message à l\'Ordre'}
-              </button>
+                <button
+                  className="btn-primary"
+                  onClick={handleSendMessageOrdre}
+                  disabled={sendingMessageOrdre}
+                  style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
+                >
+                  {sendingMessageOrdre ? '✉️ Envoi...' : '✉️ Envoyer le message'}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="profile-section" style={{ marginTop: '2rem' }}>
-            <h2>Historique de mes messages</h2>
-            {loading ? (
-              <p>Chargement des messages...</p>
-            ) : messages.length === 0 ? (
+          {loading ? (
+            <p>Chargement des messages...</p>
+          ) : messages.length === 0 ? (
+            <div className="messages-detail-empty">
               <p>Aucun message envoyé pour le moment.</p>
-            ) : (
-              <div className="admin-table-container">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Sujet</th>
-                      <th>Destinataire</th>
-                      <th>Message</th>
-                      <th>Réponse de l'Ordre</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {messages.map((m) => (
-                      <tr key={m._id}>
-                        <td>
-                          {new Date(m.createdAt).toLocaleString('fr-FR', {
+            </div>
+          ) : (
+            <div className="messages-layout">
+              <aside className="messages-sidebar">
+                <div className="messages-list">
+                  {sortedMessages.map((m) => (
+                    <button
+                      key={m._id}
+                      type="button"
+                      className={`message-item ${m._id === selectedId ? 'active' : ''} ${
+                        m.reply ? '' : 'unread'
+                      }`}
+                      onClick={() => setSelectedId(m._id)}
+                    >
+                      <div className="message-item-header">
+                        <span className="message-item-name">Message à l'Ordre</span>
+                        <span className="message-item-date">
+                          {new Date(m.createdAt).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: '2-digit'
+                          })}
+                        </span>
+                      </div>
+                      <div className="message-item-subject">{m.subject}</div>
+                      <div className="message-item-meta">
+                        {m.reply ? (
+                          <span className="message-source-pill public" style={{ background: '#d1fae5', color: '#065f46' }}>
+                            ✓ Répondu
+                          </span>
+                        ) : (
+                          <span className="message-source-pill pharmacien" style={{ background: '#fef3c7', color: '#92400e' }}>
+                            En attente
+                          </span>
+                        )}
+                        {!m.reply && (
+                          <span className="message-status-dot" aria-label="En attente de réponse" />
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </aside>
+
+              <section className="messages-detail">
+                {!selectedMessage ? (
+                  <div className="messages-detail-empty">
+                    <p>Sélectionnez un message dans la liste pour l&apos;afficher.</p>
+                  </div>
+                ) : (
+                  <div className="messages-detail-card">
+                    <header className="messages-detail-header">
+                      <div>
+                        <h2>{selectedMessage.subject}</h2>
+                        <div className="messages-detail-meta">
+                          <span className="messages-detail-name">Message envoyé à l'Ordre</span>
+                        </div>
+                      </div>
+                      <div className="messages-detail-right">
+                        <span className="messages-detail-date">
+                          {new Date(selectedMessage.createdAt).toLocaleString('fr-FR', {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
-                        </td>
-                        <td>{m.subject}</td>
-                        <td>Ordre</td>
-                        <td style={{ maxWidth: 300, whiteSpace: 'pre-wrap' }}>
-                          {(() => {
-                            const isExpanded = expandedMessageId === m._id;
-                            const fullText = m.message || '';
-                            const isLong = fullText.length > 120;
-                            const displayText =
-                              isExpanded || !isLong
-                                ? fullText
-                                : `${fullText.substring(0, 120)}…`;
+                        </span>
+                      </div>
+                    </header>
 
-                            return (
-                              <>
-                                <div>{displayText}</div>
-                                {isLong && (
-                                  <button
-                                    type="button"
-                                    onClick={() =>
-                                      setExpandedMessageId(isExpanded ? null : m._id)
-                                    }
-                                    style={{
-                                      marginTop: '0.25rem',
-                                      background: 'transparent',
-                                      border: 'none',
-                                      color: '#0369a1',
-                                      cursor: 'pointer',
-                                      padding: 0,
-                                      fontSize: '0.85rem',
-                                      textDecoration: 'underline'
-                                    }}
-                                  >
-                                    {isExpanded ? 'Masquer' : 'Voir plus'}
-                                  </button>
-                                )}
-                              </>
-                            );
-                          })()}
-                        </td>
-                        <td style={{ maxWidth: 300, whiteSpace: 'pre-wrap' }}>
-                          {m.reply ? (
-                            <>
-                              <div>{m.reply}</div>
-                              {m.replyAt && (
-                                <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>
-                                  Répondu le{' '}
-                                  {new Date(m.replyAt).toLocaleString('fr-FR', {
-                                    day: '2-digit',
-                                    month: '2-digit',
-                                    year: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <span style={{ color: '#999' }}>En attente de réponse</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+                    <div className="messages-detail-body">
+                      <p style={{ whiteSpace: 'pre-wrap' }}>{selectedMessage.message}</p>
+                    </div>
+
+                    <footer className="messages-detail-footer">
+                      {selectedMessage.reply ? (
+                        <div className="messages-reply-block">
+                          <div className="messages-reply-display">
+                            <div className="messages-reply-label">Réponse de l'Ordre</div>
+                            <div className="messages-reply-content">
+                              {selectedMessage.reply}
+                            </div>
+                            {selectedMessage.replyAt && (
+                              <div className="messages-reply-meta">
+                                Répondu le{' '}
+                                {new Date(selectedMessage.replyAt).toLocaleString('fr-FR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="messages-reply-block">
+                          <div style={{
+                            padding: '1rem',
+                            background: '#fef3c7',
+                            border: '1px solid #fde68a',
+                            borderRadius: '10px',
+                            color: '#92400e',
+                            fontSize: '0.9rem'
+                          }}>
+                            ⏳ En attente de réponse de l'Ordre
+                          </div>
+                        </div>
+                      )}
+                    </footer>
+                  </div>
+                )}
+              </section>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -15,6 +15,16 @@ const Deontologie = () => {
   const [deontologie, setDeontologie] = useState<Deontologie | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fonction pour corriger les URLs Cloudinary incorrectes (image/upload -> raw/upload pour PDFs)
+  const fixPdfUrl = (url: string): string => {
+    if (!url) return url;
+    // Si l'URL contient /image/upload/ et se termine par .pdf, corriger
+    if (url.includes('/image/upload/') && url.toLowerCase().endsWith('.pdf')) {
+      return url.replace('/image/upload/', '/raw/upload/');
+    }
+    return url;
+  };
+
   useEffect(() => {
     const loadDeontologie = async () => {
       setLoading(true);
@@ -29,10 +39,11 @@ const Deontologie = () => {
         const active = rawArray.find((item: any) => item.isActive !== false);
         
         if (active) {
+          const pdfUrl = fixPdfUrl(active.pdfUrl || '');
           setDeontologie({
             _id: String(active._id || ''),
             title: active.title || 'Code de déontologie',
-            pdfUrl: active.pdfUrl || '',
+            pdfUrl: pdfUrl,
             description: active.description || '',
             lastUpdated: active.lastUpdated || '',
             isActive: active.isActive !== undefined ? active.isActive : true
@@ -105,41 +116,93 @@ const Deontologie = () => {
             </div>
           ) : (
             <div className="deontologie-card">
-              <h2 className="deontologie-title">
-                {deontologie.title}
-              </h2>
-              {deontologie.description && (
-                <p className="deontologie-description">
-                  {deontologie.description}
-                </p>
-              )}
-              {deontologie.lastUpdated && (
-                <p className="deontologie-updated">
-                  Dernière mise à jour : {new Date(deontologie.lastUpdated).toLocaleDateString('fr-FR', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
-                </p>
-              )}
-              <div className="deontologie-pdf-container">
-                <iframe
-                  src={deontologie.pdfUrl}
-                  width="100%"
-                  height="800px"
-                  className="deontologie-iframe"
-                  title={deontologie.title}
-                />
-                <div className="deontologie-actions">
+              <div className="deontologie-header">
+                <div className="deontologie-header-content">
+                  <h2 className="deontologie-title">
+                    {deontologie.title}
+                  </h2>
+                  {deontologie.lastUpdated && (
+                    <div className="deontologie-meta">
+                      <span className="deontologie-meta-item">
+                        📅 Dernière mise à jour : {new Date(deontologie.lastUpdated).toLocaleDateString('fr-FR', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="deontologie-header-actions">
                   <a
                     href={deontologie.pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="deontologie-download-btn"
+                    className="deontologie-download-btn-header"
+                    download
                   >
-                    📄 Télécharger le PDF
+                    <span className="btn-icon">⬇️</span>
+                    <span className="btn-text">Télécharger</span>
+                  </a>
+                  <a
+                    href={deontologie.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="deontologie-view-btn-header"
+                  >
+                    <span className="btn-icon">👁️</span>
+                    <span className="btn-text">Ouvrir dans un nouvel onglet</span>
                   </a>
                 </div>
+              </div>
+
+              {deontologie.description && (
+                <div className="deontologie-description-box">
+                  <p className="deontologie-description">
+                    {deontologie.description}
+                  </p>
+                </div>
+              )}
+
+              <div className="deontologie-pdf-container">
+                <div className="deontologie-pdf-wrapper">
+                  <iframe
+                    src={`${deontologie.pdfUrl}#toolbar=1&navpanes=1&scrollbar=1`}
+                    width="100%"
+                    height="900px"
+                    className="deontologie-iframe"
+                    title={deontologie.title}
+                    style={{ border: 'none' }}
+                  />
+                </div>
+                <div className="deontologie-pdf-overlay">
+                  <div className="deontologie-pdf-info">
+                    <span className="pdf-icon">📄</span>
+                    <span className="pdf-text">Document PDF</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="deontologie-actions-footer">
+                <a
+                  href={deontologie.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="deontologie-download-btn-footer"
+                  download
+                >
+                  <span className="btn-icon">⬇️</span>
+                  <span className="btn-text">Télécharger le PDF</span>
+                </a>
+                <a
+                  href={deontologie.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="deontologie-view-btn-footer"
+                >
+                  <span className="btn-icon">🔗</span>
+                  <span className="btn-text">Ouvrir dans un nouvel onglet</span>
+                </a>
               </div>
             </div>
           )}

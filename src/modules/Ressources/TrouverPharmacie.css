@@ -414,6 +414,9 @@ body:has(.trouver-pharmacie-page) {
   transition: all 0.3s ease;
   position: relative;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .pharmacie-card-compact:hover {

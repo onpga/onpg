@@ -6,6 +6,7 @@ const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 require('dotenv').config({ path: path.join(__dirname, 'backend-config.env') });
 
@@ -169,6 +170,56 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Routes publiques - IMPORTANT: Les routes les plus spécifiques doivent être définies EN PREMIER
+
+// ============================================
+// SITEMAP.XML - Route pour servir le sitemap
+// ============================================
+app.get('/sitemap.xml', (req, res) => {
+  try {
+    // Chemin vers le fichier sitemap.xml dans le dossier public
+    const sitemapPath = path.join(__dirname, '..', 'public', 'sitemap.xml');
+    
+    // Vérifier si le fichier existe
+    if (!fs.existsSync(sitemapPath)) {
+      console.error('❌ Fichier sitemap.xml introuvable:', sitemapPath);
+      return res.status(404).send('Sitemap not found');
+    }
+    
+    // Lire et servir le fichier avec le bon Content-Type
+    const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache 1 heure
+    res.send(sitemapContent);
+  } catch (error) {
+    console.error('❌ Erreur lors de la lecture du sitemap.xml:', error);
+    res.status(500).send('Error loading sitemap');
+  }
+});
+
+// ============================================
+// ROBOTS.TXT - Route pour servir robots.txt
+// ============================================
+app.get('/robots.txt', (req, res) => {
+  try {
+    // Chemin vers le fichier robots.txt dans le dossier public
+    const robotsPath = path.join(__dirname, '..', 'public', 'robots.txt');
+    
+    // Vérifier si le fichier existe
+    if (!fs.existsSync(robotsPath)) {
+      console.error('❌ Fichier robots.txt introuvable:', robotsPath);
+      return res.status(404).send('Robots.txt not found');
+    }
+    
+    // Lire et servir le fichier avec le bon Content-Type
+    const robotsContent = fs.readFileSync(robotsPath, 'utf8');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache 1 heure
+    res.send(robotsContent);
+  } catch (error) {
+    console.error('❌ Erreur lors de la lecture du robots.txt:', error);
+    res.status(500).send('Error loading robots.txt');
+  }
+});
 
 // ============================================
 // ROUTE SPÉCIFIQUE POUR LES PHARMACIES (DOIT ÊTRE AVANT /api/public/:collection)

@@ -305,7 +305,9 @@ const ArticleDetail = () => {
   const shareArticle = (platform: string) => {
     if (!article) return;
     
-    const url = window.location.href;
+    // Ajouter un paramètre de version pour forcer le rafraîchissement du cache Facebook
+    const baseUrl = window.location.href.split('?')[0]; // Enlever les paramètres existants
+    const url = `${baseUrl}?v=${Date.now()}`;
     const title = article.title;
     const text = article.excerpt;
     

@@ -172,6 +172,73 @@ app.post('/api/auth/login', async (req, res) => {
 // Routes publiques - IMPORTANT: Les routes les plus spécifiques doivent être définies EN PREMIER
 
 // ============================================
+// META TAGS DYNAMIQUES POUR FACEBOOK/TWITTER
+// Route pour générer les meta tags Open Graph selon l'URL
+// ============================================
+app.get('/api/og-meta/:collection/:id', async (req, res) => {
+  try {
+    const { collection, id } = req.params;
+    
+    // Collections autorisées
+    const RESOURCE_COLLECTIONS = ['actualites', 'articles', 'communiques', 'decrets', 'decisions', 'lois', 'commissions', 'theses'];
+    
+    if (!RESOURCE_COLLECTIONS.includes(collection)) {
+      return res.status(404).json({ success: false, error: 'Collection non trouvée' });
+    }
+
+    const resource = await db.collection(collection).findOne({ _id: new ObjectId(id) });
+    
+    if (!resource) {
+      return res.status(404).json({ success: false, error: 'Ressource non trouvée' });
+    }
+
+    const baseUrl = req.protocol + '://' + req.get('host');
+    const currentUrl = `${baseUrl}/ressources/${collection}/${id}`;
+    const imageUrl = resource.image || resource.featuredImage || `${baseUrl}/logo-onpg.png`;
+    const description = resource.excerpt || resource.summary || resource.content?.substring(0, 200) || `Découvrez ${resource.title} sur le site de l'ONPG`;
+    
+    // Générer le HTML avec les meta tags
+    const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${resource.title} | ONPG</title>
+  <meta name="description" content="${description.replace(/"/g, '&quot;')}">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${currentUrl}">
+  <meta property="og:title" content="${resource.title.replace(/"/g, '&quot;')}">
+  <meta property="og:description" content="${description.replace(/"/g, '&quot;')}">
+  <meta property="og:image" content="${imageUrl}">
+  <meta property="og:site_name" content="ONPG - Ordre National de Pharmacie du Gabon">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="${currentUrl}">
+  <meta name="twitter:title" content="${resource.title.replace(/"/g, '&quot;')}">
+  <meta name="twitter:description" content="${description.replace(/"/g, '&quot;')}">
+  <meta name="twitter:image" content="${imageUrl}">
+  
+  <!-- Redirection vers la vraie page -->
+  <meta http-equiv="refresh" content="0;url=${currentUrl}">
+  <script>window.location.href = '${currentUrl}';</script>
+</head>
+<body>
+  <p>Redirection en cours... <a href="${currentUrl}">Cliquez ici</a></p>
+</body>
+</html>`;
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (error) {
+    console.error('Erreur génération meta tags:', error);
+    res.status(500).send('Erreur serveur');
+  }
+});
+
+// ============================================
 // SITEMAP.XML - Route pour servir le sitemap
 // ============================================
 app.get('/sitemap.xml', (req, res) => {

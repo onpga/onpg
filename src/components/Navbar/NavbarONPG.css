@@ -53,14 +53,21 @@
     0 4px 12px rgba(52, 152, 219, 0.3),
     inset 0 2px 4px rgba(255, 255, 255, 0.2);
   overflow: hidden;
-  animation: logoRotate 8s linear infinite;
+  /* Animation désactivée pour performance - peut être réactivée avec :hover si nécessaire */
+  /* animation: logoRotate 8s linear infinite; */
 }
 
+/* Animation désactivée pour performance */
 @keyframes logoRotate {
   0% { background: linear-gradient(135deg, #00A651 0%, #3498db 50%, #e74c3c 100%); }
   33% { background: linear-gradient(135deg, #3498db 0%, #e74c3c 50%, #00A651 100%); }
   66% { background: linear-gradient(135deg, #e74c3c 0%, #00A651 50%, #3498db 100%); }
   100% { background: linear-gradient(135deg, #00A651 0%, #3498db 50%, #e74c3c 100%); }
+}
+
+/* Réactiver l'animation uniquement au hover pour économiser les ressources */
+.onpg-logo-wrapper:hover {
+  animation: logoRotate 8s linear infinite;
 }
 
 .onpg-logo-section .onpg-logo-img {
@@ -278,10 +285,11 @@
 }
 
 /* Navigation bar avec gradient animé - DESIGN INNOVANT 2026 */
+/* Animation désactivée par défaut pour performance - activée au hover */
 .onpg-navbar {
   background: linear-gradient(135deg, #00A651 0%, #008F45 30%, #3498db 60%, #e74c3c 90%);
   background-size: 400% 400%;
-  animation: navbarGradientShift 8s ease infinite;
+  /* animation: navbarGradientShift 8s ease infinite; */
   padding: 0.15rem 0;
   box-shadow:
     0 12px 50px rgba(0, 166, 81, 0.4),
@@ -302,6 +310,11 @@
   transform: translateY(0) !important;
   /* Empêcher les transitions qui pourraient cacher le menu */
   transition: none !important;
+}
+
+/* Réactiver l'animation uniquement au hover pour économiser les ressources */
+.onpg-navbar:hover {
+  animation: navbarGradientShift 8s ease infinite;
 }
 
 @keyframes navbarGradientShift {
@@ -338,7 +351,8 @@
   height: 4px;
   background: rgba(255, 255, 255, 0.6);
   border-radius: 50%;
-  animation: magicParticleFloat 12s linear infinite;
+  /* Animation désactivée pour performance */
+  /* animation: magicParticleFloat 12s linear infinite; */
 }
 
 .navbar-magic-particles::before {
@@ -402,7 +416,8 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  animation: navbarShine 5s ease-in-out infinite;
+  /* Animation désactivée pour performance */
+  /* animation: navbarShine 5s ease-in-out infinite; */
 }
 
 @keyframes navbarShine {

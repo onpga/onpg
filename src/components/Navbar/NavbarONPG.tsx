@@ -1,8 +1,92 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import { useThrottledScroll } from '../../hooks/useThrottledScroll';
 import './NavbarONPG.css';
+
+// Déplacer navItems en constante externe pour éviter recréation
+const NAV_ITEMS = [
+  {
+    path: '/',
+    label: 'Accueil',
+    icon: '🏠',
+    hasDropdown: false,
+    id: 'accueil'
+  },
+  {
+    path: '/ordre',
+    label: "L'Ordre",
+    icon: '👥',
+    hasDropdown: true,
+    id: 'ordre',
+    dropdown: [
+      { path: '/ordre/a-propos', label: 'À propos' },
+      { path: '/ordre/organigramme', label: 'Organigramme' },
+      { path: '/ordre/conseil-national', label: 'Conseil National' }
+    ]
+  },
+  {
+    path: '/membres',
+    label: 'Membres',
+    icon: '👨‍👩‍👧‍👦',
+    hasDropdown: true,
+    id: 'membres',
+    dropdown: [
+      { path: '/membres/tableau-ordre', label: 'Tableau de l\'Ordre' },
+      { path: '/membres/section-a', label: 'Section A' },
+      { path: '/membres/section-b', label: 'Section B' },
+      { path: '/membres/section-c', label: 'Section C' },
+      { path: '/membres/section-d', label: 'Section D' }
+    ]
+  },
+  {
+    path: '/pratique',
+    label: 'Pratique',
+    icon: '📋',
+    hasDropdown: true,
+    id: 'pratique',
+    dropdown: [
+      { path: '/pratique/formation-continue', label: 'Formation Continue' },
+      { path: '/pratique/deontologie', label: 'Déontologie' },
+      { path: '/pratique/pharmacies', label: 'Pharmacies' },
+      { path: '/pratique/contact', label: 'Contact' }
+    ]
+  },
+  {
+    path: '/ressources',
+    label: 'Ressources',
+    icon: '💬',
+    hasDropdown: true,
+    id: 'ressources',
+    dropdown: [
+      { path: '/ressources/actualites', label: 'Actualités' },
+      { path: '/ressources/communiques', label: 'Communiqués' },
+      { path: '/ressources/photos', label: 'Photos' },
+      { path: '/ressources/videos', label: 'Vidéos' },
+      { path: '/ressources/articles', label: 'Articles' },
+      { path: '/ressources/theses', label: 'Thèses' },
+      { path: '/ressources/decrets', label: 'Décrets' },
+      { path: '/ressources/decisions', label: 'Décisions' },
+      { path: '/ressources/commissions', label: 'Commissions' },
+      { path: '/ressources/lois', label: 'Lois' }
+    ]
+  },
+  {
+    path: '/pratique/pharmacies',
+    label: 'Trouver une pharmacie',
+    icon: '',
+    isButton: true,
+    hasPlus: true,
+    id: 'pharmacies'
+  },
+  {
+    path: '/espace',
+    label: 'Espace',
+    icon: '🩹',
+    hasDropdown: false,
+    id: 'espace'
+  }
+] as const;
 
 /**
  * Navbar ONPG - Inspirée du site officiel
@@ -15,17 +99,17 @@ const NavbarONPG = () => {
   const location = useLocation();
   const menuRef = useRef<HTMLUListElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const navbarRef = useRef<HTMLElement>(null);
 
   // Empêcher le menu de navigation (barre verte) de se cacher lors du scroll
-  // Optimisé avec throttling
+  // Optimisé avec useRef au lieu de querySelector
   const handleNavbarScroll = useCallback(() => {
-    const navbar = document.querySelector('.onpg-navbar') as HTMLElement;
-    if (navbar) {
-      navbar.style.position = 'sticky';
-      navbar.style.top = '0';
-      navbar.style.zIndex = '999';
-      navbar.style.visibility = 'visible';
-      navbar.style.opacity = '1';
+    if (navbarRef.current) {
+      navbarRef.current.style.position = 'sticky';
+      navbarRef.current.style.top = '0';
+      navbarRef.current.style.zIndex = '999';
+      navbarRef.current.style.visibility = 'visible';
+      navbarRef.current.style.opacity = '1';
     }
   }, []);
 
@@ -75,93 +159,28 @@ const NavbarONPG = () => {
     }
   }, [mobileMenuOpen]);
 
-  const navItems = [
-    {
-      path: '/',
-      label: 'Accueil',
-      icon: '🏠',
-      hasDropdown: false,
-      id: 'accueil'
-    },
-    {
-      path: '/ordre',
-      label: "L'Ordre",
-      icon: '👥',
-      hasDropdown: true,
-      id: 'ordre',
-      dropdown: [
-        { path: '/ordre/a-propos', label: 'À propos' },
-        { path: '/ordre/organigramme', label: 'Organigramme' },
-        { path: '/ordre/conseil-national', label: 'Conseil National' }
-      ]
-    },
-    {
-      path: '/membres',
-      label: 'Membres',
-      icon: '👨‍👩‍👧‍👦',
-      hasDropdown: true,
-      id: 'membres',
-      dropdown: [
-        { path: '/membres/tableau-ordre', label: 'Tableau de l\'Ordre' },
-        { path: '/membres/section-a', label: 'Section A' },
-        { path: '/membres/section-b', label: 'Section B' },
-        { path: '/membres/section-c', label: 'Section C' },
-        { path: '/membres/section-d', label: 'Section D' }
-      ]
-    },
-    {
-      path: '/pratique',
-      label: 'Pratique',
-      icon: '📋',
-      hasDropdown: true,
-      id: 'pratique',
-      dropdown: [
-        { path: '/pratique/formation-continue', label: 'Formation Continue' },
-        { path: '/pratique/deontologie', label: 'Déontologie' },
-        { path: '/pratique/pharmacies', label: 'Pharmacies' },
-        { path: '/pratique/contact', label: 'Contact' }
-      ]
-    },
-    {
-      path: '/ressources',
-      label: 'Ressources',
-      icon: '💬',
-      hasDropdown: true,
-      id: 'ressources',
-      dropdown: [
-        { path: '/ressources/actualites', label: 'Actualités' },
-        { path: '/ressources/communiques', label: 'Communiqués' },
-        { path: '/ressources/photos', label: 'Photos' },
-        { path: '/ressources/videos', label: 'Vidéos' },
-        { path: '/ressources/articles', label: 'Articles' },
-        { path: '/ressources/theses', label: 'Thèses' },
-        { path: '/ressources/decrets', label: 'Décrets' },
-        { path: '/ressources/decisions', label: 'Décisions' },
-        { path: '/ressources/commissions', label: 'Commissions' },
-        { path: '/ressources/lois', label: 'Lois' }
-      ]
-    },
-    {
-      path: '/pratique/pharmacies',
-      label: 'Trouver une pharmacie',
-      icon: '',
-      isButton: true,
-      hasPlus: true,
-      id: 'pharmacies'
-    },
-    {
-      path: '/espace',
-      label: 'Espace',
-      icon: '🩹',
-      hasDropdown: false,
-      id: 'espace'
-    }
-  ];
-
   const [ordreDropdownOpen, setOrdreDropdownOpen] = useState(false);
   const [membresDropdownOpen, setMembresDropdownOpen] = useState(false);
   const [pratiqueDropdownOpen, setPratiqueDropdownOpen] = useState(false);
   const [ressourcesDropdownOpen, setRessourcesDropdownOpen] = useState(false);
+
+  // Mémoïser navItems pour éviter recréation
+  const navItems = useMemo(() => NAV_ITEMS, []);
+
+  // Mémoïser le calcul isActive pour chaque item
+  const activeItems = useMemo(() => {
+    const currentPath = location.pathname;
+    return new Set(
+      navItems
+        .filter(item => {
+          if (item.path === '/') {
+            return currentPath === '/';
+          }
+          return currentPath === item.path || currentPath.startsWith(item.path + '/');
+        })
+        .map(item => item.id)
+    );
+  }, [location.pathname, navItems]);
 
   // Ouvrir tous les dropdowns en mobile quand le menu s'ouvre
   useEffect(() => {
@@ -179,10 +198,78 @@ const NavbarONPG = () => {
     }
   }, [mobileMenuOpen]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implémenter la recherche
-  };
+  }, []);
+
+  // Optimiser les handlers de dropdown avec useCallback
+  const handleDropdownToggle = useCallback((itemId: string, currentState: boolean) => {
+    switch (itemId) {
+      case 'ordre':
+        setOrdreDropdownOpen(!currentState);
+        break;
+      case 'membres':
+        setMembresDropdownOpen(!currentState);
+        break;
+      case 'pratique':
+        setPratiqueDropdownOpen(!currentState);
+        break;
+      case 'ressources':
+        setRessourcesDropdownOpen(!currentState);
+        break;
+    }
+  }, []);
+
+  const handleDropdownOpen = useCallback((itemId: string) => {
+    switch (itemId) {
+      case 'ordre':
+        setOrdreDropdownOpen(true);
+        break;
+      case 'membres':
+        setMembresDropdownOpen(true);
+        break;
+      case 'pratique':
+        setPratiqueDropdownOpen(true);
+        break;
+      case 'ressources':
+        setRessourcesDropdownOpen(true);
+        break;
+    }
+  }, []);
+
+  const handleDropdownClose = useCallback((itemId: string) => {
+    switch (itemId) {
+      case 'ordre':
+        setOrdreDropdownOpen(false);
+        break;
+      case 'membres':
+        setMembresDropdownOpen(false);
+        break;
+      case 'pratique':
+        setPratiqueDropdownOpen(false);
+        break;
+      case 'ressources':
+        setRessourcesDropdownOpen(false);
+        break;
+    }
+  }, []);
+
+  // Helper pour obtenir l'état d'un dropdown
+  const getDropdownState = useCallback((itemId: string) => {
+    switch (itemId) {
+      case 'ordre':
+        return ordreDropdownOpen;
+      case 'membres':
+        return membresDropdownOpen;
+      case 'pratique':
+        return pratiqueDropdownOpen;
+      case 'ressources':
+        return ressourcesDropdownOpen;
+      default:
+        return false;
+    }
+  }, [ordreDropdownOpen, membresDropdownOpen, pratiqueDropdownOpen, ressourcesDropdownOpen]);
 
   return (
     <>
@@ -282,7 +369,7 @@ const NavbarONPG = () => {
       </header>
 
       {/* Navigation bar optimisée sans scrolls */}
-      <nav className="onpg-navbar">
+      <nav className="onpg-navbar" ref={navbarRef}>
         <div className="onpg-navbar-container">
           {/* Bouton mobile amélioré */}
           <button
@@ -317,58 +404,24 @@ const NavbarONPG = () => {
             className={`onpg-nav-menu ${mobileMenuOpen ? 'open' : ''}`}
           >
             {navItems.map((item) => {
-              const isActive = location.pathname === item.path || 
-                (item.path !== '/' && location.pathname.startsWith(item.path));
+              // Utiliser le Set mémoïsé pour vérifier isActive
+              const isActive = activeItems.has(item.id);
+              const dropdownOpen = getDropdownState(item.id);
               
               return (
                 <li
                   key={item.path}
                   className={`onpg-nav-item ${item.isButton ? 'nav-button' : ''} ${isActive ? 'active' : ''}`}
-                  onMouseEnter={() => {
-                    if (item.hasDropdown) {
-                      switch (item.id) {
-                        case 'ordre':
-                          setOrdreDropdownOpen(true);
-                          break;
-                        case 'membres':
-                          setMembresDropdownOpen(true);
-                          break;
-                        case 'pratique':
-                          setPratiqueDropdownOpen(true);
-                          break;
-                        case 'ressources':
-                          setRessourcesDropdownOpen(true);
-                          break;
+                  onMouseEnter={item.hasDropdown ? () => handleDropdownOpen(item.id) : undefined}
+                  onMouseLeave={item.hasDropdown ? (e) => {
+                    const relatedTarget = e.relatedTarget as HTMLElement | null;
+                    if (relatedTarget && relatedTarget instanceof Element) {
+                      if (relatedTarget.closest('.onpg-dropdown')) {
+                        return;
                       }
                     }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (item.hasDropdown) {
-                      const relatedTarget = e.relatedTarget as HTMLElement | null;
-                      // Vérifier que relatedTarget est un élément DOM valide
-                      if (relatedTarget && relatedTarget instanceof Element) {
-                        // Si on passe vers le dropdown, garder le dropdown ouvert
-                        if (relatedTarget.closest('.onpg-dropdown')) {
-                          return;
-                        }
-                      }
-                      // Sinon, fermer le dropdown
-                      switch (item.id) {
-                        case 'ordre':
-                          setOrdreDropdownOpen(false);
-                          break;
-                        case 'membres':
-                          setMembresDropdownOpen(false);
-                          break;
-                        case 'pratique':
-                          setPratiqueDropdownOpen(false);
-                          break;
-                        case 'ressources':
-                          setRessourcesDropdownOpen(false);
-                          break;
-                      }
-                    }
-                  }}
+                    handleDropdownClose(item.id);
+                  } : undefined}
                 >
                   <Link
                     to={item.path}
@@ -377,20 +430,7 @@ const NavbarONPG = () => {
                       // En mobile seulement : empêcher la navigation et toggle le dropdown
                       if (window.innerWidth <= 768 && item.hasDropdown) {
                         e.preventDefault();
-                        switch (item.id) {
-                          case 'ordre':
-                            setOrdreDropdownOpen(!ordreDropdownOpen);
-                            break;
-                          case 'membres':
-                            setMembresDropdownOpen(!membresDropdownOpen);
-                            break;
-                          case 'pratique':
-                            setPratiqueDropdownOpen(!pratiqueDropdownOpen);
-                            break;
-                          case 'ressources':
-                            setRessourcesDropdownOpen(!ressourcesDropdownOpen);
-                            break;
-                        }
+                        handleDropdownToggle(item.id, dropdownOpen);
                       } else if (!item.hasDropdown) {
                         // Fermer le menu mobile seulement pour les liens sans dropdown
                         setMobileMenuOpen(false);
@@ -425,10 +465,7 @@ const NavbarONPG = () => {
                           viewBox="0 0 24 24" 
                           fill="none" 
                           xmlns="http://www.w3.org/2000/svg" 
-                          className={`nav-arrow mobile-only ${(item.id === 'ordre' && ordreDropdownOpen) ||
-                                                   (item.id === 'membres' && membresDropdownOpen) ||
-                                                   (item.id === 'pratique' && pratiqueDropdownOpen) ||
-                                                   (item.id === 'ressources' && ressourcesDropdownOpen) ? 'open' : ''}`}
+                          className={`nav-arrow mobile-only ${dropdownOpen ? 'open' : ''}`}
                         >
                           <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
@@ -444,50 +481,16 @@ const NavbarONPG = () => {
                   </Link>
                   
                   {item.hasDropdown && item.dropdown && (
-                    <ul className={`onpg-dropdown ${item.id}-dropdown ${(item.id === 'ordre' && ordreDropdownOpen) ||
-                                                   (item.id === 'membres' && membresDropdownOpen) ||
-                                                   (item.id === 'pratique' && pratiqueDropdownOpen) ||
-                                                   (item.id === 'ressources' && ressourcesDropdownOpen) ? 'open' : ''}`}
-                        onMouseEnter={() => {
-                          switch (item.id) {
-                            case 'ordre':
-                              setOrdreDropdownOpen(true);
-                              break;
-                            case 'membres':
-                              setMembresDropdownOpen(true);
-                              break;
-                            case 'pratique':
-                              setPratiqueDropdownOpen(true);
-                              break;
-                            case 'ressources':
-                              setRessourcesDropdownOpen(true);
-                              break;
-                          }
-                        }}
+                    <ul className={`onpg-dropdown ${item.id}-dropdown ${dropdownOpen ? 'open' : ''}`}
+                        onMouseEnter={() => handleDropdownOpen(item.id)}
                         onMouseLeave={(e) => {
                           const relatedTarget = e.relatedTarget as HTMLElement | null;
-                          // Vérifier que relatedTarget est un élément DOM valide
                           if (relatedTarget && relatedTarget instanceof Element) {
-                            // Si on revient vers le menu parent, garder le dropdown ouvert
                             if (relatedTarget.closest('li')) {
                               return;
                             }
                           }
-                          // Sinon, fermer le dropdown
-                          switch (item.id) {
-                            case 'ordre':
-                              setOrdreDropdownOpen(false);
-                              break;
-                            case 'membres':
-                              setMembresDropdownOpen(false);
-                              break;
-                            case 'pratique':
-                              setPratiqueDropdownOpen(false);
-                              break;
-                            case 'ressources':
-                              setRessourcesDropdownOpen(false);
-                              break;
-                          }
+                          handleDropdownClose(item.id);
                         }}
                     >
                       {item.dropdown.map((subItem, subIndex) => (
@@ -524,4 +527,5 @@ const NavbarONPG = () => {
   );
 };
 
-export default NavbarONPG;
+// Mémoïser le composant pour éviter re-renders inutiles
+export default memo(NavbarONPG);

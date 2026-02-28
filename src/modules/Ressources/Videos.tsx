@@ -117,9 +117,9 @@ const Videos = () => {
     <div className="videos-page">
       {/* Hero Section */}
       <div className="videos-hero">
-        <div className="hero-content">
-          <h1 className="hero-title">Vidéothèque ONPG</h1>
-          <p className="hero-subtitle">
+        <div className="videos-hero-content">
+          <h1 className="videos-hero-title">Vidéothèque ONPG</h1>
+          <p className="videos-hero-subtitle">
             Découvrez nos vidéos éducatives, formations et conférences
           </p>
         </div>
@@ -127,25 +127,25 @@ const Videos = () => {
 
       {/* Barre de recherche et filtres */}
       <div className="videos-filters">
-        <div className="filters-container">
+        <div className="videos-filters-container">
           {/* Recherche */}
-          <div className="search-wrapper">
+          <div className="videos-search-wrapper">
             <input
               type="text"
-              className="search-input"
+              className="videos-search-input"
               placeholder="Rechercher par titre, description ou auteur..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <span className="videos-search-icon">🔍</span>
           </div>
 
           {/* Catégories */}
-          <div className="category-filters">
+          <div className="videos-category-filters">
             {categories.map(category => (
               <button
                 key={category}
-                className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
+                className={`videos-category-btn ${selectedCategory === category ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -155,7 +155,7 @@ const Videos = () => {
 
           {/* Bouton effacer filtres */}
           {(searchQuery || selectedCategory !== 'Toutes') && (
-            <button className="clear-filters-btn" onClick={clearFilters}>
+            <button className="videos-clear-btn" onClick={clearFilters}>
               Effacer les filtres
             </button>
           )}
@@ -165,21 +165,21 @@ const Videos = () => {
       {/* Contenu principal */}
       <div className="videos-content">
         {loading ? (
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
+          <div className="videos-loading-state">
+            <div className="videos-loading-spinner"></div>
             <p>Chargement des vidéos...</p>
           </div>
         ) : filteredVideos.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🎥</div>
-            <h3 className="empty-title">Aucune vidéo trouvée</h3>
-            <p className="empty-subtitle">
+          <div className="videos-empty-state">
+            <div className="videos-empty-icon">🎥</div>
+            <h3 className="videos-empty-title">Aucune vidéo trouvée</h3>
+            <p className="videos-empty-subtitle">
               {searchQuery || selectedCategory !== 'Toutes'
                 ? 'Essayez de modifier vos critères de recherche'
                 : 'Aucune vidéo disponible pour le moment'}
             </p>
             {(searchQuery || selectedCategory !== 'Toutes') && (
-              <button className="empty-action-btn" onClick={clearFilters}>
+              <button className="videos-empty-action-btn" onClick={clearFilters}>
                 Effacer les filtres
               </button>
             )}
@@ -187,7 +187,7 @@ const Videos = () => {
         ) : (
           <>
             <div className="videos-results">
-              <p className="results-count">
+              <p className="videos-results-count">
                 {filteredVideos.length} vidéo{filteredVideos.length > 1 ? 's' : ''} trouvée{filteredVideos.length > 1 ? 's' : ''}
               </p>
             </div>
@@ -202,13 +202,13 @@ const Videos = () => {
                   <div className="video-thumbnail">
                     <img src={video.thumbnail} alt={video.title} loading="lazy" />
                     <div className="video-overlay">
-                      <div className="play-button">
-                        <span className="play-icon">▶</span>
+                      <div className="video-play-button">
+                        <span className="video-play-icon">▶</span>
                       </div>
                     </div>
                     <div className="video-duration">{formatDuration(video.duration)}</div>
                     {video.featured && (
-                      <div className="featured-badge">
+                      <div className="videos-featured-badge">
                         <span style={{ fontSize: '0.7rem' }}>⭐</span>
                       </div>
                     )}
@@ -217,9 +217,9 @@ const Videos = () => {
                   <div className="video-card-content">
                     <h3 className="video-card-title">{video.title}</h3>
                     <div className="video-card-meta">
-                      <span className="video-category">{video.category}</span>
+                      <span className="video-category-tag">{video.category}</span>
                       {video.speaker && (
-                        <span className="video-speaker">👤 {video.speaker}</span>
+                        <span className="video-speaker-tag">👤 {video.speaker}</span>
                       )}
                     </div>
                   </div>

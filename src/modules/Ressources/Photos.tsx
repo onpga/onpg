@@ -217,38 +217,38 @@ const Photos = () => {
     <div className="photos-page">
       {/* Hero Section */}
       <section className="photos-hero" ref={heroRef}>
-        <div className="hero-background">
-          <div className="hero-gradient-primary"></div>
+        <div className="photos-hero-background">
+          <div className="photos-hero-gradient-primary"></div>
         </div>
 
-        <div className="hero-content">
-          <div className="hero-main">
-            <div className="hero-badge">
-              <span className="badge-icon">📅</span>
-              <span className="badge-text">ÉVÉNEMENTS ONPG</span>
+        <div className="photos-hero-content">
+          <div className="photos-hero-main">
+            <div className="photos-hero-badge">
+              <span className="photos-badge-icon">📅</span>
+              <span className="photos-badge-text">ÉVÉNEMENTS ONPG</span>
             </div>
 
-            <h1 className="hero-title">
-              <span className="title-main">Événements</span>
-              <span className="title-secondary">& Archives</span>
+            <h1 className="photos-hero-title">
+              <span className="photos-title-main">Événements</span>
+              <span className="photos-title-secondary">& Archives</span>
             </h1>
 
-            <p className="hero-subtitle">
+            <p className="photos-hero-subtitle">
               Découvrez nos événements marquants et plongez dans l'histoire de la pharmacie gabonaise.
             </p>
 
-            <div className="hero-quick-stats">
-              <div className="quick-stat">
-                <span className="stat-number">{albums.length}</span>
-                <span className="stat-label">Événements</span>
+            <div className="photos-quick-stats">
+              <div className="photos-quick-stat">
+                <span className="photos-stat-number">{albums.length}</span>
+                <span className="photos-stat-label">Événements</span>
               </div>
-              <div className="quick-stat">
-                <span className="stat-number">{photos.length}</span>
-                <span className="stat-label">Photos</span>
+              <div className="photos-quick-stat">
+                <span className="photos-stat-number">{photos.length}</span>
+                <span className="photos-stat-label">Photos</span>
               </div>
-              <div className="quick-stat">
-                <span className="stat-number">{albums.filter(a => a.featured).length}</span>
-                <span className="stat-label">Événements Majeurs</span>
+              <div className="photos-quick-stat">
+                <span className="photos-stat-number">{albums.filter(a => a.featured).length}</span>
+                <span className="photos-stat-label">Événements Majeurs</span>
               </div>
             </div>
           </div>
@@ -257,25 +257,25 @@ const Photos = () => {
 
       {/* Barre de recherche et filtres */}
       <div className="photos-filters">
-        <div className="filters-container">
+        <div className="photos-filters-container">
           {/* Recherche */}
-          <div className="search-wrapper">
+          <div className="photos-search-wrapper">
             <input
               type="text"
-              className="search-input"
+              className="photos-search-input"
               placeholder="Rechercher par titre, description, photographe ou tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <span className="photos-search-icon">🔍</span>
           </div>
 
           {/* Catégories */}
-          <div className="category-filters">
+          <div className="photos-category-filters">
             {categories.map(category => (
               <button
                 key={category.id}
-                className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+                className={`photos-category-btn ${selectedCategory === category.id ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(category.id)}
               >
                 {category.name} ({category.count})
@@ -285,9 +285,9 @@ const Photos = () => {
 
           {/* Albums */}
           {albums.length > 0 && (
-            <div className="album-filters">
+            <div className="photos-album-filters">
               <select
-                className="album-select"
+                className="photos-album-select"
                 value={selectedAlbum}
                 onChange={(e) => setSelectedAlbum(e.target.value)}
               >
@@ -303,7 +303,7 @@ const Photos = () => {
 
           {/* Bouton effacer filtres */}
           {(searchQuery || selectedCategory !== 'all' || selectedAlbum !== 'all') && (
-            <button className="clear-filters-btn" onClick={clearFilters}>
+            <button className="photos-clear-btn" onClick={clearFilters}>
               Effacer les filtres
             </button>
           )}
@@ -313,10 +313,10 @@ const Photos = () => {
       {/* Albums/Événements Grid */}
       {!isLoading && (
         <section className="albums-section">
-          <div className="container">
-            <div className="section-header">
-              <h2 className="section-title">Événements & Moments</h2>
-              <p className="section-subtitle">Découvrez nos événements marquants et collections photographiques</p>
+          <div className="photos-container">
+            <div className="photos-section-header">
+              <h2 className="photos-section-title">Événements & Moments</h2>
+              <p className="photos-section-subtitle">Découvrez nos événements marquants et collections photographiques</p>
             </div>
 
             <div className="albums-grid">
@@ -376,13 +376,13 @@ const Photos = () => {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="loading-section">
-          <div className="loading-container">
-            <div className="loading-spinner">
-              <div className="spinner-center">📸</div>
+        <div className="photos-loading-section">
+          <div className="photos-loading-container">
+            <div className="photos-loading-spinner">
+              <div className="photos-spinner-center">📸</div>
             </div>
-            <h3 className="loading-title">Chargement de la galerie</h3>
-            <p className="loading-subtitle">Préparation des moments inoubliables...</p>
+            <h3 className="photos-loading-title">Chargement de la galerie</h3>
+            <p className="photos-loading-subtitle">Préparation des moments inoubliables...</p>
           </div>
       </div>
       )}

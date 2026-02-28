@@ -9,8 +9,8 @@ Disallow: /pharmacien
 Disallow: /wiki
 Disallow: /documentation-admin
 
-# Sitemap du site ONPG (servi via GitHub Pages)
-Sitemap: https://onpga.github.io/onpg/sitemap.xml
+# Sitemap du site ONPG
+Sitemap: https://sitemap-onpg.up.railway.app/sitemap.xml
 
 # Optionnel : limiter légèrement la fréquence de crawl
 Crawl-delay: 1

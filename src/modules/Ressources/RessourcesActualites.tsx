@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonArticle } from '../../components/Skeleton';
 import { getImageWithFallback } from '../../utils/imageFallback';
+import { useApiCache } from '../../hooks/useApiCache';
+import { useDebounce } from '../../hooks/useDebounce';
 import './Actualites.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -26,15 +28,49 @@ interface Article {
 
 // Layout 1 : Inspiré de Notion Blog - Épuré, cards compactes, typographie soignée
 const RessourcesActualites = () => {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const allTags = Array.from(new Set(articles.flatMap(a => a.tags || [])));
+  // Debouncer la recherche
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // Charger avec cache (5 minutes pour actualités)
+  const { data: rawData, loading } = useApiCache<Article[]>(
+    async () => {
+      const data = await fetchResourceData('actualites');
+      if (!data) return [];
+      const rawArray = Array.isArray(data) ? data : [data];
+      return rawArray.map((item: any) => ({
+        _id: String(item._id || ''),
+        title: item.title || '',
+        slug: item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : '',
+        excerpt: item.excerpt || item.summary || '',
+        image: item.image || item.featuredImage || '',
+        category: item.category || 'actualites',
+        pole: item.pole || 'Général',
+        publishedAt: item.date || item.publishedAt || new Date().toISOString(),
+        readTime: item.readTime || 5,
+        tags: item.tags || [],
+        featured: item.featured || false,
+        author: item.author || {
+          name: 'ONPG',
+          role: 'Équipe Communication'
+        },
+        content: item.content || ''
+      }));
+    },
+    [],
+    { ttl: 5 * 60 * 1000, staleWhileRevalidate: true, key: 'actualites_list' }
+  );
+
+  const articles = rawData || [];
+
+  // Calculer les tags avec useMemo
+  const allTags = useMemo(() => {
+    return Array.from(new Set(articles.flatMap(a => a.tags || [])));
+  }, [articles]);
 
   const categories = [
     { id: 'all', label: 'Tous' },
@@ -237,72 +273,8 @@ const RessourcesActualites = () => {
     }
   ];
 
-  useEffect(() => {
-    const loadActualites = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchResourceData('actualites');
-        if (!data) {
-          setArticles([]);
-          setFilteredArticles([]);
-          return;
-        }
-
-        // Gérer un tableau de données
-        const rawArray = Array.isArray(data) ? data : [data];
-        
-        const mapped: Article[] = rawArray.map((item: any) => ({
-          _id: String(item._id || ''),
-          title: item.title || '',
-          slug: item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : '',
-          excerpt: item.excerpt || item.summary || '',
-          image: item.image || item.featuredImage || '',
-          category: item.category || 'actualites',
-          pole: item.pole || 'Général',
-          publishedAt: item.date || item.publishedAt || new Date().toISOString(),
-          readTime: item.readTime || 5,
-          tags: item.tags || [],
-          featured: item.featured || false,
-          author: item.author || {
-            name: 'ONPG',
-            role: 'Équipe Communication'
-          },
-          content: item.content || ''
-        }));
-
-        setArticles(mapped);
-        setFilteredArticles(mapped);
-      } catch (error) {
-        console.error('Erreur chargement actualités:', error);
-        setArticles([]);
-        setFilteredArticles([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadActualites();
-  }, []);
-
-  useEffect(() => {
-    filterArticles();
-  }, [selectedCategory, searchQuery, selectedTag, articles]);
-
-  const fetchArticles = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/articles');
-      const data = await response.json();
-      if (data.success) {
-        setArticles(data.data);
-      }
-    } catch (err) {
-      console.error('Erreur:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filterArticles = () => {
+  // Filtrage optimisé avec useMemo
+  const filteredArticles = useMemo(() => {
     let filtered = articles;
 
     if (selectedCategory !== 'all') {
@@ -315,22 +287,23 @@ const RessourcesActualites = () => {
       );
     }
 
-    if (searchQuery) {
+    if (debouncedSearchQuery) {
+      const searchLower = debouncedSearchQuery.toLowerCase();
       filtered = filtered.filter(a =>
-        a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (a.tags && a.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+        a.title.toLowerCase().includes(searchLower) ||
+        a.excerpt.toLowerCase().includes(searchLower) ||
+        (a.tags && a.tags.some(tag => tag.toLowerCase().includes(searchLower)))
       );
     }
 
-    setFilteredArticles(filtered);
-  };
+    return filtered;
+  }, [articles, selectedCategory, debouncedSearchQuery, selectedTag]);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory('all');
     setSelectedTag('');
-  };
+  }, []);
 
   return (
     <div className="actualites-page ressources-page">

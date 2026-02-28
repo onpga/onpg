@@ -13,6 +13,9 @@
 /* Import des améliorations Responsive pour mobile */
 @import './responsive.css';
 
+/* Import des optimisations de performance */
+@import './performance.css';
+
 /* Variables CSS - Charte graphique CIPS */
 :root {
   /* Couleurs */

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { useThrottledScroll } from '../../hooks/useThrottledScroll';
 import './NavbarONPG.css';
 
 /**
@@ -16,30 +17,25 @@ const NavbarONPG = () => {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // Empêcher le menu de navigation (barre verte) de se cacher lors du scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      const navbar = document.querySelector('.onpg-navbar') as HTMLElement;
-
-      if (navbar) {
-        // Forcer la visibilité et la position sticky du menu de navigation seulement
-        navbar.style.position = 'sticky';
-        navbar.style.top = '0';
-        navbar.style.zIndex = '999';
-        navbar.style.visibility = 'visible';
-        navbar.style.opacity = '1';
-      }
-    };
-
-    // Appliquer immédiatement au montage
-    handleScroll();
-
-    // Écouter les événements de scroll
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+  // Optimisé avec throttling
+  const handleNavbarScroll = useCallback(() => {
+    const navbar = document.querySelector('.onpg-navbar') as HTMLElement;
+    if (navbar) {
+      navbar.style.position = 'sticky';
+      navbar.style.top = '0';
+      navbar.style.zIndex = '999';
+      navbar.style.visibility = 'visible';
+      navbar.style.opacity = '1';
+    }
   }, []);
+
+  // Appliquer immédiatement au montage
+  useEffect(() => {
+    handleNavbarScroll();
+  }, [handleNavbarScroll]);
+
+  // Utiliser le hook optimisé pour le scroll
+  useThrottledScroll(handleNavbarScroll, 100, []);
 
   // Fermer le menu au clic extérieur et bloquer le scroll
   useEffect(() => {

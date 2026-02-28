@@ -27,6 +27,28 @@ export default defineConfig({
             // Grouper les autres vendors ensemble pour éviter trop de chunks
             return 'vendor';
           }
+          // Code splitting par domaine fonctionnel
+          if (id.includes('modules/Admin')) {
+            return 'admin';
+          }
+          if (id.includes('modules/Pharmacien')) {
+            return 'pharmacien';
+          }
+          if (id.includes('modules/Ressources')) {
+            return 'ressources';
+          }
+          if (id.includes('modules/Ordre')) {
+            return 'ordre';
+          }
+          if (id.includes('modules/Membres')) {
+            return 'membres';
+          }
+          if (id.includes('modules/Pratique')) {
+            return 'pratique';
+          }
+          if (id.includes('hooks')) {
+            return 'hooks';
+          }
         },
       },
     },

@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { ONPG_IMAGES } from '../../../utils/cloudinary-onpg';
+import { useScrollAnimation } from '../../../hooks/useThrottledScroll';
 import './HeroONPG.css';
 
 interface HeroSlide {
@@ -95,19 +96,16 @@ const HeroONPG = () => {
   const handleMouseEnter = () => setIsAutoPlaying(false);
   const handleMouseLeave = () => setIsAutoPlaying(true);
 
-  // Gestion du scroll pour parallax
-  useEffect(() => {
-    const handleScroll = () => {
+  // Gestion du scroll pour parallax optimisée avec requestAnimationFrame
+  useScrollAnimation(
+    useCallback((scrollY: number) => {
       if (heroRef.current) {
-        const scrolled = window.scrollY;
-        const rate = scrolled * -0.5;
+        const rate = scrollY * -0.5;
         heroRef.current.style.transform = `translateY(${rate}px)`;
       }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    }, []),
+    []
+  );
 
   // Fallback si pas de slides
   if (slides.length === 0) {

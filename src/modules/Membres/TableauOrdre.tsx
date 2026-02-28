@@ -1,7 +1,10 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { useApiCache } from '../../hooks/useApiCache';
+import { useDebounce } from '../../hooks/useDebounce';
+import { useThrottledScroll } from '../../hooks/useThrottledScroll';
 import './TableauOrdre.css';
 
 // Types pour les membres (simplifié : nom, prenom, section)
@@ -14,58 +17,48 @@ interface Member {
 }
 
 const TableauOrdre = () => {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [filteredMembers, setFilteredMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
   const [selectedSection, setSelectedSection] = useState('Toutes');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'nom' | 'prenom'>('nom');
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
   const [filtersVisible, setFiltersVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const filtersRef = useRef<HTMLDivElement>(null);
 
   const membersPerPage = 12;
 
-  // Charger les données depuis MongoDB (comme Resources)
-  useEffect(() => {
-    const loadPharmaciens = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchResourceData('pharmaciens');
-        if (Array.isArray(data) && data.length > 0) {
-          const loadedMembers: Member[] = data.map((pharmacien: any) => ({
-            id: String(pharmacien._id || ''),
-            nom: pharmacien.nom || '',
-            prenom: pharmacien.prenom || '',
-            section: pharmacien.section || '', // Vide pour le moment
-            photo: pharmacien.photo || ''
-          }));
-          setMembers(loadedMembers);
-          setFilteredMembers(loadedMembers);
-        } else {
-          setMembers([]);
-          setFilteredMembers([]);
-        }
-      } catch (error) {
-        console.error('Erreur chargement pharmaciens:', error);
-        setMembers([]);
-        setFilteredMembers([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadPharmaciens();
-  }, []);
+  // Debouncer la recherche pour éviter trop de recalculs
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // Filtrage et tri
-  useEffect(() => {
+  // Charger les données avec cache (30 minutes pour données statiques)
+  const { data: rawData, loading } = useApiCache<Member[]>(
+    async () => {
+      const data = await fetchResourceData('pharmaciens');
+      if (Array.isArray(data) && data.length > 0) {
+        return data.map((pharmacien: any) => ({
+          id: String(pharmacien._id || ''),
+          nom: pharmacien.nom || '',
+          prenom: pharmacien.prenom || '',
+          section: pharmacien.section || '',
+          photo: pharmacien.photo || ''
+        }));
+      }
+      return [];
+    },
+    [],
+    { ttl: 30 * 60 * 1000, staleWhileRevalidate: true, key: 'pharmaciens_tableau' }
+  );
+
+  const members = rawData || [];
+
+  // Filtrage et tri avec useMemo pour éviter recalculs inutiles
+  const filteredMembers = useMemo(() => {
     let filtered = members.filter(member => {
       const fullName = `${member.nom} ${member.prenom}`.toLowerCase();
-      const matchesSearch = fullName.includes(searchQuery.toLowerCase()) ||
-                           member.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           member.prenom.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchLower = debouncedSearchQuery.toLowerCase();
+      const matchesSearch = fullName.includes(searchLower) ||
+                           member.nom.toLowerCase().includes(searchLower) ||
+                           member.prenom.toLowerCase().includes(searchLower);
       const matchesSection = selectedSection === 'Toutes' || member.section === selectedSection;
       return matchesSearch && matchesSection;
     });
@@ -81,57 +74,62 @@ const TableauOrdre = () => {
       }
     });
 
-    setFilteredMembers(filtered);
-    setCurrentPage(1);
-  }, [members, searchQuery, selectedSection, sortBy]);
+    return filtered;
+  }, [members, debouncedSearchQuery, selectedSection, sortBy]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
-  const startIndex = (currentPage - 1) * membersPerPage;
-  const endIndex = startIndex + membersPerPage;
-  const currentMembers = filteredMembers.slice(startIndex, endIndex);
+  // Réinitialiser la page quand les filtres changent
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchQuery, selectedSection, sortBy]);
+
+  // Pagination avec useMemo
+  const pagination = useMemo(() => {
+    const totalPages = Math.ceil(filteredMembers.length / membersPerPage);
+    const startIndex = (currentPage - 1) * membersPerPage;
+    const endIndex = startIndex + membersPerPage;
+    const currentMembers = filteredMembers.slice(startIndex, endIndex);
+    return { totalPages, currentMembers };
+  }, [filteredMembers, currentPage, membersPerPage]);
+
+  const { totalPages, currentMembers } = pagination;
 
   // Statistiques
   const stats = useMemo(() => ({
     totalMembers: members.length
-  }), [members]);
+  }), [members.length]);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-  };
+  }, []);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSearchQuery('');
     setSelectedSection('Toutes');
     setSortBy('nom');
     setCurrentPage(1);
-  };
+  }, []);
 
-  // Gestion du scroll pour masquer/afficher les filtres
-  useEffect(() => {
-    const handleScroll = () => {
+  // Gestion du scroll optimisée avec throttling
+  useThrottledScroll(
+    useCallback(() => {
       const currentScrollY = window.scrollY;
       
-      // Masquer les filtres quand on scroll vers le bas, les afficher quand on scroll vers le haut
-      if (currentScrollY > 100) { // Seuil de 100px pour éviter les changements trop fréquents
-        if (currentScrollY > lastScrollY && filtersVisible) {
-          // Scroll vers le bas - masquer
+      if (currentScrollY > 100) {
+        const scrollingDown = currentScrollY > (window as any).lastScrollY;
+        if (scrollingDown && filtersVisible) {
           setFiltersVisible(false);
-        } else if (currentScrollY < lastScrollY && !filtersVisible) {
-          // Scroll vers le haut - afficher
+        } else if (!scrollingDown && !filtersVisible) {
           setFiltersVisible(true);
         }
       } else {
-        // Toujours afficher en haut de page
         setFiltersVisible(true);
       }
       
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, filtersVisible]);
+      (window as any).lastScrollY = currentScrollY;
+    }, [filtersVisible]),
+    100, // Throttle à 100ms
+    [filtersVisible]
+  );
 
   if (loading) {
     return (
@@ -274,6 +272,7 @@ const TableauOrdre = () => {
                               <img
                                 src={photoUrl}
                                 alt={`${member.prenom} ${member.nom}`}
+                                loading="lazy"
                                 onError={(e) => {
                                   const target = e.target as HTMLImageElement;
                                   if (target.src !== ONPG_IMAGES.fallback) {
@@ -328,6 +327,7 @@ const TableauOrdre = () => {
                         <img
                           src={photoUrl}
                           alt={`${member.prenom} ${member.nom}`}
+                          loading="lazy"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             if (target.src !== ONPG_IMAGES.fallback) {

@@ -1,0 +1,133 @@
+/* ============================================
+   OPTIMISATIONS DE PERFORMANCE
+   ============================================ */
+
+/* Réduire les animations sur mobile et appareils lents */
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Désactiver les animations complexes */
+  @keyframes fadeIn,
+  @keyframes slideInUp,
+  @keyframes slideInLeft,
+  @keyframes slideInRight,
+  @keyframes pulse,
+  @keyframes rotate,
+  @keyframes scale {
+    from, to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Optimiser les images avec will-change uniquement quand nécessaire */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Utiliser GPU pour les transformations */
+.animated-section,
+.hero-onpg-slide,
+.member-card-tableau {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* Désactiver will-change après animation pour économiser la mémoire */
+.animated-section.visible {
+  will-change: auto;
+}
+
+/* Optimiser les scroll containers */
+.scroll-container {
+  contain: layout style paint;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Réduire les reflows avec contain */
+.card,
+.article-card,
+.member-card {
+  contain: layout style;
+}
+
+/* Optimiser les filtres et backdrop-filter */
+.backdrop-blur {
+  will-change: backdrop-filter;
+}
+
+/* Après animation, retirer will-change */
+.backdrop-blur.ready {
+  will-change: auto;
+}
+
+/* Désactiver les animations sur les éléments hors viewport */
+@media (prefers-reduced-motion: reduce) {
+  .animated-section:not(.visible) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Optimiser les transitions pour les interactions utilisateur uniquement */
+button,
+a,
+input,
+select {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Désactiver les transitions complexes sur mobile */
+@media (max-width: 768px) {
+  * {
+    transition-duration: 0.15s !important;
+    transition-timing-function: ease !important;
+  }
+
+  /* Pas de parallax sur mobile */
+  .hero-onpg-parallax {
+    transform: none !important;
+  }
+}
+
+/* Lazy loading placeholder */
+img[loading="lazy"] {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+img[loading="lazy"].loaded {
+  background: none;
+  animation: none;
+}
+
+/* Optimiser les grandes listes avec virtual scrolling hint */
+.large-list {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+.large-list > * {
+  contain-intrinsic-size: 200px;
+}
+

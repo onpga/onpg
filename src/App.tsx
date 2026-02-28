@@ -13,7 +13,9 @@ const RessourcesArticleDetail = lazy(() => import('./modules/Ressources/ArticleD
 const Communiques = lazy(() => import('./modules/Ressources/Communiques'));
 const CommuniqueDetail = lazy(() => import('./modules/Ressources/CommuniqueDetailPage'));
 const Photos = lazy(() => import('./modules/Ressources/Photos'));
+const PhotoDetail = lazy(() => import('./modules/Ressources/PhotoDetail'));
 const Videos = lazy(() => import('./modules/Ressources/Videos'));
+const VideoDetail = lazy(() => import('./modules/Ressources/VideoDetail'));
 const TrouverPharmacie = lazy(() => import('./modules/Ressources/TrouverPharmacie'));
 const RessourcesArticles = lazy(() => import('./modules/Ressources/Articles'));
 const ArticleDetailPage = lazy(() => import('./modules/Ressources/ArticleDetailPage'));
@@ -183,7 +185,9 @@ function App() {
                     <Route path="/ressources/communiques" element={<Communiques />} />
                     <Route path="/ressources/communiques/:id" element={<CommuniqueDetail />} />
                     <Route path="/ressources/photos" element={<Photos />} />
+                    <Route path="/ressources/photos/:id" element={<PhotoDetail />} />
                     <Route path="/ressources/videos" element={<Videos />} />
+                    <Route path="/ressources/videos/:id" element={<VideoDetail />} />
                     <Route path="/trouver-pharmacie" element={<Navigate to="/pratique/pharmacies" replace />} />
                     <Route path="/pharmacies" element={<Navigate to="/pratique/pharmacies" replace />} />
                     <Route path="/ressources/articles" element={<RessourcesArticles />} />

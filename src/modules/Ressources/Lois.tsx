@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
 import './Lois.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -117,7 +116,7 @@ const Lois = () => {
 
 
   return (
-    <div className="ressources-page">
+    <div className="lois-page ressources-page">
       <section className="ressources-hero">
         <div className="hero-content">
           <div className="hero-text">
@@ -264,93 +263,120 @@ const Lois = () => {
             </div>
           </div>
 
-          <div className="laws-list">
-            {currentLaws.map(law => (
-              <article key={law.id} className={`law-card ${law.featured ? 'featured' : ''}`}>
-                <div className="law-header">
-                  <div className="law-meta">
-                    <span
-                      className="status-badge"
-                      style={{ backgroundColor: getStatusColor(law.status) }}
-                    >
-                      {getStatusLabel(law.status)}
-                    </span>
-                    {law.featured && <span className="featured-badge">⭐ À la une</span>}
-                    <span className="law-number">Loi n° {law.number}</span>
-                    <span className="law-language">{law.language.toUpperCase()}</span>
-                  </div>
-                  <div className="law-category">{law.category}</div>
-                </div>
-
-                <div className="law-content">
-                  <h3 className="law-title">
-                    <Link to={`/ressources/lois/${law.id}`}>
-                      {law.title}
-                    </Link>
-                  </h3>
-
-                  <div className="law-dates">
-                    <div className="date-item">
-                      <strong>Publication :</strong> {new Date(law.publicationDate).toLocaleDateString('fr-FR')}
-                    </div>
-                    <div className="date-item">
-                      <strong>Entrée en vigueur :</strong> {new Date(law.entryDate).toLocaleDateString('fr-FR')}
-                    </div>
-                  </div>
-
-                  <p className="law-summary">{law.summary}</p>
-
-                  <div className="law-table-of-contents-preview">
-                    <strong>Sommaire ({law.tableOfContents.length} titres) :</strong>
-                    <div className="toc-preview">
-                      {law.tableOfContents.slice(0, 2).map((section, index) => (
-                        <div key={index} className="toc-section">
-                          <span className="toc-title">{section.title}</span>
-                          <span className="toc-articles">({section.articles.length} articles)</span>
-                        </div>
-                      ))}
-                      {law.tableOfContents.length > 2 && (
-                        <div className="toc-section">
-                          <span className="toc-more">et {law.tableOfContents.length - 2} autres titres...</span>
-                        </div>
+          {currentLaws.length === 0 ? (
+            <div className="empty-state-modern">
+              <div className="empty-icon">⚖️</div>
+              <h3>Aucune loi trouvée</h3>
+              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+              <button onClick={() => { setSearchQuery(''); setSelectedCategory('Toutes'); }} className="empty-action-btn">
+                Réinitialiser les filtres
+              </button>
+            </div>
+          ) : (
+            <div className="laws-grid-modern">
+              {currentLaws.map(law => (
+                <Link
+                  key={law.id}
+                  to={`/ressources/lois/${law.id}`}
+                  className={`law-card-modern ${law.featured ? 'featured' : ''}`}
+                >
+                  <div className="law-card-accent" />
+                  <div className="law-card-header-modern">
+                    <h3 className="law-card-title-modern">{law.title}</h3>
+                    <div className="law-badges">
+                      <span
+                        className="law-status-badge"
+                        style={{ backgroundColor: getStatusColor(law.status) }}
+                      >
+                        {getStatusLabel(law.status)}
+                      </span>
+                      {law.featured && (
+                        <span className="featured-badge-modern">⭐ À la une</span>
                       )}
                     </div>
                   </div>
-
-                  <div className="law-key-articles">
-                    <strong>Articles clés :</strong>
-                    <div className="key-articles-list">
-                      {law.keyArticles.slice(0, 2).map((article, index) => (
-                        <span key={index} className="key-article-tag">{article}</span>
-                      ))}
-                      {law.keyArticles.length > 2 && (
-                        <span className="key-article-tag more">+{law.keyArticles.length - 2}</span>
-                      )}
+                  <div className="law-card-body-modern">
+                    {law.number && (
+                      <span className="law-number-modern">Loi n° {law.number}</span>
+                    )}
+                    <div className="law-dates-modern">
+                      <div className="law-date-item">
+                        <span className="law-date-label">Publication</span>
+                        <span className="law-date-value">{new Date(law.publicationDate).toLocaleDateString('fr-FR')}</span>
+                      </div>
+                      <div className="law-date-item">
+                        <span className="law-date-label">Entrée en vigueur</span>
+                        <span className="law-date-value">{new Date(law.entryDate).toLocaleDateString('fr-FR')}</span>
+                      </div>
                     </div>
+                    <p className="law-summary-modern">{law.summary}</p>
+                    {law.tableOfContents.length > 0 && (
+                      <div className="law-toc-preview">
+                        <span className="law-toc-label">Sommaire ({law.tableOfContents.length} titres)</span>
+                        {law.tableOfContents.slice(0, 2).map((section, i) => (
+                          <div key={i} className="toc-item">
+                            <span>{section.title}</span>
+                            <span className="toc-articles-count">{section.articles.length} art.</span>
+                          </div>
+                        ))}
+                        {law.tableOfContents.length > 2 && (
+                          <div className="toc-item" style={{ opacity: 0.6, fontStyle: 'italic' }}>
+                            +{law.tableOfContents.length - 2} autres titres...
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {law.tags.length > 0 && (
+                      <div className="law-tags-modern">
+                        {law.tags.slice(0, 4).map((tag, i) => (
+                          <span key={i} className="law-tag">#{tag}</span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-
-                <div className="law-footer">
-                  <div className="law-stats">
-                    <span className="stat-item">👁️ {law.views.toLocaleString()} vues</span>
-                    <span className="stat-item">⬇️ {law.downloads} téléchargements</span>
+                  <div className="law-card-footer-modern">
+                    <div className="law-stats-modern">
+                      <div className="law-stat">
+                        <span className="law-stat-value">{law.views.toLocaleString()}</span>
+                        <span className="law-stat-label">Vues</span>
+                      </div>
+                      <div className="law-stat">
+                        <span className="law-stat-value">{law.downloads}</span>
+                        <span className="law-stat-label">Téléch.</span>
+                      </div>
+                    </div>
+                    <span className="read-more-modern">Consulter →</span>
                   </div>
-
-                  <div className="law-actions">
-                    <Link to={`/ressources/lois/${law.id}`} className="law-toc-btn">
-                      📋 Sommaire
-                    </Link>
-                    <Link to={`/ressources/lois/${law.id}`} className="law-read-more">
-                      📖 Consulter →
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pagination-modern">
+              <button
+                className="pagination-btn-modern"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >← Précédent</button>
+              <div className="pagination-numbers">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    className={`pagination-btn-modern ${currentPage === page ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(page)}
+                  >{page}</button>
+                ))}
+              </div>
+              <button
+                className="pagination-btn-modern"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >Suivant →</button>
+            </div>
+          )}
         </main>
       </div>
-
     </div>
   );
 };

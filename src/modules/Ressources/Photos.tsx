@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Photos.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -36,6 +36,7 @@ interface Album {
 
 
 const Photos = () => {
+  const navigate = useNavigate();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [albums, setAlbums] = useState<Album[]>([]);
   const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>([]);
@@ -43,8 +44,6 @@ const Photos = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [viewMode, setViewMode] = useState<'grid' | 'masonry'>('masonry');
-  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hoveredPhoto, setHoveredPhoto] = useState<string | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -171,17 +170,9 @@ const Photos = () => {
   }, [photos, searchQuery, selectedAlbum, selectedCategory]);
 
 
-  // Gestion du lightbox avec animations
-  const openLightbox = (photo: Photo) => {
-    setSelectedPhoto(photo);
-    setLightboxOpen(true);
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeLightbox = () => {
-    setLightboxOpen(false);
-    setTimeout(() => setSelectedPhoto(null), 300); // Délai pour animation
-    document.body.style.overflow = 'auto';
+  // Navigation vers la page détail
+  const handlePhotoClick = (photo: Photo) => {
+    navigate(`/ressources/photos/${photo.id}`);
   };
 
   // Navigation par catégories
@@ -224,7 +215,7 @@ const Photos = () => {
 
   return (
     <div className="photos-page">
-      {/* Hero Section avec effet parallax */}
+      {/* Hero Section */}
       <section className="photos-hero" ref={heroRef}>
         <div className="hero-background">
           <div className="hero-gradient-primary"></div>
@@ -243,42 +234,90 @@ const Photos = () => {
             </h1>
 
             <p className="hero-subtitle">
-              Découvrez nos 7 événements marquants et plongez dans l'histoire de la pharmacie gabonaise.
+              Découvrez nos événements marquants et plongez dans l'histoire de la pharmacie gabonaise.
             </p>
 
-            <div className="hero-actions">
-              <button className="hero-btn primary" onClick={() => document.querySelector('.albums-grid')?.scrollIntoView({ behavior: 'smooth' })}>
-                <span className="btn-icon">📂</span>
-                <span className="btn-text">Découvrir les Événements</span>
-                <span className="btn-arrow">→</span>
-              </button>
-              <div className="hero-quick-stats">
-                <div className="quick-stat">
-                  <span className="stat-number">{albums.length}</span>
-                  <span className="stat-label">Événements</span>
-                </div>
-                <div className="quick-stat">
-                  <span className="stat-number">{photos.length}</span>
-                  <span className="stat-label">Photos</span>
-                </div>
-                <div className="quick-stat">
-                  <span className="stat-number">{albums.filter(a => a.featured).length}</span>
-                  <span className="stat-label">Événements Majeurs</span>
-            </div>
-            </div>
+            <div className="hero-quick-stats">
+              <div className="quick-stat">
+                <span className="stat-number">{albums.length}</span>
+                <span className="stat-label">Événements</span>
+              </div>
+              <div className="quick-stat">
+                <span className="stat-number">{photos.length}</span>
+                <span className="stat-label">Photos</span>
+              </div>
+              <div className="quick-stat">
+                <span className="stat-number">{albums.filter(a => a.featured).length}</span>
+                <span className="stat-label">Événements Majeurs</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Barre de recherche et filtres */}
+      <div className="photos-filters">
+        <div className="filters-container">
+          {/* Recherche */}
+          <div className="search-wrapper">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Rechercher par titre, description, photographe ou tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <span className="search-icon">🔍</span>
+          </div>
+
+          {/* Catégories */}
+          <div className="category-filters">
+            {categories.map(category => (
+              <button
+                key={category.id}
+                className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(category.id)}
+              >
+                {category.name} ({category.count})
+              </button>
+            ))}
+          </div>
+
+          {/* Albums */}
+          {albums.length > 0 && (
+            <div className="album-filters">
+              <select
+                className="album-select"
+                value={selectedAlbum}
+                onChange={(e) => setSelectedAlbum(e.target.value)}
+              >
+                <option value="all">Tous les albums</option>
+                {albums.map(album => (
+                  <option key={album.id} value={album.id}>
+                    {album.name} ({album.photoCount})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Bouton effacer filtres */}
+          {(searchQuery || selectedCategory !== 'all' || selectedAlbum !== 'all') && (
+            <button className="clear-filters-btn" onClick={clearFilters}>
+              Effacer les filtres
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Albums/Événements Grid */}
       {!isLoading && (
         <section className="albums-section">
           <div className="container">
             <div className="section-header">
-              <h2 className="section-title" style={{ animationDelay: '0.2s' }}>Événements & Moments</h2>
-              <p className="section-subtitle" style={{ animationDelay: '0.4s' }}>Découvrez nos événements marquants et collections photographiques</p>
-          </div>
+              <h2 className="section-title">Événements & Moments</h2>
+              <p className="section-subtitle">Découvrez nos événements marquants et collections photographiques</p>
+            </div>
 
             <div className="albums-grid">
               {albums.map((album, index) => (
@@ -292,12 +331,8 @@ const Photos = () => {
                   onClick={() => {
                     const albumPhotos = photos.filter(p => p.album === album.id);
                     if (albumPhotos.length > 0) {
-                      setFilteredPhotos(albumPhotos);
-                      setSelectedAlbum(album.id);
-                      openLightbox(albumPhotos[0]);
-                    } else {
-                      setSelectedAlbum(album.id);
-                      setFilteredPhotos([]);
+                      // Naviguer vers la première photo de l'album
+                      navigate(`/ressources/photos/${albumPhotos[0].id}`);
                     }
                   }}
                 >
@@ -328,71 +363,13 @@ const Photos = () => {
 
                   {album.featured && (
                     <div className="featured-badge">
-                      <span className="badge-icon">⭐</span>
-                      <span className="badge-text">Événement Majeur</span>
+                      <span style={{ fontSize: '0.7rem' }}>⭐</span>
                     </div>
                   )}
                   </div>
                 ))}
               </div>
 
-            {/* Photos filtrées par album sélectionné */}
-            {selectedAlbum !== 'all' && (
-              <div className="album-photos-section">
-                <div className="album-photos-header">
-                  <h3 className="album-photos-title">
-                    Photos de l'album: {albums.find(a => a.id === selectedAlbum)?.name}
-                  </h3>
-                  <button
-                    className="back-to-albums-btn"
-                    onClick={() => {
-                      setSelectedAlbum('all');
-                      setFilteredPhotos(photos);
-                    }}
-                  >
-                    ← Retour aux albums
-                  </button>
-                </div>
-
-                {filteredPhotos.length > 0 ? (
-                  <div className="photos-grid">
-                    {filteredPhotos.map((photo, index) => (
-                      <div
-                        key={photo.id}
-                        className={`photo-item ${photo.orientation}`}
-                        onClick={() => openLightbox(photo)}
-                      >
-                        <div className="photo-wrapper">
-                          <img
-                            src={photo.thumbnail}
-                            alt={photo.title}
-                            className="photo-img"
-                            loading="lazy"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="empty-album-state">
-                    <div className="empty-icon">📷</div>
-                    <h3 className="empty-title">Aucune photo dans cet album</h3>
-                    <p className="empty-subtitle">
-                      Les photos de cet album sont en cours de traitement.
-                    </p>
-                  <button
-                      className="back-to-albums-btn"
-                      onClick={() => {
-                        setSelectedAlbum('all');
-                        setFilteredPhotos(photos);
-                      }}
-                    >
-                      ← Retour aux albums
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
           </div>
         </section>
       )}
@@ -410,69 +387,6 @@ const Photos = () => {
       </div>
       )}
 
-      {/* Lightbox */}
-      {lightboxOpen && selectedPhoto && (
-        <div className="lightbox-overlay" onClick={closeLightbox}>
-          <div className="lightbox-container">
-            <button className="lightbox-close" onClick={closeLightbox}>
-              <span className="close-icon">✕</span>
-            </button>
-
-            <div className="lightbox-content">
-              <div className="lightbox-image-section">
-                <img
-                  src={selectedPhoto.image}
-                  alt={selectedPhoto.title}
-                  className="lightbox-image"
-                />
-            </div>
-
-            <div className="lightbox-info">
-                <div className="info-header">
-                  <h2 className="lightbox-title">{selectedPhoto.title}</h2>
-                  <div className="lightbox-badges">
-                    {selectedPhoto.featured && (
-                      <span className="badge featured">⭐ À la une</span>
-                    )}
-                    <span className="badge category">{selectedPhoto.category}</span>
-                  </div>
-              </div>
-
-                <p className="lightbox-description">{selectedPhoto.description}</p>
-
-                <div className="lightbox-details">
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <span className="detail-icon">📅</span>
-                      <div className="detail-content">
-                        <span className="detail-label">Date</span>
-                        <span className="detail-value">
-                          {new Date(selectedPhoto.date).toLocaleDateString('fr-FR', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </span>
-                      </div>
-              </div>
-
-                    {selectedPhoto.location && (
-                      <div className="detail-item">
-                        <span className="detail-icon">📍</span>
-                        <div className="detail-content">
-                          <span className="detail-label">Lieu</span>
-                          <span className="detail-value">{selectedPhoto.location}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

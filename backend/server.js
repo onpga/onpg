@@ -882,6 +882,9 @@ app.get('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
 });
 
 // POST créer une nouvelle pharmacie
+// IMPORTANT: La pharmacie est automatiquement associée au pharmacien authentifié
+// Le pharmacienId est défini automatiquement depuis req.pharmacienId (middleware authenticatePharmacien)
+// Un pharmacien peut gérer plusieurs pharmacies, mais chaque pharmacie appartient à un seul pharmacien
 app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) => {
   try {
     const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires, garde } = req.body;
@@ -889,6 +892,16 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
     if (!nom || !ville || !adresse) {
       return res.status(400).json({ success: false, error: 'Nom, ville et adresse requis' });
     }
+
+    // Le pharmacienId est automatiquement défini depuis l'authentification
+    // Le pharmacien ne peut pas modifier cette valeur - elle est toujours associée à son compte
+    const pharmacienId = (() => { 
+      try { 
+        return new ObjectId(req.pharmacienId); 
+      } catch { 
+        return req.pharmacienId; 
+      } 
+    })();
 
     const result = await db.collection('pharmacies').insertOne({
       nom,
@@ -906,13 +919,7 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
       email: email || '',
       horaires: horaires || {},
       garde: garde === true || garde === 'true',
-      pharmacienId: (() => { 
-        try { 
-          return new ObjectId(req.pharmacienId); 
-        } catch { 
-          return req.pharmacienId; 
-        } 
-      })(),
+      pharmacienId, // Toujours associé au pharmacien authentifié
       messages: [],
       isActive: true,
       createdAt: new Date(),
@@ -927,11 +934,14 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
 });
 
 // PUT modifier une pharmacie
+// IMPORTANT: Le pharmacienId ne peut pas être modifié - il reste toujours associé au pharmacien authentifié
+// Un pharmacien ne peut modifier que SES pharmacies (vérification de propriété)
 app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, res) => {
   try {
     const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires, garde } = req.body;
     
     // Vérifier que la pharmacie appartient au pharmacien
+    // Le pharmacien ne peut modifier que ses propres pharmacies
     const existing = await db.collection('pharmacies').findOne({
       _id: new ObjectId(req.params.id),
       pharmacienId: { 
@@ -946,6 +956,8 @@ app.put('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
       return res.status(404).json({ success: false, error: 'Pharmacie non trouvée' });
     }
 
+    // Note: pharmacienId n'est PAS dans updateData - il ne peut pas être modifié
+    // La pharmacie reste toujours associée au même pharmacien
     const updateData = {
       ...(nom && { nom }),
       ...(ville && { ville }),

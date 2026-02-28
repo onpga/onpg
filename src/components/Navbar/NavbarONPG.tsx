@@ -96,6 +96,7 @@ const NAV_ITEMS = [
 const NavbarONPG = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [logoError, setLogoError] = useState(false);
   const location = useLocation();
   const menuRef = useRef<HTMLUListElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -273,31 +274,22 @@ const NavbarONPG = () => {
 
   return (
     <>
-      {/* Header ULTRA-COMPACT avec effets WOW */}
+      {/* Header moderne et épuré */}
       <header className="onpg-header">
         <div className="onpg-header-container-compact">
           {/* Logo avec effets premium */}
           <Link to="/" className="onpg-logo-section">
             <div className="onpg-logo-wrapper">
-              {/* Cercle décoratif avec gradient */}
-              <div className="logo-glow-ring"></div>
-
-              <img
-                src={ONPG_IMAGES.logo}
-                alt="ONPG Logo"
-                className="onpg-logo-img"
-                onError={(e) => {
-                  // Essayer sans extension
-                  const target = e.target as HTMLImageElement;
-                  const logoWithoutExt = ONPG_IMAGES.logo.replace('.png', '');
-                  target.src = logoWithoutExt;
-                }}
-              />
-
-              {/* Badge premium */}
-              <div className="logo-premium-badge">
-                <span>✓</span>
-              </div>
+              {!logoError ? (
+                <img
+                  src={ONPG_IMAGES.logo}
+                  alt="ONPG Logo"
+                  className="onpg-logo-img"
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <span className="onpg-logo-fallback">ONPG</span>
+              )}
             </div>
 
             <div className="onpg-logo-text">
@@ -481,17 +473,18 @@ const NavbarONPG = () => {
                   </Link>
                   
                   {item.hasDropdown && item.dropdown && (
-                    <ul className={`onpg-dropdown ${item.id}-dropdown ${dropdownOpen ? 'open' : ''}`}
-                        onMouseEnter={() => handleDropdownOpen(item.id)}
-                        onMouseLeave={(e) => {
-                          const relatedTarget = e.relatedTarget as HTMLElement | null;
-                          if (relatedTarget && relatedTarget instanceof Element) {
-                            if (relatedTarget.closest('li')) {
-                              return;
-                            }
+                    <ul 
+                      className={`onpg-dropdown ${item.id}-dropdown ${dropdownOpen ? 'open' : ''}`}
+                      onMouseEnter={() => handleDropdownOpen(item.id)}
+                      onMouseLeave={(e) => {
+                        const relatedTarget = e.relatedTarget as HTMLElement | null;
+                        if (relatedTarget && relatedTarget instanceof Element) {
+                          if (relatedTarget.closest('li')) {
+                            return;
                           }
-                          handleDropdownClose(item.id);
-                        }}
+                        }
+                        handleDropdownClose(item.id);
+                      }}
                     >
                       {item.dropdown.map((subItem, subIndex) => (
                         <li key={subItem.path} style={{ animationDelay: `${subIndex * 0.05}s` }}>

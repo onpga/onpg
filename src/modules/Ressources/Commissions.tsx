@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
 import './Commissions.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -97,7 +96,7 @@ const Commissions = () => {
   }), [commissions]);
 
   return (
-    <div className="ressources-page">
+    <div className="commissions-page ressources-page">
       <section className="ressources-hero">
         <div className="hero-content">
           <div className="hero-text">
@@ -239,69 +238,109 @@ const Commissions = () => {
             </div>
           </div>
 
-          <div className="commissions-list">
-            {currentCommissions.map(commission => (
-              <article key={commission.id} className={`commission-card ${commission.featured ? 'featured' : ''}`}>
-                <div className="commission-header">
-                  <div className="commission-meta">
-                    <span className={`status-badge ${commission.status}`}>
-                      {commission.status === 'active' ? 'Active' : 'Inactive'}
-                    </span>
-                    {commission.featured && <span className="featured-badge">⭐</span>}
-                  </div>
-                  <div className="commission-category">{commission.category}</div>
-                </div>
-
-                <div className="commission-content">
-                  <h3 className="commission-title">
-                    <Link to={`/ressources/commissions/${commission.id}`}>
-                      {commission.name}
-                    </Link>
-                  </h3>
-
-                  <p className="commission-description">{commission.description}</p>
-
-                  <div className="commission-president">
-                    <strong>Président :</strong> {commission.president}
-                  </div>
-
-                  <div className="commission-members">
-                    <strong>Membres ({commission.members.length}) :</strong>
-                    <div className="members-list">
-                      {commission.members.slice(0, 3).map((member, index) => (
-                        <span key={index} className="member-tag">{member}</span>
-                      ))}
-                      {commission.members.length > 3 && (
-                        <span className="member-tag more">+{commission.members.length - 3}</span>
+          {currentCommissions.length === 0 ? (
+            <div className="empty-state-modern">
+              <div className="empty-icon">🏛️</div>
+              <h3>Aucune commission trouvée</h3>
+              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+              <button onClick={() => { setSearchQuery(''); setSelectedCategory('Toutes'); }} className="empty-action-btn">
+                Réinitialiser les filtres
+              </button>
+            </div>
+          ) : (
+            <div className="commissions-grid-modern">
+              {currentCommissions.map(commission => (
+                <Link
+                  key={commission.id}
+                  to={`/ressources/commissions/${commission.id}`}
+                  className={`commission-card-modern ${commission.featured ? 'featured' : ''}`}
+                >
+                  <div className="commission-card-accent" />
+                  <div className="commission-card-header-modern">
+                    <h3 className="commission-card-title-modern">{commission.name}</h3>
+                    <div className="commission-badges">
+                      <span className={`status-badge-modern ${commission.status}`}>
+                        {commission.status === 'active' ? '● Active' : '○ Inactive'}
+                      </span>
+                      {commission.featured && (
+                        <span className="featured-badge-modern">⭐ À la une</span>
                       )}
                     </div>
                   </div>
-
-                  <div className="commission-missions">
-                    <strong>Missions principales :</strong>
-                    <ul>
-                      {commission.missions.slice(0, 2).map((mission, index) => (
-                        <li key={index}>{mission}</li>
-                      ))}
-                      {commission.missions.length > 2 && (
-                        <li><em>et {commission.missions.length - 2} autres missions...</em></li>
-                      )}
-                    </ul>
+                  <div className="commission-card-body-modern">
+                    <span className="category-tag-modern">{commission.category}</span>
+                    <p className="commission-description-modern">{commission.description}</p>
+                    {commission.president && (
+                      <div className="commission-president-modern">
+                        <span>👤</span> <strong>Président :</strong> {commission.president}
+                      </div>
+                    )}
+                    {commission.members.length > 0 && (
+                      <div className="commission-members-modern">
+                        {commission.members.slice(0, 3).map((member, i) => (
+                          <span key={i} className="member-chip">{member}</span>
+                        ))}
+                        {commission.members.length > 3 && (
+                          <span className="member-chip more">+{commission.members.length - 3}</span>
+                        )}
+                      </div>
+                    )}
+                    {commission.missions.length > 0 && (
+                      <div className="commission-missions-modern">
+                        <ul className="missions-list">
+                          {commission.missions.slice(0, 2).map((mission, i) => (
+                            <li key={i}>{mission}</li>
+                          ))}
+                          {commission.missions.length > 2 && (
+                            <li style={{ fontStyle: 'italic', opacity: 0.7 }}>
+                              +{commission.missions.length - 2} autres missions
+                            </li>
+                          )}
+                        </ul>
+                      </div>
+                    )}
                   </div>
-                </div>
-
-                <div className="commission-footer">
-                  <div className="commission-stats">
-                    <span>📅 {commission.meetings} réunions</span>
-                    <span>📄 {commission.reports} rapports</span>
+                  <div className="commission-card-footer-modern">
+                    <div className="commission-stats-modern">
+                      <div className="comm-stat">
+                        <span className="comm-stat-value">{commission.meetings}</span>
+                        <span className="comm-stat-label">Réunions</span>
+                      </div>
+                      <div className="comm-stat">
+                        <span className="comm-stat-value">{commission.reports}</span>
+                        <span className="comm-stat-label">Rapports</span>
+                      </div>
+                    </div>
+                    <span className="read-more-modern">En savoir plus →</span>
                   </div>
-                  <Link to={`/ressources/commissions/${commission.id}`} className="commission-read-more">
-                    📖 En savoir plus →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="pagination-modern">
+              <button
+                className="pagination-btn-modern"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >← Précédent</button>
+              <div className="pagination-numbers">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    className={`pagination-btn-modern ${currentPage === page ? 'active' : ''}`}
+                    onClick={() => setCurrentPage(page)}
+                  >{page}</button>
+                ))}
+              </div>
+              <button
+                className="pagination-btn-modern"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >Suivant →</button>
+            </div>
+          )}
         </main>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './FormationContinue.css';
-import './Pratique.css';
 
 interface Formation {
   _id?: string;
@@ -89,7 +88,7 @@ const FormationContinue = () => {
   };
 
   return (
-    <div className="pratique-page">
+    <div className="formations-page pratique-page">
       {/* Hero Section - Style similaire à Déontologie */}
       <section className="pratique-hero" style={{ background: 'linear-gradient(135deg, #2ECC71 0%, #27AE60 100%)' }}>
         <div className="hero-content">
@@ -136,28 +135,14 @@ const FormationContinue = () => {
       <section className="section-content">
         <div className="section-container">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '3rem', fontSize: '1.2rem', color: '#666' }}>
-              Chargement des formations...
+            <div className="formations-loading">
+              <p>Chargement des formations...</p>
             </div>
           ) : activeFormations.length === 0 ? (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '3rem', 
-              color: '#666',
-              maxWidth: '600px',
-              margin: '0 auto',
-              backgroundColor: 'white',
-              borderRadius: '16px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-            }}>
-              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📚</div>
-              <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#00A651' }}>
-                Aucune formation disponible
-              </h2>
-              <p style={{ fontSize: '1.1rem', lineHeight: '1.6' }}>
-                Le catalogue de formations sera bientôt disponible.
-                Revenez prochainement pour découvrir nos programmes de formation continue.
-              </p>
+            <div className="formations-empty">
+              <div className="empty-icon">📚</div>
+              <h2>Aucune formation disponible</h2>
+              <p>Le catalogue de formations sera bientôt disponible. Revenez prochainement pour découvrir nos programmes de formation continue.</p>
             </div>
           ) : (
             <>
@@ -207,74 +192,69 @@ const FormationContinue = () => {
             </div>
           ) : (
             <div className="formations-grid">
-                  {displayedFormations.map((formation) => (
+              {displayedFormations.map((formation) => (
                 <div
                   key={formation._id}
                   className={`formation-card ${formation.featured ? 'featured' : ''}`}
                 >
+                  <div className="formation-card-accent" />
                   {formation.featured && (
-                    <div className="formation-badge">
-                      ⭐ À la une
-                    </div>
+                    <div className="formation-badge">⭐ À la une</div>
                   )}
-                  <h3 className="formation-title">
-                    {formation.title}
-                  </h3>
-                  <p className="formation-description">
-                        {truncate(formation.description || formation.content || '', 180)}
-                  </p>
-                  <div className="formation-meta">
-                    <span className="formation-meta-item">
-                      ⏱️ {formation.duration}
-                    </span>
+                  <div className="formation-card-body">
                     {formation.category && (
-                      <span className="formation-category">
-                        {formation.category}
-                      </span>
+                      <span className="formation-category-chip">{formation.category}</span>
                     )}
-                  </div>
-                  {formation.showPrice && formation.price && (
-                    <div className="formation-price">
-                      {formation.price.toLocaleString()} FCFA
+                    <h3 className="formation-title">{formation.title}</h3>
+                    <p className="formation-description">
+                      {truncate(formation.description || formation.content || '', 180)}
+                    </p>
+                    <div className="formation-info-grid">
+                      {formation.duration && (
+                        <div className="formation-info-item">
+                          <span className="formation-info-label">Durée</span>
+                          <span className="formation-info-value">⏱️ {formation.duration}</span>
+                        </div>
+                      )}
+                      {formation.instructor && (
+                        <div className="formation-info-item">
+                          <span className="formation-info-label">Formateur</span>
+                          <span className="formation-info-value">👤 {formation.instructor}</span>
+                        </div>
+                      )}
+                      {formation.date && (
+                        <div className="formation-info-item">
+                          <span className="formation-info-label">Date</span>
+                          <span className="formation-info-value">
+                            📅 {new Date(formation.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+                          </span>
+                        </div>
+                      )}
+                      {formation.location && (
+                        <div className="formation-info-item">
+                          <span className="formation-info-label">Lieu</span>
+                          <span className="formation-info-value">📍 {formation.location}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div className="formation-meta">
-                    {formation.instructor && (
-                      <p className="formation-meta-item">
-                        <strong>Formateur :</strong> {formation.instructor}
-                      </p>
-                    )}
-                    {formation.date && (
-                      <p className="formation-meta-item">
-                            <strong>Date :</strong>{' '}
-                            {new Date(formation.date).toLocaleDateString('fr-FR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        })}
-                      </p>
-                    )}
-                    {formation.location && (
-                      <p className="formation-meta-item">
-                        <strong>Lieu :</strong> {formation.location}
-                      </p>
-                    )}
-                  </div>
-                      <div className="formation-actions">
-                        <button
-                          type="button"
-                          className="formation-detail-link"
-                          onClick={() => {
-                            setSelectedFormation(formation);
-                            setIsDetailOpen(true);
-                          }}
-                        >
-                          Voir le détail
-                        </button>
+                    {formation.showPrice && formation.price && (
+                      <div className="formation-price">
+                        {formation.price.toLocaleString()} FCFA
                       </div>
-                    </div>
-                  ))}
+                    )}
+                  </div>
+                  <div className="formation-card-footer">
+                    <button
+                      type="button"
+                      className="formation-detail-link"
+                      onClick={() => { setSelectedFormation(formation); setIsDetailOpen(true); }}
+                    >
+                      Voir le programme complet
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
               )}
             </>
           )}

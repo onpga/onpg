@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
 import './Communiques.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -130,7 +129,7 @@ const Communiques = () => {
   };
 
   return (
-    <div className="ressources-page">
+    <div className="communiques-page ressources-page">
       {/* Hero Section */}
       <section className="ressources-hero">
         <div className="hero-content">
@@ -338,120 +337,71 @@ const Communiques = () => {
             </div>
           </div>
 
-          {/* Communiqués list */}
-          <div className="communiques-list">
-            {currentCommuniques.map((communique, index) => (
-              <article
-                key={communique.id}
-                className={`communique-card ${communique.urgent ? 'urgent' : ''}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* Badge d'urgence flottant */}
-                {communique.urgent && (
-                  <div className="urgent-floating-badge">
-                    <div className="urgent-pulse"></div>
-                    <span>🚨 URGENT</span>
-                  </div>
-                )}
-
-                {/* Header avec icône et statut */}
-                <div className="communique-header">
-                  <div className="communique-icon-section">
-                    <div className="communique-icon">
+          {/* Communiqués Grid */}
+          {currentCommuniques.length === 0 ? (
+            <div className="empty-state-modern">
+              <div className="empty-icon">📢</div>
+              <h3>Aucun communiqué trouvé</h3>
+              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+              <button onClick={clearFilters} className="empty-action-btn">
+                Réinitialiser les filtres
+              </button>
+            </div>
+          ) : (
+            <div className="communiques-grid-modern">
+              {currentCommuniques.map((communique) => (
+                <Link
+                  key={communique.id}
+                  to={`/ressources/communiques/${communique.id}`}
+                  className={`communique-card-modern ${communique.urgent ? 'urgent' : ''} ${communique.featured ? 'featured' : ''}`}
+                >
+                  {communique.urgent && (
+                    <div className="urgent-badge-modern">🚨 URGENT</div>
+                  )}
+                  {communique.featured && (
+                    <div className="featured-badge-modern">
+                      <span style={{ fontSize: '0.7rem' }}>⭐</span> À la une
+                    </div>
+                  )}
+                  <div className="communique-card-header-modern">
+                    <h3 className="communique-card-title-modern">{communique.title}</h3>
+                    <span
+                      className="communique-type-badge-modern"
+                      style={{ backgroundColor: typeColors[communique.type] }}
+                    >
                       {communique.type === 'urgent' && '🚨'}
                       {communique.type === 'presse' && '📢'}
                       {communique.type === 'information' && 'ℹ️'}
                       {communique.type === 'administratif' && '📋'}
-                    </div>
-                    <div className="communique-status-info">
-                      <span
-                        className="communique-type-badge"
-                        style={{ backgroundColor: typeColors[communique.type] }}
-                      >
-                        {typeLabels[communique.type]}
-                      </span>
-                    </div>
+                      {typeLabels[communique.type]}
+                    </span>
                   </div>
-
-                  <div className="communique-meta-info">
-                    <div className="communique-reference">Réf: {communique.reference}</div>
-                    <div className="communique-category-badge">{communique.category}</div>
+                  <div className="communique-card-body-modern">
+                    <div className="communique-reference-modern">
+                      <span>📋</span> Réf: {communique.reference}
+                    </div>
+                    <p className="communique-excerpt-modern">{communique.excerpt}</p>
                   </div>
-                </div>
-
-                {/* Contenu principal */}
-                <div className="communique-content">
-                  <div className="communique-date-section">
-                    <span className="communique-date">
-                      📅 {new Date(communique.date).toLocaleDateString('fr-FR', {
+                  <div className="communique-card-footer-modern">
+                    <span className="communique-date-modern">
+                      {new Date(communique.date).toLocaleDateString('fr-FR', {
                         day: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         year: 'numeric'
                       })}
                     </span>
+                    <span className="read-more-modern">Lire →</span>
                   </div>
-
-                  <h3 className="communique-title">
-                    <Link to={`/ressources/communiques/${communique.id}`}>
-                      {communique.title}
-                    </Link>
-                  </h3>
-
-                  <p className="communique-excerpt">
-                    {communique.excerpt}
-                  </p>
-
-                  {/* Indicateurs visuels */}
-                  <div className="communique-indicators">
-                    {communique.attachments && communique.attachments.length > 0 && (
-                      <div className="indicator-item attachments-indicator">
-                        <span className="indicator-icon">📎</span>
-                        <span className="indicator-text">
-                          {communique.attachments.length} pièce{communique.attachments.length > 1 ? 's' : ''} jointe{communique.attachments.length > 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="indicator-item read-time">
-                      <span className="indicator-icon">⏱️</span>
-                      <span className="indicator-text">2 min de lecture</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer avec actions améliorées */}
-                <div className="communique-footer">
-                  <div className="communique-actions">
-                    <Link to={`/ressources/communiques/${communique.id}`} className="communique-read-more">
-                      <span className="read-more-text">Lire le communiqué</span>
-                      <span className="read-more-arrow">→</span>
-                    </Link>
-
-                    <div className="communique-quick-actions">
-                      <button className="quick-action-btn" title="Marquer comme lu">
-                        ✅
-                      </button>
-                      <button className="quick-action-btn" title="Partager">
-                        🔗
-                      </button>
-                      <button className="quick-action-btn" title="Télécharger">
-                        ⬇️
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Effet de survol amélioré */}
-                <div className="communique-hover-effect"></div>
-              </article>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="pagination">
+            <div className="pagination-modern">
               <button
-                className="pagination-btn"
+                className="pagination-btn-modern"
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
@@ -462,7 +412,7 @@ const Communiques = () => {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                   <button
                     key={page}
-                    className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+                    className={`pagination-btn-modern ${currentPage === page ? 'active' : ''}`}
                     onClick={() => setCurrentPage(page)}
                   >
                     {page}
@@ -471,7 +421,7 @@ const Communiques = () => {
               </div>
 
               <button
-                className="pagination-btn"
+                className="pagination-btn-modern"
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >

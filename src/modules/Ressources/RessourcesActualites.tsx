@@ -4,7 +4,7 @@ import { SkeletonArticle } from '../../components/Skeleton';
 import { getImageWithFallback } from '../../utils/imageFallback';
 import { useApiCache } from '../../hooks/useApiCache';
 import { useDebounce } from '../../hooks/useDebounce';
-import './Actualites.css';
+import './RessourcesActualites.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
 interface Article {

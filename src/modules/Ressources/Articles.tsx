@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
 import './Articles.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
@@ -201,7 +200,7 @@ const Articles = () => {
   };
 
   return (
-    <div className="ressources-page">
+    <div className="articles-page ressources-page">
       {/* Hero Section */}
       <section className="ressources-hero">
         <div className="hero-content">
@@ -450,88 +449,82 @@ const Articles = () => {
             </div>
           </div>
 
-          {/* Articles list */}
-          <div className="articles-scientific-list">
-            {currentArticles.map(article => (
-              <article key={article.id} className={`article-card ${article.featured ? 'featured' : ''}`}>
-                <div className="article-header">
-                  <div className="article-meta">
+          {/* Articles Grid */}
+          {currentArticles.length === 0 ? (
+            <div className="empty-state-modern">
+              <div className="empty-icon">📚</div>
+              <h3>Aucun article trouvé</h3>
+              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+              <button onClick={clearFilters} className="empty-action-btn">
+                Réinitialiser les filtres
+              </button>
+            </div>
+          ) : (
+            <div className="articles-grid-modern">
+              {currentArticles.map(article => (
+                <Link
+                  key={article.id}
+                  to={`/ressources/articles/${article.id}`}
+                  className={`article-card-modern ${article.featured ? 'featured' : ''}`}
+                >
+                  {article.featured && (
+                    <div className="featured-badge-modern">
+                      <span style={{ fontSize: '0.7rem' }}>⭐</span> À la une
+                    </div>
+                  )}
+                  <div className="article-card-header-modern">
+                    <h3 className="article-card-title-modern">{article.title}</h3>
                     <span
-                      className="publication-type"
+                      className="article-type-badge-modern"
                       style={{ backgroundColor: getPublicationTypeColor(article.publicationType) }}
                     >
                       {getPublicationTypeLabel(article.publicationType)}
                     </span>
-                    {article.featured && (
-                      <span className="featured-badge">⭐ À la une</span>
+                  </div>
+                  <div className="article-card-body-modern">
+                    <div className="article-authors-modern">
+                      <span>👤</span> {formatAuthors(article.authors)}
+                    </div>
+                    <div className="article-journal-modern">
+                      <span>📖</span> {article.journal}
+                      {article.volume && `, Vol. ${article.volume}`}
+                      {article.issue && `, N° ${article.issue}`}
+                    </div>
+                    <p className="article-abstract-modern">{article.abstract}</p>
+                    {article.keywords && article.keywords.length > 0 && (
+                      <div className="article-keywords-modern">
+                        {article.keywords.slice(0, 5).map(keyword => (
+                          <span key={keyword} className="article-keyword-modern">#{keyword}</span>
+                        ))}
+                      </div>
                     )}
-                    <span className="article-year">{article.year}</span>
                   </div>
-                  <div className="article-category">{article.category}</div>
-                </div>
-
-                <div className="article-content">
-                  <h3 className="article-title">
-                    <Link to={`/ressources/articles/${article.id}`}>
-                      {article.title}
-                    </Link>
-                  </h3>
-
-                  <div className="article-authors">
-                    <strong>Auteurs :</strong> {formatAuthors(article.authors)}
-                  </div>
-
-                  <div className="article-journal">
-                    <strong>Journal :</strong> {article.journal}
-                    {article.volume && `, Vol. ${article.volume}`}
-                    {article.issue && `, N° ${article.issue}`}
-                    {article.pages && `, pp. ${article.pages}`}
-                  </div>
-
-                  <p className="article-abstract">{article.abstract}</p>
-
-                  <div className="article-keywords">
-                    <strong>Mots-clés :</strong>
-                    <div className="keywords-list">
-                      {article.keywords.map(keyword => (
-                        <span key={keyword} className="keyword-tag">#{keyword}</span>
-                      ))}
+                  <div className="article-card-footer-modern">
+                    <div className="article-stats-modern">
+                      <div className="article-stat-modern">
+                        <span className="stat-value-modern">{article.downloads}</span>
+                        <span className="stat-label-modern">Téléchargements</span>
+                      </div>
+                      <div className="article-stat-modern">
+                        <span className="stat-value-modern">{article.citations}</span>
+                        <span className="stat-label-modern">Citations</span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                      <span className="article-year-modern">{article.year}</span>
+                      <span className="read-more-modern">Lire →</span>
                     </div>
                   </div>
-                </div>
-
-                <div className="article-footer">
-                  <div className="article-stats">
-                    <span className="stat-item">📄 {article.downloads} téléchargements</span>
-                    <span className="stat-item">📊 {article.citations} citations</span>
-                    <span className="stat-item">🌐 {article.language.toUpperCase()}</span>
-                  </div>
-
-                  <div className="article-actions">
-                    <Link to={`/ressources/articles/${article.id}`} className="article-read-more">
-                      📖 Lire l'article →
-                    </Link>
-                    {article.doi && (
-                      <a
-                        href={`https://doi.org/${article.doi}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="article-doi"
-                      >
-                        🔗 DOI
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="pagination">
+            <div className="pagination-modern">
               <button
-                className="pagination-btn"
+                className="pagination-btn-modern"
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
@@ -542,7 +535,7 @@ const Articles = () => {
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                   <button
                     key={page}
-                    className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+                    className={`pagination-btn-modern ${currentPage === page ? 'active' : ''}`}
                     onClick={() => setCurrentPage(page)}
                   >
                     {page}
@@ -551,7 +544,7 @@ const Articles = () => {
               </div>
 
               <button
-                className="pagination-btn"
+                className="pagination-btn-modern"
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >

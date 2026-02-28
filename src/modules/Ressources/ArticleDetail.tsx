@@ -98,12 +98,11 @@ const ArticleDetail = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Mettre à jour les meta tags pour le partage social
+  // Mettre à jour les meta tags pour le partage social (méthode CSIP)
   useEffect(() => {
     if (article) {
       // Utiliser l'URL absolue avec le domaine
-      const currentUrl = window.location.href;
-      const baseUrl = window.location.origin;
+      const currentUrl = window.location.href.split('?')[0]; // Enlever les paramètres pour l'URL canonique
       // S'assurer que l'image est une URL absolue
       let imageUrl = article.image || 'https://res.cloudinary.com/dduvinjnu/image/upload/LOGO_ONPG_gvlag2.png';
       if (imageUrl && !imageUrl.startsWith('http')) {
@@ -113,37 +112,68 @@ const ArticleDetail = () => {
 
       // Title et description
       document.title = `${article.title} | ONPG - Actualités`;
-      updateMetaTag('description', description);
+      
+      // Meta description
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', description);
+
+      // Open Graph pour Facebook (méthode CSIP - création directe)
+      const ogTags = [
+        { property: 'og:type', content: 'article' },
+        { property: 'og:title', content: article.title },
+        { property: 'og:description', content: description },
+        { property: 'og:image', content: imageUrl },
+        { property: 'og:url', content: currentUrl },
+        { property: 'og:site_name', content: 'ONPG - Ordre National de Pharmacie du Gabon' },
+        { property: 'article:published_time', content: new Date(article.date || Date.now()).toISOString() },
+        { property: 'article:author', content: article.author?.name || 'ONPG' }
+      ];
+
+      ogTags.forEach(tag => {
+        let metaTag = document.querySelector(`meta[property="${tag.property}"]`);
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('property', tag.property);
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', tag.content);
+      });
+
+      if (article.category) {
+        let metaTag = document.querySelector('meta[property="article:section"]');
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('property', 'article:section');
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', article.category);
+      }
+
+      // Twitter Card (méthode CSIP - création directe)
+      const twitterTags = [
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: article.title },
+        { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: imageUrl }
+      ];
+
+      twitterTags.forEach(tag => {
+        let metaTag = document.querySelector(`meta[name="${tag.name}"]`);
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', tag.name);
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', tag.content);
+      });
 
       // Canonical
       updateCanonical(currentUrl);
-
-      // Open Graph pour Facebook
-      updateOpenGraph({
-        title: article.title,
-        description: description,
-        image: imageUrl,
-        url: currentUrl,
-        type: 'article'
-      });
-      
-      // Site name
-      updateMetaTag('og:site_name', 'ONPG - Ordre National de Pharmacie du Gabon', 'property');
-
-      // Twitter Card
-      updateTwitterCard({
-        title: article.title,
-        description: description,
-        image: imageUrl,
-        card: 'summary_large_image'
-      });
-
-      // Meta tags supplémentaires pour article
-      updateMetaTag('article:published_time', new Date(article.date || Date.now()).toISOString(), 'property');
-      updateMetaTag('article:author', article.author?.name || 'ONPG', 'property');
-      if (article.category) {
-        updateMetaTag('article:section', article.category, 'property');
-      }
     }
   }, [article]);
 

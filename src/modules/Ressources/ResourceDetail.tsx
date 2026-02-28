@@ -52,11 +52,11 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
     loadResource();
   }, [id, collection, backPath, navigate]);
 
-  // Mettre à jour les meta tags pour le partage social
+  // Mettre à jour les meta tags pour le partage social (méthode CSIP)
   useEffect(() => {
     if (resource) {
       // Utiliser l'URL absolue avec le domaine
-      const currentUrl = window.location.href;
+      const currentUrl = window.location.href.split('?')[0]; // Enlever les paramètres pour l'URL canonique
       // S'assurer que l'image est une URL absolue
       let imageUrl = resource.image || resource.featuredImage || 'https://res.cloudinary.com/dduvinjnu/image/upload/LOGO_ONPG_gvlag2.png';
       if (imageUrl && !imageUrl.startsWith('http')) {
@@ -66,41 +66,66 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
 
       // Title et description
       document.title = `${resource.title} | ONPG - ${title}`;
-      updateMetaTag('description', description);
+      
+      // Meta description
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', description);
+
+      // Open Graph pour Facebook (méthode CSIP - création directe)
+      const ogTags = [
+        { property: 'og:type', content: 'article' },
+        { property: 'og:title', content: resource.title },
+        { property: 'og:description', content: description },
+        { property: 'og:image', content: imageUrl },
+        { property: 'og:url', content: currentUrl },
+        { property: 'og:site_name', content: 'ONPG - Ordre National de Pharmacie du Gabon' }
+      ];
+
+      if (resource.date) {
+        ogTags.push({ property: 'article:published_time', content: new Date(resource.date).toISOString() });
+      }
+      if (resource.author?.name) {
+        ogTags.push({ property: 'article:author', content: resource.author.name });
+      }
+      if (resource.category) {
+        ogTags.push({ property: 'article:section', content: resource.category });
+      }
+
+      ogTags.forEach(tag => {
+        let metaTag = document.querySelector(`meta[property="${tag.property}"]`);
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('property', tag.property);
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', tag.content);
+      });
+
+      // Twitter Card (méthode CSIP - création directe)
+      const twitterTags = [
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: resource.title },
+        { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: imageUrl }
+      ];
+
+      twitterTags.forEach(tag => {
+        let metaTag = document.querySelector(`meta[name="${tag.name}"]`);
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', tag.name);
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', tag.content);
+      });
 
       // Canonical
       updateCanonical(currentUrl);
-
-      // Open Graph pour Facebook
-      updateOpenGraph({
-        title: resource.title,
-        description: description,
-        image: imageUrl,
-        url: currentUrl,
-        type: 'article'
-      });
-      
-      // Site name
-      updateMetaTag('og:site_name', 'ONPG - Ordre National de Pharmacie du Gabon', 'property');
-
-      // Twitter Card
-      updateTwitterCard({
-        title: resource.title,
-        description: description,
-        image: imageUrl,
-        card: 'summary_large_image'
-      });
-
-      // Meta tags supplémentaires pour article
-      if (resource.date) {
-        updateMetaTag('article:published_time', new Date(resource.date).toISOString(), 'property');
-      }
-      if (resource.author?.name) {
-        updateMetaTag('article:author', resource.author.name, 'property');
-      }
-      if (resource.category) {
-        updateMetaTag('article:section', resource.category, 'property');
-      }
     }
   }, [resource, title]);
 

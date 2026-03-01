@@ -1,657 +1,453 @@
-/* ============================================
-   LOIS PAGE - DESIGN ÉLÉGANT & ÉPOUSTOUFLANT
-   CSS 100% ISOLÉ - Préfixe .lois-page
-   ============================================ */
+/* ============================================================
+   LOIS PAGE — DESIGN ÉPOUSTOUFLANT, ÉLÉGANT & PROFESSIONNEL
+   CSS 100% ISOLÉ — Préfixe .lois-page
+   ============================================================ */
 
 .lois-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  overflow-x: hidden;
+  background: #F8FAFC;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Hero Section */
-.lois-page .ressources-hero {
+/* ── HERO ── */
+.lois-hero {
   position: relative;
-  background: linear-gradient(135deg, #1E3A5F 0%, #2563EB 100%);
-  padding: 6rem 2rem 4rem;
-  color: #ffffff;
+  background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 35%, #1E40AF 75%, #2563EB 100%);
+  padding: 6rem 2rem 5rem;
   overflow: hidden;
+  color: #fff;
 }
 
-.lois-page .hero-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
+.lois-hero-bg { position: absolute; inset: 0; pointer-events: none; }
+
+.lois-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.2;
 }
 
-.lois-page .hero-text {
-  text-align: center;
-  margin-bottom: 3rem;
+.lois-orb-1 { width: 550px; height: 550px; background: #60A5FA; top: -200px; left: -120px; }
+.lois-orb-2 { width: 350px; height: 350px; background: #BFDBFE; bottom: -80px; right: -60px; }
+.lois-orb-3 { width: 300px; height: 300px; background: #3B82F6; top: 30%; left: 60%; opacity: 0.15; }
+
+.lois-hero-content {
+  position: relative; z-index: 2;
+  max-width: 900px; margin: 0 auto; text-align: center;
 }
 
-.lois-page .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
+.lois-hero-badge {
+  display: inline-flex;
+  align-items: center; gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px; padding: 0.5rem 1.25rem;
+  font-size: 0.82rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.92); margin-bottom: 1.75rem;
 }
 
-.lois-page .hero-title-main {
-  display: block;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.9) 100%);
+.lois-hero-title {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 900; line-height: 1.1;
+  margin-bottom: 1.25rem; color: #fff; letter-spacing: -0.02em;
+}
+
+.lois-hero-title-accent {
+  background: linear-gradient(135deg, #93C5FD 0%, #DBEAFE 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.lois-page .hero-title-subtitle {
-  display: block;
-  font-size: 0.6em;
-  font-weight: 400;
-  opacity: 0.9;
-  margin-top: 0.5rem;
+.lois-hero-subtitle {
+  font-size: 1.1rem; line-height: 1.7;
+  color: rgba(255,255,255,0.75);
+  max-width: 640px; margin: 0 auto 2.5rem;
 }
 
-.lois-page .hero-description {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.7;
-  max-width: 700px;
-  margin: 0 auto;
-  opacity: 0.95;
+.lois-hero-stats {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.07);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 1.25rem 2rem;
+  flex-wrap: wrap; justify-content: center;
 }
 
-.lois-page .hero-stats {
+.lois-hero-stat { text-align: center; padding: 0 1.75rem; }
+.lois-stat-val { display: block; font-size: 2rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 0.3rem; }
+.lois-stat-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); font-weight: 600; }
+.lois-stat-div { width: 1px; height: 40px; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+
+/* ── SEARCH ZONE ── */
+.lois-search-zone {
+  background: #fff;
+  border-bottom: 1px solid #E2E8F0;
+  padding: 1.75rem 0;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.lois-search-inner {
+  max-width: 1300px; margin: 0 auto;
+  padding: 0 2rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+
+.lois-search-bar { position: relative; display: flex; align-items: center; }
+
+.lois-search-ico { position: absolute; left: 1.1rem; font-size: 1.1rem; pointer-events: none; }
+
+.lois-search-input {
+  width: 100%;
+  padding: 0.9rem 3rem 0.9rem 3rem;
+  background: #F8FAFC; border: 2px solid #E2E8F0;
+  border-radius: 14px; font-size: 0.97rem; color: #0F172A;
+  transition: all 0.2s ease; box-sizing: border-box;
+}
+
+.lois-search-input:focus {
+  outline: none; background: #fff;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.lois-search-input::placeholder { color: #94A3B8; }
+
+.lois-search-clear {
+  position: absolute; right: 1rem;
+  background: #E2E8F0; border: none; border-radius: 50%;
+  width: 24px; height: 24px; font-size: 0.75rem;
+  cursor: pointer; color: #64748B; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.lois-search-clear:hover { background: #CBD5E1; }
+
+.lois-filter-row { display: flex; flex-direction: column; gap: 0.75rem; }
+.lois-filter-group { display: flex; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+
+.lois-filter-lbl {
+  font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: #64748B; padding-top: 0.4rem;
+  min-width: 75px; flex-shrink: 0;
+}
+
+.lois-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.lois-chip {
+  padding: 0.35rem 0.9rem;
+  background: #F1F5F9; border: 1.5px solid #E2E8F0;
+  border-radius: 50px; font-size: 0.82rem; font-weight: 500;
+  color: #475569; cursor: pointer; transition: all 0.18s; white-space: nowrap;
+}
+
+.lois-chip:hover { background: #DBEAFE; border-color: #93C5FD; color: #1E40AF; }
+.lois-chip.active { background: #1E40AF; border-color: #1E40AF; color: #fff; font-weight: 600; }
+
+.lois-chip-active.active { background: #059669; border-color: #059669; }
+.lois-chip-modified.active { background: #D97706; border-color: #D97706; }
+.lois-chip-repealed.active { background: #DC2626; border-color: #DC2626; }
+
+.lois-search-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+.lois-results-count { font-size: 0.9rem; color: #64748B; font-weight: 500; }
+
+.lois-clear-btn {
+  padding: 0.4rem 1rem; background: #EFF6FF;
+  border: 1px solid #93C5FD; border-radius: 8px;
+  font-size: 0.82rem; color: #1E40AF; cursor: pointer; font-weight: 600; transition: all 0.2s;
+}
+.lois-clear-btn:hover { background: #DBEAFE; }
+
+/* ── CONTENT ── */
+.lois-content {
+  max-width: 1300px; margin: 0 auto; padding: 2.5rem 2rem 4rem;
+}
+
+/* ── LOADING / EMPTY ── */
+.lois-loading, .lois-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 5rem 2rem; text-align: center;
+}
+
+.lois-loader {
+  width: 48px; height: 48px;
+  border: 4px solid #DBEAFE; border-top: 4px solid #2563EB;
+  border-radius: 50%; animation: loisSpin 0.9s linear infinite; margin-bottom: 1.25rem;
+}
+
+@keyframes loisSpin { to { transform: rotate(360deg); } }
+
+.lois-empty-icon { font-size: 4rem; opacity: 0.4; margin-bottom: 1rem; }
+.lois-empty-title { font-size: 1.5rem; font-weight: 700; color: #0F172A; margin-bottom: 0.5rem; }
+.lois-empty-text { color: #64748B; margin-bottom: 1.5rem; }
+
+.lois-empty-btn {
+  padding: 0.75rem 1.75rem;
+  background: #1E40AF; color: #fff; border: none;
+  border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+}
+.lois-empty-btn:hover { background: #1E3A8A; transform: translateY(-2px); }
+
+/* ── LIST ── */
+.lois-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+/* ── CARD ── */
+.lois-card {
+  background: #fff;
+  border-radius: 18px;
+  border: 1.5px solid #E2E8F0;
+  padding: 2rem;
   display: flex;
-  justify-content: center;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.25s ease;
+  animation: loisCardIn 0.4s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.lois-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 5px; height: 100%;
+  background: linear-gradient(180deg, #1E40AF, #2563EB);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.lois-card:hover::before { opacity: 1; }
+
+@keyframes loisCardIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lois-card:hover {
+  border-color: #93C5FD;
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.1);
+  transform: translateY(-3px);
+}
+
+.lois-card.featured {
+  border-color: #93C5FD;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
+}
+
+.lois-card-featured {
+  position: absolute; top: 0; right: 0;
+  background: linear-gradient(135deg, #F59E0B, #FBBF24);
+  color: #000; font-size: 0.68rem; font-weight: 700;
+  padding: 0.3rem 0.9rem; border-bottom-left-radius: 10px;
+}
+
+/* Card Header */
+.lois-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-.lois-page .stat-card {
-  background: rgba(255,255,255,0.12);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 16px;
-  padding: 1.5rem 2rem;
-  text-align: center;
-  min-width: 120px;
-  transition: transform 0.3s ease;
+.lois-card-header-left { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+.lois-card-number {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: #EFF6FF; color: #1E40AF;
+  border: 1px solid #BFDBFE;
+  border-radius: 8px; padding: 0.3rem 0.8rem;
+  font-size: 0.82rem; font-weight: 700;
 }
 
-.lois-page .stat-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255,255,255,0.18);
+.lois-number-icon { font-size: 0.85rem; }
+
+.lois-card-category {
+  font-size: 0.78rem; font-weight: 600;
+  background: #F8FAFC; color: #475569;
+  border: 1px solid #E2E8F0; border-radius: 6px;
+  padding: 0.25rem 0.65rem;
 }
 
-.lois-page .stat-number {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  display: block;
+.lois-status-badge {
+  font-size: 0.8rem; font-weight: 700;
+  padding: 0.3rem 0.85rem; border-radius: 20px;
+  white-space: nowrap;
 }
 
-.lois-page .stat-label {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  font-weight: 500;
+/* Card Title */
+.lois-card-title {
+  font-size: 1.15rem; font-weight: 800;
+  color: #0F172A; line-height: 1.35; margin: 0;
 }
 
-/* Background Pattern */
-.lois-page .hero-bg-pattern {
-  position: absolute;
-  inset: 0;
-  opacity: 0.08;
-  z-index: 1;
+.lois-card-title a {
+  color: inherit; text-decoration: none; transition: color 0.2s;
+}
+.lois-card-title a:hover { color: #1E40AF; }
+
+/* Dates */
+.lois-card-dates {
+  display: flex; align-items: center; gap: 0.75rem;
+  flex-wrap: wrap;
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 10px; padding: 0.75rem 1rem;
 }
 
-.lois-page .pattern-shape {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  animation: loisFloat 20s ease-in-out infinite;
+.lois-date-item {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.83rem;
 }
 
-.lois-page .shape-1 { width: 300px; height: 300px; top: -100px; right: -100px; animation-delay: 0s; }
-.lois-page .shape-2 { width: 200px; height: 200px; bottom: -50px; left: 10%; animation-delay: 5s; }
-.lois-page .shape-3 { width: 150px; height: 150px; top: 50%; right: 20%; animation-delay: 10s; }
+.lois-date-ico { font-size: 0.85rem; }
+.lois-date-lbl { color: #64748B; font-weight: 500; }
+.lois-date-val { color: #1E293B; font-weight: 700; }
+.lois-date-sep { color: #CBD5E1; font-weight: 300; font-size: 1.2rem; }
 
-@keyframes loisFloat {
-  0%, 100% { transform: translate(0,0) rotate(0deg); }
-  33%       { transform: translate(30px,-30px) rotate(120deg); }
-  66%       { transform: translate(-20px,20px) rotate(240deg); }
+/* Summary */
+.lois-card-summary {
+  font-size: 0.9rem; color: #475569; line-height: 1.7; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 
-/* Container Principal */
-.lois-page .ressources-container-modern {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 3rem 2rem;
+/* TOC */
+.lois-toc {
+  background: linear-gradient(135deg, #EFF6FF, #F0F9FF);
+  border: 1px solid #BFDBFE;
+  border-radius: 12px; padding: 1rem 1.25rem;
 }
 
-.lois-page .ressources-main-modern { width: 100%; }
-
-/* Breadcrumb */
-.lois-page .breadcrumb-modern {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-  color: #64748b;
+.lois-toc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.75rem;
 }
 
-.lois-page .breadcrumb-modern a {
-  color: #2563EB;
-  text-decoration: none;
-  transition: color 0.2s ease;
+.lois-toc-title {
+  font-size: 0.78rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: #1E40AF;
 }
 
-.lois-page .breadcrumb-modern a:hover { color: #1E40AF; }
-.lois-page .breadcrumb-separator { color: #cbd5e1; }
-.lois-page .breadcrumb-current { color: #1e293b; font-weight: 500; }
-
-/* Filtres */
-.lois-page .filters-modern-container {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem;
-  margin-bottom: 3rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  border: 1px solid #e2e8f0;
+.lois-toc-count {
+  font-size: 0.75rem; font-weight: 600;
+  color: #3B82F6; background: #DBEAFE;
+  border-radius: 20px; padding: 0.1rem 0.6rem;
 }
 
-.lois-page .filters-header-modern {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+.lois-toc-items { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.lois-toc-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.84rem; color: #334155;
 }
 
-.lois-page .filters-header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
+.lois-toc-bullet { color: #3B82F6; font-size: 0.7rem; flex-shrink: 0; }
+.lois-toc-section-title { flex: 1; line-height: 1.4; }
 
-.lois-page .results-title-modern {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
-}
-
-.lois-page .results-meta-modern {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin-top: 0.25rem;
-}
-
-.lois-page .toggle-filters-btn-modern {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  color: #475569;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lois-page .toggle-filters-btn-modern:hover { background: #e2e8f0; }
-
-.lois-page .search-bar-modern { margin-bottom: 1.5rem; }
-
-.lois-page .search-input-wrapper-modern {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.lois-page .search-icon {
-  position: absolute;
-  left: 1rem;
-  color: #64748b;
-  z-index: 1;
-}
-
-.lois-page .search-input-modern {
-  width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
-  background: #f8fafc;
-  border: 2px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 1rem;
-  color: #1e293b;
-  transition: all 0.2s ease;
-}
-
-.lois-page .search-input-modern:focus {
-  outline: none;
-  background: #fff;
-  border-color: #2563EB;
-  box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
-}
-
-.lois-page .search-input-modern::placeholder { color: #94a3b8; }
-
-.lois-page .clear-search-btn {
-  position: absolute;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: #64748b;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.25rem;
-  transition: color 0.2s ease;
-}
-
-.lois-page .clear-search-btn:hover { color: #1e293b; }
-
-.lois-page .filters-content-modern {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
-}
-
-.lois-page .filters-content-modern.open {
-  max-height: 800px;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-  margin-top: 1.5rem;
-}
-
-.lois-page .filters-grid-modern { display: grid; gap: 2rem; margin-bottom: 1.5rem; }
-.lois-page .filter-group-modern { display: flex; flex-direction: column; gap: 0.75rem; }
-.lois-page .filter-label-modern { font-size: 0.95rem; font-weight: 600; color: #1e293b; }
-.lois-page .filter-chips-modern { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
-.lois-page .filter-chip-modern {
-  padding: 0.5rem 1rem;
-  background: #f1f5f9;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  color: #475569;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.lois-page .filter-chip-modern:hover { background: #e2e8f0; }
-
-.lois-page .filter-chip-modern.active {
-  background: linear-gradient(135deg, #1E3A5F, #2563EB);
-  color: #fff;
-  border-color: #2563EB;
-  box-shadow: 0 2px 8px rgba(37,99,235,0.2);
-}
-
-.lois-page .chip-count { font-size: 0.8rem; opacity: 0.8; }
-
-.lois-page .filters-actions-modern {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.lois-page .clear-filters-btn-modern {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.625rem 1.25rem;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  color: #64748b;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lois-page .clear-filters-btn-modern:hover { background: #f1f5f9; color: #1e293b; }
-
-.lois-page .filters-stats-modern { display: flex; gap: 1.5rem; }
-
-.lois-page .stat-mini {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.lois-page .stat-mini-value {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #2563EB;
-}
-
-.lois-page .stat-mini-label { font-size: 0.75rem; color: #64748b; }
-
-/* Grille lois */
-.lois-page .laws-grid-modern {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 2rem;
-}
-
-/* Carte Loi */
-.lois-page .law-card-modern {
-  background: #ffffff;
-  border-radius: 16px;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  display: flex;
-  flex-direction: column;
-}
-
-.lois-page .law-card-modern:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-  border-color: #2563EB;
-}
-
-.lois-page .law-card-modern.featured {
-  border-color: #2563EB;
-  box-shadow: 0 4px 16px rgba(37,99,235,0.15);
-}
-
-.lois-page .law-card-accent {
-  height: 4px;
-  background: linear-gradient(90deg, #1E3A5F, #2563EB);
-}
-
-.lois-page .law-card-header-modern {
-  padding: 1.5rem 1.5rem 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
-}
-
-.lois-page .law-card-title-modern {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #1e293b;
-  line-height: 1.4;
-  margin: 0;
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.lois-page .law-badges {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
+.lois-toc-articles {
+  font-size: 0.72rem; font-weight: 600; color: #64748B;
+  background: #E2E8F0; border-radius: 20px; padding: 0.1rem 0.5rem;
   flex-shrink: 0;
 }
 
-.lois-page .law-status-badge {
-  padding: 0.3rem 0.7rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
+.lois-toc-more {
+  font-size: 0.8rem; color: #3B82F6; font-style: italic; font-weight: 500;
+  padding-left: 1rem;
+}
+
+/* Tags */
+.lois-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.lois-tag {
+  font-size: 0.75rem; color: #1E40AF;
+  background: #EFF6FF; border: 1px solid #BFDBFE;
+  border-radius: 6px; padding: 0.15rem 0.55rem; font-weight: 500;
+}
+
+/* Footer */
+.lois-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #F1F5F9;
+  margin-top: auto;
+}
+
+.lois-card-stats { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.lois-stat-pill {
+  font-size: 0.78rem; color: #64748B;
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+  border-radius: 20px; padding: 0.25rem 0.7rem;
+}
+
+.lois-card-btn {
+  display: inline-flex; align-items: center;
+  padding: 0.55rem 1.2rem;
+  background: linear-gradient(135deg, #1E40AF, #2563EB);
+  color: #fff; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 700;
+  text-decoration: none; transition: all 0.2s;
   white-space: nowrap;
-  color: #fff;
 }
 
-.lois-page .featured-badge-modern {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #000;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.65rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+.lois-card-btn:hover {
+  background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
 }
 
-.lois-page .law-card-body-modern {
-  padding: 0 1.5rem 1rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+/* ── PAGINATION ── */
+.lois-pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0.75rem; margin-top: 3rem; flex-wrap: wrap;
 }
 
-.lois-page .law-number-modern {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #2563EB;
-  background: rgba(37,99,235,0.07);
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  display: inline-block;
+.lois-page-btn {
+  padding: 0.6rem 1.4rem;
+  background: #fff; border: 1.5px solid #E2E8F0;
+  border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+  color: #334155; cursor: pointer; transition: all 0.2s;
 }
 
-.lois-page .law-dates-modern {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+.lois-page-btn:hover:not(:disabled) { border-color: #93C5FD; color: #1E40AF; background: #EFF6FF; }
+.lois-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.lois-page-numbers { display: flex; gap: 0.4rem; }
+
+.lois-page-num {
+  width: 38px; height: 38px;
+  border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+  background: #fff; border: 1.5px solid #E2E8F0; color: #334155;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
 }
 
-.lois-page .law-date-item {
-  font-size: 0.8rem;
-  color: #64748b;
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
+.lois-page-num:hover { border-color: #93C5FD; color: #1E40AF; background: #EFF6FF; }
+.lois-page-num.active { background: #1E40AF; border-color: #1E40AF; color: #fff; }
 
-.lois-page .law-date-label { font-weight: 600; color: #475569; }
-.lois-page .law-date-value { color: #64748b; }
-
-.lois-page .law-summary-modern {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #475569;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.lois-page .law-toc-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-}
-
-.lois-page .law-toc-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #475569;
-  margin-bottom: 0.25rem;
-}
-
-.lois-page .toc-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.8rem;
-  color: #64748b;
-  padding: 0.25rem 0.5rem;
-  background: #f8fafc;
-  border-radius: 6px;
-  border-left: 3px solid #2563EB;
-}
-
-.lois-page .toc-articles-count {
-  font-size: 0.7rem;
-  color: #2563EB;
-  font-weight: 500;
-}
-
-.lois-page .law-tags-modern {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.lois-page .law-tag {
-  padding: 0.2rem 0.6rem;
-  background: #f1f5f9;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  color: #475569;
-  font-weight: 500;
-}
-
-.lois-page .law-card-footer-modern {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.lois-page .law-stats-modern {
-  display: flex;
-  gap: 1.25rem;
-}
-
-.lois-page .law-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-}
-
-.lois-page .law-stat-value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #2563EB;
-}
-
-.lois-page .law-stat-label {
-  font-size: 0.7rem;
-  color: #64748b;
-}
-
-.lois-page .read-more-modern {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #2563EB;
-  transition: transform 0.2s ease;
-  display: inline-block;
-}
-
-.lois-page .law-card-modern:hover .read-more-modern {
-  transform: translateX(4px);
-}
-
-/* État vide */
-.lois-page .empty-state-modern {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-}
-
-.lois-page .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
-
-.lois-page .empty-state-modern h3 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin-bottom: 0.5rem;
-}
-
-.lois-page .empty-state-modern p {
-  font-size: 1rem;
-  color: #64748b;
-  margin-bottom: 1.5rem;
-}
-
-.lois-page .empty-action-btn {
-  padding: 0.75rem 1.5rem;
-  background: #2563EB;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lois-page .empty-action-btn:hover {
-  background: #1E40AF;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37,99,235,0.3);
-}
-
-/* Pagination */
-.lois-page .pagination-modern {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 3rem;
-}
-
-.lois-page .pagination-numbers { display: flex; gap: 0.5rem; }
-
-.lois-page .pagination-btn-modern {
-  padding: 0.625rem 1rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  color: #475569;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lois-page .pagination-btn-modern:hover:not(:disabled) { background: #f1f5f9; }
-.lois-page .pagination-btn-modern:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.lois-page .pagination-btn-modern.active {
-  background: #2563EB;
-  color: #fff;
-  border-color: #2563EB;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .lois-page .laws-grid-modern {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  .lois-page .ressources-hero { padding: 4rem 1.5rem 3rem; }
-  .lois-page .ressources-container-modern { padding: 2rem 1rem; }
-  .lois-page .filters-modern-container { padding: 1.5rem; }
-  .lois-page .laws-grid-modern { grid-template-columns: 1fr; gap: 1.5rem; }
-  .lois-page .hero-stats { gap: 1rem; }
-  .lois-page .stat-card { padding: 1rem 1.5rem; min-width: 100px; }
-  .lois-page .filters-header-modern { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .lois-hero { padding: 4rem 1.25rem 3rem; }
+  .lois-hero-stats { padding: 1rem; }
+  .lois-hero-stat { padding: 0 1rem; }
+  .lois-stat-val { font-size: 1.5rem; }
+  .lois-search-inner { padding: 0 1.25rem; }
+  .lois-content { padding: 1.5rem 1.25rem 3rem; }
+  .lois-card { padding: 1.25rem; }
+  .lois-card-header { flex-direction: column; align-items: flex-start; }
+  .lois-card-dates { flex-direction: column; gap: 0.5rem; }
+  .lois-date-sep { display: none; }
+  .lois-filter-group { flex-direction: column; gap: 0.4rem; }
+  .lois-filter-lbl { min-width: auto; }
 }
 
 @media (max-width: 480px) {
-  .lois-page .hero-title { font-size: 2rem; }
-  .lois-page .stat-number { font-size: 2rem; }
+  .lois-hero-title { font-size: 2rem; }
+  .lois-stat-div { display: none; }
+  .lois-card-footer { flex-direction: column; align-items: flex-start; }
+  .lois-card-btn { width: 100%; justify-content: center; }
 }

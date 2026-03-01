@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import './Lois.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
-// Types pour les lois
 interface Law {
   id: string;
   number: string;
@@ -12,10 +11,7 @@ interface Law {
   entryDate: string;
   category: string;
   summary: string;
-  tableOfContents: {
-    title: string;
-    articles: string[];
-  }[];
+  tableOfContents: { title: string; articles: string[] }[];
   keyArticles: string[];
   tags: string[];
   status: 'active' | 'modified' | 'repealed';
@@ -25,361 +21,304 @@ interface Law {
   language: string;
 }
 
+const STATUS_CONFIG = {
+  active:   { label: 'En vigueur',  color: '#065F46', bg: '#D1FAE5', icon: '✅' },
+  modified: { label: 'Modifiée',    color: '#92400E', bg: '#FEF3C7', icon: '⚠️' },
+  repealed: { label: 'Abrogée',     color: '#991B1B', bg: '#FEE2E2', icon: '❌' },
+};
 
 const Lois = () => {
   const [laws, setLaws] = useState<Law[]>([]);
   const [filteredLaws, setFilteredLaws] = useState<Law[]>([]);
-  
-  // Charger depuis MongoDB - plusieurs lois possibles
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Toutes');
+  const [selectedStatus, setSelectedStatus] = useState('Tous');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const lawsPerPage = 5;
+
   useEffect(() => {
     const loadLaws = async () => {
-      const data = await fetchResourceData('lois');
-      if (!data) {
-        setLaws([]);
-        setFilteredLaws([]);
-        return;
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('lois');
+        if (!data) { setLaws([]); setFilteredLaws([]); return; }
+        const rawArray = Array.isArray(data) ? data : [data];
+        const mapped: Law[] = rawArray.map((item: any) => ({
+          id: String(item._id || ''),
+          number: item.number || '',
+          title: item.title || '',
+          publicationDate: item.publicationDate || item.date || new Date().toISOString().split('T')[0],
+          entryDate: item.entryDate || item.date || new Date().toISOString().split('T')[0],
+          category: item.category || 'Législation',
+          summary: item.summary || item.title || '',
+          tableOfContents: item.tableOfContents || [],
+          keyArticles: item.keyArticles || [],
+          tags: item.tags || [],
+          status: (item.status as 'active' | 'modified' | 'repealed') || 'active',
+          downloads: item.downloads || 0,
+          views: item.views || 0,
+          featured: item.featured || false,
+          language: item.language || 'fr',
+        }));
+        setLaws(mapped);
+        setFilteredLaws(mapped);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
-
-      // Gérer un tableau de données
-      const rawArray = Array.isArray(data) ? data : [data];
-      
-      const mapped: Law[] = rawArray.map((item: any) => ({
-        id: String(item._id || ''),
-        number: item.number || '',
-        title: item.title || '',
-        publicationDate: item.publicationDate || item.date || new Date().toISOString().split('T')[0],
-        entryDate: item.entryDate || item.date || new Date().toISOString().split('T')[0],
-        category: item.category || 'Législation',
-        summary: item.summary || item.title || '',
-        tableOfContents: item.tableOfContents || [],
-        keyArticles: item.keyArticles || [],
-        tags: item.tags || [],
-        status: (item.status as 'active' | 'modified' | 'repealed') || 'active',
-        downloads: item.downloads || 0,
-        views: item.views || 0,
-        featured: item.featured || false,
-        language: item.language || 'fr'
-      }));
-
-      setLaws(mapped);
-      setFilteredLaws(mapped);
     };
     loadLaws();
   }, []);
-  const [selectedCategory, setSelectedCategory] = useState('Toutes');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filtersOpen, setFiltersOpen] = useState(false);
-
-  const lawsPerPage = 6;
 
   useEffect(() => {
-    let filtered = laws.filter(law => {
-      const matchesSearch = law.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           law.number.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === 'Toutes' || law.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+    let filtered = laws.filter(l => {
+      const q = searchQuery.toLowerCase();
+      const matchesSearch = !q || l.title.toLowerCase().includes(q) || l.number.toLowerCase().includes(q) ||
+        l.summary.toLowerCase().includes(q) || l.tags.some(t => t.toLowerCase().includes(q));
+      const matchesCategory = selectedCategory === 'Toutes' || l.category === selectedCategory;
+      const matchesStatus = selectedStatus === 'Tous' || l.status === selectedStatus;
+      return matchesSearch && matchesCategory && matchesStatus;
     });
-
     setFilteredLaws(filtered);
     setCurrentPage(1);
-  }, [laws, searchQuery, selectedCategory]);
+  }, [laws, searchQuery, selectedCategory, selectedStatus]);
 
   const totalPages = Math.ceil(filteredLaws.length / lawsPerPage);
   const currentLaws = filteredLaws.slice((currentPage - 1) * lawsPerPage, currentPage * lawsPerPage);
 
   const stats = useMemo(() => ({
-    totalLaws: laws.length,
-    activeLaws: laws.filter(l => l.status === 'active').length,
-    totalDownloads: laws.reduce((sum, l) => sum + l.downloads, 0),
-    totalViews: laws.reduce((sum, l) => sum + l.views, 0),
-    featuredLaws: laws.filter(l => l.featured).length
+    total: laws.length,
+    active: laws.filter(l => l.status === 'active').length,
+    totalDownloads: laws.reduce((s, l) => s + l.downloads, 0),
+    totalViews: laws.reduce((s, l) => s + l.views, 0),
   }), [laws]);
 
-  const getStatusLabel = (status: Law['status']) => {
-    const labels = {
-      'active': 'En vigueur',
-      'modified': 'Modifiée',
-      'repealed': 'Abrogée'
-    };
-    return labels[status];
-  };
+  const categories = useMemo(() => Array.from(new Set(laws.map(l => l.category))), [laws]);
 
-  const getStatusColor = (status: Law['status']) => {
-    const colors = {
-      'active': '#27ae60',
-      'modified': '#f39c12',
-      'repealed': '#e74c3c'
-    };
-    return colors[status];
-  };
+  const clearFilters = () => { setSearchQuery(''); setSelectedCategory('Toutes'); setSelectedStatus('Tous'); };
+  const hasFilters = searchQuery || selectedCategory !== 'Toutes' || selectedStatus !== 'Tous';
 
+  const formatDate = (d: string) => {
+    try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+    catch { return d; }
+  };
 
   return (
-    <div className="lois-page ressources-page">
-      <section className="ressources-hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="hero-title-main">Corps</span>
-              <span className="hero-title-subtitle">Législatif</span>
-            </h1>
-            <p className="hero-description">
-              Lois, décrets et textes législatifs régissant la pharmacie au Gabon.
-              Avec sommaire interactif pour navigation facilitée.
-            </p>
-          </div>
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalLaws}</div>
-              <div className="stat-label">Lois</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.activeLaws}</div>
-              <div className="stat-label">En vigueur</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalDownloads.toLocaleString()}</div>
-              <div className="stat-label">Téléchargements</div>
-            </div>
-          </div>
+    <div className="lois-page">
+
+      {/* ═══ HERO ═══ */}
+      <section className="lois-hero">
+        <div className="lois-hero-bg">
+          <div className="lois-orb lois-orb-1" />
+          <div className="lois-orb lois-orb-2" />
+          <div className="lois-orb lois-orb-3" />
         </div>
-        <div className="hero-bg-pattern">
-          <div className="pattern-shape shape-1"></div>
-          <div className="pattern-shape shape-2"></div>
-          <div className="pattern-shape shape-3"></div>
+        <div className="lois-hero-content">
+          <div className="lois-hero-badge">
+            <span>⚖️</span>
+            <span>Réglementation Pharmaceutique</span>
+          </div>
+          <h1 className="lois-hero-title">
+            Corpus<br />
+            <span className="lois-hero-title-accent">Législatif & Réglementaire</span>
+          </h1>
+          <p className="lois-hero-subtitle">
+            Lois, décrets et textes officiels régissant l'exercice de la pharmacie au Gabon — accès direct et navigation facilitée.
+          </p>
+          <div className="lois-hero-stats">
+            <div className="lois-hero-stat">
+              <span className="lois-stat-val">{stats.total}</span>
+              <span className="lois-stat-lbl">Textes</span>
+            </div>
+            <div className="lois-stat-div" />
+            <div className="lois-hero-stat">
+              <span className="lois-stat-val">{stats.active}</span>
+              <span className="lois-stat-lbl">En vigueur</span>
+            </div>
+            <div className="lois-stat-div" />
+            <div className="lois-hero-stat">
+              <span className="lois-stat-val">{stats.totalDownloads.toLocaleString()}</span>
+              <span className="lois-stat-lbl">Téléchargements</span>
+            </div>
+            <div className="lois-stat-div" />
+            <div className="lois-hero-stat">
+              <span className="lois-stat-val">{stats.totalViews.toLocaleString()}</span>
+              <span className="lois-stat-lbl">Consultations</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="ressources-container-modern">
-        <main className="ressources-main-modern">
-          <nav className="breadcrumb-modern">
-            <Link to="/">Accueil</Link>
-            <span className="breadcrumb-separator">›</span>
-            <Link to="/ressources">Ressources</Link>
-            <span className="breadcrumb-separator">›</span>
-            <span className="breadcrumb-current">Lois</span>
-          </nav>
+      {/* ═══ SEARCH + FILTERS ═══ */}
+      <div className="lois-search-zone">
+        <div className="lois-search-inner">
+          <div className="lois-search-bar">
+            <span className="lois-search-ico">🔍</span>
+            <input
+              type="text"
+              className="lois-search-input"
+              placeholder="Rechercher par numéro, titre, résumé ou mots-clés…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && <button className="lois-search-clear" onClick={() => setSearchQuery('')}>✕</button>}
+          </div>
 
-          {/* Filtres horizontaux modernes */}
-          <div className="filters-modern-container">
-            <div className="filters-header-modern">
-              <div className="filters-header-left">
-                <h2 className="results-title-modern">
-                  {filteredLaws.length} loi{filteredLaws.length > 1 ? 's' : ''} trouvée{filteredLaws.length > 1 ? 's' : ''}
-                </h2>
-                <div className="results-meta-modern">
-                  Page {currentPage} sur {totalPages}
-                </div>
+          <div className="lois-filter-row">
+            <div className="lois-filter-group">
+              <span className="lois-filter-lbl">Catégorie</span>
+              <div className="lois-chips">
+                <button className={`lois-chip ${selectedCategory === 'Toutes' ? 'active' : ''}`} onClick={() => setSelectedCategory('Toutes')}>Toutes</button>
+                {categories.map(c => (
+                  <button key={c} className={`lois-chip ${selectedCategory === c ? 'active' : ''}`} onClick={() => setSelectedCategory(c)}>{c}</button>
+                ))}
               </div>
-              <button 
-                className="toggle-filters-btn-modern"
-                onClick={() => setFiltersOpen(!filtersOpen)}
-                aria-label="Toggle filters"
-              >
-                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
-                <span>Filtres</span>
-              </button>
             </div>
-
-            {/* Barre de recherche principale */}
-            <form className="search-bar-modern">
-              <div className="search-input-wrapper-modern">
-                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Rechercher par numéro, titre..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input-modern"
-                />
-                {searchQuery && (
-                  <button 
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="clear-search-btn"
-                    aria-label="Clear search"
-                  >
-                    ✕
+            <div className="lois-filter-group">
+              <span className="lois-filter-lbl">Statut</span>
+              <div className="lois-chips">
+                <button className={`lois-chip ${selectedStatus === 'Tous' ? 'active' : ''}`} onClick={() => setSelectedStatus('Tous')}>Tous</button>
+                {(['active', 'modified', 'repealed'] as const).map(s => (
+                  <button key={s} className={`lois-chip lois-chip-${s} ${selectedStatus === s ? 'active' : ''}`} onClick={() => setSelectedStatus(s)}>
+                    {STATUS_CONFIG[s].icon} {STATUS_CONFIG[s].label}
                   </button>
-                )}
-              </div>
-            </form>
-
-            {/* Filtres collapsibles */}
-            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
-              <div className="filters-grid-modern">
-                {/* Filtre Catégorie */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Catégorie</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${selectedCategory === 'Toutes' ? 'active' : ''}`}
-                      onClick={() => setSelectedCategory('Toutes')}
-                    >
-                      Toutes
-                    </button>
-                    {Array.from(new Set(laws.map(l => l.category))).map(category => (
-                      <button
-                        key={category}
-                        className={`filter-chip-modern ${selectedCategory === category ? 'active' : ''}`}
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                        <span className="chip-count">
-                          ({laws.filter(l => l.category === category).length})
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions filtres */}
-              <div className="filters-actions-modern">
-                <button onClick={() => {
-                  setSearchQuery('');
-                  setSelectedCategory('Toutes');
-                }} className="clear-filters-btn-modern">
-                  <span>🗑️</span> Effacer tous les filtres
-                </button>
-                <div className="filters-stats-modern">
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.totalLaws}</span>
-                    <span className="stat-mini-label">Total</span>
-                  </div>
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.activeLaws}</span>
-                    <span className="stat-mini-label">En vigueur</span>
-                  </div>
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.totalDownloads.toLocaleString()}</span>
-                    <span className="stat-mini-label">Téléchargements</span>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
 
-          {currentLaws.length === 0 ? (
-            <div className="empty-state-modern">
-              <div className="empty-icon">⚖️</div>
-              <h3>Aucune loi trouvée</h3>
-              <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
-              <button onClick={() => { setSearchQuery(''); setSelectedCategory('Toutes'); }} className="empty-action-btn">
-                Réinitialiser les filtres
-              </button>
-            </div>
-          ) : (
-            <div className="laws-grid-modern">
-              {currentLaws.map(law => (
-                <Link
-                  key={law.id}
-                  to={`/ressources/lois/${law.id}`}
-                  className={`law-card-modern ${law.featured ? 'featured' : ''}`}
-                >
-                  <div className="law-card-accent" />
-                  <div className="law-card-header-modern">
-                    <h3 className="law-card-title-modern">{law.title}</h3>
-                    <div className="law-badges">
-                      <span
-                        className="law-status-badge"
-                        style={{ backgroundColor: getStatusColor(law.status) }}
-                      >
-                        {getStatusLabel(law.status)}
-                      </span>
-                      {law.featured && (
-                        <span className="featured-badge-modern">⭐ À la une</span>
+          <div className="lois-search-meta">
+            <span className="lois-results-count">
+              {loading ? 'Chargement…' : `${filteredLaws.length} texte${filteredLaws.length > 1 ? 's' : ''} trouvé${filteredLaws.length > 1 ? 's' : ''}`}
+            </span>
+            {hasFilters && <button className="lois-clear-btn" onClick={clearFilters}>✕ Effacer</button>}
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ CONTENT ═══ */}
+      <div className="lois-content">
+        {loading ? (
+          <div className="lois-loading">
+            <div className="lois-loader" />
+            <p>Chargement des textes législatifs…</p>
+          </div>
+        ) : currentLaws.length === 0 ? (
+          <div className="lois-empty">
+            <div className="lois-empty-icon">⚖️</div>
+            <h3 className="lois-empty-title">Aucun texte trouvé</h3>
+            <p className="lois-empty-text">Modifiez vos critères de recherche.</p>
+            {hasFilters && <button className="lois-empty-btn" onClick={clearFilters}>Réinitialiser</button>}
+          </div>
+        ) : (
+          <div className="lois-list">
+            {currentLaws.map((law, idx) => {
+              const statusCfg = STATUS_CONFIG[law.status];
+              return (
+                <article key={law.id} className={`lois-card ${law.featured ? 'featured' : ''}`} style={{ animationDelay: `${idx * 0.07}s` }}>
+                  {law.featured && <div className="lois-card-featured">⭐ Texte clé</div>}
+
+                  <div className="lois-card-header">
+                    <div className="lois-card-header-left">
+                      {law.number && (
+                        <div className="lois-card-number">
+                          <span className="lois-number-icon">📜</span>
+                          <span>Loi n° {law.number}</span>
+                        </div>
                       )}
+                      <span className="lois-card-category">{law.category}</span>
+                    </div>
+                    <div className="lois-card-header-right">
+                      <span className="lois-status-badge" style={{ color: statusCfg.color, background: statusCfg.bg }}>
+                        {statusCfg.icon} {statusCfg.label}
+                      </span>
                     </div>
                   </div>
-                  <div className="law-card-body-modern">
-                    {law.number && (
-                      <span className="law-number-modern">Loi n° {law.number}</span>
-                    )}
-                    <div className="law-dates-modern">
-                      <div className="law-date-item">
-                        <span className="law-date-label">Publication</span>
-                        <span className="law-date-value">{new Date(law.publicationDate).toLocaleDateString('fr-FR')}</span>
-                      </div>
-                      <div className="law-date-item">
-                        <span className="law-date-label">Entrée en vigueur</span>
-                        <span className="law-date-value">{new Date(law.entryDate).toLocaleDateString('fr-FR')}</span>
-                      </div>
+
+                  <h3 className="lois-card-title">
+                    <Link to={`/ressources/lois/${law.id}`}>{law.title}</Link>
+                  </h3>
+
+                  <div className="lois-card-dates">
+                    <div className="lois-date-item">
+                      <span className="lois-date-ico">📅</span>
+                      <span className="lois-date-lbl">Publication :</span>
+                      <span className="lois-date-val">{formatDate(law.publicationDate)}</span>
                     </div>
-                    <p className="law-summary-modern">{law.summary}</p>
-                    {law.tableOfContents.length > 0 && (
-                      <div className="law-toc-preview">
-                        <span className="law-toc-label">Sommaire ({law.tableOfContents.length} titres)</span>
-                        {law.tableOfContents.slice(0, 2).map((section, i) => (
-                          <div key={i} className="toc-item">
-                            <span>{section.title}</span>
-                            <span className="toc-articles-count">{section.articles.length} art.</span>
+                    <div className="lois-date-sep">·</div>
+                    <div className="lois-date-item">
+                      <span className="lois-date-ico">⚡</span>
+                      <span className="lois-date-lbl">Entrée en vigueur :</span>
+                      <span className="lois-date-val">{formatDate(law.entryDate)}</span>
+                    </div>
+                  </div>
+
+                  {law.summary && (
+                    <p className="lois-card-summary">{law.summary}</p>
+                  )}
+
+                  {law.tableOfContents.length > 0 && (
+                    <div className="lois-toc">
+                      <div className="lois-toc-header">
+                        <span className="lois-toc-title">Sommaire</span>
+                        <span className="lois-toc-count">{law.tableOfContents.length} titres</span>
+                      </div>
+                      <div className="lois-toc-items">
+                        {law.tableOfContents.slice(0, 3).map((section, i) => (
+                          <div key={i} className="lois-toc-item">
+                            <span className="lois-toc-bullet">▸</span>
+                            <span className="lois-toc-section-title">{section.title}</span>
+                            <span className="lois-toc-articles">{section.articles.length} art.</span>
                           </div>
                         ))}
-                        {law.tableOfContents.length > 2 && (
-                          <div className="toc-item" style={{ opacity: 0.6, fontStyle: 'italic' }}>
-                            +{law.tableOfContents.length - 2} autres titres...
-                          </div>
+                        {law.tableOfContents.length > 3 && (
+                          <div className="lois-toc-more">+ {law.tableOfContents.length - 3} autres titres</div>
                         )}
                       </div>
-                    )}
-                    {law.tags.length > 0 && (
-                      <div className="law-tags-modern">
-                        {law.tags.slice(0, 4).map((tag, i) => (
-                          <span key={i} className="law-tag">#{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="law-card-footer-modern">
-                    <div className="law-stats-modern">
-                      <div className="law-stat">
-                        <span className="law-stat-value">{law.views.toLocaleString()}</span>
-                        <span className="law-stat-label">Vues</span>
-                      </div>
-                      <div className="law-stat">
-                        <span className="law-stat-value">{law.downloads}</span>
-                        <span className="law-stat-label">Téléch.</span>
-                      </div>
                     </div>
-                    <span className="read-more-modern">Consulter →</span>
+                  )}
+
+                  {law.tags.length > 0 && (
+                    <div className="lois-card-tags">
+                      {law.tags.slice(0, 5).map((tag, i) => (
+                        <span key={i} className="lois-tag">#{tag}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="lois-card-footer">
+                    <div className="lois-card-stats">
+                      <span className="lois-stat-pill">👁️ {law.views.toLocaleString()} vues</span>
+                      <span className="lois-stat-pill">⬇️ {law.downloads} téléch.</span>
+                    </div>
+                    <Link to={`/ressources/lois/${law.id}`} className="lois-card-btn">
+                      Consulter le texte →
+                    </Link>
                   </div>
-                </Link>
+                </article>
+              );
+            })}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="lois-pagination">
+            <button className="lois-page-btn" onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>← Précédent</button>
+            <div className="lois-page-numbers">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} className={`lois-page-num ${currentPage === p ? 'active' : ''}`} onClick={() => setCurrentPage(p)}>{p}</button>
               ))}
             </div>
-          )}
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination-modern">
-              <button
-                className="pagination-btn-modern"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >← Précédent</button>
-              <div className="pagination-numbers">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    className={`pagination-btn-modern ${currentPage === page ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(page)}
-                  >{page}</button>
-                ))}
-              </div>
-              <button
-                className="pagination-btn-modern"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >Suivant →</button>
-            </div>
-          )}
-        </main>
+            <button className="lois-page-btn" onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>Suivant →</button>
+          </div>
+        )}
       </div>
+
     </div>
   );
 };
 
 export default Lois;
-

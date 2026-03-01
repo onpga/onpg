@@ -45,9 +45,9 @@ const FooterONPG = () => {
             <h4>Navigation</h4>
             <ul>
               <li><Link to="/">Accueil</Link></li>
-              <li><Link to="/ordre">L'Ordre</Link></li>
-              <li><Link to="/membres">Membres</Link></li>
-              <li><Link to="/pratique">Pratique</Link></li>
+              <li><Link to="/ordre/a-propos">L'Ordre</Link></li>
+              <li><Link to="/membres/tableau-ordre">Membres</Link></li>
+              <li><Link to="/pratique/formation-continue">Pratique</Link></li>
               <li><Link to="/ressources">Ressources</Link></li>
               <li><Link to="/pratique/pharmacies">Trouver une pharmacie</Link></li>
             </ul>

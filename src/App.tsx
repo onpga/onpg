@@ -30,6 +30,7 @@ const Commissions = lazy(() => import('./modules/Ressources/Commissions'));
 const CommissionDetail = lazy(() => import('./modules/Ressources/CommissionDetailPage'));
 const Lois = lazy(() => import('./modules/Ressources/Lois'));
 const LoiDetail = lazy(() => import('./modules/Ressources/LoiDetailPage'));
+const RessourcesUnifiees = lazy(() => import('./modules/Ressources/RessourcesUnifiees'));
 
 // L'Ordre
 const AProposOrdre = lazy(() => import('./modules/Ordre/APropos'));
@@ -56,6 +57,7 @@ const MentionsLegales = lazy(() => import('./modules/Legal/MentionsLegales'));
 const PolitiqueConfidentialite = lazy(() => import('./modules/Legal/PolitiqueConfidentialite'));
 const CGU = lazy(() => import('./modules/Legal/CGU'));
 const DocumentationAdmin = lazy(() => import('./modules/DocumentationAdmin/DocumentationAdmin'));
+const NotFound404 = lazy(() => import('./modules/NotFound/NotFound404'));
 
 // Lazy loading des routes Wiki
 const WikiLogin = lazy(() => import('./modules/Wiki/WikiLogin'));
@@ -167,6 +169,8 @@ function App() {
                   <Routes>
                     <Route path="/" element={<AccueilONPG />} />
                     <Route path="/onpg" element={<AccueilONPG />} />
+                    {/* Centre documentaire unifié */}
+                    <Route path="/ressources" element={<RessourcesUnifiees />} />
                     <Route path="/ressources/actualites" element={<RessourcesActualites />} />
                     <Route path="/ressources/actualites/:id" element={<RessourcesArticleDetail />} />
                     <Route path="/ressources/communiques" element={<Communiques />} />
@@ -211,13 +215,19 @@ function App() {
                     <Route path="/pratique/deontologie" element={<Deontologie />} />
                     <Route path="/pratique/pharmacies" element={<Pharmacies />} />
                     <Route path="/pratique/contact" element={<ContactPratique />} />
-                    {/* Redirections de compatibilite */}
-                    <Route path="/contact" element={<Navigate to="/pratique/contact" replace />}/>
+                    {/* Redirections de compatibilité — routes parentes sans page propre */}
+                    <Route path="/ordre"   element={<Navigate to="/ordre/a-propos"              replace />} />
+                    <Route path="/membres" element={<Navigate to="/membres/tableau-ordre"        replace />} />
+                    <Route path="/pratique" element={<Navigate to="/pratique/formation-continue" replace />} />
+                    <Route path="/contact" element={<Navigate to="/pratique/contact"             replace />} />
 
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
                     <Route path="/cgu" element={<CGU />} />
                     <Route path="/documentation-admin" element={<DocumentationAdmin />} />
+
+                    {/* 404 — doit être en dernier */}
+                    <Route path="*" element={<NotFound404 />} />
                   </Routes>
                 </Suspense>
               </ONPGLayout>

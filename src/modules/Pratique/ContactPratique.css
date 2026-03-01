@@ -564,23 +564,148 @@
   transform: translateY(-2px) scale(1);
 }
 
-.contact-success {
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  background: #e8f5ee;
-  color: #007a3d;
-  font-weight: 600;
-}
-
+/* ── Messages globaux (succès / erreur) ──────────── */
+.contact-success,
 .contact-error {
-  margin-bottom: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  animation: alertSlideIn 0.3s ease-out;
+}
+.contact-success {
+  background: #e6f9ee;
+  color: #00622e;
+  border: 1.5px solid rgba(0,166,81,0.25);
+}
+.contact-error {
   background: #fdecea;
   color: #c0392b;
-  font-weight: 600;
+  border: 1.5px solid rgba(192,57,43,0.2);
 }
+@keyframes alertSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Wrapper champ avec icône état ──────────────── */
+.field-wrap {
+  position: relative;
+}
+
+.field-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.88rem;
+  font-weight: 700;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Icônes masquées par défaut, visibles selon état */
+.form-group.field--valid  .field-icon--valid  { opacity: 1; color: #00A651; }
+.form-group.field--error  .field-icon--error  { opacity: 1; color: #e74c3c; }
+
+/* Textarea : icône en haut à droite */
+.form-group textarea ~ .field-icon,
+.field-wrap textarea + .field-icon {
+  top: 1.1rem;
+  transform: none;
+}
+
+/* ── Bordures de validation ─────────────────────── */
+.form-group.field--valid input,
+.form-group.field--valid select,
+.form-group.field--valid textarea {
+  border-color: #00A651 !important;
+  background: #f5fdf8 !important;
+  box-shadow: 0 0 0 3px rgba(0,166,81,0.1) !important;
+}
+
+.form-group.field--error input,
+.form-group.field--error select,
+.form-group.field--error textarea {
+  border-color: #e74c3c !important;
+  background: #fff8f7 !important;
+  box-shadow: 0 0 0 3px rgba(231,76,60,0.1) !important;
+}
+
+/* ── Message d'erreur sous le champ ─────────────── */
+.field-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #c0392b;
+  animation: errIn 0.2s ease-out;
+}
+@keyframes errIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Label requis / facultatif ──────────────────── */
+.field-required { color: #e74c3c; margin-left: 0.15rem; }
+.field-optional { font-size: 0.78rem; font-weight: 400; color: #9db0a2; margin-left: 0.3rem; }
+
+/* ── Footer du textarea (counter + erreur) ──────── */
+.msg-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  min-height: 1.4em;
+}
+.msg-counter {
+  font-size: 0.78rem;
+  color: #a0b8a8;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-left: auto;
+  transition: color 0.2s ease;
+}
+.msg-counter--warn { color: #e67e22; font-weight: 700; }
+
+/* ── Padding right pour l'icône d'état ─────────── */
+.form-group input,
+.form-group select {
+  padding-right: 2.8rem !important;
+}
+
+/* ── Bouton désactivé visuellement ──────────────── */
+.submit-btn--disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+.submit-btn--disabled:hover {
+  transform: none !important;
+  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.3),
+              0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ── Icône d'envoi dans le bouton ───────────────── */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+}
+.submit-spinner {
+  animation: onpgSpin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes onpgSpin { to { transform: rotate(360deg); } }
 
 /* ============================================
    RESPONSIVE - MOBILE

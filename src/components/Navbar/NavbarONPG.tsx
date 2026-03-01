@@ -58,16 +58,19 @@ const NAV_ITEMS = [
     hasDropdown: true,
     id: 'ressources',
     dropdown: [
-      { path: '/ressources/actualites',  label: 'Actualités'  },
-      { path: '/ressources/communiques', label: 'Communiqués' },
-      { path: '/ressources/photos',      label: 'Photos'      },
-      { path: '/ressources/videos',      label: 'Vidéos'      },
-      { path: '/ressources/articles',    label: 'Articles'    },
-      { path: '/ressources/theses',      label: 'Thèses'      },
-      { path: '/ressources/decrets',     label: 'Décrets'     },
-      { path: '/ressources/decisions',   label: 'Décisions'   },
-      { path: '/ressources/commissions', label: 'Commissions' },
-      { path: '/ressources/lois',        label: 'Lois'        }
+      { path: '/ressources',                    label: 'Centre documentaire', featured: true },
+      { path: '',                               label: 'Textes & Documents',  divider: true  },
+      { path: '/ressources?tab=decrets',        label: 'Décrets'      },
+      { path: '/ressources?tab=lois',           label: 'Lois'         },
+      { path: '/ressources?tab=decisions',      label: 'Décisions'    },
+      { path: '/ressources?tab=commissions',    label: 'Commissions'  },
+      { path: '/ressources?tab=theses',         label: 'Thèses'       },
+      { path: '/ressources?tab=articles',       label: 'Articles'     },
+      { path: '/ressources?tab=communiques',    label: 'Communiqués'  },
+      { path: '',                               label: 'Médias',       divider: true  },
+      { path: '/ressources/actualites',         label: 'Actualités'   },
+      { path: '/ressources/photos',             label: 'Photos'       },
+      { path: '/ressources/videos',             label: 'Vidéos'       }
     ]
   },
   {
@@ -89,9 +92,10 @@ const NavbarONPG = () => {
   const [ressourcesDropdownOpen, setRessourcesDropdownOpen] = useState(false);
 
   const location   = useLocation();
-  const menuRef    = useRef<HTMLUListElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const navbarRef  = useRef<HTMLElement>(null);
+  const menuRef     = useRef<HTMLUListElement>(null);
+  const overlayRef  = useRef<HTMLDivElement>(null);
+  const navbarRef   = useRef<HTMLElement>(null);
+  const closebtnRef = useRef<HTMLButtonElement>(null);
 
   const closeAllDropdowns = useCallback(() => {
     setOrdreDropdownOpen(false);
@@ -153,13 +157,14 @@ const NavbarONPG = () => {
     );
   }, [location.pathname, navItems]);
 
+  // Focus le bouton fermer à l'ouverture du drawer pour l'accessibilité clavier
   useEffect(() => {
-    if (mobileMenuOpen && window.innerWidth <= 768) {
-      setOrdreDropdownOpen(true);
-      setMembresDropdownOpen(true);
-      setPratiqueDropdownOpen(true);
-      setRessourcesDropdownOpen(true);
-    } else if (!mobileMenuOpen) {
+    if (mobileMenuOpen) {
+      const id = requestAnimationFrame(() => {
+        closebtnRef.current?.focus();
+      });
+      return () => cancelAnimationFrame(id);
+    } else {
       closeAllDropdowns();
     }
   }, [mobileMenuOpen, closeAllDropdowns]);
@@ -286,8 +291,9 @@ const NavbarONPG = () => {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
             aria-expanded={mobileMenuOpen}
+            aria-controls="onpg-mobile-nav"
           >
-            <div className="hamburger-icon">
+            <div className="hamburger-icon" aria-hidden="true">
               <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`} />
               <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`} />
               <span className={`hamburger-line ${mobileMenuOpen ? 'open' : ''}`} />
@@ -305,7 +311,7 @@ const NavbarONPG = () => {
           )}
 
           {/* Menu */}
-          <ul ref={menuRef} className={`onpg-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
+          <ul ref={menuRef} id="onpg-mobile-nav" className={`onpg-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
 
             {/* ── En-tête du drawer (mobile uniquement) ── */}
             <li className="mobile-drawer-header" aria-hidden="true">
@@ -323,6 +329,7 @@ const NavbarONPG = () => {
                 </div>
               </div>
               <button
+                ref={closebtnRef}
                 className="mobile-drawer-close"
                 onClick={() => setMobileMenuOpen(false)}
                 aria-label="Fermer le menu"
@@ -404,21 +411,52 @@ const NavbarONPG = () => {
                       </li>
 
                       {/* Items */}
-                      {item.dropdown.map((subItem, subIndex) => (
-                        <li key={subItem.path} className="dropdown-item-li" style={{ '--item-index': subIndex } as React.CSSProperties}>
-                          <Link
-                            to={subItem.path}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="dropdown-link"
-                          >
-                            <span className="dropdown-item-dot" aria-hidden="true" />
-                            <span className="dropdown-text">{subItem.label}</span>
-                            <svg className="dropdown-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                              <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                            </svg>
-                          </Link>
-                        </li>
-                      ))}
+                      {item.dropdown.map((subItem, subIndex) => {
+                        // Séparateur de section
+                        if ((subItem as any).divider) {
+                          return (
+                            <li key={`divider-${subItem.label}`} className="dropdown-section-divider">
+                              <span className="dropdown-section-label">{subItem.label}</span>
+                            </li>
+                          );
+                        }
+                        // Lien mis en avant (Centre documentaire)
+                        if ((subItem as any).featured) {
+                          return (
+                            <li key={subItem.path} className="dropdown-item-li dropdown-item-featured" style={{ '--item-index': subIndex } as React.CSSProperties}>
+                              <Link
+                                to={subItem.path}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="dropdown-link dropdown-link--featured"
+                              >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                                </svg>
+                                <span className="dropdown-text">{subItem.label}</span>
+                                <svg className="dropdown-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                              </Link>
+                            </li>
+                          );
+                        }
+                        // Lien normal
+                        return (
+                          <li key={subItem.path} className="dropdown-item-li" style={{ '--item-index': subIndex } as React.CSSProperties}>
+                            <Link
+                              to={subItem.path}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className="dropdown-link"
+                            >
+                              <span className="dropdown-item-dot" aria-hidden="true" />
+                              <span className="dropdown-text">{subItem.label}</span>
+                              <svg className="dropdown-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </Link>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </li>

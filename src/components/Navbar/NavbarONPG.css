@@ -526,6 +526,57 @@
   display: block;
 }
 
+/* ── Séparateur de section ──────────────────────────────────────── */
+.dropdown-section-divider {
+  padding: 0.55rem 0.875rem 0.2rem;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dropdown-section-divider::before {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 166, 81, 0.12);
+}
+
+.dropdown-section-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Lien mis en avant (Centre documentaire) ────────────────────── */
+.dropdown-item-featured {
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-link--featured {
+  background: linear-gradient(135deg, rgba(0,166,81,0.08), rgba(0,143,69,0.05)) !important;
+  border: 1px solid rgba(0,166,81,0.18) !important;
+  color: var(--nav-green) !important;
+  font-weight: 700 !important;
+  border-radius: 10px;
+  margin: 0 0.1rem;
+}
+
+.dropdown-link--featured:hover {
+  background: linear-gradient(135deg, rgba(0,166,81,0.15), rgba(0,143,69,0.12)) !important;
+  border-color: rgba(0,166,81,0.35) !important;
+  transform: translateX(3px) !important;
+}
+
+.dropdown-link--featured svg:first-child {
+  color: var(--nav-green);
+  flex-shrink: 0;
+}
+
 /* ── Items avec stagger (@starting-style — CSS 2023+) ───────────── */
 .onpg-dropdown.open .dropdown-item-li {
   opacity: 1;
@@ -748,7 +799,7 @@
     background: rgba(255,255,255,0.14);
     border: 1.5px solid rgba(255,255,255,0.28);
     border-radius: 10px;
-    width: 42px; height: 42px; padding: 0;
+    width: 44px; height: 44px; padding: 0;
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
     backdrop-filter: blur(4px);
@@ -757,16 +808,22 @@
     background: rgba(255,255,255,0.24);
     border-color: rgba(255,255,255,0.48);
   }
+  .onpg-mobile-toggle:focus-visible {
+    outline: 2px solid rgba(255,255,255,0.9);
+    outline-offset: 2px;
+  }
 
   /* ── Drawer latéral — design soigné ────────────────────────── */
   .onpg-nav-menu {
-    position: fixed; top: 0; left: -105%;
+    position: fixed; top: 0; left: 0;
+    transform: translateX(-105%);
     width: 82%; max-width: 356px; height: 100dvh;
     background: #F8FCF9;
     flex-direction: column; align-items: stretch;
     padding: 0;
     box-shadow: 6px 0 60px rgba(0,55,22,0.28), 2px 0 16px rgba(0,0,0,0.1);
-    transition: left 0.35s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    will-change: transform;
     z-index: 1000;
     overflow-y: auto; overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -777,7 +834,7 @@
   .onpg-nav-menu::-webkit-scrollbar       { width: 3px; }
   .onpg-nav-menu::-webkit-scrollbar-track { background: transparent; }
   .onpg-nav-menu::-webkit-scrollbar-thumb { background: rgba(0,166,81,.22); border-radius: 2px; }
-  .onpg-nav-menu.open { left: 0; }
+  .onpg-nav-menu.open { transform: translateX(0); }
 
   /* ── En-tête vert du drawer ─────────────────────────────────── */
   .mobile-drawer-header {
@@ -835,6 +892,10 @@
     background: rgba(255,255,255,0.26);
     border-color: rgba(255,255,255,0.48);
     transform: scale(1.08);
+  }
+  .mobile-drawer-close:focus-visible {
+    outline: 2px solid rgba(255,255,255,0.9);
+    outline-offset: 2px;
   }
 
   /* Séparateur "Navigation" */
@@ -1011,6 +1072,11 @@
     color: var(--nav-green-dark);
     box-shadow: 0 4px 16px rgba(0,120,50,0.12);
     transform: translateX(2px);
+  }
+  .mobile-drawer-member-link:focus-visible {
+    outline: 2px solid var(--nav-green);
+    outline-offset: 2px;
+    border-radius: 12px;
   }
   .mobile-drawer-member-link svg:first-child { color: var(--nav-green); flex-shrink: 0; }
   .mobile-drawer-member-link span { flex: 1; }

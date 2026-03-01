@@ -1,10 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import './Ressources.css';
 import './Theses.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
-// Types pour les thèses
 interface Thesis {
   id: string;
   title: string;
@@ -28,601 +26,274 @@ interface Thesis {
   pdfUrl?: string;
 }
 
-interface University {
-  id: string;
-  name: string;
-  location: string;
-  thesesCount: number;
-}
-
-// Données fictives d'universités
-const mockUniversities: University[] = [
-  {
-    id: 'ussg',
-    name: 'Université des Sciences de la Santé de Gabon',
-    location: 'Libreville',
-    thesesCount: 89
-  },
-  {
-    id: 'univ-omvd',
-    name: 'Université Omar Bongo Ondimba',
-    location: 'Libreville',
-    thesesCount: 67
-  },
-  {
-    id: 'univ-mv',
-    name: 'Université des Sciences et Techniques de Masuku',
-    location: 'Franceville',
-    thesesCount: 34
-  }
-];
-
-
-// Génère un nom de fichier propre pour le téléchargement
 const buildDownloadFileName = (thesis: Thesis) => {
   const sanitize = (value: string) =>
-    value
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // enlever accents
-      .replace(/[^a-z0-9]/g, '_') // tout le reste -> underscores
-      .replace(/_+/g, '_') // compacter les underscores
-      .replace(/^_+|_+$/g, ''); // retirer les _ au début/fin
-
-  const parts: string[] = ['these'];
-
-  if (thesis.title) {
-    parts.push(sanitize(thesis.title));
-  }
-
-  if (thesis.author) {
-    parts.push(sanitize(thesis.author));
-  }
-
-  if (thesis.year) {
-    parts.push(String(thesis.year));
-  }
-
-  return parts.join('_') + '.pdf';
+    value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_+|_+$/g, '');
+  return ['these', sanitize(thesis.title), sanitize(thesis.author), String(thesis.year)].join('_') + '.pdf';
 };
 
 const Theses = () => {
   const [theses, setTheses] = useState<Thesis[]>([]);
-  const [universities, setUniversities] = useState<University[]>(mockUniversities);
   const [filteredTheses, setFilteredTheses] = useState<Thesis[]>([]);
-  
-  // Charger depuis MongoDB - plusieurs thèses possibles
-  useEffect(() => {
-    const loadTheses = async () => {
-      const data = await fetchResourceData('theses');
-      if (!data) {
-        setTheses([]);
-        setFilteredTheses([]);
-        return;
-      }
-
-      // Gérer un tableau de données
-      const rawArray = Array.isArray(data) ? data : [data];
-      
-      const mapped: Thesis[] = rawArray.map((item: any) => ({
-        id: String(item._id || ''),
-        title: item.title || '',
-        author: item.author || '',
-        director: item.director || '',
-        university: item.university || '',
-        faculty: item.faculty || '',
-        department: item.department || '',
-        degree: (item.degree as 'master' | 'phd' | 'doctorate') || 'phd',
-        year: item.year || new Date().getFullYear(),
-        abstract: item.abstract || item.excerpt || '',
-        keywords: item.keywords || [],
-        pages: item.pages || 0,
-        language: item.language || 'fr',
-        specialty: item.specialty || 'Pharmacie',
-        defenseDate: item.defenseDate || '',
-        juryMembers: item.juryMembers || [],
-        downloads: item.downloads || 0,
-        citations: item.citations || 0,
-        featured: item.featured || false,
-        pdfUrl: item.pdfUrl || item.fichierUrl || ''
-      }));
-
-      setTheses(mapped);
-      setFilteredTheses(mapped);
-    };
-    loadTheses();
-  }, []);
-  const [selectedUniversity, setSelectedUniversity] = useState('Toutes');
-  const [selectedDegree, setSelectedDegree] = useState('Tous');
-  const [selectedYear, setSelectedYear] = useState('Toutes');
-  const [selectedSpecialty, setSelectedSpecialty] = useState('Toutes');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'year' | 'citations' | 'downloads'>('year');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const thesesPerPage = 6;
 
-  // Filtrage et tri des thèses
   useEffect(() => {
-    let filtered = theses.filter(thesis => {
-      const matchesSearch = thesis.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           thesis.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           thesis.director.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           thesis.abstract.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           thesis.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()));
-      const matchesUniversity = selectedUniversity === 'Toutes' || thesis.university === selectedUniversity;
-      const matchesDegree = selectedDegree === 'Tous' || thesis.degree === selectedDegree;
-      const matchesYear = selectedYear === 'Toutes' || thesis.year.toString() === selectedYear;
-      const matchesSpecialty = selectedSpecialty === 'Toutes' || thesis.specialty === selectedSpecialty;
-      return matchesSearch && matchesUniversity && matchesDegree && matchesYear && matchesSpecialty;
-    });
-
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'year':
-          return b.year - a.year;
-        case 'citations':
-          return b.citations - a.citations;
-        case 'downloads':
-          return b.downloads - a.downloads;
-        default:
-          return 0;
+    const loadTheses = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchResourceData('theses');
+        if (!data) { setTheses([]); setFilteredTheses([]); return; }
+        const rawArray = Array.isArray(data) ? data : [data];
+        const mapped: Thesis[] = rawArray.map((item: any) => ({
+          id: String(item._id || ''),
+          title: item.title || '',
+          author: item.author || '',
+          director: item.director || '',
+          university: item.university || '',
+          faculty: item.faculty || '',
+          department: item.department || '',
+          degree: (item.degree as 'master' | 'phd' | 'doctorate') || 'phd',
+          year: item.year || new Date().getFullYear(),
+          abstract: item.abstract || item.excerpt || '',
+          keywords: item.keywords || [],
+          pages: item.pages || 0,
+          language: item.language || 'fr',
+          specialty: item.specialty || 'Pharmacie',
+          defenseDate: item.defenseDate || '',
+          juryMembers: item.juryMembers || [],
+          downloads: item.downloads || 0,
+          citations: item.citations || 0,
+          featured: item.featured || false,
+          pdfUrl: item.pdfUrl || item.fichierUrl || ''
+        }));
+        setTheses(mapped);
+        setFilteredTheses(mapped);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
-    });
+    };
+    loadTheses();
+  }, []);
 
+  useEffect(() => {
+    const q = searchQuery.toLowerCase();
+    const filtered = theses.filter(t =>
+      !q || t.title.toLowerCase().includes(q) || t.author.toLowerCase().includes(q) ||
+      t.director.toLowerCase().includes(q) || t.abstract.toLowerCase().includes(q) ||
+      t.keywords.some(k => k.toLowerCase().includes(q))
+    );
+    filtered.sort((a, b) => b.year - a.year);
     setFilteredTheses(filtered);
     setCurrentPage(1);
-  }, [theses, searchQuery, selectedUniversity, selectedDegree, selectedYear, selectedSpecialty, sortBy]);
+  }, [theses, searchQuery]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredTheses.length / thesesPerPage);
-  const startIndex = (currentPage - 1) * thesesPerPage;
-  const endIndex = startIndex + thesesPerPage;
-  const currentTheses = filteredTheses.slice(startIndex, endIndex);
+  const currentTheses = filteredTheses.slice((currentPage - 1) * thesesPerPage, currentPage * thesesPerPage);
 
-  // Statistiques
   const stats = useMemo(() => ({
-    totalTheses: theses.length,
-    totalPages: theses.reduce((sum, thesis) => sum + thesis.pages, 0),
-    totalCitations: theses.reduce((sum, thesis) => sum + thesis.citations, 0),
-    totalDownloads: theses.reduce((sum, thesis) => sum + thesis.downloads, 0),
-    featuredTheses: theses.filter(thesis => thesis.featured).length,
-    universitiesCount: new Set(theses.map(t => t.university)).size,
-    yearsRange: `${Math.min(...theses.map(t => t.year))}-${Math.max(...theses.map(t => t.year))}`
+    total: theses.length,
+    totalCitations: theses.reduce((s, t) => s + t.citations, 0),
+    totalDownloads: theses.reduce((s, t) => s + t.downloads, 0),
+    universities: new Set(theses.map(t => t.university)).size,
   }), [theses]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+  const getDegreeConfig = (degree: Thesis['degree']) => ({
+    label: { master: 'Master', phd: 'Doctorat', doctorate: "Doctorat d'État" }[degree],
+    color: { master: '#3B82F6', phd: '#10B981', doctorate: '#8B5CF6' }[degree],
+    icon: { master: '🎓', phd: '📚', doctorate: '🏅' }[degree],
+  });
 
-  const clearFilters = () => {
-    setSearchQuery('');
-    setSelectedUniversity('Toutes');
-    setSelectedDegree('Tous');
-    setSelectedYear('Toutes');
-    setSelectedSpecialty('Toutes');
-    setSortBy('year');
-    setCurrentPage(1);
-  };
-
-  const getDegreeLabel = (degree: Thesis['degree']) => {
-    const labels = {
-      'master': 'Master',
-      'phd': 'Doctorat',
-      'doctorate': 'Doctorat d\'État'
-    };
-    return labels[degree];
-  };
-
-  const getDegreeColor = (degree: Thesis['degree']) => {
-    const colors = {
-      'master': '#3498db',
-      'phd': '#2ecc71',
-      'doctorate': '#e74c3c'
-    };
-    return colors[degree];
-  };
 
   return (
-    <div className="ressources-page">
-      {/* Hero Section */}
-      <section className="ressources-hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="hero-title-main">Base de</span>
-              <span className="hero-title-subtitle">Thèses</span>
-            </h1>
-            <p className="hero-description">
-              Découvrez notre collection de thèses et mémoires en pharmacie.
-              Recherche académique, innovation et expertise scientifique au service de la santé gabonaise.
-            </p>
-          </div>
+    <div className="theses-page">
 
-          {/* Stats Cards */}
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalTheses}</div>
-              <div className="stat-label">Thèses</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalCitations}</div>
-              <div className="stat-label">Citations</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalPages.toLocaleString()}</div>
-              <div className="stat-label">Pages</div>
-            </div>
-          </div>
+      {/* ═══ HERO ═══ */}
+      <section className="theses-hero">
+        <div className="theses-hero-bg">
+          <div className="theses-hero-orb theses-orb-1" />
+          <div className="theses-hero-orb theses-orb-2" />
+          <div className="theses-hero-orb theses-orb-3" />
         </div>
+        <div className="theses-hero-content">
+          <div className="theses-hero-badge">
+            <span>🎓</span>
+            <span>Recherche Académique</span>
+          </div>
+          <h1 className="theses-hero-title">
+            Base de Données<br />
+            <span className="theses-hero-title-accent">Thèses & Mémoires</span>
+          </h1>
+          <p className="theses-hero-subtitle">
+            Collection scientifique de référence en pharmacie gabonaise — thèses, doctorats et mémoires de recherche.
+          </p>
 
-        {/* Background Pattern */}
-        <div className="hero-bg-pattern">
-          <div className="pattern-shape shape-1"></div>
-          <div className="pattern-shape shape-2"></div>
-          <div className="pattern-shape shape-3"></div>
+          {/* ── SEARCH COMPACT ── */}
+          <div className="theses-hero-search">
+            <span className="theses-hero-search-ico">🔍</span>
+            <input
+              type="text"
+              className="theses-hero-search-input"
+              placeholder="Titre, auteur, directeur, mots-clés…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="theses-hero-search-clear" onClick={() => setSearchQuery('')}>✕</button>
+            )}
+          </div>
+
+          <div className="theses-hero-stats">
+            <div className="theses-hero-stat">
+              <span className="theses-hero-stat-value">{stats.total}</span>
+              <span className="theses-hero-stat-label">Thèses</span>
+            </div>
+            <div className="theses-hero-stat-divider" />
+            <div className="theses-hero-stat">
+              <span className="theses-hero-stat-value">{stats.totalCitations}</span>
+              <span className="theses-hero-stat-label">Citations</span>
+            </div>
+            <div className="theses-hero-stat-divider" />
+            <div className="theses-hero-stat">
+              <span className="theses-hero-stat-value">{stats.universities}</span>
+              <span className="theses-hero-stat-label">Universités</span>
+            </div>
+            <div className="theses-hero-stat-divider" />
+            <div className="theses-hero-stat">
+              <span className="theses-hero-stat-value">{stats.totalDownloads}</span>
+              <span className="theses-hero-stat-label">Téléchargements</span>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Main Content */}
-      <div className="ressources-container-modern">
-        {/* Main content */}
-        <main className="ressources-main-modern">
-          <nav className="breadcrumb-modern">
-            <Link to="/">Accueil</Link>
-            <span className="breadcrumb-separator">›</span>
-            <Link to="/ressources">Ressources</Link>
-            <span className="breadcrumb-separator">›</span>
-            <span className="breadcrumb-current">Thèses</span>
-          </nav>
-
-          {/* Filtres horizontaux modernes */}
-          <div className="filters-modern-container">
-            <div className="filters-header-modern">
-              <div className="filters-header-left">
-                <h2 className="results-title-modern">
-                  {filteredTheses.length} thèse{filteredTheses.length > 1 ? 's' : ''} trouvée{filteredTheses.length > 1 ? 's' : ''}
-                </h2>
-                <div className="results-meta-modern">
-                  Page {currentPage} sur {totalPages}
-                </div>
-              </div>
-              <button 
-                className="toggle-filters-btn-modern"
-                onClick={() => setFiltersOpen(!filtersOpen)}
-                aria-label="Toggle filters"
-              >
-                <span className="toggle-filters-icon">{filtersOpen ? '▲' : '▼'}</span>
-                <span>Filtres</span>
-              </button>
-            </div>
-
-            {/* Barre de recherche principale */}
-            <form onSubmit={handleSearch} className="search-bar-modern">
-              <div className="search-input-wrapper-modern">
-                <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Rechercher par titre, auteur, mots-clés..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input-modern"
-                />
-                {searchQuery && (
-                  <button 
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="clear-search-btn"
-                    aria-label="Clear search"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </form>
-
-            {/* Filtres collapsibles */}
-            <div className={`filters-content-modern ${filtersOpen ? 'open' : ''}`}>
-              <div className="filters-grid-modern">
-                {/* Filtre Université */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Université</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${selectedUniversity === 'Toutes' ? 'active' : ''}`}
-                      onClick={() => setSelectedUniversity('Toutes')}
-                    >
-                      Toutes
-                    </button>
-                    {universities.map(university => (
-                      <button
-                        key={university.id}
-                        className={`filter-chip-modern ${selectedUniversity === university.name ? 'active' : ''}`}
-                        onClick={() => setSelectedUniversity(university.name)}
-                      >
-                        {university.name}
-                        <span className="chip-count">({university.thesesCount})</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Filtre Grade */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Grade</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${selectedDegree === 'Tous' ? 'active' : ''}`}
-                      onClick={() => setSelectedDegree('Tous')}
-                    >
-                      Tous
-                    </button>
-                    {['master', 'phd', 'doctorate'].map(degree => (
-                      <button
-                        key={degree}
-                        className={`filter-chip-modern ${selectedDegree === degree ? 'active' : ''}`}
-                        onClick={() => setSelectedDegree(degree)}
-                      >
-                        {getDegreeLabel(degree as Thesis['degree'])}
-                        <span className="chip-count">
-                          ({theses.filter(t => t.degree === degree).length})
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Filtre Spécialité */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Spécialité</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${selectedSpecialty === 'Toutes' ? 'active' : ''}`}
-                      onClick={() => setSelectedSpecialty('Toutes')}
-                    >
-                      Toutes
-                    </button>
-                    {Array.from(new Set(theses.map(t => t.specialty))).map(specialty => (
-                      <button
-                        key={specialty}
-                        className={`filter-chip-modern ${selectedSpecialty === specialty ? 'active' : ''}`}
-                        onClick={() => setSelectedSpecialty(specialty)}
-                      >
-                        {specialty}
-                        <span className="chip-count">
-                          ({theses.filter(t => t.specialty === specialty).length})
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Filtre Année */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Année</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${selectedYear === 'Toutes' ? 'active' : ''}`}
-                      onClick={() => setSelectedYear('Toutes')}
-                    >
-                      Toutes
-                    </button>
-                    {Array.from(new Set(theses.map(t => t.year.toString()))).sort().reverse().slice(0, 10).map(year => (
-                      <button
-                        key={year}
-                        className={`filter-chip-modern ${selectedYear === year ? 'active' : ''}`}
-                        onClick={() => setSelectedYear(year)}
-                      >
-                        {year}
-                        <span className="chip-count">
-                          ({theses.filter(t => t.year.toString() === year).length})
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Tri */}
-                <div className="filter-group-modern">
-                  <label className="filter-label-modern">Trier par</label>
-                  <div className="filter-chips-modern">
-                    <button
-                      className={`filter-chip-modern ${sortBy === 'year' ? 'active' : ''}`}
-                      onClick={() => setSortBy('year')}
-                    >
-                      📅 Plus récent
-                    </button>
-                    <button
-                      className={`filter-chip-modern ${sortBy === 'citations' ? 'active' : ''}`}
-                      onClick={() => setSortBy('citations')}
-                    >
-                      📊 Plus cité
-                    </button>
-                    <button
-                      className={`filter-chip-modern ${sortBy === 'downloads' ? 'active' : ''}`}
-                      onClick={() => setSortBy('downloads')}
-                    >
-                      ⬇️ Plus téléchargé
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Actions filtres */}
-              <div className="filters-actions-modern">
-                <button onClick={clearFilters} className="clear-filters-btn-modern">
-                  <span>🗑️</span> Effacer tous les filtres
-                </button>
-                <div className="filters-stats-modern">
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.featuredTheses}</span>
-                    <span className="stat-mini-label">À la une</span>
-                  </div>
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.universitiesCount}</span>
-                    <span className="stat-mini-label">Universités</span>
-                  </div>
-                  <div className="stat-mini">
-                    <span className="stat-mini-value">{stats.yearsRange}</span>
-                    <span className="stat-mini-label">Période</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* ═══ LISTE ═══ */}
+      <div className="theses-content">
+        {loading ? (
+          <div className="theses-loading">
+            <div className="theses-loader" />
+            <p>Chargement des thèses…</p>
           </div>
-
-          {/* Thèses list */}
+        ) : currentTheses.length === 0 ? (
+          <div className="theses-empty">
+            <div className="theses-empty-icon">🎓</div>
+            <h3 className="theses-empty-title">Aucune thèse trouvée</h3>
+            <p className="theses-empty-text">Modifiez vos critères de recherche.</p>
+            {searchQuery && <button className="theses-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+          </div>
+        ) : (
           <div className="theses-list">
-            {currentTheses.map(thesis => (
-              <article key={thesis.id} className={`thesis-card ${thesis.featured ? 'featured' : ''}`}>
-                <div className="thesis-header">
-                  <div className="thesis-meta">
-                    <span
-                      className="degree-badge"
-                      style={{ backgroundColor: getDegreeColor(thesis.degree) }}
-                    >
-                      {getDegreeLabel(thesis.degree)}
-                    </span>
-                    {thesis.featured && (
-                      <span className="featured-badge">⭐ À la une</span>
-                    )}
-                    <span className="thesis-year">{thesis.year}</span>
-                    <span className="thesis-language">{thesis.language.toUpperCase()}</span>
-                  </div>
-                  <div className="thesis-specialty">{thesis.specialty}</div>
-                </div>
+            {currentTheses.map((thesis, idx) => {
+              const degConf = getDegreeConfig(thesis.degree);
+              return (
+                <article key={thesis.id} className={`theses-card ${thesis.featured ? 'featured' : ''}`} style={{ animationDelay: `${idx * 0.07}s` }}>
+                  {thesis.featured && <div className="theses-card-featured-strip">⭐ À la une</div>}
 
-                <div className="thesis-content">
-                  <h3 className="thesis-title">
-                    <Link to={`/ressources/theses/${thesis.id}`}>
-                      {thesis.title}
-                    </Link>
-                  </h3>
-
-                  <div className="thesis-meta-grid">
-                    <div className="thesis-meta-item">
-                      <span className="meta-label">👤 Candidat</span>
-                      <span className="meta-value">{thesis.author}</span>
-                  </div>
-
-                    {thesis.director && (
-                      <div className="thesis-meta-item">
-                        <span className="meta-label">🎓 Directeur</span>
-                        <span className="meta-value">{thesis.director}</span>
-                  </div>
-                    )}
-
-                    <div className="thesis-meta-item">
-                      <span className="meta-label">🏛️ Université</span>
-                      <span className="meta-value">{thesis.university}</span>
-                  </div>
-
-                    <div className="thesis-meta-item">
-                      <span className="meta-label">📅 Année</span>
-                      <span className="meta-value">{thesis.year}</span>
+                  <div className="theses-card-left">
+                    <div className="theses-card-year-badge">{thesis.year}</div>
+                    <div className="theses-card-degree" style={{ background: degConf.color }}>
+                      <span>{degConf.icon}</span>
+                      <span>{degConf.label}</span>
                     </div>
+                    {thesis.pages > 0 && <div className="theses-card-pages">{thesis.pages}p.</div>}
                   </div>
 
-                  {thesis.abstract && (
-                    <div className="thesis-abstract-section">
-                      <h4 className="abstract-title">📄 Résumé</h4>
-                  <p className="thesis-abstract">{thesis.abstract}</p>
+                  <div className="theses-card-body">
+                    <div className="theses-card-meta-top">
+                      <span className="theses-card-specialty">{thesis.specialty}</span>
+                      <span className="theses-card-lang">{thesis.language.toUpperCase()}</span>
                     </div>
-                  )}
 
-                  {thesis.keywords && thesis.keywords.length > 0 && (
-                  <div className="thesis-keywords">
-                      <strong className="keywords-label">🏷️ Mots-clés :</strong>
-                    <div className="keywords-list">
-                        {thesis.keywords.map(keyword => (
-                        <span key={keyword} className="keyword-tag">#{keyword}</span>
-                      ))}
-                    </div>
-                  </div>
-                  )}
-                </div>
+                    <h3 className="theses-card-title">
+                      <Link to={`/ressources/theses/${thesis.id}`}>{thesis.title}</Link>
+                    </h3>
 
-                <div className="thesis-footer">
-                  <div className="thesis-stats">
-                    <span className="stat-item">📄 {thesis.pages} pages</span>
-                    <span className="stat-item">⬇️ {thesis.downloads} téléchargements</span>
-                    <span className="stat-item">📊 {thesis.citations} citations</span>
-                  </div>
-
-                  <div className="thesis-actions">
-                    {thesis.pdfUrl ? (
-                      <>
-                        <Link
-                          to={`/ressources/theses/${thesis.id}/pdf`}
-                          state={{
-                            pdfUrl: thesis.pdfUrl,
-                            title: thesis.title,
-                            author: thesis.author,
-                            year: thesis.year
-                          }}
-                          className="thesis-read-more"
-                        >
-                          📖 Consulter la thèse →
-                        </Link>
-                        <a
-                          href={thesis.pdfUrl}
-                          download={buildDownloadFileName(thesis)}
-                          className="thesis-download-btn"
-                        >
-                          ⬇️ Télécharger le PDF
-                        </a>
-                      </>
-                    ) : (
-                      <span className="thesis-read-more" style={{ opacity: 0.6 }}>
-                        PDF non disponible
+                    <div className="theses-card-authors">
+                      <span className="theses-author-item">
+                        <span className="theses-author-ico">👤</span>
+                        <span><strong>{thesis.author}</strong></span>
                       </span>
+                      {thesis.director && (
+                        <span className="theses-author-item">
+                          <span className="theses-author-ico">🎓</span>
+                          <span>Dir. {thesis.director}</span>
+                        </span>
+                      )}
+                      {thesis.university && (
+                        <span className="theses-author-item">
+                          <span className="theses-author-ico">🏛️</span>
+                          <span>{thesis.university}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {thesis.abstract && (
+                      <p className="theses-card-abstract">{thesis.abstract}</p>
                     )}
+
+                    {thesis.keywords.length > 0 && (
+                      <div className="theses-card-keywords">
+                        {thesis.keywords.slice(0, 5).map(k => (
+                          <span key={k} className="theses-keyword">#{k}</span>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="theses-card-footer">
+                      <div className="theses-card-stats">
+                        <span className="theses-stat-pill">⬇️ {thesis.downloads}</span>
+                        <span className="theses-stat-pill">📊 {thesis.citations} citations</span>
+                      </div>
+                      <div className="theses-card-actions">
+                        {thesis.pdfUrl ? (
+                          <>
+                            <Link to={`/ressources/theses/${thesis.id}`} className="theses-btn-primary">
+                              Consulter →
+                            </Link>
+                            <a href={thesis.pdfUrl} download={buildDownloadFileName(thesis)} className="theses-btn-secondary">
+                              ⬇️ PDF
+                            </a>
+                          </>
+                        ) : (
+                          <Link to={`/ressources/theses/${thesis.id}`} className="theses-btn-primary">
+                            Voir la fiche →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
           </div>
+        )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                ← Précédent
-              </button>
-
-              <div className="pagination-numbers">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    className={`pagination-number ${currentPage === page ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                Suivant →
-              </button>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="theses-pagination">
+            <button className="theses-page-btn" onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
+              ← Précédent
+            </button>
+            <div className="theses-page-numbers">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <button key={p} className={`theses-page-num ${currentPage === p ? 'active' : ''}`} onClick={() => setCurrentPage(p)}>{p}</button>
+              ))}
             </div>
-          )}
-        </main>
+            <button className="theses-page-btn" onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
+              Suivant →
+            </button>
+          </div>
+        )}
       </div>
+
     </div>
   );
 };
 
 export default Theses;
-

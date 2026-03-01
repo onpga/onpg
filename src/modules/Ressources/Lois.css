@@ -64,8 +64,62 @@
 .lois-hero-subtitle {
   font-size: 1.1rem; line-height: 1.7;
   color: rgba(255,255,255,0.75);
-  max-width: 640px; margin: 0 auto 2.5rem;
+  max-width: 640px; margin: 0 auto 1.5rem;
 }
+
+/* ── SEARCH COMPACT (dans hero) ── */
+.lois-hero-search {
+  position: relative;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.lois-hero-search-ico {
+  position: absolute;
+  left: 1rem;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.lois-hero-search-input {
+  width: 100%;
+  padding: 0.85rem 2.75rem 0.85rem 2.75rem;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 50px;
+  font-size: 0.95rem;
+  color: #fff;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.lois-hero-search-input::placeholder { color: rgba(255,255,255,0.55); }
+
+.lois-hero-search-input:focus {
+  outline: none;
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.5);
+  box-shadow: 0 0 0 4px rgba(255,255,255,0.1);
+}
+
+.lois-hero-search-clear {
+  position: absolute;
+  right: 0.9rem;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 24px; height: 24px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.lois-hero-search-clear:hover { background: rgba(255,255,255,0.35); }
 
 .lois-hero-stats {
   display: inline-flex; align-items: center;
@@ -80,86 +134,6 @@
 .lois-stat-val { display: block; font-size: 2rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 0.3rem; }
 .lois-stat-lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.55); font-weight: 600; }
 .lois-stat-div { width: 1px; height: 40px; background: rgba(255,255,255,0.2); flex-shrink: 0; }
-
-/* ── SEARCH ZONE ── */
-.lois-search-zone {
-  background: #fff;
-  border-bottom: 1px solid #E2E8F0;
-  padding: 1.75rem 0;
-  position: sticky; top: 0; z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-.lois-search-inner {
-  max-width: 1300px; margin: 0 auto;
-  padding: 0 2rem;
-  display: flex; flex-direction: column; gap: 1.25rem;
-}
-
-.lois-search-bar { position: relative; display: flex; align-items: center; }
-
-.lois-search-ico { position: absolute; left: 1.1rem; font-size: 1.1rem; pointer-events: none; }
-
-.lois-search-input {
-  width: 100%;
-  padding: 0.9rem 3rem 0.9rem 3rem;
-  background: #F8FAFC; border: 2px solid #E2E8F0;
-  border-radius: 14px; font-size: 0.97rem; color: #0F172A;
-  transition: all 0.2s ease; box-sizing: border-box;
-}
-
-.lois-search-input:focus {
-  outline: none; background: #fff;
-  border-color: #2563EB;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-}
-
-.lois-search-input::placeholder { color: #94A3B8; }
-
-.lois-search-clear {
-  position: absolute; right: 1rem;
-  background: #E2E8F0; border: none; border-radius: 50%;
-  width: 24px; height: 24px; font-size: 0.75rem;
-  cursor: pointer; color: #64748B; transition: all 0.2s;
-  display: flex; align-items: center; justify-content: center;
-}
-.lois-search-clear:hover { background: #CBD5E1; }
-
-.lois-filter-row { display: flex; flex-direction: column; gap: 0.75rem; }
-.lois-filter-group { display: flex; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
-
-.lois-filter-lbl {
-  font-size: 0.78rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.08em;
-  color: #64748B; padding-top: 0.4rem;
-  min-width: 75px; flex-shrink: 0;
-}
-
-.lois-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
-.lois-chip {
-  padding: 0.35rem 0.9rem;
-  background: #F1F5F9; border: 1.5px solid #E2E8F0;
-  border-radius: 50px; font-size: 0.82rem; font-weight: 500;
-  color: #475569; cursor: pointer; transition: all 0.18s; white-space: nowrap;
-}
-
-.lois-chip:hover { background: #DBEAFE; border-color: #93C5FD; color: #1E40AF; }
-.lois-chip.active { background: #1E40AF; border-color: #1E40AF; color: #fff; font-weight: 600; }
-
-.lois-chip-active.active { background: #059669; border-color: #059669; }
-.lois-chip-modified.active { background: #D97706; border-color: #D97706; }
-.lois-chip-repealed.active { background: #DC2626; border-color: #DC2626; }
-
-.lois-search-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
-.lois-results-count { font-size: 0.9rem; color: #64748B; font-weight: 500; }
-
-.lois-clear-btn {
-  padding: 0.4rem 1rem; background: #EFF6FF;
-  border: 1px solid #93C5FD; border-radius: 8px;
-  font-size: 0.82rem; color: #1E40AF; cursor: pointer; font-weight: 600; transition: all 0.2s;
-}
-.lois-clear-btn:hover { background: #DBEAFE; }
 
 /* ── CONTENT ── */
 .lois-content {
@@ -441,8 +415,6 @@
   .lois-card-header { flex-direction: column; align-items: flex-start; }
   .lois-card-dates { flex-direction: column; gap: 0.5rem; }
   .lois-date-sep { display: none; }
-  .lois-filter-group { flex-direction: column; gap: 0.4rem; }
-  .lois-filter-lbl { min-width: auto; }
 }
 
 @media (max-width: 480px) {

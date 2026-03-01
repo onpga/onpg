@@ -31,8 +31,6 @@ const Lois = () => {
   const [laws, setLaws] = useState<Law[]>([]);
   const [filteredLaws, setFilteredLaws] = useState<Law[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Toutes');
-  const [selectedStatus, setSelectedStatus] = useState('Tous');
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
@@ -74,17 +72,14 @@ const Lois = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = laws.filter(l => {
-      const q = searchQuery.toLowerCase();
-      const matchesSearch = !q || l.title.toLowerCase().includes(q) || l.number.toLowerCase().includes(q) ||
-        l.summary.toLowerCase().includes(q) || l.tags.some(t => t.toLowerCase().includes(q));
-      const matchesCategory = selectedCategory === 'Toutes' || l.category === selectedCategory;
-      const matchesStatus = selectedStatus === 'Tous' || l.status === selectedStatus;
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
+    const q = searchQuery.toLowerCase();
+    const filtered = laws.filter(l =>
+      !q || l.title.toLowerCase().includes(q) || l.number.toLowerCase().includes(q) ||
+      l.summary.toLowerCase().includes(q) || l.tags.some(t => t.toLowerCase().includes(q))
+    );
     setFilteredLaws(filtered);
     setCurrentPage(1);
-  }, [laws, searchQuery, selectedCategory, selectedStatus]);
+  }, [laws, searchQuery]);
 
   const totalPages = Math.ceil(filteredLaws.length / lawsPerPage);
   const currentLaws = filteredLaws.slice((currentPage - 1) * lawsPerPage, currentPage * lawsPerPage);
@@ -96,10 +91,6 @@ const Lois = () => {
     totalViews: laws.reduce((s, l) => s + l.views, 0),
   }), [laws]);
 
-  const categories = useMemo(() => Array.from(new Set(laws.map(l => l.category))), [laws]);
-
-  const clearFilters = () => { setSearchQuery(''); setSelectedCategory('Toutes'); setSelectedStatus('Tous'); };
-  const hasFilters = searchQuery || selectedCategory !== 'Toutes' || selectedStatus !== 'Tous';
 
   const formatDate = (d: string) => {
     try { return new Date(d).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' }); }
@@ -128,6 +119,22 @@ const Lois = () => {
           <p className="lois-hero-subtitle">
             Lois, décrets et textes officiels régissant l'exercice de la pharmacie au Gabon — accès direct et navigation facilitée.
           </p>
+
+          {/* ── SEARCH COMPACT ── */}
+          <div className="lois-hero-search">
+            <span className="lois-hero-search-ico">🔍</span>
+            <input
+              type="text"
+              className="lois-hero-search-input"
+              placeholder="Numéro, titre, résumé, mots-clés…"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="lois-hero-search-clear" onClick={() => setSearchQuery('')}>✕</button>
+            )}
+          </div>
+
           <div className="lois-hero-stats">
             <div className="lois-hero-stat">
               <span className="lois-stat-val">{stats.total}</span>
@@ -152,53 +159,6 @@ const Lois = () => {
         </div>
       </section>
 
-      {/* ═══ SEARCH + FILTERS ═══ */}
-      <div className="lois-search-zone">
-        <div className="lois-search-inner">
-          <div className="lois-search-bar">
-            <span className="lois-search-ico">🔍</span>
-            <input
-              type="text"
-              className="lois-search-input"
-              placeholder="Rechercher par numéro, titre, résumé ou mots-clés…"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && <button className="lois-search-clear" onClick={() => setSearchQuery('')}>✕</button>}
-          </div>
-
-          <div className="lois-filter-row">
-            <div className="lois-filter-group">
-              <span className="lois-filter-lbl">Catégorie</span>
-              <div className="lois-chips">
-                <button className={`lois-chip ${selectedCategory === 'Toutes' ? 'active' : ''}`} onClick={() => setSelectedCategory('Toutes')}>Toutes</button>
-                {categories.map(c => (
-                  <button key={c} className={`lois-chip ${selectedCategory === c ? 'active' : ''}`} onClick={() => setSelectedCategory(c)}>{c}</button>
-                ))}
-              </div>
-            </div>
-            <div className="lois-filter-group">
-              <span className="lois-filter-lbl">Statut</span>
-              <div className="lois-chips">
-                <button className={`lois-chip ${selectedStatus === 'Tous' ? 'active' : ''}`} onClick={() => setSelectedStatus('Tous')}>Tous</button>
-                {(['active', 'modified', 'repealed'] as const).map(s => (
-                  <button key={s} className={`lois-chip lois-chip-${s} ${selectedStatus === s ? 'active' : ''}`} onClick={() => setSelectedStatus(s)}>
-                    {STATUS_CONFIG[s].icon} {STATUS_CONFIG[s].label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="lois-search-meta">
-            <span className="lois-results-count">
-              {loading ? 'Chargement…' : `${filteredLaws.length} texte${filteredLaws.length > 1 ? 's' : ''} trouvé${filteredLaws.length > 1 ? 's' : ''}`}
-            </span>
-            {hasFilters && <button className="lois-clear-btn" onClick={clearFilters}>✕ Effacer</button>}
-          </div>
-        </div>
-      </div>
-
       {/* ═══ CONTENT ═══ */}
       <div className="lois-content">
         {loading ? (
@@ -211,7 +171,7 @@ const Lois = () => {
             <div className="lois-empty-icon">⚖️</div>
             <h3 className="lois-empty-title">Aucun texte trouvé</h3>
             <p className="lois-empty-text">Modifiez vos critères de recherche.</p>
-            {hasFilters && <button className="lois-empty-btn" onClick={clearFilters}>Réinitialiser</button>}
+            {searchQuery && <button className="lois-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
           </div>
         ) : (
           <div className="lois-list">

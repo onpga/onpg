@@ -1,4 +1,4 @@
-/* ==============================================================
+﻿/* ==============================================================
    COMMISSIONS PAGE — DESIGN ÉPOUSTOUFLANT, ÉLÉGANT & PROFESSIONNEL
    CSS 100% ISOLÉ — Préfixe .commissions-page
    ============================================================== */
@@ -12,7 +12,7 @@
 /* ── HERO ── */
 .comm-hero {
   position: relative;
-  background: linear-gradient(135deg, #7C2D12 0%, #B45309 35%, #D97706 70%, #F59E0B 100%);
+  background: linear-gradient(135deg, #004d26 0%, #00A651 45%, #27AE60 75%, #2ECC71 100%);
   padding: 6rem 2rem 5rem;
   overflow: hidden;
   color: #fff;
@@ -31,8 +31,8 @@
   opacity: 0.3;
 }
 
-.comm-orb-1 { width: 500px; height: 500px; background: #FCD34D; top: -180px; left: -120px; }
-.comm-orb-2 { width: 350px; height: 350px; background: #FDE68A; bottom: -80px; right: -60px; }
+.comm-orb-1 { width: 500px; height: 500px; background: #52d68a; top: -180px; left: -120px; }
+.comm-orb-2 { width: 350px; height: 350px; background: #a8f0c6; bottom: -80px; right: -60px; }
 .comm-orb-3 { width: 280px; height: 280px; background: #FBBF24; top: 40%; left: 55%; }
 
 .comm-hero-content {
@@ -70,7 +70,7 @@
 }
 
 .comm-hero-title-accent {
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  background: linear-gradient(135deg, #FEF3C7 0%, #d4f5e5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -171,7 +171,7 @@
 .comm-loader {
   width: 48px; height: 48px;
   border: 4px solid #FEF3C7;
-  border-top: 4px solid #D97706;
+  border-top: 4px solid #27AE60;
   border-radius: 50%;
   animation: commSpin 0.9s linear infinite;
   margin-bottom: 1.25rem;
@@ -185,10 +185,10 @@
 
 .comm-empty-btn {
   padding: 0.75rem 1.75rem;
-  background: #D97706; color: #fff; border: none;
+  background: #27AE60; color: #fff; border: none;
   border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;
 }
-.comm-empty-btn:hover { background: #B45309; transform: translateY(-2px); }
+.comm-empty-btn:hover { background: #00A651; transform: translateY(-2px); }
 
 /* ── GRID ── */
 .comm-grid {
@@ -219,7 +219,7 @@
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 4px;
-  background: linear-gradient(90deg, #D97706, #F59E0B);
+  background: linear-gradient(90deg, #27AE60, #2ECC71);
   opacity: 0;
   transition: opacity 0.25s;
 }
@@ -232,14 +232,14 @@
 }
 
 .comm-card:hover {
-  border-color: #FCD34D;
+  border-color: #a8f0c6;
   box-shadow: 0 12px 40px rgba(217, 119, 6, 0.12);
   transform: translateY(-4px);
   text-decoration: none;
 }
 
 .comm-card.featured {
-  border-color: #FCD34D;
+  border-color: #a8f0c6;
   box-shadow: 0 4px 20px rgba(217, 119, 6, 0.1);
 }
 
@@ -248,7 +248,7 @@
 .comm-card-featured {
   position: absolute;
   top: 0; right: 0;
-  background: linear-gradient(135deg, #F59E0B, #FBBF24);
+  background: linear-gradient(135deg, #2ECC71, #FBBF24);
   color: #000;
   font-size: 0.68rem;
   font-weight: 700;
@@ -265,7 +265,7 @@
 
 .comm-card-icon-wrap {
   width: 52px; height: 52px;
-  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  background: linear-gradient(135deg, #FEF3C7, #d4f5e5);
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.5rem;
@@ -296,7 +296,7 @@
   padding: 0.2rem 0.6rem;
   border-radius: 20px;
   background: #FEF3C7;
-  color: #92400E;
+  color: #005C2C;
 }
 
 .comm-card-name {
@@ -336,7 +336,7 @@
   background: #FFFBEB;
   border-radius: 10px;
   padding: 0.85rem;
-  border: 1px solid #FDE68A;
+  border: 1px solid #d4f5e5;
 }
 
 .comm-missions-title {
@@ -345,7 +345,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #92400E;
+  color: #005C2C;
   margin-bottom: 0.5rem;
 }
 
@@ -386,8 +386,8 @@
 
 .comm-member-chip.more {
   background: #FEF3C7;
-  border-color: #FCD34D;
-  color: #92400E;
+  border-color: #a8f0c6;
+  color: #005C2C;
   font-weight: 700;
 }
 
@@ -416,7 +416,7 @@
 .comm-card-cta {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #D97706;
+  color: #27AE60;
   transition: transform 0.2s;
 }
 
@@ -435,7 +435,7 @@
   color: #44403C; cursor: pointer; transition: all 0.2s;
 }
 
-.comm-page-btn:hover:not(:disabled) { border-color: #FCD34D; color: #D97706; background: #FFFBEB; }
+.comm-page-btn:hover:not(:disabled) { border-color: #a8f0c6; color: #27AE60; background: #FFFBEB; }
 .comm-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .comm-page-numbers { display: flex; gap: 0.4rem; }
@@ -448,8 +448,8 @@
   display: flex; align-items: center; justify-content: center;
 }
 
-.comm-page-num:hover { border-color: #FCD34D; color: #D97706; background: #FFFBEB; }
-.comm-page-num.active { background: #D97706; border-color: #D97706; color: #fff; }
+.comm-page-num:hover { border-color: #a8f0c6; color: #27AE60; background: #FFFBEB; }
+.comm-page-num.active { background: #27AE60; border-color: #27AE60; color: #fff; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+﻿import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ONPGLayout from './components/Layout/ONPGLayout';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -52,26 +52,6 @@ const Deontologie = lazy(() => import('./modules/Pratique/Deontologie'));
 const Pharmacies = lazy(() => import('./modules/Pratique/Pharmacies'));
 const ContactPratique = lazy(() => import('./modules/Pratique/ContactPratique'));
 
-// Templates Indépendants
-
-// Showcase des Templates
-// TemplateShowcase supprimé
-
-// Templates supprimés
-const APropos = lazy(() => import('./modules/APropos/APropos'));
-const Poles = lazy(() => import('./modules/Poles/Poles'));
-const Realisations = lazy(() => import('./modules/Realisations/Realisations'));
-const ProjectDetail = lazy(() => import('./modules/Realisations/ProjectDetail'));
-const Actualites = lazy(() => import('./modules/Actualites/Actualites'));
-const ArticleDetail = lazy(() => import('./modules/Actualites/ArticleDetail'));
-// Imports nettoyés - layouts de test supprimés
-// Layouts de test pour la page d'accueil - SUPPRIMÉS (module Accueil supprimé)
-const Contact = lazy(() => import('./modules/Contact/Contact'));
-const Carrieres = lazy(() => import('./modules/Carrieres/Carrieres'));
-const JobDetail = lazy(() => import('./modules/Carrieres/JobDetail'));
-const Devis = lazy(() => import('./modules/Devis/Devis'));
-const Simulateur = lazy(() => import('./modules/Simulateur'));
-const FAQ = lazy(() => import('./modules/FAQ'));
 const MentionsLegales = lazy(() => import('./modules/Legal/MentionsLegales'));
 const PolitiqueConfidentialite = lazy(() => import('./modules/Legal/PolitiqueConfidentialite'));
 const CGU = lazy(() => import('./modules/Legal/CGU'));
@@ -112,17 +92,24 @@ const ProjectForm = lazy(() => import('./modules/Admin/Projects/ProjectForm'));
 const PageMocks = lazy(() => import('./modules/Admin/PageMocks'));
 const ContactMessagesAdmin = lazy(() => import('./modules/Admin/ContactMessagesAdmin'));
 
-// Composant de chargement simple
+// Composant de chargement
 const LoadingSpinner = () => (
-  <div style={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+  <div style={{
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     minHeight: '50vh',
-    fontSize: '18px',
-    color: '#002F6C'
+    gap: '16px',
   }}>
-    Chargement...
+    <svg width="44" height="44" viewBox="0 0 44 44" style={{ animation: 'onpg-spin 0.9s linear infinite' }}>
+      <style>{`@keyframes onpg-spin { to { transform: rotate(360deg); } }`}</style>
+      <circle cx="22" cy="22" r="18" fill="none" stroke="#e8f5ee" strokeWidth="4"/>
+      <path d="M22 4a18 18 0 0118 18" fill="none" stroke="#00A651" strokeWidth="4" strokeLinecap="round"/>
+    </svg>
+    <span style={{ fontSize: '13px', color: '#00A651', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+      Chargement…
+    </span>
   </div>
 );
 
@@ -224,25 +211,9 @@ function App() {
                     <Route path="/pratique/deontologie" element={<Deontologie />} />
                     <Route path="/pratique/pharmacies" element={<Pharmacies />} />
                     <Route path="/pratique/contact" element={<ContactPratique />} />
+                    {/* Redirections de compatibilite */}
+                    <Route path="/contact" element={<Navigate to="/pratique/contact" replace />}/>
 
-                    {/* Templates Indépendants */}
-
-
-                    {/* Templates individuels */}
-// Templates supprimés
-                    <Route path="/apropos" element={<APropos />} />
-                    <Route path="/poles" element={<Poles />} />
-                    <Route path="/poles/:id" element={<Poles />} />
-                    <Route path="/realisations" element={<Realisations />} />
-                    <Route path="/realisations/:id" element={<ProjectDetail />} />
-                    <Route path="/actualites" element={<Actualites />} />
-                    <Route path="/actualites/:slug" element={<ArticleDetail />} />
-                    <Route path="/contact" element={<Contact />} />
-                    <Route path="/devis" element={<Devis />} />
-                    <Route path="/simulateur" element={<Simulateur />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/carrieres" element={<Carrieres />} />
-                    <Route path="/carrieres/:jobId" element={<JobDetail />} />
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
                     <Route path="/cgu" element={<CGU />} />

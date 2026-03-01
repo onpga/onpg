@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    ARTICLES PAGE - DESIGN ÉLÉGANT & ÉPOUSTOUFLANT
    CSS 100% ISOLÉ - Préfixe .articles-page
    ============================================ */
@@ -12,7 +12,7 @@
 /* Hero Section Moderne */
 .articles-page .ressources-hero {
   position: relative;
-  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  background: linear-gradient(135deg, #00A651 0%, #2ECC71 100%);
   padding: 6rem 2rem 4rem;
   color: #ffffff;
   overflow: hidden;
@@ -167,13 +167,13 @@
 }
 
 .articles-page .breadcrumb-modern a {
-  color: #8B5CF6;
+  color: #00A651;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .articles-page .breadcrumb-modern a:hover {
-  color: #7C3AED;
+  color: #008F45;
 }
 
 .articles-page .breadcrumb-separator {
@@ -273,7 +273,7 @@
 .articles-page .search-input-modern:focus {
   outline: none;
   background: #ffffff;
-  border-color: #8B5CF6;
+  border-color: #00A651;
   box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
 }
 
@@ -356,9 +356,9 @@
 }
 
 .articles-page .filter-chip-modern.active {
-  background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+  background: linear-gradient(135deg, #00A651, #2ECC71);
   color: #ffffff;
-  border-color: #8B5CF6;
+  border-color: #00A651;
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
 
@@ -420,11 +420,11 @@
 .articles-page .article-card-modern:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  border-color: #8B5CF6;
+  border-color: #00A651;
 }
 
 .articles-page .article-card-modern.featured {
-  border-color: #8B5CF6;
+  border-color: #00A651;
   box-shadow: 0 4px 16px rgba(139, 92, 246, 0.15);
 }
 
@@ -536,7 +536,7 @@
 .articles-page .stat-value-modern {
   font-size: 1rem;
   font-weight: 700;
-  color: #8B5CF6;
+  color: #00A651;
 }
 
 .articles-page .stat-label-modern {
@@ -553,7 +553,7 @@
 .articles-page .read-more-modern {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #8B5CF6;
+  color: #00A651;
   transition: transform 0.2s ease;
   white-space: nowrap;
 }
@@ -615,9 +615,9 @@
 }
 
 .articles-page .pagination-btn-modern.active {
-  background: #8B5CF6;
+  background: #00A651;
   color: #ffffff;
-  border-color: #8B5CF6;
+  border-color: #00A651;
 }
 
 .articles-page .filters-stats-modern {
@@ -635,7 +635,7 @@
 .articles-page .stat-mini-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #8B5CF6;
+  color: #00A651;
 }
 
 .articles-page .stat-mini-label {
@@ -673,7 +673,7 @@
 
 .articles-page .empty-action-btn {
   padding: 0.75rem 1.5rem;
-  background: #8B5CF6;
+  background: #00A651;
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -684,7 +684,7 @@
 }
 
 .articles-page .empty-action-btn:hover {
-  background: #7C3AED;
+  background: #008F45;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }

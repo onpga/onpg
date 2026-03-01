@@ -143,12 +143,28 @@ const Decrets = () => {
             <div className="decrets-spinner" />
             <p>Chargement des décrets…</p>
           </div>
+        ) : decrets.length === 0 && !searchQuery ? (
+          <div className="decrets-empty">
+            <span className="decrets-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00A651" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                <line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+              </svg>
+            </span>
+            <h3>Section en cours d'alimentation</h3>
+            <p>Les décrets et arrêtés seront disponibles prochainement.</p>
+          </div>
         ) : paginated.length === 0 ? (
           <div className="decrets-empty">
-            <span className="decrets-empty-icon">📜</span>
-            <h3>Aucun décret trouvé</h3>
-            <p>Modifiez votre recherche pour afficher des résultats.</p>
-            {searchQuery && <button className="decrets-reset-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+            <span className="decrets-empty-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </span>
+            <h3>Aucun résultat</h3>
+            <p>Aucun décret ne correspond à votre recherche.</p>
+            <button className="decrets-reset-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>
           </div>
         ) : (
           <>

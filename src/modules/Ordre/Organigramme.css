@@ -4,6 +4,21 @@
 
 @import './Ordre.css';
 
+/* Icon alignment inside org nodes */
+.org-node-title,
+.org-node-title-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.org-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
 /* ============================================
    HERO SECTION - AMÉLIORATIONS PREMIUM
    ============================================ */

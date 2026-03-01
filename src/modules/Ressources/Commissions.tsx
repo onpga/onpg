@@ -154,12 +154,28 @@ const Commissions = () => {
             <div className="comm-loader" />
             <p>Chargement des commissions…</p>
           </div>
+        ) : commissions.length === 0 && !searchQuery ? (
+          <div className="comm-empty">
+            <div className="comm-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00A651" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+            </div>
+            <h3 className="comm-empty-title">Section en cours d'alimentation</h3>
+            <p className="comm-empty-text">Les commissions seront disponibles prochainement.</p>
+          </div>
         ) : currentCommissions.length === 0 ? (
           <div className="comm-empty">
-            <div className="comm-empty-icon">🏛️</div>
-            <h3 className="comm-empty-title">Aucune commission trouvée</h3>
-            <p className="comm-empty-text">Modifiez vos critères de recherche.</p>
-            {searchQuery && <button className="comm-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+            <div className="comm-empty-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </div>
+            <h3 className="comm-empty-title">Aucun résultat</h3>
+            <p className="comm-empty-text">Aucune commission ne correspond à votre recherche.</p>
+            <button className="comm-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>
           </div>
         ) : (
           <div className="comm-grid">

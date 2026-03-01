@@ -166,12 +166,27 @@ const Lois = () => {
             <div className="lois-loader" />
             <p>Chargement des textes législatifs…</p>
           </div>
+        ) : laws.length === 0 && !searchQuery ? (
+          <div className="lois-empty">
+            <div className="lois-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00A651" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+              </svg>
+            </div>
+            <h3 className="lois-empty-title">Section en cours d'alimentation</h3>
+            <p className="lois-empty-text">Les textes législatifs seront disponibles prochainement.</p>
+          </div>
         ) : currentLaws.length === 0 ? (
           <div className="lois-empty">
-            <div className="lois-empty-icon">⚖️</div>
-            <h3 className="lois-empty-title">Aucun texte trouvé</h3>
-            <p className="lois-empty-text">Modifiez vos critères de recherche.</p>
-            {searchQuery && <button className="lois-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+            <div className="lois-empty-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </div>
+            <h3 className="lois-empty-title">Aucun résultat</h3>
+            <p className="lois-empty-text">Aucun texte ne correspond à votre recherche.</p>
+            <button className="lois-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>
           </div>
         ) : (
           <div className="lois-list">

@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    COMMUNIQUÉS PAGE - DESIGN ÉLÉGANT & ÉPOUSTOUFLANT
    CSS 100% ISOLÉ - Préfixe .communiques-page
    ============================================ */
@@ -12,7 +12,7 @@
 /* Hero Section Moderne */
 .communiques-page .ressources-hero {
   position: relative;
-  background: linear-gradient(135deg, #0A66C2 0%, #1877F2 100%);
+  background: linear-gradient(135deg, #004d26 0%, #00A651 55%, #2ECC71 100%);
   padding: 6rem 2rem 4rem;
   color: #ffffff;
   overflow: hidden;
@@ -167,7 +167,7 @@
 }
 
 .communiques-page .breadcrumb-modern a {
-  color: #0A66C2;
+  color: #00A651;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -289,7 +289,7 @@
 .communiques-page .search-input-modern:focus {
   outline: none;
   background: #ffffff;
-  border-color: #0A66C2;
+  border-color: #00A651;
   box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
 }
 
@@ -372,9 +372,9 @@
 }
 
 .communiques-page .filter-chip-modern.active {
-  background: linear-gradient(135deg, #0A66C2, #1877F2);
+  background: linear-gradient(135deg, #00A651, #2ECC71);
   color: #ffffff;
-  border-color: #0A66C2;
+  border-color: #00A651;
   box-shadow: 0 2px 8px rgba(10, 102, 194, 0.2);
 }
 
@@ -448,7 +448,7 @@
 .communiques-page .communique-card-modern:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  border-color: #0A66C2;
+  border-color: #00A651;
 }
 
 .communiques-page .communique-card-modern.urgent {
@@ -456,7 +456,7 @@
 }
 
 .communiques-page .communique-card-modern.featured {
-  border-color: #0A66C2;
+  border-color: #00A651;
   box-shadow: 0 4px 16px rgba(10, 102, 194, 0.15);
 }
 
@@ -536,7 +536,7 @@
 .communiques-page .read-more-modern {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0A66C2;
+  color: #00A651;
   transition: transform 0.2s ease;
 }
 
@@ -614,9 +614,9 @@
 }
 
 .communiques-page .pagination-btn-modern.active {
-  background: #0A66C2;
+  background: #00A651;
   color: #ffffff;
-  border-color: #0A66C2;
+  border-color: #00A651;
 }
 
 .communiques-page .filters-stats-modern {
@@ -634,7 +634,7 @@
 .communiques-page .stat-mini-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0A66C2;
+  color: #00A651;
 }
 
 .communiques-page .stat-mini-label {
@@ -687,7 +687,7 @@
 
 .communiques-page .empty-action-btn {
   padding: 0.75rem 1.5rem;
-  background: #0A66C2;
+  background: #00A651;
   color: #ffffff;
   border: none;
   border-radius: 10px;

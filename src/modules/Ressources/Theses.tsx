@@ -180,12 +180,27 @@ const Theses = () => {
             <div className="theses-loader" />
             <p>Chargement des thèses…</p>
           </div>
+        ) : theses.length === 0 && !searchQuery ? (
+          <div className="theses-empty">
+            <div className="theses-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00A651" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </div>
+            <h3 className="theses-empty-title">Section en cours d'alimentation</h3>
+            <p className="theses-empty-text">Les thèses et mémoires seront disponibles prochainement.</p>
+          </div>
         ) : currentTheses.length === 0 ? (
           <div className="theses-empty">
-            <div className="theses-empty-icon">🎓</div>
-            <h3 className="theses-empty-title">Aucune thèse trouvée</h3>
-            <p className="theses-empty-text">Modifiez vos critères de recherche.</p>
-            {searchQuery && <button className="theses-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+            <div className="theses-empty-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </div>
+            <h3 className="theses-empty-title">Aucun résultat</h3>
+            <p className="theses-empty-text">Aucune thèse ne correspond à votre recherche.</p>
+            <button className="theses-empty-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>
           </div>
         ) : (
           <div className="theses-list">

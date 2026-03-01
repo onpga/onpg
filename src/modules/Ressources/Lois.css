@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    LOIS PAGE — DESIGN ÉPOUSTOUFLANT, ÉLÉGANT & PROFESSIONNEL
    CSS 100% ISOLÉ — Préfixe .lois-page
    ============================================================ */
@@ -12,7 +12,7 @@
 /* ── HERO ── */
 .lois-hero {
   position: relative;
-  background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 35%, #1E40AF 75%, #2563EB 100%);
+  background: linear-gradient(135deg, #004d26 0%, #00A651 45%, #27AE60 75%, #2ECC71 100%);
   padding: 6rem 2rem 5rem;
   overflow: hidden;
   color: #fff;
@@ -27,9 +27,9 @@
   opacity: 0.2;
 }
 
-.lois-orb-1 { width: 550px; height: 550px; background: #60A5FA; top: -200px; left: -120px; }
-.lois-orb-2 { width: 350px; height: 350px; background: #BFDBFE; bottom: -80px; right: -60px; }
-.lois-orb-3 { width: 300px; height: 300px; background: #3B82F6; top: 30%; left: 60%; opacity: 0.15; }
+.lois-orb-1 { width: 550px; height: 550px; background: #52d68a; top: -200px; left: -120px; }
+.lois-orb-2 { width: 350px; height: 350px; background: #a8f0c6; bottom: -80px; right: -60px; }
+.lois-orb-3 { width: 300px; height: 300px; background: #00A651; top: 30%; left: 60%; opacity: 0.15; }
 
 .lois-hero-content {
   position: relative; z-index: 2;
@@ -148,19 +148,19 @@
 
 .lois-loader {
   width: 48px; height: 48px;
-  border: 4px solid #DBEAFE; border-top: 4px solid #2563EB;
+  border: 4px solid #DBEAFE; border-top: 4px solid #00A651;
   border-radius: 50%; animation: loisSpin 0.9s linear infinite; margin-bottom: 1.25rem;
 }
 
 @keyframes loisSpin { to { transform: rotate(360deg); } }
 
 .lois-empty-icon { font-size: 4rem; opacity: 0.4; margin-bottom: 1rem; }
-.lois-empty-title { font-size: 1.5rem; font-weight: 700; color: #0F172A; margin-bottom: 0.5rem; }
+.lois-empty-title { font-size: 1.5rem; font-weight: 700; color: #003018; margin-bottom: 0.5rem; }
 .lois-empty-text { color: #64748B; margin-bottom: 1.5rem; }
 
 .lois-empty-btn {
   padding: 0.75rem 1.75rem;
-  background: #1E40AF; color: #fff; border: none;
+  background: #008F45; color: #fff; border: none;
   border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.2s;
 }
 .lois-empty-btn:hover { background: #1E3A8A; transform: translateY(-2px); }
@@ -188,7 +188,7 @@
   position: absolute;
   top: 0; left: 0;
   width: 5px; height: 100%;
-  background: linear-gradient(180deg, #1E40AF, #2563EB);
+  background: linear-gradient(180deg, #008F45, #00A651);
   opacity: 0;
   transition: opacity 0.25s;
 }
@@ -231,7 +231,7 @@
 
 .lois-card-number {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  background: #EFF6FF; color: #1E40AF;
+  background: #EFF6FF; color: #008F45;
   border: 1px solid #BFDBFE;
   border-radius: 8px; padding: 0.3rem 0.8rem;
   font-size: 0.82rem; font-weight: 700;
@@ -255,13 +255,13 @@
 /* Card Title */
 .lois-card-title {
   font-size: 1.15rem; font-weight: 800;
-  color: #0F172A; line-height: 1.35; margin: 0;
+  color: #003018; line-height: 1.35; margin: 0;
 }
 
 .lois-card-title a {
   color: inherit; text-decoration: none; transition: color 0.2s;
 }
-.lois-card-title a:hover { color: #1E40AF; }
+.lois-card-title a:hover { color: #008F45; }
 
 /* Dates */
 .lois-card-dates {
@@ -302,12 +302,12 @@
 .lois-toc-title {
   font-size: 0.78rem; font-weight: 800;
   text-transform: uppercase; letter-spacing: 0.08em;
-  color: #1E40AF;
+  color: #008F45;
 }
 
 .lois-toc-count {
   font-size: 0.75rem; font-weight: 600;
-  color: #3B82F6; background: #DBEAFE;
+  color: #2ECC71; background: #DBEAFE;
   border-radius: 20px; padding: 0.1rem 0.6rem;
 }
 
@@ -318,7 +318,7 @@
   font-size: 0.84rem; color: #334155;
 }
 
-.lois-toc-bullet { color: #3B82F6; font-size: 0.7rem; flex-shrink: 0; }
+.lois-toc-bullet { color: #2ECC71; font-size: 0.7rem; flex-shrink: 0; }
 .lois-toc-section-title { flex: 1; line-height: 1.4; }
 
 .lois-toc-articles {
@@ -328,7 +328,7 @@
 }
 
 .lois-toc-more {
-  font-size: 0.8rem; color: #3B82F6; font-style: italic; font-weight: 500;
+  font-size: 0.8rem; color: #2ECC71; font-style: italic; font-weight: 500;
   padding-left: 1rem;
 }
 
@@ -336,7 +336,7 @@
 .lois-card-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
 .lois-tag {
-  font-size: 0.75rem; color: #1E40AF;
+  font-size: 0.75rem; color: #008F45;
   background: #EFF6FF; border: 1px solid #BFDBFE;
   border-radius: 6px; padding: 0.15rem 0.55rem; font-weight: 500;
 }
@@ -361,7 +361,7 @@
 .lois-card-btn {
   display: inline-flex; align-items: center;
   padding: 0.55rem 1.2rem;
-  background: linear-gradient(135deg, #1E40AF, #2563EB);
+  background: linear-gradient(135deg, #008F45, #00A651);
   color: #fff; border-radius: 10px;
   font-size: 0.85rem; font-weight: 700;
   text-decoration: none; transition: all 0.2s;
@@ -369,7 +369,7 @@
 }
 
 .lois-card-btn:hover {
-  background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+  background: linear-gradient(135deg, #1E3A8A, #008F45);
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
 }
@@ -387,7 +387,7 @@
   color: #334155; cursor: pointer; transition: all 0.2s;
 }
 
-.lois-page-btn:hover:not(:disabled) { border-color: #93C5FD; color: #1E40AF; background: #EFF6FF; }
+.lois-page-btn:hover:not(:disabled) { border-color: #93C5FD; color: #008F45; background: #EFF6FF; }
 .lois-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .lois-page-numbers { display: flex; gap: 0.4rem; }
@@ -400,8 +400,8 @@
   display: flex; align-items: center; justify-content: center;
 }
 
-.lois-page-num:hover { border-color: #93C5FD; color: #1E40AF; background: #EFF6FF; }
-.lois-page-num.active { background: #1E40AF; border-color: #1E40AF; color: #fff; }
+.lois-page-num:hover { border-color: #93C5FD; color: #008F45; background: #EFF6FF; }
+.lois-page-num.active { background: #008F45; border-color: #008F45; color: #fff; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {

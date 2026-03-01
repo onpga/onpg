@@ -139,12 +139,28 @@ const Decisions = () => {
             <div className="decisions-spinner" />
             <p>Chargement des décisions…</p>
           </div>
+        ) : decisions.length === 0 && !searchQuery ? (
+          <div className="decisions-empty">
+            <span className="decisions-empty-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00A651" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="12" x2="13" y2="12"/>
+              </svg>
+            </span>
+            <h3>Section en cours d'alimentation</h3>
+            <p>Les décisions seront disponibles prochainement.</p>
+          </div>
         ) : paginated.length === 0 ? (
           <div className="decisions-empty">
-            <span className="decisions-empty-icon">🏛️</span>
-            <h3>Aucune décision trouvée</h3>
-            <p>Modifiez votre recherche pour afficher des résultats.</p>
-            {searchQuery && <button className="decisions-reset-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>}
+            <span className="decisions-empty-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#aaa" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+              </svg>
+            </span>
+            <h3>Aucun résultat</h3>
+            <p>Aucune décision ne correspond à votre recherche.</p>
+            <button className="decisions-reset-btn" onClick={() => setSearchQuery('')}>Effacer la recherche</button>
           </div>
         ) : (
           <>

@@ -4,6 +4,43 @@
    ═══════════════════════════════════════════════════════════════ */
 @import './Pratique.css';
 
+/* ─── Indicateur de saisie (debounce) ──────────────────────── */
+.search-typing-indicator {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: #00A651;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.search-spinner {
+  animation: spin 0.8s linear infinite;
+  opacity: 0.75;
+}
+
+/* Logo ONPG en fallback dans la zone photo (fond vert doux, logo centré) */
+.pharmacy-photo.no-photo {
+  background: linear-gradient(135deg, #e8f5ee 0%, #d4edda 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pharmacy-photo.no-photo img {
+  object-fit: contain !important;
+  width: 60% !important;
+  height: 60% !important;
+  filter: drop-shadow(0 2px 6px rgba(0,166,81,0.15));
+}
+
 /* ─── Réduction du hero (pas besoin de 70vh pour une liste) ─── */
 .pharmacies-hero.pratique-hero {
   min-height: 38vh;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './Dashboard.css';
 
 const API_URL =
@@ -598,19 +599,18 @@ const PharmaciensAdmin = () => {
                           backgroundColor: '#f5f5f5'
                         }}
                       >
-                        {formData.photo ? (
-                          <img
-                            src={formData.photo}
-                            alt="Aperçu"
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover'
-                            }}
-                          />
-                        ) : (
-                          <span style={{ fontSize: '1.5rem', color: '#aaa' }}>👤</span>
-                        )}
+                        <img
+                          src={formData.photo || ONPG_IMAGES.logo}
+                          alt="Aperçu"
+                          onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: formData.photo ? 'cover' : 'contain',
+                            padding: formData.photo ? '0' : '6px',
+                            background: formData.photo ? 'transparent' : '#e8f5ee'
+                          }}
+                        />
                       </div>
                       {formData.photo && (
                         <button

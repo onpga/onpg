@@ -1,5 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react';
 import AdminSidebar from './components/AdminSidebar';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './Dashboard.css';
 
 const API_URL =
@@ -298,17 +299,18 @@ const PharmaciesAdmin = () => {
                     pharmacies.map((pharmacie) => (
                       <tr key={pharmacie._id}>
                         <td style={{ padding: '1rem' }}>
-                          {pharmacie.photo ? (
-                            <img
-                              src={pharmacie.photo}
-                              alt={pharmacie.nom}
-                              style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '8px' }}
-                            />
-                          ) : (
-                            <div style={{ width: '60px', height: '60px', background: '#f0f0f0', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              🏥
-                            </div>
-                          )}
+                          <img
+                            src={pharmacie.photo || ONPG_IMAGES.logo}
+                            alt={pharmacie.nom}
+                            onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
+                            style={{
+                              width: '60px', height: '60px',
+                              objectFit: pharmacie.photo ? 'cover' : 'contain',
+                              borderRadius: '8px',
+                              background: pharmacie.photo ? 'transparent' : '#e8f5ee',
+                              padding: pharmacie.photo ? '0' : '8px'
+                            }}
+                          />
                         </td>
                         <td style={{ padding: '1rem', fontWeight: '600' }}>{pharmacie.nom}</td>
                         <td style={{ padding: '1rem' }}>{pharmacie.ville}</td>

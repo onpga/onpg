@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PharmacienSidebar from './components/PharmacienSidebar';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import '../Admin/Dashboard.css';
 
 const API_URL =
@@ -539,20 +540,21 @@ const PharmacienDashboard = () => {
             ) : (
               <div className="profile-info">
                 <div style={{ marginBottom: '1rem' }}>
-                  {user.photo && (
-                    <img
-                      src={user.photo}
-                      alt="Photo de profil"
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        objectFit: 'cover',
-                        borderRadius: '50%',
-                        marginBottom: '1rem',
-                        border: '3px solid #00A651'
-                      }}
-                    />
-                  )}
+                  <img
+                    src={user.photo || ONPG_IMAGES.logo}
+                    alt="Photo de profil"
+                    onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      objectFit: user.photo ? 'cover' : 'contain',
+                      borderRadius: '50%',
+                      marginBottom: '1rem',
+                      border: '3px solid #00A651',
+                      background: user.photo ? 'transparent' : '#e8f5ee',
+                      padding: user.photo ? '0' : '16px'
+                    }}
+                  />
                 </div>
                 <p><strong>Nom d'utilisateur :</strong> {user.username}</p>
                 <p><strong>Email :</strong> {user.email || 'Non renseigné'}</p>

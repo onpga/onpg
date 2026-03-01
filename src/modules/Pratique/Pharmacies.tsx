@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './Pharmacies.css';
 
 const API_URL =
@@ -44,6 +45,7 @@ const Pharmacies = () => {
   const [ouvertOnly, setOuvertOnly] = useState(false);
   const [prochesOnly, setProchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
   const [viewMode, setViewMode] = useState<'cards' | 'list' | 'map'>('cards');
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,6 +54,15 @@ const Pharmacies = () => {
   const filtersRef = useRef<HTMLDivElement>(null);
 
   const pharmaciesPerPage = 12;
+
+  // Debounce : attend 420ms après la dernière frappe avant de déclencher la recherche API
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim());
+      setCurrentPage(1); // revenir à la page 1 quand la recherche change
+    }, 420);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Charger les pharmacies depuis l'API
   useEffect(() => {
@@ -66,8 +77,8 @@ const Pharmacies = () => {
         if (selectedQuartier !== 'Tous') {
           params.append('quartier', selectedQuartier);
         }
-        if (searchQuery) {
-          params.append('search', searchQuery);
+        if (debouncedSearch) {
+          params.append('search', debouncedSearch);
         }
         if (gardeOnly) {
           params.append('garde', 'true');
@@ -117,7 +128,7 @@ const Pharmacies = () => {
     };
 
     loadPharmacies();
-  }, [selectedCity, selectedQuartier, searchQuery, gardeOnly, currentLocation]);
+  }, [selectedCity, selectedQuartier, debouncedSearch, gardeOnly, currentLocation]);
 
   // Gestion du scroll pour masquer/afficher les filtres
   useEffect(() => {
@@ -316,12 +327,22 @@ const Pharmacies = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="search-input"
+                  autoComplete="off"
                 />
-                <button type="submit" className="search-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
+                {/* Indicateur : spinner pendant le délai, loupe sinon */}
+                {searchQuery !== debouncedSearch ? (
+                  <span className="search-typing-indicator" aria-label="En cours de saisie…">
+                    <svg className="search-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" strokeDasharray="40 20" strokeLinecap="round"/>
+                    </svg>
+                  </span>
+                ) : (
+                  <button type="submit" className="search-button" aria-label="Rechercher">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                )}
               </div>
             </form>
           </div>
@@ -451,8 +472,12 @@ const Pharmacies = () => {
                   className={`pharmacy-card-detail ${pharmacy.garde ? 'garde' : ''} ${pharmacy.ouvert !== false ? 'ouvert' : 'ferme'}`}
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="pharmacy-photo">
-                    <img src={pharmacy.photo || 'https://res.cloudinary.com/dduvinjnu/image/upload/w_400,h_300,c_fill,q_80,f_auto,b_rgb:00A651/e_grayscale/onpg/hero/hero-1'} alt={pharmacy.nom} />
+                  <div className={`pharmacy-photo${!pharmacy.photo ? ' no-photo' : ''}`}>
+                    <img
+                      src={pharmacy.photo || ONPG_IMAGES.logo}
+                      alt={pharmacy.nom}
+                      onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
+                    />
                     <div className="pharmacy-photo-gradient" />
                     <div className="photo-overlay">
                       {pharmacy.garde && (

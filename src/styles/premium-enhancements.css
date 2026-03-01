@@ -472,7 +472,7 @@
 }
 
 .section-d-hero {
-  background: linear-gradient(135deg, var(--section-d-color) 0%, #8E44AD 100%);
+  background: linear-gradient(135deg, var(--section-d-color) 0%, #007535 100%);
   --section-accent: var(--section-d-color);
 }
 

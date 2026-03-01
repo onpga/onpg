@@ -145,7 +145,7 @@ const SectionC = () => {
                   <ProfileImage
                     src={pharmacien.photo}
                     alt={`${pharmacien.prenom} ${pharmacien.nom}`}
-                    borderColor="#9b59b6"
+                    borderColor="#00A651"
                     size={120}
                   />
                     <h3 style={{ textAlign: 'center', marginBottom: '0.5rem', fontSize: '1.2rem' }}>

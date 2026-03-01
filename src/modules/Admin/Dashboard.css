@@ -303,7 +303,7 @@
   background: linear-gradient(90deg, #00A651, #33C27D);
 }
 .stat-card.purple::before { 
-  background: linear-gradient(90deg, #9C27B0, #BA68C8);
+  background: linear-gradient(90deg, #00A651, #33C27D);
 }
 
 .stat-card:hover {

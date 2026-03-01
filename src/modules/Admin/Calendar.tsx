@@ -202,7 +202,7 @@ const Calendar = () => {
         'pedagogique': '#4CAF50',    // Vert
         'actualites': '#2196F3',     // Bleu
         'comparatifs': '#FF9800',    // Orange
-        'innovations': '#9C27B0',    // Violet
+        'innovations': '#007535',    // Vert foncé ONPG
         'communiques': '#F44336',    // Rouge
         'partenariats': '#00BCD4'    // Cyan
       };
@@ -703,7 +703,7 @@ const Calendar = () => {
                 <span>Comparatifs</span>
               </div>
               <div className="legend-item">
-                <span className="legend-color" style={{ backgroundColor: '#9C27B0' }}></span>
+                <span className="legend-color" style={{ backgroundColor: '#007535' }}></span>
                 <span>Innovations</span>
               </div>
               <div className="legend-item">
@@ -731,7 +731,7 @@ const Calendar = () => {
                       'pedagogique': '#4CAF50',
                       'actualites': '#2196F3',
                       'comparatifs': '#FF9800',
-                      'innovations': '#9C27B0',
+                      'innovations': '#007535',
                       'communiques': '#F44336',
                       'partenariats': '#00BCD4'
                     };

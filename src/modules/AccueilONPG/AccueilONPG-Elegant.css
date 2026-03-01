@@ -864,7 +864,7 @@
 }
 
 .secondary-paragraph .paragraph-decoration {
-  background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+  background: linear-gradient(135deg, #00A651, #008F45);
 }
 
 .highlight-paragraph .paragraph-decoration {
@@ -936,7 +936,7 @@
 .priorities-accent-line {
   width: 150px;
   height: 5px;
-  background: linear-gradient(90deg, #00A651, #2196F3, #FF9800, #9C27B0);
+  background: linear-gradient(90deg, #00A651, #2196F3, #FF9800, #008F45);
   border-radius: 3px;
   margin: 0 auto 1rem auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -1049,13 +1049,13 @@
 
 .priority-card-4 {
   animation-delay: 0.7s;
-  border-left-color: #9C27B0 !important;
-  background: linear-gradient(135deg, rgba(156, 39, 176, 0.05), rgba(255, 255, 255, 0.98)) !important;
-  box-shadow: 0 15px 45px rgba(156, 39, 176, 0.2) !important;
+  border-left-color: #007535 !important;
+  background: linear-gradient(135deg, rgba(0, 117, 53, 0.05), rgba(255, 255, 255, 0.98)) !important;
+  box-shadow: 0 15px 45px rgba(0, 117, 53, 0.2) !important;
 }
 
 .priority-card-4:hover {
-  box-shadow: 0 25px 60px rgba(156, 39, 176, 0.35) !important;
+  box-shadow: 0 25px 60px rgba(0, 117, 53, 0.35) !important;
   transform: translateY(-5px) !important;
 }
 
@@ -2290,14 +2290,14 @@
 }
 
 .priority-card-4 {
-  border-left-color: #9C27B0;
-  background: linear-gradient(135deg, rgba(156, 39, 176, 0.08), rgba(156, 39, 176, 0.04));
-  box-shadow: 0 8px 25px rgba(156, 39, 176, 0.15);
+  border-left-color: #007535;
+  background: linear-gradient(135deg, rgba(0, 117, 53, 0.08), rgba(0, 117, 53, 0.04));
+  box-shadow: 0 8px 25px rgba(0, 117, 53, 0.15);
 }
 
 .priority-card-4:hover {
-  background: linear-gradient(135deg, rgba(156, 39, 176, 0.12), rgba(156, 39, 176, 0.08));
-  box-shadow: 0 12px 35px rgba(156, 39, 176, 0.25);
+  background: linear-gradient(135deg, rgba(0, 117, 53, 0.12), rgba(0, 117, 53, 0.08));
+  box-shadow: 0 12px 35px rgba(0, 117, 53, 0.25);
   transform: translateY(-3px) scale(1.02);
 }
 
@@ -5034,7 +5034,7 @@
 .particle-4 {
   width: 5px;
   height: 5px;
-  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+  background: linear-gradient(135deg, #00A651, #008F45);
   top: 40%;
   right: 5%;
   animation-delay: 6s;
@@ -5824,7 +5824,7 @@
 .contact-particle-professional.particle-4 {
   width: 12px;
   height: 12px;
-  background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+  background: linear-gradient(135deg, #00A651, #008F45);
   top: 40%;
   right: 25%;
   animation-delay: 7s;

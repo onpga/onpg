@@ -320,7 +320,7 @@ const DeontologieAdmin = () => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             padding: '0.75rem 1.5rem',
-                            background: '#9b59b6',
+                            background: '#00A651',
                             color: 'white',
                             textDecoration: 'none',
                             borderRadius: '8px',
@@ -328,8 +328,8 @@ const DeontologieAdmin = () => {
                             fontSize: '0.95rem',
                             transition: 'all 0.2s'
                           }}
-                          onMouseOver={(e) => e.currentTarget.style.background = '#8e44ad'}
-                          onMouseOut={(e) => e.currentTarget.style.background = '#9b59b6'}
+                          onMouseOver={(e) => e.currentTarget.style.background = '#008F45'}
+                          onMouseOut={(e) => e.currentTarget.style.background = '#00A651'}
                         >
                           👁️ Voir le PDF
                         </a>
@@ -405,7 +405,7 @@ const DeontologieAdmin = () => {
                           borderRadius: '10px',
                           transition: 'border-color 0.2s'
                         }}
-                        onFocus={(e) => e.currentTarget.style.borderColor = '#9b59b6'}
+                        onFocus={(e) => e.currentTarget.style.borderColor = '#00A651'}
                         onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                       />
                     </div>
@@ -436,7 +436,7 @@ const DeontologieAdmin = () => {
                           fontFamily: 'inherit',
                           transition: 'border-color 0.2s'
                         }}
-                        onFocus={(e) => e.currentTarget.style.borderColor = '#9b59b6'}
+                        onFocus={(e) => e.currentTarget.style.borderColor = '#00A651'}
                         onBlur={(e) => e.currentTarget.style.borderColor = '#e5e7eb'}
                       />
                     </div>

@@ -1,4 +1,4 @@
-import './Legal.css';
+﻿import './Legal.css';
 
 const PolitiqueConfidentialite = () => {
   return (
@@ -15,11 +15,12 @@ const PolitiqueConfidentialite = () => {
           <div className="legal-section">
             <h2>1. Introduction</h2>
             <p>
-              La présente politique de confidentialité décrit la manière dont l'Ordre National des Pharmaciens du Gabon (ONPG) collecte, utilise, conserve et protège 
-              les informations personnelles des utilisateurs du site <a href="https://www.onpg.ga" target="_blank" rel="noopener noreferrer">https://www.onpg.ga</a>.
+              La présente politique de confidentialité décrit la manière dont l'Ordre National des Pharmaciens du Gabon (ONPG) collecte,
+              utilise, conserve et protège les informations personnelles des utilisateurs du site{' '}
+              <a href="https://www.onpg.ga" target="_blank" rel="noopener noreferrer">https://www.onpg.ga</a>.
             </p>
             <p>
-              En utilisant ce Site, vous acceptez les termes de cette politique. L'ONPG s'engage à garantir la confidentialité et 
+              En utilisant ce Site, vous acceptez les termes de cette politique. L'ONPG s'engage à garantir la confidentialité et
               la sécurité de vos données conformément à la législation gabonaise en vigueur en matière de protection des données personnelles.
             </p>
             <p>
@@ -30,8 +31,8 @@ const PolitiqueConfidentialite = () => {
           <div className="legal-section">
             <h2>2. Responsable du traitement</h2>
             <p><strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong></p>
-            <p><strong>Siège social :</strong> CC4J+WC6, après le ministère de la corruption, Montée Louis, Libreville, Gabon</p>
-            <p><strong>Téléphone :</strong> 076 50 20 32</p>
+            <p><strong>Siège social :</strong> CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
+            <p><strong>Téléphone :</strong> <a href="tel:+24176502032">076 50 20 32</a></p>
             <p><strong>E-mail :</strong> <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
           </div>
 
@@ -66,11 +67,11 @@ const PolitiqueConfidentialite = () => {
           <div className="legal-section">
             <h2>5. Durée de conservation</h2>
             <p>
-              Les données personnelles sont conservées pendant la durée nécessaire à la réalisation des finalités pour lesquelles 
+              Les données personnelles sont conservées pendant la durée nécessaire à la réalisation des finalités pour lesquelles
               elles ont été collectées, puis supprimées ou archivées conformément aux exigences légales en vigueur.
             </p>
             <p>
-              Les données des membres de l'Ordre sont conservées pendant toute la durée de leur inscription à l'Ordre et conformément 
+              Les données des membres de l'Ordre sont conservées pendant toute la durée de leur inscription à l'Ordre et conformément
               aux obligations légales de conservation des documents professionnels.
             </p>
           </div>
@@ -80,7 +81,7 @@ const PolitiqueConfidentialite = () => {
             <p>Les données collectées par l'ONPG ne sont jamais vendues ni louées.</p>
             <p>Elles peuvent être partagées uniquement avec :</p>
             <ul>
-              <li>Des prestataires techniques intervenant pour le compte de l'ONPG (hébergeur, maintenance, développement - notamment Hexahub).</li>
+              <li>Des prestataires techniques intervenant pour le compte de l'ONPG (hébergeur, maintenance, développement — notamment Hexahub).</li>
               <li>Les autorités administratives ou judiciaires, uniquement lorsque la loi l'exige.</li>
               <li>Les organismes professionnels partenaires, dans le cadre des missions de l'Ordre.</li>
             </ul>
@@ -90,11 +91,11 @@ const PolitiqueConfidentialite = () => {
           <div className="legal-section">
             <h2>7. Sécurité des données</h2>
             <p>
-              L'ONPG met en œuvre toutes les mesures techniques et organisationnelles nécessaires pour protéger vos données contre 
+              L'ONPG met en œuvre toutes les mesures techniques et organisationnelles nécessaires pour protéger vos données contre
               tout accès, divulgation, altération ou destruction non autorisés.
             </p>
             <p>
-              Le site bénéficie des mesures de sécurité techniques mises en place par <strong>Hexahub</strong> dans le cadre du développement 
+              Le site bénéficie des mesures de sécurité techniques mises en place par <strong>Hexahub</strong> dans le cadre du développement
               et de la maintenance du site.
             </p>
             <p>Cependant, l'ONPG ne peut garantir une sécurité absolue en cas de cyberattaque ou de faille sur Internet.</p>
@@ -115,10 +116,10 @@ const PolitiqueConfidentialite = () => {
 
           <div className="legal-section">
             <h2>9. Cookies et traceurs</h2>
-            
+
             <h3>9.1. Qu'est-ce qu'un cookie ?</h3>
             <p>
-              Un cookie est un petit fichier stocké sur votre appareil lorsque vous consultez un site web. Il permet de reconnaître 
+              Un cookie est un petit fichier stocké sur votre appareil lorsque vous consultez un site web. Il permet de reconnaître
               votre navigateur et d'améliorer votre expérience de navigation.
             </p>
 
@@ -146,7 +147,7 @@ const PolitiqueConfidentialite = () => {
           <div className="legal-section">
             <h2>10. Modifications de la politique</h2>
             <p>
-              L'ONPG se réserve le droit de modifier la présente politique à tout moment afin de l'adapter à l'évolution du Site 
+              L'ONPG se réserve le droit de modifier la présente politique à tout moment afin de l'adapter à l'évolution du Site
               ou de la législation.
             </p>
             <p>La date de la dernière mise à jour sera indiquée en bas de cette page.</p>
@@ -159,13 +160,13 @@ const PolitiqueConfidentialite = () => {
             <h2>11. Contact</h2>
             <p>Pour toute question relative à la présente politique de confidentialité, vous pouvez contacter :</p>
             <p><strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong></p>
-            <p>CC4J+WC6, après le ministère de la corruption, Montée Louis, Libreville, Gabon</p>
-            <p>Téléphone : 076 50 20 32</p>
+            <p>CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
+            <p>Téléphone : <a href="tel:+24176502032">076 50 20 32</a></p>
             <p>📧 <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
           </div>
 
           <div className="legal-update-date">
-            <p><em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}</em></p>
+            <p><em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
             <p><em>Site développé par <strong>Hexahub</strong></em></p>
           </div>
         </div>

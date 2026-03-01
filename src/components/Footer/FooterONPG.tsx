@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ONPG_CONFIG from '../../config/onpg-config';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
@@ -7,6 +8,7 @@ import './FooterONPG.css';
  * Footer ONPG - Contexte Ordre National de Pharmacie du Gabon
  */
 const FooterONPG = () => {
+  const [logoError, setLogoError] = useState(false);
   return (
     <footer className="onpg-footer">
       <div className="onpg-footer-container">
@@ -14,11 +16,22 @@ const FooterONPG = () => {
           {/* Section Logo et description */}
           <div className="onpg-footer-section">
             <div className="onpg-footer-logo">
-              <img 
-                src={ONPG_IMAGES.logo} 
-                alt="ONPG Logo" 
-                className="onpg-footer-logo-img"
-              />
+              {!logoError ? (
+                <img
+                  src={ONPG_IMAGES.logo}
+                  alt="ONPG Logo"
+                  className="onpg-footer-logo-img"
+                  onError={() => setLogoError(true)}
+                />
+              ) : (
+                <div style={{
+                  width: 48, height: 48, borderRadius: 10,
+                  background: '#00A651', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.85rem', fontWeight: 800, color: '#fff',
+                  letterSpacing: '0.05em', fontFamily: 'Georgia, serif'
+                }}>ONPG</div>
+              )}
             </div>
             <h3>Ordre National des Pharmaciens du Gabon</h3>
             <p>

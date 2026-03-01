@@ -567,7 +567,7 @@ const AccueilONPG = () => {
                       target.src = ONPG_IMAGES.hero4;
                     } else {
                       // Si ça ne marche toujours pas, utiliser le placeholder
-                      target.src = 'https://via.placeholder.com/450x350/27ae60/ffffff?text=Formation+Continue+ONPG';
+                      target.onerror = null; target.style.display = 'none'; const parent = target.parentElement; if (parent) { parent.style.background = 'linear-gradient(135deg,#27ae60,#1a7a42)'; parent.style.display = 'flex'; parent.style.alignItems = 'center'; parent.style.justifyContent = 'center'; }
                     }
                   }}
                   loading="lazy"
@@ -642,7 +642,7 @@ const AccueilONPG = () => {
                 <div className="contact-content-professional">
                   <h3 className="contact-item-title-professional">Sur place</h3>
                   <p className="contact-info-professional">CC4J+WC6, Montee Louis, Libreville</p>
-                  <small className="contact-note-professional">Après le ministère de la corruption</small>
+                  <small className="contact-note-professional">Après le Ministère de la Promotion de la Bonne Gouvernance</small>
                 </div>
                 <div className="contact-decoration-professional"></div>
               </a>

@@ -477,14 +477,9 @@
   font-weight: 500;
 }
 
-/* Vue cartes détaillées pharmacies */
-.pharmacies-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
+/* ── Styles pharmacies déplacés vers Pharmacies.css ── */
 
+/* PHARMACY BLOCK REMOVED — see Pharmacies.css
 .pharmacy-card-detail {
   background: white;
   border-radius: 20px;
@@ -773,101 +768,7 @@
   font-size: 0.8rem;
 }
 
-/* Vue liste compacte */
-.pharmacies-list-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.pharmacy-list-item-compact {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  transition: all 0.3s ease;
-  opacity: 0;
-  transform: translateX(-30px);
-  animation: slideInLeft 0.6s ease-out forwards;
-}
-
-.pharmacy-list-item-compact:hover {
-  transform: translateX(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-}
-
-.pharmacy-list-status-compact {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  min-width: 60px;
-}
-
-.status-indicators-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.garde-indicator-compact {
-  font-size: 1.5rem;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.ouvert-indicator-compact {
-  font-size: 1.2rem;
-}
-
-.ouvert-indicator-compact.ouvert {
-  color: #27ae60;
-}
-
-.ouvert-indicator-compact.ferme {
-  color: #e74c3c;
-}
-
-.pharmacy-list-content-compact {
-  flex: 1;
-}
-
-.pharmacy-list-header-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.pharmacy-list-header-compact h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #1a252f;
-  margin: 0;
-}
-
-.pharmacy-location-compact {
-  color: #6c757d;
-  font-size: 0.9rem;
-}
-
-.pharmacy-horaires-compact {
-  color: #00A651;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.distance-compact {
-  color: #6c757d;
-  font-weight: 500;
-}
-
-.pharmacy-list-actions-compact {
-  display: flex;
-  gap: 0.5rem;
-}
+/* (liste compacte pharmacies déplacée → Pharmacies.css) */
 
 /* Vue carte */
 .map-view {
@@ -1141,9 +1042,7 @@
     padding: 1.5rem;
   }
 
-  .pharmacies-grid {
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  }
+  /* .pharmacies-grid responsive → Pharmacies.css */
 
   .checkbox-filters {
     gap: 1rem;
@@ -1159,45 +1058,7 @@
     padding: 0 1rem;
   }
 
-  .pharmacy-card-detail {
-    margin: 0 -0.5rem;
-  }
-
-  .pharmacies-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .pharmacy-card-detail {
-    margin: 0;
-  }
-
-  .pharmacy-content-detail {
-    padding: 1rem;
-  }
-
-  .pharmacy-actions-detail {
-    padding: 0 1rem 1rem;
-    flex-direction: column;
-  }
-
-  .pharmacy-btn {
-    width: 100%;
-  }
-
-  .pharmacy-list-item-compact {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-
-  .pharmacy-list-status-compact {
-    flex-direction: row;
-    min-width: auto;
-  }
-
-  .pharmacy-list-header-compact {
-    text-align: center;
-  }
+  /* pharmacy-card, pharmacies-grid, pharmacy-list responsive → Pharmacies.css */
 
   .pagination {
     flex-direction: column;

@@ -453,17 +453,23 @@ const Pharmacies = () => {
                 >
                   <div className="pharmacy-photo">
                     <img src={pharmacy.photo || 'https://res.cloudinary.com/dduvinjnu/image/upload/w_400,h_300,c_fill,q_80,f_auto,b_rgb:00A651/e_grayscale/onpg/hero/hero-1'} alt={pharmacy.nom} />
+                    <div className="pharmacy-photo-gradient" />
                     <div className="photo-overlay">
                       {pharmacy.garde && (
-                        <span className="garde-badge-photo">🩺 GARDE</span>
+                        <span className="garde-badge-photo">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2L9 9H2l5.5 4-2 7L12 16l6.5 4-2-7L22 9h-7z" fill="currentColor"/></svg>
+                          GARDE
+                        </span>
                       )}
                       <span className={`ouvert-badge-photo ${pharmacy.ouvert !== false ? 'ouvert' : 'ferme'}`}>
-                        {pharmacy.ouvert !== false ? '🟢 Ouvert' : '🔴 Fermé'}
+                        <span className="status-dot" />
+                        {pharmacy.ouvert !== false ? 'Ouvert' : 'Fermé'}
                       </span>
                     </div>
                     {pharmacy.distance && (
                       <div className="distance-badge">
-                        📍 {pharmacy.distance.toFixed(1)} km
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="currentColor"/></svg>
+                        {pharmacy.distance.toFixed(1)} km
                       </div>
                     )}
                   </div>
@@ -497,16 +503,79 @@ const Pharmacies = () => {
                     </div>
                   </div>
 
-                  <div className="pharmacy-actions-detail">
-                    <button className="pharmacy-btn primary">
-                      📍 Itinéraire
-                    </button>
-                    <button className="pharmacy-btn secondary">
-                      📞 Appeler
-                    </button>
-                    <button className="pharmacy-btn tertiary">
-                      ℹ️ Détails
-                    </button>
+                  <div className="pharmacy-icon-actions">
+                    {/* Numéro cliquable en pill */}
+                    <a href={`tel:${pharmacy.telephone}`} className="pharmacy-phone-pill" aria-label="Appeler">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
+                      </svg>
+                      {pharmacy.telephone}
+                    </a>
+
+                    {/* Groupe d'icônes */}
+                    <div className="pharmacy-icon-group">
+                      {/* Itinéraire */}
+                      <a
+                        href={pharmacy.latitude && pharmacy.longitude
+                          ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.latitude},${pharmacy.longitude}`
+                          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.adresse + ' ' + pharmacy.ville)}`
+                        }
+                        target="_blank" rel="noopener noreferrer"
+                        className="pharmacy-action-btn nav"
+                        data-tooltip="Itinéraire"
+                        aria-label="Voir l'itinéraire"
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+                        </svg>
+                      </a>
+
+                      {/* Appeler */}
+                      <a
+                        href={`tel:${pharmacy.telephone}`}
+                        className="pharmacy-action-btn phone"
+                        data-tooltip="Appeler"
+                        aria-label="Appeler la pharmacie"
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
+                        </svg>
+                      </a>
+
+                      {/* Email si disponible */}
+                      {pharmacy.email && (
+                        <a
+                          href={`mailto:${pharmacy.email}`}
+                          className="pharmacy-action-btn email"
+                          data-tooltip="Email"
+                          aria-label="Envoyer un email"
+                        >
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/>
+                          </svg>
+                        </a>
+                      )}
+
+                      {/* Partager */}
+                      <button
+                        className="pharmacy-action-btn share"
+                        data-tooltip="Partager"
+                        aria-label="Partager"
+                        onClick={() => {
+                          if (navigator.share) {
+                            navigator.share({
+                              title: pharmacy.nom,
+                              text: `${pharmacy.nom} — ${pharmacy.adresse}, ${pharmacy.ville}`,
+                              url: window.location.href
+                            });
+                          }
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -546,13 +615,43 @@ const Pharmacies = () => {
                     </div>
                   </div>
 
-                  <div className="pharmacy-list-actions-compact">
-                    <button className="pharmacy-btn primary small">
-                      📍 Itinéraire
-                    </button>
-                    <button className="pharmacy-btn secondary small">
-                      📞 Appeler
-                    </button>
+                  <div className="pharmacy-icon-actions compact">
+                    <a
+                      href={pharmacy.latitude && pharmacy.longitude
+                        ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.latitude},${pharmacy.longitude}`
+                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.adresse + ' ' + pharmacy.ville)}`
+                      }
+                      target="_blank" rel="noopener noreferrer"
+                      className="pharmacy-action-btn nav"
+                      data-tooltip="Itinéraire"
+                      aria-label="Itinéraire"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                    <a
+                      href={`tel:${pharmacy.telephone}`}
+                      className="pharmacy-action-btn phone"
+                      data-tooltip="Appeler"
+                      aria-label="Appeler"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
+                      </svg>
+                    </a>
+                    {pharmacy.email && (
+                      <a
+                        href={`mailto:${pharmacy.email}`}
+                        className="pharmacy-action-btn email"
+                        data-tooltip="Email"
+                        aria-label="Email"
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/>
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

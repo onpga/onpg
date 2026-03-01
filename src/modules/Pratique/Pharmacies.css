@@ -363,8 +363,8 @@
   box-shadow: 0 4px 14px rgba(25,118,210,0.38);
 }
 .pharmacy-action-btn.email:hover {
-  background: #7B1FA2; color: white; border-color: #7B1FA2;
-  box-shadow: 0 4px 14px rgba(123,31,162,0.35);
+  background: #0284C7; color: white; border-color: #0284C7;
+  box-shadow: 0 4px 14px rgba(2,132,199,0.35);
 }
 .pharmacy-action-btn.share:hover {
   background: #F57C00; color: white; border-color: #F57C00;

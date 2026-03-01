@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 30%, #7d3c98 60%, #9b59b6 100%) !important;
+  background: linear-gradient(135deg, #00CC60 0%, #009A48 30%, #007535 60%, #00CC60 100%) !important;
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   color: white;
@@ -230,7 +230,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(155, 89, 182, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(0, 166, 81, 0.2), transparent);
 }
 
 .section-content .section-container {
@@ -254,7 +254,7 @@
     0 20px 60px rgba(0, 0, 0, 0.12),
     0 8px 25px rgba(0, 0, 0, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(155, 89, 182, 0.15);
+  border: 1px solid rgba(0, 166, 81, 0.15);
   position: relative;
   overflow: hidden;
 }
@@ -266,7 +266,7 @@
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #9b59b6, #8e44ad, #7d3c98, #9b59b6);
+  background: linear-gradient(90deg, #00A651, #007535, #005A28, #00A651);
   background-size: 200% 100%;
   animation: gradientShift 3s ease infinite;
 }
@@ -274,7 +274,7 @@
 .deontologie-header {
   padding: 2.5rem 3rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-bottom: 2px solid rgba(155, 89, 182, 0.1);
+  border-bottom: 2px solid rgba(0, 166, 81, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -292,7 +292,7 @@
   margin-bottom: 1rem;
   color: #1a252f;
   font-weight: 800;
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: linear-gradient(135deg, #00A651, #005A28);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -310,7 +310,7 @@
   font-size: 0.95rem;
   color: #6c757d;
   padding: 0.5rem 1rem;
-  background: rgba(155, 89, 182, 0.08);
+  background: rgba(0, 166, 81, 0.08);
   border-radius: 8px;
   font-weight: 600;
   display: inline-flex;
@@ -340,28 +340,28 @@
 }
 
 .deontologie-download-btn-header {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: linear-gradient(135deg, #00A651, #007535);
   color: white;
-  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.3);
 }
 
 .deontologie-download-btn-header:hover {
   transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.4);
+  background: linear-gradient(135deg, #007535, #00A651);
 }
 
 .deontologie-view-btn-header {
   background: white;
-  color: #9b59b6;
-  border: 2px solid #9b59b6;
+  color: #00A651;
+  border: 2px solid #00A651;
 }
 
 .deontologie-view-btn-header:hover {
-  background: #9b59b6;
+  background: #00A651;
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.3);
 }
 
 .btn-icon {
@@ -374,8 +374,8 @@
 
 .deontologie-description-box {
   padding: 1.5rem 3rem;
-  background: rgba(155, 89, 182, 0.05);
-  border-bottom: 1px solid rgba(155, 89, 182, 0.1);
+  background: rgba(0, 166, 81, 0.05);
+  border-bottom: 1px solid rgba(0, 166, 81, 0.1);
 }
 
 .deontologie-description {
@@ -389,8 +389,8 @@
   position: relative;
   margin: 0;
   background: #f5f5f5;
-  border-top: 1px solid rgba(155, 89, 182, 0.1);
-  border-bottom: 1px solid rgba(155, 89, 182, 0.1);
+  border-top: 1px solid rgba(0, 166, 81, 0.1);
+  border-bottom: 1px solid rgba(0, 166, 81, 0.1);
 }
 
 .deontologie-pdf-wrapper {
@@ -425,7 +425,7 @@
   backdrop-filter: blur(10px);
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(155, 89, 182, 0.2);
+  border: 1px solid rgba(0, 166, 81, 0.2);
 }
 
 .pdf-icon {
@@ -435,13 +435,13 @@
 .pdf-text {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #9b59b6;
+  color: #00A651;
 }
 
 .deontologie-actions-footer {
   padding: 2rem 3rem;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-top: 2px solid rgba(155, 89, 182, 0.1);
+  border-top: 2px solid rgba(0, 166, 81, 0.1);
   display: flex;
   justify-content: center;
   gap: 1.5rem;
@@ -464,10 +464,10 @@
 }
 
 .deontologie-download-btn-footer {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: linear-gradient(135deg, #00A651, #007535);
   color: white;
   box-shadow: 
-    0 6px 20px rgba(155, 89, 182, 0.3),
+    0 6px 20px rgba(0, 166, 81, 0.3),
     0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -489,23 +489,23 @@
 .deontologie-download-btn-footer:hover {
   transform: translateY(-4px) scale(1.05);
   box-shadow: 
-    0 10px 30px rgba(155, 89, 182, 0.4),
+    0 10px 30px rgba(0, 166, 81, 0.4),
     0 5px 15px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  background: linear-gradient(135deg, #007535, #00A651);
 }
 
 .deontologie-view-btn-footer {
   background: white;
-  color: #9b59b6;
-  border: 2px solid #9b59b6;
-  box-shadow: 0 4px 15px rgba(155, 89, 182, 0.2);
+  color: #00A651;
+  border: 2px solid #00A651;
+  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.2);
 }
 
 .deontologie-view-btn-footer:hover {
-  background: #9b59b6;
+  background: #00A651;
   color: white;
   transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(155, 89, 182, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.3);
 }
 
 .deontologie-loading {

@@ -97,7 +97,9 @@ const AccueilONPG = () => {
                 image: imageUrl,
                 category: item.category || 'ACTUALITÉS',
                 publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
-                author: item.author || 'ONPG',
+                author: typeof item.author === 'object' && item.author !== null
+                  ? (item.author.name || 'ONPG')
+                  : (item.author || 'ONPG'),
                 readTime: item.readTime || 3,
                 featured: item.featured || false
               };

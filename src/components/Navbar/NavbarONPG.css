@@ -158,7 +158,13 @@
   display: flex; align-items: center; gap: 0.35rem;
   letter-spacing: 0.07em; text-transform: uppercase;
 }
-.flag-emoji { font-size: 0.88rem; }
+.gabon-flag-svg {
+  display: inline-block;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.20);
+  flex-shrink: 0;
+  vertical-align: middle;
+}
 
 /* ── Section droite du header ──────────────────────────────────── */
 .header-right-section {

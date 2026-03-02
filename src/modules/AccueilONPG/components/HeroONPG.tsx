@@ -25,7 +25,7 @@ const HeroONPG = () => {
     const defaultSlides: HeroSlide[] = [
       {
         image: ONPG_IMAGES.heroMichal,
-        title: 'Ordre National de Pharmacie du Gabon',
+        title: 'Ordre National des Pharmaciens du Gabon',
         subtitle: 'Excellence, professionnalisme et innovation au service de la santé',
         buttonText: 'Découvrir nos missions',
         buttonLink: '/ordre/missions'
@@ -114,7 +114,7 @@ const HeroONPG = () => {
         <div className="hero-onpg-background">
           <div className="hero-onpg-loading">
             <div className="loading-spinner"></div>
-            <p>Chargement de l'Ordre National de Pharmacie du Gabon...</p>
+            <p>Chargement de l'Ordre National des Pharmaciens du Gabon...</p>
           </div>
         </div>
       </section>
@@ -188,7 +188,7 @@ const HeroONPG = () => {
         <div className="hero-onpg-container">
           {/* Badge ONPG */}
           <div className="hero-onpg-badge">
-            <span className="badge-text">Ordre National de Pharmacie du Gabon</span>
+            <span className="badge-text">Ordre National des Pharmaciens du Gabon</span>
             <div className="badge-accent"></div>
           </div>
 

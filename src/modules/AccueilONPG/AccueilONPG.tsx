@@ -380,7 +380,7 @@ const AccueilONPG = () => {
                       </div>
                     </div>
 
-                    {/* Informations Institutionnelles */}
+                    {/* Informations Institutionnelles — masquées sur mobile (voir .president-info-below-mobile) */}
                     <div className="president-info-professional">
                       <h3 className="president-name-professional">Dr Patience Asseko NTOGONO OKE</h3>
                       <p className="president-position-professional">
@@ -388,6 +388,14 @@ const AccueilONPG = () => {
                         des Pharmaciens du Gabon
                       </p>
                     </div>
+                  </div>
+
+                  {/* Bloc nom/fonction affiché SOUS la photo uniquement sur mobile */}
+                  <div className="president-info-below-mobile">
+                    <h3 className="president-name-professional">Dr Patience Asseko NTOGONO OKE</h3>
+                    <p className="president-position-professional">
+                      Présidente de l'Ordre National des Pharmaciens du Gabon
+                    </p>
                   </div>
                 </div>
 
@@ -678,6 +686,8 @@ const PresidentContentBlock = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  // Ref pour préserver la position de scroll entre les re-renders
+  const scrollPosRef = useRef(0);
 
   const discours = `Excellence, chers confrères et consœurs,
 Mesdames et Messieurs,
@@ -719,7 +729,8 @@ Et vive le Gabon !`;
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          // Reset scroll position au début quand visible
+          // Reset scroll position au début quand le bloc devient visible
+          scrollPosRef.current = 0;
           if (contentRef.current) {
             contentRef.current.scrollTop = 0;
           }
@@ -738,19 +749,21 @@ Et vive le Gabon !`;
   }, []);
 
   // Auto-scroll quand visible
+  // scrollPosRef conserve la position entre les re-renders (mouse hover ne repart plus à 0)
   useEffect(() => {
     if (!isVisible || !isAutoScrolling || !contentRef.current) return;
 
     const content = contentRef.current;
     let animationId: number;
-    let scrollPos = 0;
 
     const scroll = () => {
-      scrollPos += 0.5;
-      if (scrollPos >= content.scrollHeight - content.clientHeight) {
-        scrollPos = 0; // Recommencer
+      scrollPosRef.current += 0.5;
+      const maxScroll = content.scrollHeight - content.clientHeight;
+      if (maxScroll <= 0) return; // Pas assez de contenu à scroller
+      if (scrollPosRef.current >= maxScroll) {
+        scrollPosRef.current = 0; // Recommencer depuis le début
       }
-      content.scrollTop = scrollPos;
+      content.scrollTop = scrollPosRef.current;
       animationId = requestAnimationFrame(scroll);
     };
 

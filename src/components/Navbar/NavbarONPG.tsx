@@ -239,7 +239,11 @@ const NavbarONPG = () => {
                 <span className="logo-main">des Pharmaciens</span>
               </span>
               <span className="logo-subtitle">
-                <span className="flag-emoji">🇬🇦</span>
+                <svg className="gabon-flag-svg" width="22" height="15" viewBox="0 0 22 15" aria-hidden="true" role="img">
+                  <rect x="0" y="0"    width="22" height="5"  fill="#009E49" />
+                  <rect x="0" y="5"    width="22" height="5"  fill="#FCD116" />
+                  <rect x="0" y="10"   width="22" height="5"  fill="#003189" />
+                </svg>
                 République Gabonaise
               </span>
             </div>

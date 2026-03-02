@@ -1,5 +1,5 @@
 /**
- * Configuration ONPG - Ordre National de Pharmacie du Gabon
+ * Configuration ONPG - Ordre National des Pharmaciens du Gabon
  */
 
 export const ONPG_CONFIG = {
@@ -13,9 +13,9 @@ export const ONPG_CONFIG = {
 
   // Informations générales
   app: {
-    title: 'Ordre National de Pharmacie du Gabon',
+    title: 'Ordre National des Pharmaciens du Gabon',
     shortTitle: 'ONPG',
-    description: 'Ordre National de Pharmacie du Gabon - Excellence, professionnalisme et innovation au service de la santé',
+    description: 'Ordre National des Pharmaciens du Gabon - Excellence, professionnalisme et innovation au service de la santé',
     slogan: 'Excellence, professionnalisme et innovation au service de la santé'
   },
 

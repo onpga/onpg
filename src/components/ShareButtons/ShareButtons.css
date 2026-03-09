@@ -1,0 +1,81 @@
+/* ── Bloc de partage — Ressources ONPG ── */
+
+.onpg-share-section {
+  margin-top: 2rem;
+  padding: 1.75rem 2rem;
+  background: #f8f9fa;
+  border-radius: 16px;
+  border: 1.5px solid #E2E8F0;
+}
+
+.onpg-share-title {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #008F45;
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.onpg-share-title::before {
+  content: '🔗';
+  font-size: 1.1rem;
+}
+
+/* Boutons — identiques à ArticleDetail.css */
+.share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: #fff;
+}
+
+.share-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.share-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.share-btn.facebook  { background: #1877f2; }
+.share-btn.twitter   { background: #1da1f2; }
+.share-btn.linkedin  { background: #0077b5; }
+.share-btn.whatsapp  { background: #25d366; }
+.share-btn.copy      { background: #666; }
+.share-btn.copy:hover { background: #444; }
+
+/* Responsive */
+@media (max-width: 480px) {
+  .onpg-share-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .share-btn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .share-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+

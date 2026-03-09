@@ -200,7 +200,7 @@ const ContactPratique = () => {
               title="Localisation ONPG - CC4J+WC6, Montee Louis, Libreville"
             />
             <div className="map-link-container">
-              <a
+              <a 
                 href="https://www.google.com/maps/search/?api=1&query=CC4J%2BWC6+Montee+Louis+Libreville+Gabon"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -246,12 +246,12 @@ const ContactPratique = () => {
                   Nom complet <span className="field-required" aria-hidden="true">*</span>
                 </label>
                 <div className="field-wrap">
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
                     onBlur={handleBlur}
                     autoComplete="name"
                     placeholder="Marie Dupont"
@@ -272,12 +272,12 @@ const ContactPratique = () => {
                   Email <span className="field-required" aria-hidden="true">*</span>
                 </label>
                 <div className="field-wrap">
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                     onBlur={handleBlur}
                     autoComplete="email"
                     placeholder="marie@exemple.com"
@@ -298,12 +298,12 @@ const ContactPratique = () => {
               <div className={`form-group ${fieldClass('phone')}`}>
                 <label htmlFor="phone">Téléphone <span className="field-optional">(facultatif)</span></label>
                 <div className="field-wrap">
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
                     onBlur={handleBlur}
                     autoComplete="tel"
                     placeholder="+241 06 12 34 56"
@@ -324,22 +324,22 @@ const ContactPratique = () => {
                   Sujet <span className="field-required" aria-hidden="true">*</span>
                 </label>
                 <div className="field-wrap">
-                  <select
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
+                <select
+                  id="subject"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
                     onBlur={handleBlur}
                     aria-describedby={errors.subject && touched.subject ? 'err-subject' : undefined}
                     aria-invalid={!!(errors.subject && touched.subject)}
-                  >
-                    <option value="">Sélectionnez un sujet</option>
-                    <option value="formation">Formation continue</option>
-                    <option value="inscription">Inscription à l'Ordre</option>
-                    <option value="deontologie">Déontologie</option>
-                    <option value="pharmacie">Gestion de pharmacie</option>
-                    <option value="autre">Autre</option>
-                  </select>
+                >
+                  <option value="">Sélectionnez un sujet</option>
+                  <option value="formation">Formation continue</option>
+                  <option value="inscription">Inscription à l'Ordre</option>
+                  <option value="deontologie">Déontologie</option>
+                  <option value="pharmacie">Gestion de pharmacie</option>
+                  <option value="autre">Autre</option>
+                </select>
                   <span className="field-icon field-icon--valid"  aria-hidden="true">✓</span>
                   <span className="field-icon field-icon--error"  aria-hidden="true">✕</span>
                 </div>
@@ -355,13 +355,13 @@ const ContactPratique = () => {
                 Message <span className="field-required" aria-hidden="true">*</span>
               </label>
               <div className="field-wrap">
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
+              <textarea
+                id="message"
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                   onBlur={handleBlur}
-                  rows={6}
+                rows={6}
                   maxLength={MSG_MAX}
                   placeholder="Décrivez votre demande en détail…"
                   aria-describedby={`msg-counter${errors.message && touched.message ? ' err-message' : ''}`}

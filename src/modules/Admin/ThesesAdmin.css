@@ -1,0 +1,561 @@
+/* ============================================
+   THÈSES ADMIN — Design UX Premium
+   ============================================ */
+
+/* ── En-tête page ─────────────────────────────── */
+.theses-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.theses-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.theses-header-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #00A651 0%, #33C27D 100%);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  box-shadow: 0 6px 18px rgba(0, 166, 81, 0.30);
+  flex-shrink: 0;
+}
+
+.theses-header-text h1 {
+  font-family: var(--font-poppins);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.2rem 0;
+  background: none;
+  -webkit-text-fill-color: initial;
+}
+
+.theses-header-text p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Barre de stats ───────────────────────────── */
+.theses-stats-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.theses-stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem 0.45rem 0.65rem;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+}
+
+.theses-stat-chip-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+}
+
+.theses-stat-chip-icon.green  { background: rgba(0, 166, 81, 0.12); }
+.theses-stat-chip-icon.blue   { background: rgba(37, 99, 235, 0.12); }
+.theses-stat-chip-icon.amber  { background: rgba(245, 158, 11, 0.12); }
+
+.theses-stat-chip-value {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #111827;
+  line-height: 1;
+}
+
+.theses-stat-chip-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+  line-height: 1;
+}
+
+/* ── Barre de recherche + actions ────────────── */
+.theses-toolbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.theses-search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.theses-search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+.theses-search-input {
+  width: 100%;
+  padding: 0.7rem 1rem 0.7rem 2.5rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: var(--font-poppins);
+  font-size: 0.9rem;
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: #111827;
+}
+
+.theses-search-input:focus {
+  outline: none;
+  border-color: #00A651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.12);
+}
+
+.theses-search-input::placeholder {
+  color: #9ca3af;
+}
+
+.theses-filter-select {
+  padding: 0.7rem 1rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: var(--font-poppins);
+  font-size: 0.88rem;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 120px;
+}
+
+.theses-filter-select:focus {
+  outline: none;
+  border-color: #00A651;
+}
+
+.theses-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 1.2rem;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: var(--font-poppins);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.theses-refresh-btn:hover:not(:disabled) {
+  border-color: #00A651;
+  color: #00A651;
+  background: rgba(0, 166, 81, 0.04);
+}
+
+.theses-refresh-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.theses-refresh-btn .spin {
+  display: inline-block;
+  animation: theses-spin 1s linear infinite;
+}
+
+@keyframes theses-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Résultats compteur ───────────────────────── */
+.theses-results-count {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+  padding-left: 0.2rem;
+}
+
+.theses-results-count strong {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* ── Grille de cards ──────────────────────────── */
+.theses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ── Card thèse ───────────────────────────────── */
+.these-card {
+  background: white;
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.22s, transform 0.22s, border-color 0.22s;
+  overflow: hidden;
+  position: relative;
+}
+
+.these-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 166, 81, 0.12);
+  border-color: rgba(0, 166, 81, 0.35);
+  transform: translateY(-2px);
+}
+
+.these-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00A651, #33C27D);
+  border-radius: 16px 16px 0 0;
+}
+
+.these-card-body {
+  padding: 1.3rem 1.4rem 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ── En-tête card ─────────────────────────────── */
+.these-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+
+.these-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00A651 0%, #33C27D 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(0, 166, 81, 0.25);
+}
+
+.these-card-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.these-card-title {
+  font-family: var(--font-poppins);
+  font-size: 0.97rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.25rem 0;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.these-card-pharmacien {
+  font-size: 0.82rem;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Badges ───────────────────────────────────── */
+.these-badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.these-badge-year {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(0, 166, 81, 0.1);
+  color: #007535;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.these-badge-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.these-badge-no-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* ── Résumé ───────────────────────────────────── */
+.these-resume {
+  font-size: 0.845rem;
+  color: #4b5563;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid rgba(0, 166, 81, 0.25);
+  margin: 0;
+}
+
+.these-no-resume {
+  font-size: 0.82rem;
+  color: #d1d5db;
+  font-style: italic;
+  padding: 0.4rem 0;
+  margin: 0;
+}
+
+/* ── Date dépôt ───────────────────────────────── */
+.these-date {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.77rem;
+  color: #9ca3af;
+}
+
+/* ── Footer actions ───────────────────────────── */
+.these-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+  flex-wrap: wrap;
+}
+
+.these-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.48rem 0.9rem;
+  border-radius: 8px;
+  font-family: var(--font-poppins);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+  border: none;
+  white-space: nowrap;
+}
+
+.these-btn-view {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+}
+.these-btn-view:hover {
+  background: rgba(37, 99, 235, 0.18);
+  transform: translateY(-1px);
+}
+
+.these-btn-download {
+  background: rgba(0, 166, 81, 0.1);
+  color: #007535;
+}
+.these-btn-download:hover {
+  background: rgba(0, 166, 81, 0.18);
+  transform: translateY(-1px);
+}
+
+.these-btn-delete {
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  margin-left: auto;
+}
+.these-btn-delete:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.18);
+  transform: translateY(-1px);
+}
+.these-btn-delete:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── Skeleton loading ─────────────────────────── */
+.theses-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+.these-skeleton-card {
+  background: white;
+  border-radius: 16px;
+  border: 1.5px solid #e5e7eb;
+  overflow: hidden;
+  padding: 1.3rem 1.4rem;
+}
+
+.sk-line {
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: sk-shimmer 1.5s infinite;
+}
+
+@keyframes sk-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.sk-avatar  { width: 42px; height: 42px; border-radius: 12px; margin-bottom: 0.9rem; }
+.sk-title   { height: 16px; width: 85%; margin-bottom: 0.55rem; }
+.sk-sub     { height: 12px; width: 55%; margin-bottom: 1rem; }
+.sk-badge   { height: 22px; width: 60px; border-radius: 999px; margin-bottom: 1rem; }
+.sk-resume  { height: 58px; border-radius: 8px; margin-bottom: 0.85rem; }
+.sk-footer  { height: 32px; width: 100%; border-radius: 8px; margin-top: 0.25rem; }
+
+/* ── État vide ────────────────────────────────── */
+.theses-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 16px;
+  border: 1.5px dashed #e5e7eb;
+}
+
+.theses-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.5;
+}
+
+.theses-empty-state h3 {
+  font-family: var(--font-poppins);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.4rem 0;
+}
+
+.theses-empty-state p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Toast notification ───────────────────────── */
+.theses-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: theses-slide-in 0.3s ease;
+}
+
+@keyframes theses-slide-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.theses-toast.success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.theses-toast.error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* ── Responsive ───────────────────────────────── */
+@media (max-width: 768px) {
+  .theses-grid,
+  .theses-skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .theses-page-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .theses-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .theses-filter-select,
+  .theses-refresh-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .these-btn-delete {
+    margin-left: 0;
+  }
+}
+

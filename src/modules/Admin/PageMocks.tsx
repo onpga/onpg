@@ -10,8 +10,8 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dduvinjnu';
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'onpg_uploads';
 
 /* ═══════════════════════════════════════════════════════
    UTILS
@@ -187,9 +187,8 @@ const CommuniqueForm = ({ initial, editing, onSave, onCancel }: { initial: typeo
 /* ═══════════════════════════════════════════════════════
    3. ARTICLES SCIENTIFIQUES
 ═══════════════════════════════════════════════════════ */
-const EMPTY_ART = { title: '', authors: '', abstract: '', journal: '', volume: '', issue: '', pages: '', year: new Date().getFullYear(), doi: '', keywords: '', category: 'Général', language: 'fr', publicationType: 'article', featured: false, isActive: true, order: 1 };
+const EMPTY_ART = { title: '', authors: '', abstract: '', content: '', journal: '', year: new Date().getFullYear(), keywords: '', category: 'Général', language: 'fr', linkUrl: '', featured: false, isActive: true, order: 1 };
 const ART_CATS = ['Général', 'Recherche', 'Clinique', 'Économie', 'Santé Publique', 'Pharmacologie'];
-const PUB_TYPES = [{ v: 'article', l: 'Article' }, { v: 'review', l: 'Revue' }, { v: 'case-report', l: 'Cas clinique' }, { v: 'letter', l: 'Lettre' }];
 
 const ArticleScientifiqueForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_ART; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -202,26 +201,55 @@ const ArticleScientifiqueForm = ({ initial, editing, onSave, onCancel }: { initi
   };
   return (
     <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      {/* Titre */}
       <div className="form-group">{lbl('Titre', true)}<input style={fs} type="text" value={v.title} onChange={e => s('title', e.target.value)} required placeholder="Titre de l'article scientifique" /></div>
+
+      {/* Auteurs */}
       <div className="form-group">{lbl('Auteurs (séparés par virgules)')}<input style={fs} type="text" value={v.authors} onChange={e => s('authors', e.target.value)} placeholder="Dr. Alice Martin, Dr. Paul Nze…" /></div>
-      <div className="form-group">{lbl('Résumé (Abstract)')}<textarea style={{ ...fs, resize: 'vertical' }} value={v.abstract} onChange={e => s('abstract', e.target.value)} rows={5} placeholder="Résumé scientifique de l'article…" /></div>
-      <div style={row3}>
-        <div className="form-group">{lbl('Journal / Revue')}<input style={fs} type="text" value={v.journal} onChange={e => s('journal', e.target.value)} placeholder="Journal de Pharmacie du Gabon" /></div>
-        <div className="form-group">{lbl('Volume')}<input style={fs} type="text" value={v.volume} onChange={e => s('volume', e.target.value)} placeholder="12" /></div>
-        <div className="form-group">{lbl('Numéro')}<input style={fs} type="text" value={v.issue} onChange={e => s('issue', e.target.value)} placeholder="3" /></div>
+
+      {/* Résumé court */}
+      <div className="form-group">{lbl('Résumé / Abstract')}<textarea style={{ ...fs, resize: 'vertical' }} value={v.abstract} onChange={e => s('abstract', e.target.value)} rows={4} placeholder="Résumé court visible dans la liste des articles…" /></div>
+
+      {/* Contenu complet — éditeur Word */}
+      <div className="form-group">{lbl('Contenu complet de l\'article')}
+        <TextEditor value={v.content} onChange={val => s('content', val)} placeholder="Rédigez ou collez le contenu complet de l'article…" height="380px" />
       </div>
-      <div style={row3}>
-        <div className="form-group">{lbl('Pages')}<input style={fs} type="text" value={v.pages} onChange={e => s('pages', e.target.value)} placeholder="45-62" /></div>
+
+      {/* Journal + Année */}
+      <div style={row2}>
+        <div className="form-group">{lbl('Journal / Revue')}<input style={fs} type="text" value={v.journal} onChange={e => s('journal', e.target.value)} placeholder="Journal de Pharmacie du Gabon, WHO Bulletin…" /></div>
         <div className="form-group">{lbl('Année')}<input style={fs} type="number" value={v.year} onChange={e => s('year', +e.target.value)} min={1990} max={2099} /></div>
-        <div className="form-group">{lbl('DOI')}<input style={fs} type="text" value={v.doi} onChange={e => s('doi', e.target.value)} placeholder="10.1234/jpg.2024.001" /></div>
       </div>
-      <div style={row3}>
+
+      {/* Catégorie + Langue */}
+      <div style={row2}>
         <div className="form-group">{lbl('Catégorie')}<select style={fs} value={v.category} onChange={e => s('category', e.target.value)}>{ART_CATS.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
-        <div className="form-group">{lbl('Type de publication')}<select style={fs} value={v.publicationType} onChange={e => s('publicationType', e.target.value)}>{PUB_TYPES.map(t => <option key={t.v} value={t.v}>{t.l}</option>)}</select></div>
         <div className="form-group">{lbl('Langue')}<select style={fs} value={v.language} onChange={e => s('language', e.target.value)}><option value="fr">Français</option><option value="en">Anglais</option></select></div>
       </div>
+
+      {/* Mots-clés */}
       <div className="form-group">{lbl('Mots-clés (virgules)')}<input style={fs} type="text" value={v.keywords} onChange={e => s('keywords', e.target.value)} placeholder="pharmacie, santé, recherche…" /></div>
-      <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
+
+      {/* Lien externe ou PDF */}
+      <div className="form-group">
+        {lbl('🔗 Lien vers l\'article complet (URL ou PDF)')}
+        <input style={fs} type="url" value={v.linkUrl} onChange={e => s('linkUrl', e.target.value)} placeholder="https://…/article.pdf  ou  https://pubmed.ncbi.nlm.nih.gov/…" />
+        {v.linkUrl && (
+          <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <a href={v.linkUrl} target="_blank" rel="noopener noreferrer"
+              style={{ fontSize: '0.82rem', color: '#00A651', fontWeight: 600, textDecoration: 'none' }}>
+              ✅ Vérifier le lien ↗
+            </a>
+            <button type="button" onClick={() => s('linkUrl', '')}
+              style={{ padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}>
+              Supprimer
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Ordre + Vedette + Actif */}
+      <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
         <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
         <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
@@ -357,7 +385,7 @@ const DecretForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EM
 /* ═══════════════════════════════════════════════════════
    7. LOIS
 ═══════════════════════════════════════════════════════ */
-const EMPTY_LOI = { number: '', title: '', publicationDate: '', entryDate: '', category: 'Législation', summary: '', keyArticles: '', tags: '', status: 'active', language: 'fr', featured: false, isActive: true, order: 1 };
+const EMPTY_LOI = { number: '', title: '', publicationDate: '', entryDate: '', category: 'Législation', summary: '', keyArticles: '', tags: '', status: 'active', language: 'fr', pdfUrl: '', featured: false, isActive: true, order: 1 };
 const LOI_CATS = ['Législation', 'Santé', 'Profession', 'Éthique', 'Formation', 'Commerce'];
 const LOI_STATUS = [{ v: 'active', l: '✅ En vigueur' }, { v: 'modified', l: '📝 Modifiée' }, { v: 'repealed', l: '❌ Abrogée' }];
 
@@ -387,6 +415,22 @@ const LoiForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY
       <div style={row2}>
         <div className="form-group">{lbl('Tags (virgules)')}<input style={fs} type="text" value={v.tags} onChange={e => s('tags', e.target.value)} placeholder="loi, santé, pharmacie…" /></div>
         <div className="form-group">{lbl('Langue')}<select style={fs} value={v.language} onChange={e => s('language', e.target.value)}><option value="fr">Français</option><option value="en">Anglais</option></select></div>
+      </div>
+      <div className="form-group">
+        {lbl('📄 Lien PDF officiel (Journal Officiel…)')}
+        <input style={fs} type="url" value={v.pdfUrl} onChange={e => s('pdfUrl', e.target.value)} placeholder="https://jog.gouv.ga/loi-2024-001.pdf" />
+        {v.pdfUrl && (
+          <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <a href={v.pdfUrl} target="_blank" rel="noopener noreferrer"
+              style={{ fontSize: '0.82rem', color: '#00A651', fontWeight: 600, textDecoration: 'none' }}>
+              ✅ Lien valide — Vérifier ↗
+            </a>
+            <button type="button" onClick={() => s('pdfUrl', '')}
+              style={{ padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}>
+              Supprimer
+            </button>
+          </div>
+        )}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
@@ -589,6 +633,19 @@ const VideoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
 ═══════════════════════════════════════════════════════ */
 type CollectionId = 'actualites' | 'communiques' | 'articles' | 'commissions' | 'decisions' | 'decrets' | 'lois' | 'photos' | 'theses' | 'videos';
 
+/* URL visiteur par collection (pour bouton "Voir") */
+const VISITOR_URL: Partial<Record<CollectionId, string>> = {
+  actualites:  '/ressources/actualites',
+  communiques: '/ressources/communiques',
+  articles:    '/ressources/articles',
+  lois:        '/ressources/lois',
+  decrets:     '/ressources/decrets',
+  decisions:   '/ressources/decisions',
+  commissions: '/ressources/commissions',
+  theses:      '/ressources/theses',
+  photos:      '/ressources/photos',
+};
+
 const COLLECTION_CONFIG: Record<CollectionId, {
   name: string;
   icon: string;
@@ -611,7 +668,7 @@ const COLLECTION_CONFIG: Record<CollectionId, {
   articles: {
     name: 'Articles scientifiques', icon: '🔬',
     emptyData: () => ({ ...EMPTY_ART }),
-    toInitial: (item: any) => ({ ...EMPTY_ART, ...item, authors: Array.isArray(item.authors) ? item.authors.join(', ') : (item.authors || ''), keywords: Array.isArray(item.keywords) ? item.keywords.join(', ') : (item.keywords || '') }),
+    toInitial: (item: any) => ({ ...EMPTY_ART, ...item, authors: Array.isArray(item.authors) ? item.authors.join(', ') : (item.authors || ''), keywords: Array.isArray(item.keywords) ? item.keywords.join(', ') : (item.keywords || ''), content: item.content || '', linkUrl: item.linkUrl || '' }),
     FormComponent: ArticleScientifiqueForm,
   },
   commissions: {
@@ -635,7 +692,7 @@ const COLLECTION_CONFIG: Record<CollectionId, {
   lois: {
     name: 'Lois', icon: '📗',
     emptyData: () => ({ ...EMPTY_LOI }),
-    toInitial: (item: any) => ({ ...EMPTY_LOI, ...item, keyArticles: Array.isArray(item.keyArticles) ? item.keyArticles.join('\n') : (item.keyArticles || ''), tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || '') }),
+    toInitial: (item: any) => ({ ...EMPTY_LOI, ...item, keyArticles: Array.isArray(item.keyArticles) ? item.keyArticles.join('\n') : (item.keyArticles || ''), tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''), pdfUrl: item.pdfUrl || '' }),
     FormComponent: LoiForm,
   },
   photos: {
@@ -814,6 +871,67 @@ const PageMocks = () => {
                 })}
               </div>
             )
+          ) : selectedCollection === 'photos' ? (
+            /* Grille photos */
+            data.length === 0 ? (
+              <div className="empty-state"><p>Aucune photo. Cliquez sur &quot;Nouveau&quot; pour en ajouter.</p></div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.25rem', marginTop: '1rem' }}>
+                {data.map(item => {
+                  const thumb = item.thumbnail || item.image || null;
+                  return (
+                    <div key={item._id} style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.08)', border: '1px solid #E7E5E0', display: 'flex', flexDirection: 'column' }}>
+                      {/* Vignette photo */}
+                      <div style={{ position: 'relative', paddingTop: '66%', background: '#F5F5F4' }}>
+                        {thumb
+                          ? <img src={thumb} alt={item.title || ''} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#aaa', gap: '0.3rem' }}>
+                              <span style={{ fontSize: '2rem' }}>🖼️</span>
+                              <span style={{ fontSize: '0.75rem' }}>Pas d'image</span>
+                            </div>
+                        }
+                        {/* Badges superposés */}
+                        {item.featured && <span style={{ position: 'absolute', top: 6, left: 6, background: '#f59e0b', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>⭐ Vedette</span>}
+                        {!item.isActive && <span style={{ position: 'absolute', top: 6, right: 6, background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>Inactif</span>}
+                        {item.orientation && <span style={{ position: 'absolute', bottom: 6, left: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '2px 7px', borderRadius: 4, fontSize: '0.7rem' }}>
+                          {item.orientation === 'landscape' ? '🖼️ Paysage' : item.orientation === 'portrait' ? '📱 Portrait' : '⬛ Carré'}
+                        </span>}
+                        {/* Lien pour ouvrir la photo en grand */}
+                        {item.image && (
+                          <a href={item.image} target="_blank" rel="noopener noreferrer"
+                            style={{ position: 'absolute', bottom: 6, right: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', textDecoration: 'none', fontWeight: 600 }}
+                            title="Voir en plein écran">
+                            🔍 Voir
+                          </a>
+                        )}
+                      </div>
+                      {/* Infos */}
+                      <div style={{ padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        {item.category && <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#00A651', textTransform: 'uppercase' }}>{item.category}</span>}
+                        <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: '#1C1917', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                          {item.title || '—'}
+                        </p>
+                        {item.album && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>📁 {item.album}</p>}
+                        {item.photographer && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>📷 {item.photographer}</p>}
+                        {item.location && <p style={{ margin: 0, fontSize: '0.75rem', color: '#a8a29e' }}>📍 {item.location}</p>}
+                        {item.date && <p style={{ margin: 0, fontSize: '0.73rem', color: '#a8a29e' }}>🗓️ {new Date(item.date).toLocaleDateString('fr-FR')}</p>}
+                      </div>
+                      {/* Actions */}
+                      <div style={{ padding: '0.6rem 0.75rem', borderTop: '1px solid #F5F5F4', display: 'flex', gap: '0.4rem' }}>
+                        <a href={`/ressources/photos/${item._id}`} target="_blank" rel="noopener noreferrer"
+                          className="btn-edit"
+                          title="Voir côté visiteur"
+                          style={{ textDecoration: 'none', background: '#EFF6FF', color: '#2563EB', borderColor: '#BFDBFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          👁️
+                        </a>
+                        <button onClick={() => handleEdit(item)} className="btn-edit" style={{ flex: 1 }}>✏️ Modifier</button>
+                        <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
           ) : (
             /* Tableau générique */
             <div className="table-container">
@@ -823,6 +941,8 @@ const PageMocks = () => {
                 <table className="data-table">
                   <thead>
                     <tr>
+                      {/* Colonne miniature si au moins un item a une image */}
+                      {data.some(item => item.image || item.backgroundImage) && <th style={{ width: 72 }}>Photo</th>}
                       <th>Titre / Nom</th>
                       <th>Catégorie</th>
                       <th>Ordre</th>
@@ -832,19 +952,43 @@ const PageMocks = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {data.map(item => (
-                      <tr key={item._id}>
-                        <td>{item.title || item.name || item.reference || '—'}</td>
-                        <td>{item.category || '—'}</td>
-                        <td>{item.order || 1}</td>
-                        <td>{item.isActive ? '✅' : '❌'}</td>
-                        <td>{item.featured ? '⭐' : ''}</td>
-                        <td>
-                          <button onClick={() => handleEdit(item)} className="btn-edit">✏️</button>
-                          <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
-                        </td>
-                      </tr>
-                    ))}
+                    {data.map(item => {
+                      const hasImages = data.some(i => i.image || i.backgroundImage);
+                      const imgSrc = item.image || item.backgroundImage || null;
+                      const visitorBase = VISITOR_URL[selectedCollection];
+                      const visitorHref = visitorBase ? `${visitorBase}/${item._id}` : null;
+                      return (
+                        <tr key={item._id}>
+                          {hasImages && (
+                            <td style={{ padding: '0.4rem 0.6rem' }}>
+                              {imgSrc
+                                ? <a href={imgSrc} target="_blank" rel="noopener noreferrer" title="Voir l'image">
+                                    <img src={imgSrc} alt="" style={{ width: 56, height: 40, objectFit: 'cover', borderRadius: 6, display: 'block', border: '1px solid #E7E5E0' }} />
+                                  </a>
+                                : <span style={{ display: 'inline-block', width: 56, height: 40, background: '#F5F5F4', borderRadius: 6, textAlign: 'center', lineHeight: '40px', fontSize: '1.2rem' }}>🖼️</span>
+                              }
+                            </td>
+                          )}
+                          <td>{item.title || item.name || item.reference || '—'}</td>
+                          <td>{item.category || '—'}</td>
+                          <td>{item.order || 1}</td>
+                          <td>{item.isActive ? '✅' : '❌'}</td>
+                          <td>{item.featured ? '⭐' : ''}</td>
+                          <td style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                            {visitorHref && (
+                              <a href={visitorHref} target="_blank" rel="noopener noreferrer"
+                                className="btn-edit"
+                                title="Voir côté visiteur"
+                                style={{ textDecoration: 'none', background: '#EFF6FF', color: '#2563EB', borderColor: '#BFDBFE' }}>
+                                👁️
+                              </a>
+                            )}
+                            <button onClick={() => handleEdit(item)} className="btn-edit">✏️</button>
+                            <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}

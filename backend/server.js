@@ -395,8 +395,8 @@ app.post('/api/public/contact', async (req, res) => {
 
 // GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
 app.get('/api/public/:collection/:id', async (req, res) => {
+  const { collection, id } = req.params;
   try {
-    const { collection, id } = req.params;
 
     // Cas particulier pour les thèses : on lit dans la collection pharmacien_theses
     if (collection === 'theses') {
@@ -764,8 +764,8 @@ app.put('/api/admin/contact-messages/:id/status', authenticateAdmin, async (req,
 
 // GET une donnée spécifique (route admin)
 app.get('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
+  const { collection, id } = req.params;
   try {
-    const { collection, id } = req.params;
     
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
@@ -781,8 +781,8 @@ app.get('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
 
 // POST créer une donnée
 app.post('/api/admin/:collection', authenticateAdmin, async (req, res) => {
+  const { collection } = req.params;
   try {
-    const { collection } = req.params;
     
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
@@ -803,16 +803,17 @@ app.post('/api/admin/:collection', authenticateAdmin, async (req, res) => {
 
 // PUT modifier une donnée
 app.put('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
+  const { collection, id } = req.params;
   try {
-    const { collection, id } = req.params;
-    
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
     
+    // Exclure _id du $set car MongoDB interdit de modifier le champ immutable _id
+    const { _id, ...bodyWithoutId } = req.body;
     await db.collection(collection).updateOne(
       { _id: new ObjectId(id) },
-      { $set: { ...req.body, updatedAt: new Date() } }
+      { $set: { ...bodyWithoutId, updatedAt: new Date() } }
     );
     res.json({ success: true });
   } catch (error) {
@@ -823,9 +824,8 @@ app.put('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
 
 // DELETE supprimer une donnée
 app.delete('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
+  const { collection, id } = req.params;
   try {
-    const { collection, id } = req.params;
-    
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }

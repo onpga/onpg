@@ -7,6 +7,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchResourceData, fetchResourceById } from '../../utils/pageMocksApi';
 import { getImageWithFallback } from '../../utils/imageFallback';
+import ShareButtons from '../../components/ShareButtons/ShareButtons';
+import '../../components/ShareButtons/ShareButtons.css';
 import './Ressources.css';
 import { updateMetaTag, updateOpenGraph, updateTwitterCard, updateCanonical } from '../../utils/seo';
 
@@ -215,6 +217,13 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
                 </div>
               </div>
             )}
+
+            {/* Boutons de partage */}
+            <ShareButtons
+              title={resource.title}
+              description={resource.excerpt || resource.summary || ''}
+              tags={Array.isArray(resource.tags) ? resource.tags : []}
+            />
           </main>
         </div>
       </div>

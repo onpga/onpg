@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
@@ -20,6 +20,8 @@ interface Pharmacien {
   _id?: string;
   nom: string;
   prenom: string;
+  email?: string;
+  telephone?: string;
   numeroOrdre?: number;
   nationalite?: string;
   section?: string;
@@ -37,6 +39,7 @@ const PharmaciensAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cotisationFilter, setCotisationFilter] = useState<'tous' | 'ajour' | 'retard'>('tous');
   const [nationaliteFilter, setNationaliteFilter] = useState<'toutes' | 'gabonais' | 'etrangers'>('toutes');
+  const [sectionFilter, setSectionFilter] = useState<'toutes' | 'A' | 'B' | 'C' | 'D'>('toutes');
   const [editingItem, setEditingItem] = useState<Pharmacien | null>(null);
   const [viewingItem, setViewingItem] = useState<Pharmacien | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -47,6 +50,8 @@ const PharmaciensAdmin = () => {
   const [formData, setFormData] = useState<Pharmacien>({
     nom: '',
     prenom: '',
+    email: '',
+    telephone: '',
     numeroOrdre: undefined,
     nationalite: '',
     section: '',
@@ -57,8 +62,6 @@ const PharmaciensAdmin = () => {
     role: '',
     these: ''
   });
-
-  const formRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -84,7 +87,7 @@ const PharmaciensAdmin = () => {
 
   const filteredPharmaciens = normalizedQuery
     ? pharmaciens.filter((p) => {
-        const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.numeroOrdre || ''} ${p.nationalite || ''} ${
+        const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.telephone || ''} ${p.numeroOrdre || ''} ${p.nationalite || ''} ${
           p.section || ''
         }`.toLowerCase();
         return haystack.includes(normalizedQuery);
@@ -112,7 +115,9 @@ const PharmaciensAdmin = () => {
       okNat = !!p.nationalite && !isGabonais(p.nationalite);
     }
 
-    return okCotisation && okNat;
+    const okSection = sectionFilter === 'toutes' ? true : (p.section || '') === sectionFilter;
+
+    return okCotisation && okNat && okSection;
   });
 
   const totalPharmaciens = pharmaciens.length;
@@ -132,6 +137,8 @@ const PharmaciensAdmin = () => {
     setFormData({
       nom: pharmacien.nom || '',
       prenom: pharmacien.prenom || '',
+      email: pharmacien.email || '',
+      telephone: pharmacien.telephone || '',
       numeroOrdre: pharmacien.numeroOrdre,
       nationalite: pharmacien.nationalite || '',
       section: pharmacien.section || '',
@@ -143,9 +150,6 @@ const PharmaciensAdmin = () => {
       these: pharmacien.these || ''
     });
     setShowForm(true);
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
   };
 
   const handleDelete = async (id: string) => {
@@ -168,6 +172,8 @@ const PharmaciensAdmin = () => {
     setFormData({
       nom: '',
       prenom: '',
+      email: '',
+      telephone: '',
       numeroOrdre: undefined,
       nationalite: '',
       section: '',
@@ -179,9 +185,6 @@ const PharmaciensAdmin = () => {
       these: ''
     });
     setShowForm(true);
-    setTimeout(() => {
-      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -217,6 +220,8 @@ const PharmaciensAdmin = () => {
     setFormData({
       nom: '',
       prenom: '',
+      email: '',
+      telephone: '',
       numeroOrdre: undefined,
       nationalite: '',
       section: '',
@@ -352,6 +357,23 @@ const PharmaciensAdmin = () => {
                 <option value="gabonais">Nationaux (Gabon)</option>
                 <option value="etrangers">Étrangers</option>
               </select>
+              <select
+                value={sectionFilter}
+                onChange={(e) => setSectionFilter(e.target.value as 'toutes' | 'A' | 'B' | 'C' | 'D')}
+                style={{
+                  padding: '0.55rem 0.9rem',
+                  borderRadius: '999px',
+                  border: '2px solid #ddd',
+                  fontSize: '0.95rem',
+                  minWidth: '180px'
+                }}
+              >
+                <option value="toutes">Toutes les sections</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+              </select>
               <button
                 onClick={handleNew}
                 className="btn-primary"
@@ -461,11 +483,54 @@ const PharmaciensAdmin = () => {
           )}
         </section>
 
-        {/* Formulaire intégré */}
+        {/* Formulaire en modal */}
         {showForm && (
-          <section className="dashboard-section" ref={formRef}>
-            <h2>{editingItem ? '✏️ Modifier un pharmacien' : '➕ Nouveau pharmacien'}</h2>
-            <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
+          <div
+            className="pharmaciens-modal-overlay"
+            onClick={handleCancel}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(2, 6, 23, 0.55)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1200,
+              padding: '1rem'
+            }}
+          >
+            <section
+              className="dashboard-section pharmaciens-form-modal"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                width: 'min(980px, 96vw)',
+                maxHeight: '92vh',
+                overflow: 'auto',
+                margin: 0,
+                background: '#fff',
+                borderRadius: '14px',
+                boxShadow: '0 20px 48px rgba(15, 23, 42, 0.3)'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h2 style={{ margin: 0 }}>{editingItem ? '✏️ Modifier un pharmacien' : '➕ Nouveau pharmacien'}</h2>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="pharmaciens-modal-close"
+                  aria-label="Fermer le formulaire"
+                  style={{
+                    background: 'transparent',
+                    border: 0,
+                    fontSize: '1.35rem',
+                    cursor: 'pointer',
+                    padding: '0.25rem 0.5rem'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
@@ -510,6 +575,30 @@ const PharmaciensAdmin = () => {
                     type="text"
                     value={formData.nationalite || ''}
                     onChange={(e) => setFormData({ ...formData, nationalite: e.target.value })}
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email || ''}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="Ex: nom@exemple.com"
+                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    Téléphone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.telephone || ''}
+                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                    placeholder="Ex: 07 12 34 56"
                     style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
@@ -690,8 +779,9 @@ const PharmaciensAdmin = () => {
                   {editingItem ? '💾 Enregistrer les modifications' : '➕ Créer le pharmacien'}
                 </button>
               </div>
-            </form>
-          </section>
+              </form>
+            </section>
+          </div>
         )}
 
         {/* Message global de confirmation / erreur */}
@@ -764,6 +854,14 @@ const PharmaciensAdmin = () => {
                 <div>
                   <strong style={{ fontSize: '1.1rem' }}>Nationalité:</strong>
                   <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.nationalite || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Email:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.email || '—'}</p>
+                </div>
+                <div>
+                  <strong style={{ fontSize: '1.1rem' }}>Téléphone:</strong>
+                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.telephone || '—'}</p>
                 </div>
                 <div>
                   <strong style={{ fontSize: '1.1rem' }}>Section:</strong>

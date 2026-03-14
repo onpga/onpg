@@ -306,9 +306,9 @@ const Dashboard = () => {
                          item.type === 'pharmacie' ? 'Pharmacie' : 'Autre'}
                       </span>
                       <span className="item-date">
-                        {item.publishedAt || item.date ? 
-                          new Date(item.publishedAt || item.date).toLocaleDateString('fr-FR') : 
-                          'Date inconnue'}
+                        {item.publishedAt || item.date
+                          ? new Date(item.publishedAt || item.date || new Date().toISOString()).toLocaleDateString('fr-FR')
+                          : 'Date inconnue'}
                       </span>
                     </div>
                   </div>

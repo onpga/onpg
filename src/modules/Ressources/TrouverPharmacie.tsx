@@ -442,7 +442,7 @@ const PharmacieCardCompact = ({ pharmacie, formatDistance }: { pharmacie: Pharma
           </div>
 
           {/* Détails au survol - Horaires */}
-          {isHovered && pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires[k as keyof typeof pharmacie.horaires]) && (
+          {isHovered && pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires?.[k as keyof typeof pharmacie.horaires]) && (
             <div style={{ 
               marginTop: '0.5rem', 
               padding: '0.75rem', 

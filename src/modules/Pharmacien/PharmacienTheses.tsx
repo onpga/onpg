@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PharmacienSidebar from './components/PharmacienSidebar';
 import '../Admin/Dashboard.css';
+import './PharmacienTheses.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -24,6 +25,7 @@ const PharmacienTheses = () => {
   const [theses, setTheses] = useState<any[]>([]);
   const [loadingTheses, setLoadingTheses] = useState(false);
   const [thesisSaving, setThesisSaving] = useState(false);
+  const [deletingThesisId, setDeletingThesisId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [thesisForm, setThesisForm] = useState({
     titre: '',
@@ -288,6 +290,9 @@ const PharmacienTheses = () => {
           titre: '',
           resume: '',
           annee: '',
+          universite: '',
+          motsCles: '',
+          directeur: '',
           fichierUrl: ''
         });
         await loadTheses();
@@ -308,50 +313,99 @@ const PharmacienTheses = () => {
     }
   };
 
+  const handleDeleteThesis = async (id: string) => {
+    const confirmed = window.confirm('Supprimer cette thèse ? Cette action est irréversible.');
+    if (!confirmed) return;
+
+    try {
+      setDeletingThesisId(id);
+      setMessage(null);
+      const token = localStorage.getItem('admin_token');
+      const userId = user?._id;
+
+      const response = await fetch(`${API_URL}/pharmacien/theses/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-user-id': userId
+        }
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.success) {
+        setMessage({
+          type: 'error',
+          text: data.error || 'Impossible de supprimer la thèse.'
+        });
+        return;
+      }
+
+      setMessage({ type: 'success', text: 'Thèse supprimée avec succès.' });
+      if (thesisForm.fichierUrl && theses.length <= 1) {
+        setThesisForm({
+          titre: '',
+          resume: '',
+          annee: '',
+          universite: '',
+          motsCles: '',
+          directeur: '',
+          fichierUrl: ''
+        });
+      }
+      await loadTheses();
+    } catch (error) {
+      console.error('Erreur suppression thèse:', error);
+      setMessage({ type: 'error', text: 'Erreur serveur lors de la suppression.' });
+    } finally {
+      setDeletingThesisId(null);
+    }
+  };
+
   if (!user) return null;
 
   return (
     <div className="admin-layout">
       <PharmacienSidebar currentPage="theses" />
-      <main className="admin-main">
-        <div className="admin-content">
-          <h1>📚 Mes Thèses</h1>
+      <main className="admin-main theses-page">
+        <div className="admin-content theses-content">
+          <section className="theses-hero">
+            <h1>Mes theses</h1>
+            <p>Publiez et gerez vos theses dans un espace dedie.</p>
+            <div className="theses-hero-kpis">
+              <div className="theses-kpi">
+                <span className="theses-kpi-value">{theses.length}</span>
+                <span className="theses-kpi-label">Theses publiees</span>
+              </div>
+              <div className="theses-kpi">
+                <span className="theses-kpi-value">{theses.filter((t) => t.fichierUrl).length}</span>
+                <span className="theses-kpi-label">Avec PDF</span>
+              </div>
+            </div>
+          </section>
 
           {message && (
             <div 
-              className={`message ${message.type}`} 
-              style={{ 
-                marginBottom: '1.5rem',
-                padding: '1rem 1.5rem',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontWeight: message.type === 'error' ? '600' : '500',
-                border: message.type === 'error' ? '2px solid #ef4444' : '2px solid #10b981',
-                backgroundColor: message.type === 'error' ? '#fef2f2' : '#f0fdf4',
-                color: message.type === 'error' ? '#991b1b' : '#065f46',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-              }}
+              className={`theses-feedback ${message.type}`} 
             >
-              {message.type === 'error' ? '❌ ' : '✅ '}
               {message.text}
             </div>
           )}
 
-          <div className="profile-section">
-            <h2>Ajouter / Mettre à jour une thèse</h2>
-            <div className="profile-edit-form">
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+          <section className="theses-card">
+            <h2>Ajouter ou mettre a jour une these</h2>
+            <div className="theses-form">
+              <div className="form-group">
                 <label htmlFor="thesisTitre">Titre de la thèse *</label>
                 <input
                   type="text"
                   id="thesisTitre"
                   value={thesisForm.titre}
                   onChange={(e) => setThesisForm({ ...thesisForm, titre: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group">
                 <label htmlFor="thesisAnnee">Année *</label>
                 <input
                   type="text"
@@ -359,11 +413,11 @@ const PharmacienTheses = () => {
                   placeholder="Ex: 2024"
                   value={thesisForm.annee}
                   onChange={(e) => setThesisForm({ ...thesisForm, annee: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group">
                 <label htmlFor="thesisUniversite">Université *</label>
                 <input
                   type="text"
@@ -371,11 +425,11 @@ const PharmacienTheses = () => {
                   placeholder="Ex: Université Omar Bongo"
                   value={thesisForm.universite}
                   onChange={(e) => setThesisForm({ ...thesisForm, universite: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group">
                 <label htmlFor="thesisDirecteur">Directeur de thèse (optionnel)</label>
                 <input
                   type="text"
@@ -383,11 +437,11 @@ const PharmacienTheses = () => {
                   placeholder="Ex: Pr. Jean Dupont"
                   value={thesisForm.directeur}
                   onChange={(e) => setThesisForm({ ...thesisForm, directeur: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group">
                 <label htmlFor="thesisMotsCles">Mots-clés (optionnel)</label>
                 <input
                   type="text"
@@ -395,46 +449,47 @@ const PharmacienTheses = () => {
                   placeholder="Ex: pharmacie, médicament, santé"
                   value={thesisForm.motsCles}
                   onChange={(e) => setThesisForm({ ...thesisForm, motsCles: e.target.value })}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group theses-form-full">
                 <label htmlFor="thesisResume">Résumé (optionnel)</label>
                 <textarea
                   id="thesisResume"
                   value={thesisForm.resume}
                   onChange={(e) => setThesisForm({ ...thesisForm, resume: e.target.value })}
                   rows={3}
-                  style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                  className="theses-input"
                 />
               </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <div className="form-group theses-form-full">
                 <label>Fichier PDF de la thèse * (max. {MAX_THESE_PDF_SIZE_MB} Mo)</label>
                 <input
                   type="file"
                   accept="application/pdf"
                   onChange={handleThesisUpload}
                   disabled={thesisSaving}
+                  className="theses-file-input"
                 />
                 {thesisForm.fichierUrl && (
-                  <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-                    ✔ Fichier prêt : <a href={thesisForm.fichierUrl} target="_blank" rel="noopener noreferrer">ouvrir le PDF</a>
+                  <p className="theses-file-ready">
+                    Fichier pret : <a href={thesisForm.fichierUrl} target="_blank" rel="noopener noreferrer">ouvrir le PDF</a>
                   </p>
                 )}
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem' }}>
+              <div className="theses-actions">
                 <button
-                  className="action-btn primary"
+                  className="btn-primary"
                   onClick={handleThesisSave}
                   disabled={thesisSaving}
                 >
-                  {thesisSaving ? '📚 Sauvegarde...' : '📚 Enregistrer la thèse'}
+                  {thesisSaving ? 'Sauvegarde...' : 'Enregistrer la these'}
                 </button>
                 <button
-                  className="action-btn"
+                  className="btn-secondary"
                   type="button"
                   onClick={() => setThesisForm({ titre: '', resume: '', annee: '', universite: '', motsCles: '', directeur: '', fichierUrl: '' })}
                 >
@@ -442,30 +497,44 @@ const PharmacienTheses = () => {
                 </button>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="profile-section" style={{ marginTop: '2rem' }}>
-            <h2>Historique de mes thèses</h2>
+          <section className="theses-card">
+            <h2>Historique de mes theses</h2>
             {loadingTheses ? (
-              <p>Chargement des thèses...</p>
+              <p className="theses-empty-state">Chargement des theses...</p>
             ) : theses.length === 0 ? (
-              <p>Aucune thèse enregistrée pour le moment.</p>
+              <p className="theses-empty-state">Aucune these enregistree pour le moment.</p>
             ) : (
-              <ul style={{ listStyle: 'none', padding: 0, marginTop: '0.5rem' }}>
+              <ul className="theses-list">
                 {theses.map((thesis) => (
-                  <li key={thesis._id} style={{ padding: '0.5rem 0', borderBottom: '1px solid #eee' }}>
-                    <strong>{thesis.titre}</strong>
-                    {thesis.annee && <span> — {thesis.annee}</span>}
-                    <div style={{ fontSize: '0.9rem', marginTop: '0.25rem' }}>
+                  <li key={thesis._id} className="theses-list-item">
+                    <div className="theses-list-top">
+                      <strong>{thesis.titre}</strong>
+                      {thesis.annee && <span>{thesis.annee}</span>}
+                    </div>
+                    <div className="theses-list-meta">
+                      {thesis.universite && <span>{thesis.universite}</span>}
+                      {thesis.directeur && <span>Dir. {thesis.directeur}</span>}
+                    </div>
+                    <div className="theses-list-link">
                       <a href={thesis.fichierUrl} target="_blank" rel="noopener noreferrer">
                         Ouvrir le PDF
                       </a>
+                      <button
+                        type="button"
+                        className="theses-delete-btn"
+                        onClick={() => handleDeleteThesis(thesis._id)}
+                        disabled={deletingThesisId === thesis._id}
+                      >
+                        {deletingThesisId === thesis._id ? 'Suppression...' : 'Supprimer'}
+                      </button>
                     </div>
                   </li>
                 ))}
               </ul>
             )}
-          </div>
+          </section>
         </div>
       </main>
     </div>

@@ -69,6 +69,29 @@ const RESOURCE_COLLECTIONS = [
   'pharmacies' // permet aussi de gérer les pharmacies via les routes génériques admin
 ];
 
+// Clé de correspondance "nom+prenom sans espaces" (robuste aux accents/casse)
+const normalizeIdentityKey = (...parts) => {
+  return String(parts.filter(Boolean).join(' '))
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '');
+};
+
+const identityTokensKey = (...parts) => {
+  const stopwords = new Set(['dr', 'docteur', 'pharmacien', 'pharmacienne']);
+  const tokens = String(parts.filter(Boolean).join(' '))
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .split(' ')
+    .map((t) => t.trim())
+    .filter((t) => t && !stopwords.has(t));
+
+  return tokens.sort().join('|');
+};
+
 // Authentification admin par token (simple)
 const authenticateAdmin = (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
@@ -780,9 +803,12 @@ app.get('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
 });
 
 // POST créer une donnée
-app.post('/api/admin/:collection', authenticateAdmin, async (req, res) => {
+app.post('/api/admin/:collection', authenticateAdmin, async (req, res, next) => {
   const { collection } = req.params;
   try {
+    if (['pharmacies', 'pharmaciens'].includes(collection)) {
+      return next();
+    }
     
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
@@ -802,9 +828,12 @@ app.post('/api/admin/:collection', authenticateAdmin, async (req, res) => {
 });
 
 // PUT modifier une donnée
-app.put('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
+app.put('/api/admin/:collection/:id', authenticateAdmin, async (req, res, next) => {
   const { collection, id } = req.params;
   try {
+    if (['pharmacies', 'pharmaciens', 'contact-messages'].includes(collection)) {
+      return next();
+    }
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
@@ -823,9 +852,12 @@ app.put('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
 });
 
 // DELETE supprimer une donnée
-app.delete('/api/admin/:collection/:id', authenticateAdmin, async (req, res) => {
+app.delete('/api/admin/:collection/:id', authenticateAdmin, async (req, res, next) => {
   const { collection, id } = req.params;
   try {
+    if (['pharmacies', 'pharmaciens', 'contact-messages'].includes(collection)) {
+      return next();
+    }
     if (!RESOURCE_COLLECTIONS.includes(collection)) {
       return res.status(400).json({ success: false, error: 'Collection invalide' });
     }
@@ -1102,9 +1134,36 @@ app.delete('/api/pharmacien/pharmacies/:id/messages/:messageId', authenticatePha
 });
 
 // PUT mettre à jour le profil pharmacien
+app.get('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
+  try {
+    const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId), isActive: true });
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Utilisateur non trouve' });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        _id: user._id,
+        username: user.username,
+        email: user.email || '',
+        telephone: user.telephone || '',
+        adresse: user.adresse || '',
+        photo: user.photo || '',
+        role: user.role || 'pharmacien'
+      }
+    });
+  } catch (error) {
+    console.error('Erreur chargement profil pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// PUT mettre à jour le profil pharmacien
 app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
   try {
     const { email, telephone, adresse, photo } = req.body;
+    const currentUser = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
     
     const updateData = {};
     if (email !== undefined) updateData.email = email;
@@ -1120,47 +1179,53 @@ app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
       { $set: updateData }
     );
 
-    // 2) Répercuter la nouvelle photo dans la collection "pharmaciens"
-    //    utilisée par le Tableau de l'Ordre et les sections A/B/C/D.
-    //
-    //    Comme les documents "users" et "pharmaciens" n'ont pas le même _id,
-    //    on utilise une clé de correspondance normalisée très simple :
-    //    concaténation de tout le nom sans espaces, en minuscules.
-    if (photo) {
-      const user = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
-      
-      if (user) {
-        const nom = (user.nom || '').trim();
-        const prenoms = (user.prenoms || '').trim();
+    // 2) Répercuter email/téléphone/photo vers la collection "pharmaciens"
+    if (email !== undefined || telephone !== undefined || photo !== undefined) {
+      const oldEmail = String(currentUser?.email || '').trim().toLowerCase();
+      const newEmail = email !== undefined ? String(email || '').trim().toLowerCase() : oldEmail;
+      const emailCandidates = new Set([oldEmail, newEmail].filter(Boolean));
 
-        // Clé normalisée côté "users"
-        const normalizedUserKey = (nom + prenoms)
-          .toLowerCase()
-          .replace(/\s+/g, '');
+      const normalizedUserKey = normalizeIdentityKey(
+        currentUser?.nom || '',
+        currentUser?.prenoms || currentUser?.prenom || ''
+      );
+      const userTokensKey = identityTokensKey(
+        currentUser?.nom || '',
+        currentUser?.prenoms || currentUser?.prenom || ''
+      );
 
-        if (normalizedUserKey) {
-          const pharmaciens = await db.collection('pharmaciens').find({}).toArray();
-          const idsToUpdate = pharmaciens
-            .filter((p) => {
-              const base =
-                (p.nomComplet && String(p.nomComplet).trim()) ||
-                `${p.nom || ''} ${p.prenom || ''}`.trim();
-              if (!base) return false;
-              const normalizedPharmacienKey = String(base)
-                .toLowerCase()
-                .replace(/\s+/g, '');
-              return normalizedPharmacienKey === normalizedUserKey;
-            })
-            .map((p) => p._id)
-            .filter(Boolean);
-
-          if (idsToUpdate.length > 0) {
-            await db.collection('pharmaciens').updateMany(
-              { _id: { $in: idsToUpdate } },
-              { $set: { photo: photo, updatedAt: new Date() } }
-            );
+      const pharmaciens = await db.collection('pharmaciens').find({}).toArray();
+      const idsToUpdate = pharmaciens
+        .filter((p) => {
+          const pharmacienEmail = String(p.email || '').trim().toLowerCase();
+          if (pharmacienEmail && emailCandidates.has(pharmacienEmail)) {
+            return true;
           }
-        }
+
+          if (!normalizedUserKey) return false;
+          const normalizedPharmacienNameKey = normalizeIdentityKey(p.nom || '', p.prenom || '');
+          const normalizedPharmacienFullKey = normalizeIdentityKey(p.nomComplet || '');
+          const pharmacienNameTokensKey = identityTokensKey(p.nom || '', p.prenom || '');
+          const pharmacienFullTokensKey = identityTokensKey(p.nomComplet || '');
+          return (
+            normalizedPharmacienNameKey === normalizedUserKey ||
+            normalizedPharmacienFullKey === normalizedUserKey ||
+            (userTokensKey && (pharmacienNameTokensKey === userTokensKey || pharmacienFullTokensKey === userTokensKey))
+          );
+        })
+        .map((p) => p._id)
+        .filter(Boolean);
+
+      if (idsToUpdate.length > 0) {
+        const pharmacienUpdate = { updatedAt: new Date() };
+        if (email !== undefined) pharmacienUpdate.email = email || '';
+        if (telephone !== undefined) pharmacienUpdate.telephone = telephone || '';
+        if (photo !== undefined) pharmacienUpdate.photo = photo || '';
+
+        await db.collection('pharmaciens').updateMany(
+          { _id: { $in: idsToUpdate } },
+          { $set: pharmacienUpdate }
+        );
       }
     }
 
@@ -1676,6 +1741,8 @@ app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
     const {
       nom,
       prenom,
+      email,
+      telephone,
       numeroOrdre,
       nationalite,
       section,
@@ -1694,6 +1761,8 @@ app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
     const doc = {
       nom,
       prenom,
+      email: email || '',
+      telephone: telephone || '',
       numeroOrdre: typeof numeroOrdre === 'number' ? numeroOrdre : undefined,
       nationalite: nationalite || '',
       section: section || '',
@@ -1719,9 +1788,12 @@ app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
 app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
+    const existingPharmacien = await db.collection('pharmaciens').findOne({ _id: new ObjectId(id) });
     const {
       nom,
       prenom,
+      email,
+      telephone,
       numeroOrdre,
       nationalite,
       section,
@@ -1739,6 +1811,8 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
 
     if (nom !== undefined) update.nom = nom;
     if (prenom !== undefined) update.prenom = prenom;
+    if (email !== undefined) update.email = email;
+    if (telephone !== undefined) update.telephone = telephone;
     if (numeroOrdre !== undefined) update.numeroOrdre = numeroOrdre;
     if (nationalite !== undefined) update.nationalite = nationalite;
     if (section !== undefined) update.section = section;
@@ -1756,6 +1830,74 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
 
     if (result.matchedCount === 0) {
       return res.status(404).json({ success: false, error: 'Pharmacien non trouvé' });
+    }
+
+    // Répercuter le téléphone/email/photo vers le compte utilisateur pharmacien (collection users)
+    if (telephone !== undefined || email !== undefined || photo !== undefined) {
+      const pharmacienDoc = await db.collection('pharmaciens').findOne({ _id: new ObjectId(id) });
+      if (pharmacienDoc) {
+        const oldEmail = String(existingPharmacien?.email || '').trim().toLowerCase();
+        const newEmail = String(pharmacienDoc.email || '').trim().toLowerCase();
+        const emailCandidates = new Set([oldEmail, newEmail].filter(Boolean));
+
+        const normalizedKeys = new Set(
+          [
+            normalizeIdentityKey(existingPharmacien?.nom || '', existingPharmacien?.prenom || ''),
+            normalizeIdentityKey(pharmacienDoc.nom || '', pharmacienDoc.prenom || ''),
+            normalizeIdentityKey(existingPharmacien?.nomComplet || ''),
+            normalizeIdentityKey(pharmacienDoc.nomComplet || '')
+          ]
+            .filter(Boolean)
+            .filter(Boolean)
+        );
+        const tokenKeys = new Set(
+          [
+            identityTokensKey(existingPharmacien?.nom || '', existingPharmacien?.prenom || ''),
+            identityTokensKey(pharmacienDoc.nom || '', pharmacienDoc.prenom || ''),
+            identityTokensKey(existingPharmacien?.nomComplet || ''),
+            identityTokensKey(pharmacienDoc.nomComplet || '')
+          ].filter(Boolean)
+        );
+
+        if (emailCandidates.size > 0 || normalizedKeys.size > 0) {
+          const users = await db.collection('users').find({ role: 'pharmacien' }).toArray();
+          const userIdsToUpdate = users
+            .filter((u) => {
+              const userEmail = String(u.email || '').trim().toLowerCase();
+              if (userEmail && emailCandidates.has(userEmail)) {
+                return true;
+              }
+
+              const normalizedUserKey = normalizeIdentityKey(
+                u.nom || '',
+                u.prenoms || u.prenom || ''
+              );
+              if (normalizedKeys.has(normalizedUserKey)) {
+                return true;
+              }
+
+              const userTokenKey = identityTokensKey(
+                u.nom || '',
+                u.prenoms || u.prenom || ''
+              );
+              return !!userTokenKey && tokenKeys.has(userTokenKey);
+            })
+            .map((u) => u._id)
+            .filter(Boolean);
+
+          if (userIdsToUpdate.length > 0) {
+            const userUpdate = { updatedAt: new Date() };
+            if (telephone !== undefined) userUpdate.telephone = telephone || '';
+            if (email !== undefined) userUpdate.email = email || '';
+            if (photo !== undefined) userUpdate.photo = photo || '';
+
+            await db.collection('users').updateMany(
+              { _id: { $in: userIdsToUpdate } },
+              { $set: userUpdate }
+            );
+          }
+        }
+      }
     }
 
     res.json({ success: true });

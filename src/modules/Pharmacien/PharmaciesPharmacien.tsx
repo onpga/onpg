@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PharmacienSidebar from './components/PharmacienSidebar';
 import '../Admin/Dashboard.css';
+import './PharmaciesPharmacien.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -50,6 +51,26 @@ interface Message {
   createdAt: string;
 }
 
+const EMPTY_HORAIRES = {
+  lundi: '',
+  mardi: '',
+  mercredi: '',
+  jeudi: '',
+  vendredi: '',
+  samedi: '',
+  dimanche: ''
+};
+
+const normalizeHoraires = (horaires?: Pharmacie['horaires']) => ({
+  lundi: horaires?.lundi ?? '',
+  mardi: horaires?.mardi ?? '',
+  mercredi: horaires?.mercredi ?? '',
+  jeudi: horaires?.jeudi ?? '',
+  vendredi: horaires?.vendredi ?? '',
+  samedi: horaires?.samedi ?? '',
+  dimanche: horaires?.dimanche ?? ''
+});
+
 const PharmaciesPharmacien = () => {
   const navigate = useNavigate();
   const [pharmacies, setPharmacies] = useState<Pharmacie[]>([]);
@@ -67,15 +88,7 @@ const PharmaciesPharmacien = () => {
     longitude: '',
     telephone: '',
     email: '',
-    horaires: {
-      lundi: '',
-      mardi: '',
-      mercredi: '',
-      jeudi: '',
-      vendredi: '',
-      samedi: '',
-      dimanche: ''
-    },
+    horaires: { ...EMPTY_HORAIRES },
     garde: false
   });
   const [messageForm, setMessageForm] = useState({
@@ -332,10 +345,23 @@ const PharmaciesPharmacien = () => {
   return (
     <div className="admin-layout">
       <PharmacienSidebar currentPage="pharmacies" />
-      <main className="admin-main">
-        <div className="admin-content">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-            <h1>Mes Pharmacies</h1>
+      <main className="admin-main pharmacies-pharmacien-page">
+        <div className="admin-content pharmacies-pharmacien-content">
+          <div className="pharmacies-header">
+            <div>
+              <h1>Mes Pharmacies</h1>
+              <p className="pharmacies-header-subtitle">
+                Pilotez vos informations, horaires et alertes depuis un espace premium.
+              </p>
+              <div className="pharmacies-header-kpis">
+                <span className="pharmacies-header-kpi">
+                  {pharmacies.length} pharmacie{pharmacies.length > 1 ? 's' : ''}
+                </span>
+                <span className="pharmacies-header-kpi">
+                  {pharmacies.filter((p) => p.garde).length} de garde
+                </span>
+              </div>
+            </div>
             <button 
               className="btn-primary"
               onClick={() => {
@@ -343,13 +369,13 @@ const PharmaciesPharmacien = () => {
                 setFormData({
                   nom: '', ville: '', quartier: '', adresse: '', photo: '',
                   latitude: '', longitude: '', telephone: '', email: '', 
-                  horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                  horaires: { ...EMPTY_HORAIRES },
                   garde: false
                 });
                 setShowForm(true);
               }}
             >
-              ➕ Nouvelle Pharmacie
+              Nouvelle pharmacie
             </button>
           </div>
 
@@ -363,11 +389,11 @@ const PharmaciesPharmacien = () => {
               </button>
             </div>
           ) : (
-            <div className="pharmacies-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
+            <div className="pharmacies-grid">
               {pharmacies.map((pharmacie) => (
                 <div
                   key={pharmacie._id}
-                  className="pharmacie-card"
+                  className={`pharmacie-card ${activePharmacieId === pharmacie._id ? 'active' : ''}`}
                   onClick={() => {
                     setActivePharmacieId(pharmacie._id);
                     setEditingPharmacie(pharmacie);
@@ -381,24 +407,10 @@ const PharmaciesPharmacien = () => {
                       longitude: pharmacie.longitude?.toString() || '',
                       telephone: pharmacie.telephone,
                       email: pharmacie.email,
-                      horaires: pharmacie.horaires || { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                      horaires: normalizeHoraires(pharmacie.horaires),
                       garde: pharmacie.garde || false
                     });
                     setShowForm(true);
-                  }}
-                  style={{
-                    background: 'white',
-                    borderRadius: '16px',
-                    padding: '1.5rem',
-                    boxShadow: activePharmacieId === pharmacie._id
-                      ? '0 12px 30px rgba(0,166,81,0.3)'
-                      : '0 4px 16px rgba(0,0,0,0.08)',
-                    border: activePharmacieId === pharmacie._id
-                      ? '2px solid #00A651'
-                      : '1px solid rgba(0,0,0,0.06)',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease',
-                    transform: activePharmacieId === pharmacie._id ? 'translateY(-4px)' : 'translateY(0)'
                   }}
                 >
                   <img 
@@ -410,30 +422,22 @@ const PharmaciesPharmacien = () => {
                         target.src = '/logopharmacie.jpg';
                       }
                     }}
-                    style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1rem' }}
+                    className="pharmacie-card-image"
                   />
-                  <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem' }}>
+                  <h3 className="pharmacie-card-title">
                     {pharmacie.nom}
                     {pharmacie.garde && (
-                      <span style={{ 
-                        marginLeft: '0.5rem', 
-                        background: '#e53e3e', 
-                        color: 'white', 
-                        padding: '0.25rem 0.75rem', 
-                        borderRadius: '12px', 
-                        fontSize: '0.75rem',
-                        fontWeight: '700'
-                      }}>
-                        🚨 DE GARDE
+                      <span className="pharmacie-garde-pill">
+                        De garde
                       </span>
                     )}
                   </h3>
                   <p><strong>📍</strong> {pharmacie.adresse}, {pharmacie.quartier}, {pharmacie.ville}</p>
                   {pharmacie.telephone && <p><strong>📞</strong> {pharmacie.telephone}</p>}
                   {pharmacie.email && <p><strong>✉️</strong> {pharmacie.email}</p>}
-                  {pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires[k as keyof typeof pharmacie.horaires]) && (
-                    <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#f8f9fa', borderRadius: '8px' }}>
-                      <strong style={{ display: 'block', marginBottom: '0.5rem' }}>🕐 Horaires :</strong>
+                  {pharmacie.horaires && Object.keys(pharmacie.horaires).some(k => pharmacie.horaires?.[k as keyof typeof pharmacie.horaires]) && (
+                    <div className="pharmacie-card-info-block">
+                      <strong className="pharmacie-card-block-title">🕐 Horaires :</strong>
                       {pharmacie.horaires.lundi && <div>Lun: {pharmacie.horaires.lundi}</div>}
                       {pharmacie.horaires.mardi && <div>Mar: {pharmacie.horaires.mardi}</div>}
                       {pharmacie.horaires.mercredi && <div>Mer: {pharmacie.horaires.mercredi}</div>}
@@ -445,22 +449,22 @@ const PharmaciesPharmacien = () => {
                   )}
                   
                   {pharmacie.messages && pharmacie.messages.length > 0 && (
-                    <div style={{ marginTop: '1rem', padding: '1rem', background: '#f8f9fa', borderRadius: '8px' }}>
-                      <strong>Messages/Alerte :</strong>
+                    <div className="pharmacie-card-info-block">
+                      <strong className="pharmacie-card-block-title">Messages / Alertes :</strong>
                       {pharmacie.messages.map((msg) => (
-                        <div key={msg._id} style={{ marginTop: '0.5rem', padding: '0.5rem', background: 'white', borderRadius: '4px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                        <div key={msg._id} className="pharmacie-card-message-item">
+                          <div className="pharmacie-card-message-top">
                             <div>
                               <strong>{msg.titre}</strong> ({msg.type})
-                              <p style={{ fontSize: '0.9rem', marginTop: '0.25rem' }}>{msg.contenu}</p>
-                              <div style={{ fontSize: '0.8rem', color: '#666', marginTop: '0.25rem' }}>
+                              <p className="pharmacie-card-message-content">{msg.contenu}</p>
+                              <div className="pharmacie-card-message-visibility">
                                 {msg.visibleVisiteurs && <span>👁️ Visiteurs </span>}
                                 {msg.visibleOrdre && <span>👁️ Ordre </span>}
                               </div>
                             </div>
                             <button 
                               onClick={() => handleDeleteMessage(pharmacie._id, msg._id)}
-                              style={{ background: 'red', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer' }}
+                              className="pharmacie-card-message-delete"
                             >
                               ✕
                             </button>
@@ -470,10 +474,7 @@ const PharmaciesPharmacien = () => {
                     </div>
                   )}
 
-                  <div
-                    style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <div className="pharmacie-card-actions" onClick={(e) => e.stopPropagation()}>
                     <button 
                       className="btn-secondary"
                       onClick={() => {
@@ -488,7 +489,7 @@ const PharmaciesPharmacien = () => {
                           longitude: pharmacie.longitude?.toString() || '',
                           telephone: pharmacie.telephone,
                           email: pharmacie.email,
-                          horaires: pharmacie.horaires || { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                          horaires: normalizeHoraires(pharmacie.horaires),
                           garde: pharmacie.garde || false
                         });
                         setShowForm(true);
@@ -529,16 +530,9 @@ const PharmaciesPharmacien = () => {
           {showForm && (
             <div
               ref={formRef}
-              style={{
-              background: 'white',
-              padding: '2rem',
-              borderRadius: '16px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-              marginTop: '2rem',
-              marginBottom: '2rem'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.8rem', color: '#00A651' }}>{editingPharmacie ? '✏️ Modifier' : '➕ Nouvelle'} Pharmacie</h2>
+              className="pharmacie-inline-form-card">
+              <div className="pharmacie-inline-form-header">
+                <h2>{editingPharmacie ? 'Modifier' : 'Nouvelle'} pharmacie</h2>
                 <button
                   onClick={() => {
                     setShowForm(false);
@@ -546,13 +540,13 @@ const PharmaciesPharmacien = () => {
                     setFormData({
                       nom: '', ville: '', quartier: '', adresse: '', photo: '',
                       latitude: '', longitude: '', telephone: '', email: '', 
-                      horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                      horaires: { ...EMPTY_HORAIRES },
                       garde: false
                     });
                   }}
-                  style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}
+                  className="btn-danger"
                 >
-                  ✕ Fermer
+                  Fermer
                 </button>
               </div>
                 <form onSubmit={handleSubmit}>
@@ -563,7 +557,7 @@ const PharmaciesPharmacien = () => {
                       value={formData.nom}
                       onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
                       required
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -574,7 +568,7 @@ const PharmaciesPharmacien = () => {
                       value={formData.ville}
                       onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
                       required
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -584,7 +578,7 @@ const PharmaciesPharmacien = () => {
                       type="text"
                       value={formData.quartier}
                       onChange={(e) => setFormData({ ...formData, quartier: e.target.value })}
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -595,7 +589,7 @@ const PharmaciesPharmacien = () => {
                       onChange={(e) => setFormData({ ...formData, adresse: e.target.value })}
                       required
                       rows={3}
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -611,23 +605,23 @@ const PharmaciesPharmacien = () => {
                           setFormData({ ...formData, photo: url });
                         }
                       }}
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                     {formData.photo && (
-                      <img src={formData.photo} alt="Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover', marginTop: '0.5rem', borderRadius: '8px' }} />
+                      <img src={formData.photo} alt="Preview" className="pharmacie-form-photo-preview" />
                     )}
                   </div>
 
                   <div className="form-group">
                     <label>Localisation (GPS)</label>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    <div className="pharmacie-form-gps-row">
                       <input
                         type="number"
                         step="any"
                         placeholder="Latitude"
                         value={formData.latitude}
                         onChange={(e) => setFormData({ ...formData, latitude: e.target.value })}
-                        style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                        className="pharmacie-form-input"
                       />
                       <input
                         type="number"
@@ -635,12 +629,12 @@ const PharmaciesPharmacien = () => {
                         placeholder="Longitude"
                         value={formData.longitude}
                         onChange={(e) => setFormData({ ...formData, longitude: e.target.value })}
-                        style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                        className="pharmacie-form-input"
                       />
                       <button
                         type="button"
                         onClick={handleGetLocation}
-                        style={{ padding: '0.75rem 1rem', background: '#00A651', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                        className="pharmacie-gps-btn"
                       >
                         📍 GPS
                       </button>
@@ -653,7 +647,7 @@ const PharmaciesPharmacien = () => {
                       type="tel"
                       value={formData.telephone}
                       onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -663,17 +657,17 @@ const PharmaciesPharmacien = () => {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
                   {/* Horaires */}
-                  <div className="form-group" style={{ marginTop: '1.5rem' }}>
-                    <label style={{ fontSize: '1.1rem', fontWeight: '600', marginBottom: '1rem', display: 'block' }}>🕐 Horaires d'ouverture</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+                  <div className="form-group pharmacie-form-section">
+                    <label className="pharmacie-form-section-title">🕐 Horaires d'ouverture</label>
+                    <div className="pharmacie-form-hours-grid">
                       {['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'].map((jour) => (
                         <div key={jour}>
-                          <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.95rem', fontWeight: '500', textTransform: 'capitalize' }}>
+                          <label className="pharmacie-form-day-label">
                             {jour}
                           </label>
                           <input
@@ -684,7 +678,7 @@ const PharmaciesPharmacien = () => {
                               ...formData,
                               horaires: { ...formData.horaires, [jour]: e.target.value }
                             })}
-                            style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #e0e0e0', borderRadius: '8px' }}
+                            className="pharmacie-form-input"
                           />
                         </div>
                       ))}
@@ -692,20 +686,20 @@ const PharmaciesPharmacien = () => {
                   </div>
 
                   {/* Garde */}
-                  <div className="form-group" style={{ marginTop: '1.5rem' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '1.1rem' }}>
+                  <div className="form-group pharmacie-form-section">
+                    <label className="pharmacie-form-check">
                       <input
                         type="checkbox"
                         checked={formData.garde}
                         onChange={(e) => setFormData({ ...formData, garde: e.target.checked })}
-                        style={{ width: '20px', height: '20px' }}
+                        className="pharmacie-form-checkbox"
                       />
                       <span>🚨 Pharmacie de garde</span>
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem', fontWeight: '600' }}>
+                  <div className="pharmacie-form-actions-row">
+                    <button type="submit" className="btn-primary pharmacie-form-action-btn">
                       {editingPharmacie ? '💾 Modifier' : '✅ Créer'}
                     </button>
                     <button 
@@ -716,12 +710,12 @@ const PharmaciesPharmacien = () => {
                         setFormData({
                           nom: '', ville: '', quartier: '', adresse: '', photo: '',
                           latitude: '', longitude: '', telephone: '', email: '', 
-                          horaires: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+                          horaires: { ...EMPTY_HORAIRES },
                           garde: false
                         });
                       }}
                       className="btn-secondary"
-                      style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem' }}
+                      
                     >
                       Annuler
                     </button>
@@ -734,16 +728,9 @@ const PharmaciesPharmacien = () => {
           {showMessageForm && (
             <div
               ref={messageFormRef}
-              style={{
-              background: 'white',
-              padding: '2rem',
-              borderRadius: '16px',
-              boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-              marginTop: '2rem',
-              marginBottom: '2rem'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h2 style={{ fontSize: '1.8rem', color: '#00A651' }}>💬 Ajouter un Message/Alerte</h2>
+              className="pharmacie-inline-form-card">
+              <div className="pharmacie-inline-form-header">
+                <h2>Ajouter un message ou une alerte</h2>
                 <button
                   onClick={() => {
                     setShowMessageForm(false);
@@ -756,9 +743,9 @@ const PharmaciesPharmacien = () => {
                       visibleOrdre: false
                     });
                   }}
-                  style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '1rem' }}
+                  className="btn-danger"
                 >
-                  ✕ Fermer
+                  Fermer
                 </button>
               </div>
                 <form onSubmit={handleAddMessage}>
@@ -768,7 +755,7 @@ const PharmaciesPharmacien = () => {
                       value={messageForm.type}
                       onChange={(e) => setMessageForm({ ...messageForm, type: e.target.value as any })}
                       required
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     >
                       <option value="visiteur">Message pour visiteurs</option>
                       <option value="ordre">Message pour l'ordre</option>
@@ -784,7 +771,7 @@ const PharmaciesPharmacien = () => {
                       onChange={(e) => setMessageForm({ ...messageForm, titre: e.target.value })}
                       required
                       placeholder="Ex: Rupture de stock Doliprane"
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
@@ -796,36 +783,36 @@ const PharmaciesPharmacien = () => {
                       required
                       rows={4}
                       placeholder="Détails du message..."
-                      style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                      className="pharmacie-form-input"
                     />
                   </div>
 
                   <div className="form-group">
-                    <label>
+                    <label className="pharmacie-form-check">
                       <input
                         type="checkbox"
                         checked={messageForm.visibleVisiteurs}
                         onChange={(e) => setMessageForm({ ...messageForm, visibleVisiteurs: e.target.checked })}
-                        style={{ marginRight: '0.5rem' }}
+                        className="pharmacie-form-checkbox"
                       />
                       Visible aux visiteurs du site
                     </label>
                   </div>
 
                   <div className="form-group">
-                    <label>
+                    <label className="pharmacie-form-check">
                       <input
                         type="checkbox"
                         checked={messageForm.visibleOrdre}
                         onChange={(e) => setMessageForm({ ...messageForm, visibleOrdre: e.target.checked })}
-                        style={{ marginRight: '0.5rem' }}
+                        className="pharmacie-form-checkbox"
                       />
                       Visible à l'ordre des pharmaciens
                     </label>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-                    <button type="submit" className="btn-primary" style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem', fontWeight: '600' }}>
+                  <div className="pharmacie-form-actions-row">
+                    <button type="submit" className="btn-primary pharmacie-form-action-btn">
                       ✅ Ajouter
                     </button>
                     <button 
@@ -842,7 +829,6 @@ const PharmaciesPharmacien = () => {
                         });
                       }}
                       className="btn-secondary"
-                      style={{ flex: 1, padding: '0.75rem', fontSize: '1.1rem' }}
                     >
                       Annuler
                     </button>

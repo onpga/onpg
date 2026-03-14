@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PharmacienSidebar from './components/PharmacienSidebar';
 import '../Admin/Dashboard.css';
+import './PharmacienMessages.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -130,82 +131,80 @@ const PharmacienMessages = () => {
   return (
     <div className="admin-layout">
       <PharmacienSidebar currentPage="messages" />
-      <main className="admin-main">
-        <div className="admin-content">
-          <div className="admin-header" style={{ marginBottom: '1.5rem' }}>
+      <main className="admin-main pharmacien-messages-page">
+        <div className="admin-content pharmacien-messages-content">
+          <div className="admin-header pharmacien-messages-header">
             <div>
-          <h1>✉️ Messages à l'Ordre</h1>
-              <p style={{ fontSize: '1.05rem', marginTop: '0.4rem', color: '#666' }}>
+              <h1>Messages a l Ordre</h1>
+              <p className="pharmacien-messages-subtitle">
                 Envoyez des messages à l'Ordre et consultez les réponses.
               </p>
+              <div className="pharmacien-messages-kpis">
+                <span className="pharmacien-messages-kpi">
+                  {messages.length} message{messages.length > 1 ? 's' : ''}
+                </span>
+                <span className="pharmacien-messages-kpi">
+                  {messages.filter((m) => !m.reply).length} en attente
+                </span>
+              </div>
             </div>
             <button
               className="btn-primary"
               onClick={() => setShowNewMessageForm(!showNewMessageForm)}
-              style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
             >
-              {showNewMessageForm ? '✕ Annuler' : '➕ Nouveau message'}
+              {showNewMessageForm ? 'Annuler' : 'Nouveau message'}
             </button>
           </div>
 
           {feedback && (
             <div
-              className={`message ${feedback.type}`}
-              style={{
-                marginBottom: '1.5rem',
-                padding: '1rem',
-                borderRadius: '10px',
-                background: feedback.type === 'success' ? '#d1fae5' : '#fee2e2',
-                color: feedback.type === 'success' ? '#065f46' : '#991b1b',
-                border: `1px solid ${feedback.type === 'success' ? '#10b981' : '#ef4444'}`
-              }}
+              className={`pharmacien-messages-feedback ${feedback.type}`}
             >
               {feedback.text}
             </div>
           )}
 
           {showNewMessageForm && (
-            <div className="profile-section" style={{ marginBottom: '2rem' }}>
-              <h2 style={{ marginBottom: '1.5rem' }}>Envoyer un message à l'Ordre</h2>
-            <div className="profile-edit-form">
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="msgSujet">Sujet *</label>
-                <input
-                  type="text"
-                  id="msgSujet"
-                  value={messageOrdre.sujet}
-                  onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
-                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+            <div className="profile-section pharmacien-messages-compose">
+              <h2>Envoyer un message a l Ordre</h2>
+              <div className="profile-edit-form pharmacien-messages-compose-form">
+                <div className="form-group">
+                  <label htmlFor="msgSujet">Sujet *</label>
+                  <input
+                    type="text"
+                    id="msgSujet"
+                    value={messageOrdre.sujet}
+                    onChange={(e) => setMessageOrdre({ ...messageOrdre, sujet: e.target.value })}
+                    className="pharmacien-messages-input"
                     placeholder="Ex: Question sur les cotisations"
-                />
-              </div>
+                  />
+                </div>
 
-              <div className="form-group" style={{ marginBottom: '1rem' }}>
-                <label htmlFor="msgTexte">Message *</label>
-                <textarea
-                  id="msgTexte"
-                  value={messageOrdre.message}
-                  onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
-                  rows={6}
-                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+                <div className="form-group">
+                  <label htmlFor="msgTexte">Message *</label>
+                  <textarea
+                    id="msgTexte"
+                    value={messageOrdre.message}
+                    onChange={(e) => setMessageOrdre({ ...messageOrdre, message: e.target.value })}
+                    rows={6}
+                    className="pharmacien-messages-input"
                     placeholder="Votre message à l'Ordre..."
-                />
-              </div>
+                  />
+                </div>
 
-              <button
+                <button
                   className="btn-primary"
-                onClick={handleSendMessageOrdre}
-                disabled={sendingMessageOrdre}
-                  style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}
-              >
-                  {sendingMessageOrdre ? '✉️ Envoi...' : '✉️ Envoyer le message'}
-              </button>
+                  onClick={handleSendMessageOrdre}
+                  disabled={sendingMessageOrdre}
+                >
+                  {sendingMessageOrdre ? 'Envoi...' : 'Envoyer le message'}
+                </button>
+              </div>
             </div>
-          </div>
           )}
 
-            {loading ? (
-              <p>Chargement des messages...</p>
+          {loading ? (
+            <p className="pharmacien-messages-loading">Chargement des messages...</p>
             ) : messages.length === 0 ? (
             <div className="messages-detail-empty">
               <p>Aucun message envoyé pour le moment.</p>
@@ -236,11 +235,11 @@ const PharmacienMessages = () => {
                       <div className="message-item-subject">{m.subject}</div>
                       <div className="message-item-meta">
                         {m.reply ? (
-                          <span className="message-source-pill public" style={{ background: '#d1fae5', color: '#065f46' }}>
-                            ✓ Répondu
+                          <span className="message-source-pill public">
+                            Repondu
                           </span>
                         ) : (
-                          <span className="message-source-pill pharmacien" style={{ background: '#fef3c7', color: '#92400e' }}>
+                          <span className="message-source-pill pharmacien">
                             En attente
                           </span>
                         )}
@@ -281,7 +280,7 @@ const PharmacienMessages = () => {
                     </header>
 
                     <div className="messages-detail-body">
-                      <p style={{ whiteSpace: 'pre-wrap' }}>{selectedMessage.message}</p>
+                      <p className="pharmacien-message-body-text">{selectedMessage.message}</p>
                     </div>
 
                     <footer className="messages-detail-footer">
@@ -308,15 +307,8 @@ const PharmacienMessages = () => {
                         </div>
                           ) : (
                         <div className="messages-reply-block">
-                          <div style={{
-                            padding: '1rem',
-                            background: '#fef3c7',
-                            border: '1px solid #fde68a',
-                            borderRadius: '10px',
-                            color: '#92400e',
-                            fontSize: '0.9rem'
-                          }}>
-                            ⏳ En attente de réponse de l'Ordre
+                          <div className="pharmacien-awaiting-reply">
+                            En attente de reponse de l Ordre
                           </div>
                         </div>
                       )}

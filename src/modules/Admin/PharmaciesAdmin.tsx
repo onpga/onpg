@@ -164,7 +164,8 @@ const PharmaciesAdmin = () => {
   const handleFormChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, type } = e.currentTarget;
+    const checked = e.currentTarget instanceof HTMLInputElement ? e.currentTarget.checked : false;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value

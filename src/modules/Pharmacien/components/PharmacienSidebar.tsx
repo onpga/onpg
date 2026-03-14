@@ -53,7 +53,7 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
           📊 Tableau de bord
         </Link>
         <Link
-          to="/pharmacien/dashboard"
+          to="/pharmacien/profile"
           className={`nav-item ${currentPage === 'profile' ? 'active' : ''}`}
           onClick={() => setIsOpen(false)}
         >

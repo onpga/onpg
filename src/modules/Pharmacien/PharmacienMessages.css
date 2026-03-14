@@ -1,0 +1,118 @@
+.pharmacien-messages-page {
+  background: linear-gradient(180deg, #f5faf7 0%, #edf3ef 100%);
+}
+
+.pharmacien-messages-content {
+  max-width: 1200px;
+}
+
+.pharmacien-messages-header {
+  margin-bottom: 1rem;
+  border: 1px solid #deebe4;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+  border-radius: 16px;
+}
+
+.pharmacien-messages-subtitle {
+  font-size: 1rem;
+  margin-top: 0.35rem;
+  color: #6b7280;
+}
+
+.pharmacien-messages-kpis {
+  margin-top: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.pharmacien-messages-kpi {
+  border: 1px solid #cfe5d8;
+  background: #eef9f2;
+  color: #0f5132;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+}
+
+.pharmacien-messages-feedback {
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid transparent;
+}
+
+.pharmacien-messages-feedback.success {
+  background: #ecfdf3;
+  color: #065f46;
+  border-color: #9ce0be;
+}
+
+.pharmacien-messages-feedback.error {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: #fecaca;
+}
+
+.pharmacien-messages-compose {
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  border: 1px solid #deebe4;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+  background: linear-gradient(130deg, #ffffff 0%, #f8fbf9 100%);
+}
+
+.pharmacien-messages-compose h2 {
+  margin-bottom: 0.85rem;
+}
+
+.pharmacien-messages-compose-form .form-group {
+  margin-bottom: 0.85rem;
+}
+
+.pharmacien-messages-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.72rem 0.8rem;
+  font-size: 0.95rem;
+}
+
+.pharmacien-messages-input:focus {
+  outline: none;
+  border-color: #00a651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.13);
+}
+
+.pharmacien-messages-loading {
+  background: #ffffff;
+  border: 1px solid #e4ece7;
+  border-radius: 14px;
+  padding: 1rem;
+  color: #4b5563;
+}
+
+.pharmacien-message-body-text {
+  white-space: pre-wrap;
+  margin: 0;
+}
+
+.pharmacien-awaiting-reply {
+  padding: 0.9rem;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  color: #92400e;
+  font-size: 0.9rem;
+}
+
+.message-source-pill.public {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.message-source-pill.pharmacien {
+  background: #fef3c7;
+  color: #92400e;
+}

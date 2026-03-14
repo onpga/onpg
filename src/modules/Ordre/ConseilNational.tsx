@@ -1,143 +1,218 @@
-import { useState, useMemo } from 'react';
-import './ConseilNational.css';
+import { useEffect, useMemo, useState } from 'react';
+import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import './ConseilNationalPremium.css';
 
 interface ConseilMember {
   id: string;
   name: string;
   photo: string;
-  role: string;
+  role: 'Présidente' | 'Secrétaire' | 'Conseiller';
+  section: string;
+  mission: string;
 }
 
-const conseilMembers: ConseilMember[] = [
+const conseilMembersBase: ConseilMember[] = [
   {
     id: '1',
     name: 'Dr Patience Asseko NTOGONO OKE',
-    photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&h=200&fit=crop&crop=face',
-    role: 'Présidente'
+    photo: 'https://res.cloudinary.com/dduvinjnu/image/upload/v1772385445/pnbqq9jnq8rm0cpvqnj2.jpg',
+    role: 'Présidente',
+    section: 'Gouvernance',
+    mission: 'Pilotage stratégique de l’Ordre et représentation institutionnelle.'
   },
   {
     id: '2',
-    name: 'Dr. Jean Martin',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-    role: 'Secrétaire'
+    name: 'Dr Jean Martin',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=520&h=520&fit=crop&crop=face',
+    role: 'Secrétaire',
+    section: 'Administration',
+    mission: 'Coordination administrative, suivi des décisions et archives du Conseil.'
   },
   {
     id: '3',
-    name: 'Dr. Sophie Bernard',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
-    role: 'Conseiller'
+    name: 'Dr Sophie Bernard',
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=520&h=520&fit=crop&crop=face',
+    role: 'Conseiller',
+    section: 'Section A',
+    mission: 'Appui aux orientations techniques et représentation des officinaux.'
   },
   {
     id: '4',
-    name: 'Dr. Michel Dubois',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face',
-    role: 'Conseiller'
+    name: 'Dr Michel Dubois',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=520&h=520&fit=crop&crop=face',
+    role: 'Conseiller',
+    section: 'Section B',
+    mission: 'Suivi des dossiers scientifiques et enjeux de biologie médicale.'
   },
   {
     id: '5',
-    name: 'Dr. Nathalie Petit',
-    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&h=200&fit=crop&crop=face',
-    role: 'Conseiller'
+    name: 'Dr Nathalie Petit',
+    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=520&h=520&fit=crop&crop=face',
+    role: 'Conseiller',
+    section: 'Section C',
+    mission: 'Contribution aux politiques publiques et coordination institutionnelle.'
   },
   {
     id: '6',
-    name: 'Dr. Antoine Leroy',
-    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
-    role: 'Conseiller'
+    name: 'Dr Antoine Leroy',
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=520&h=520&fit=crop&crop=face',
+    role: 'Conseiller',
+    section: 'Section D',
+    mission: 'Veille sur l’industrie et la chaîne de distribution pharmaceutique.'
   }
 ];
 
-const ConseilNational = () => {
-  const [selectedMember, setSelectedMember] = useState<ConseilMember | null>(null);
+type RoleFilter = 'Tous' | 'Présidence' | 'Secrétariat' | 'Conseillers';
 
-  const stats = useMemo(() => ({
-    totalMembers: conseilMembers.length,
-    presidents: conseilMembers.filter(m => m.role === 'Présidente' || m.role === 'Président').length,
-    conseillers: conseilMembers.filter(m => m.role === 'Conseiller').length
-  }), []);
+const ConseilNational = () => {
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>('Tous');
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedMemberId(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  const conseilMembers = conseilMembersBase;
+
+  const stats = useMemo(
+    () => ({
+      totalMembers: conseilMembers.length,
+      presidents: conseilMembers.filter((m) => m.role === 'Présidente').length,
+      conseillers: conseilMembers.filter((m) => m.role === 'Conseiller').length
+    }),
+    []
+  );
+
+  const filteredMembers = useMemo(() => {
+    switch (roleFilter) {
+      case 'Présidence':
+        return conseilMembers.filter((m) => m.role === 'Présidente');
+      case 'Secrétariat':
+        return conseilMembers.filter((m) => m.role === 'Secrétaire');
+      case 'Conseillers':
+        return conseilMembers.filter((m) => m.role === 'Conseiller');
+      default:
+        return conseilMembers;
+    }
+  }, [roleFilter]);
+
+  const selectedMember = useMemo(
+    () => conseilMembers.find((m) => m.id === selectedMemberId) || null,
+    [selectedMemberId, conseilMembers]
+  );
 
   return (
-    <div className="ordre-page">
-      <section className="ordre-hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="hero-title-main">Conseil</span>
-              <span className="hero-title-subtitle">National</span>
-            </h1>
-            <p className="hero-description">
-              Découvrez les membres du Conseil National de l&apos;ONPG.
-            </p>
-          </div>
+    <div className="ordre-page conseil-premium-page">
+      <section className="cn-hero" aria-labelledby="cn-title">
+        <div className="cn-container">
+          <span className="cn-eyebrow">Gouvernance ONPG</span>
+          <h1 id="cn-title" className="cn-title">Conseil National</h1>
+          <p className="cn-lead">
+            Instance de gouvernance stratégique de l’Ordre National des Pharmaciens du Gabon.
+          </p>
 
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalMembers}</div>
-              <div className="stat-label">Membres</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.presidents}</div>
-              <div className="stat-label">Présidence</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.conseillers}</div>
-              <div className="stat-label">Conseillers</div>
-            </div>
+          <div className="cn-kpi-grid">
+            <article className="cn-kpi-card">
+              <strong>{stats.totalMembers}</strong>
+              <span>Membres</span>
+            </article>
+            <article className="cn-kpi-card">
+              <strong>{stats.presidents}</strong>
+              <span>Présidence</span>
+            </article>
+            <article className="cn-kpi-card">
+              <strong>{stats.conseillers}</strong>
+              <span>Conseillers</span>
+            </article>
           </div>
         </div>
       </section>
 
-      <section className="conseil-members-section">
-        <div className="section-container">
-          <div className="conseil-members-grid">
-            {conseilMembers.map((member) => (
-              <div
-                key={member.id}
-                className={`conseil-member-card ${member.role === 'Présidente' || member.role === 'Président' ? 'president' : ''}`}
-                onClick={() => setSelectedMember(member)}
+      <section className="cn-section">
+        <div className="cn-container">
+          <header className="cn-section-header">
+            <h2>Membres du Conseil</h2>
+            <p>Composition actuelle du Conseil National, avec rôles et champs de contribution.</p>
+          </header>
+
+          <div className="cn-filter-row" role="group" aria-label="Filtrer par rôle">
+            {(['Tous', 'Présidence', 'Secrétariat', 'Conseillers'] as RoleFilter[]).map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                className={`cn-filter-chip ${roleFilter === filter ? 'is-active' : ''}`}
+                onClick={() => setRoleFilter(filter)}
               >
-                <div className="conseil-member-photo-wrapper">
+                {filter}
+              </button>
+            ))}
+          </div>
+
+          <div className="cn-grid">
+            {filteredMembers.map((member) => (
+              <article
+                key={member.id}
+                className={`cn-card ${member.role === 'Présidente' ? 'is-president' : ''}`}
+                onClick={() => setSelectedMemberId(member.id)}
+              >
+                <div className="cn-card-photo-wrap">
                   <img
                     src={member.photo}
                     alt={member.name}
-                    className="conseil-member-photo"
+                    className="cn-card-photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== ONPG_IMAGES.logo) target.src = ONPG_IMAGES.logo;
+                    }}
                   />
                 </div>
-                <h3 className="conseil-member-name">{member.name}</h3>
-                <div className={`conseil-member-role ${member.role === 'Présidente' || member.role === 'Président' ? 'role-president' : 'role-conseiller'}`}>
-                  {member.role}
-                </div>
-              </div>
+                <h3>{member.name}</h3>
+                <span className={`cn-role-badge role-${member.role.toLowerCase()}`}>{member.role}</span>
+                <p className="cn-card-section">{member.section}</p>
+              </article>
             ))}
+          </div>
+
+          <div className="cn-trust-strip">
+            <div className="cn-trust-item">
+              <span>Source</span>
+              <strong>Ordre National des Pharmaciens du Gabon</strong>
+            </div>
+            <div className="cn-trust-item">
+              <span>Dernière mise à jour</span>
+              <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Modal de détail */}
       {selectedMember && (
-        <div
-          className="conseil-modal-overlay"
-          onClick={() => setSelectedMember(null)}
-        >
-          <div
-            className="conseil-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="conseil-modal-close"
-              onClick={() => setSelectedMember(null)}
-            >
-              ✕
+        <div className="cn-modal-overlay" onClick={() => setSelectedMemberId(null)} role="presentation">
+          <div className="cn-modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <button className="cn-modal-close" onClick={() => setSelectedMemberId(null)} aria-label="Fermer">
+              ×
             </button>
             <img
               src={selectedMember.photo}
               alt={selectedMember.name}
-              className="conseil-modal-photo"
+              className="cn-modal-photo"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== ONPG_IMAGES.logo) target.src = ONPG_IMAGES.logo;
+              }}
             />
-            <h2 className="conseil-modal-name">{selectedMember.name}</h2>
-            <div className={`conseil-modal-role ${selectedMember.role === 'Présidente' || selectedMember.role === 'Président' ? 'role-president' : 'role-conseiller'}`}>
-              {selectedMember.role}
-            </div>
+            <h2>{selectedMember.name}</h2>
+            <span className={`cn-role-badge role-${selectedMember.role.toLowerCase()}`}>{selectedMember.role}</span>
+            <p className="cn-modal-section"><strong>Périmètre:</strong> {selectedMember.section}</p>
+            <p className="cn-modal-mission"><strong>Mission:</strong> {selectedMember.mission}</p>
           </div>
         </div>
       )}

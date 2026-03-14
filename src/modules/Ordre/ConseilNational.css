@@ -715,3 +715,12 @@
     transform: translateY(-8px) scale(1.02);
   }
 }
+
+/* Mobile modal safety for long names/content */
+@media (max-width: 768px) {
+  .conseil-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

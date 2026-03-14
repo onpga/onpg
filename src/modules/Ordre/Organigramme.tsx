@@ -1,110 +1,181 @@
-import './Organigramme.css';
+import { Link } from 'react-router-dom';
+import './OrganigrammePremium.css';
 
-/* ── Icônes SVG institutionnelles ─────────────────────────── */
 const IconCrown = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M2 19h20M4 15l4-8 4 4 4-8 4 8"/>
-    <rect x="2" y="19" width="20" height="2" rx="1"/>
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3 18.5h18M5 15l3.7-7 3.3 3.7L15.4 6 19 15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 18.5h16v2H4z" stroke="currentColor" strokeWidth="1.8" />
   </svg>
 );
 
-const IconPen = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+const IconBoard = () => (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="3.5" y="4" width="17" height="15" rx="2.2" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
   </svg>
 );
 
-const IconPerson = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
+const IconSection = () => (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="3.8" y="4.5" width="6.5" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.8" />
+    <rect x="13.7" y="4.5" width="6.5" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.8" />
+    <rect x="3.8" y="14.4" width="6.5" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.8" />
+    <rect x="13.7" y="14.4" width="6.5" height="6.5" rx="1.2" stroke="currentColor" strokeWidth="1.8" />
   </svg>
 );
+
+const IconUser = () => (
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="12" cy="7.6" r="3.5" stroke="currentColor" strokeWidth="1.8" />
+    <path d="M5 19.3c0-3 2.5-5.4 5.5-5.4h3c3 0 5.5 2.4 5.5 5.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+  </svg>
+);
+
+const sections = [
+  { code: 'A', name: 'Officinaux', detail: 'Pharmacies d’officine' },
+  { code: 'B', name: 'Biologistes', detail: 'Biologie médicale' },
+  { code: 'C', name: 'Fonctionnaires', detail: 'Secteur public' },
+  { code: 'D', name: 'Fabricants / Grossistes', detail: 'Industrie & distribution' }
+];
+
+const operationalRoles = [
+  { title: 'Secrétariat', value: 'Poste en cours de mise à jour' },
+  { title: 'Conseiller 1', value: 'Poste en cours de mise à jour' },
+  { title: 'Conseiller 2', value: 'Poste en cours de mise à jour' },
+  { title: 'Conseiller 3', value: 'Poste en cours de mise à jour' }
+];
 
 const Organigramme = () => {
   return (
-    <div className="ordre-page">
-      <section className="ordre-hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="hero-title-main">Organigramme</span>
-              <span className="hero-title-subtitle">Institutionnel</span>
-            </h1>
-            <p className="hero-description">
-              Structure organisationnelle de l&apos;Ordre National des Pharmaciens du Gabon.
-            </p>
+    <div className="ordre-page organigramme-premium-page">
+      <section className="org-hero" aria-labelledby="org-title">
+        <div className="org-container">
+          <span className="org-eyebrow">Gouvernance institutionnelle</span>
+          <h1 id="org-title" className="org-title">
+            Organigramme de l&apos;ONPG
+          </h1>
+          <p className="org-lead">
+            Une structure claire et représentative pour piloter la profession pharmaceutique au Gabon.
+          </p>
+
+          <div className="org-kpi-grid">
+            <article className="org-kpi-card">
+              <strong>1</strong>
+              <span>Présidence</span>
+            </article>
+            <article className="org-kpi-card">
+              <strong>25</strong>
+              <span>Membres du Conseil National</span>
+            </article>
+            <article className="org-kpi-card">
+              <strong>4</strong>
+              <span>Sections professionnelles</span>
+            </article>
           </div>
         </div>
       </section>
 
-      <section className="organigramme-section">
-        <div className="section-container">
-          <div className="organigramme-container-premium">
-            {/* Ordre */}
-            <div className="org-node-premium org-node-ordre">
-              <h2 className="org-node-title">Ordre National des Pharmaciens</h2>
-              <p className="org-node-subtitle">ONPG</p>
-            </div>
+      <section className="org-section">
+        <div className="org-container">
+          <header className="org-section-header">
+            <h2>Hiérarchie institutionnelle</h2>
+            <p>Lecture simplifiée de la structure de décision et de représentation.</p>
+          </header>
 
-            <div className="org-connector org-connector-ordre">
-              <div className="connector-arrow"></div>
-            </div>
+          <div className="org-tree">
+            <article className="org-level-card root">
+              <h3>Ordre National des Pharmaciens</h3>
+              <p>Institution de régulation de la profession pharmaceutique</p>
+            </article>
 
-            {/* Présidente */}
-            <div className="org-node-premium org-node-president">
-              <h3 className="org-node-title">
-                <span className="org-icon"><IconCrown /></span>
-                Présidente
-              </h3>
-              <p className="org-node-person">Dr Patience Asseko NTOGONO OKE</p>
-            </div>
+            <div className="org-tree-connector" aria-hidden="true" />
 
-            <div className="org-connector org-connector-president">
-              <div className="connector-arrow"></div>
-            </div>
-
-            {/* Secrétaire et Sections */}
-            <div className="org-branch-container">
-              <div className="org-node-premium org-node-secretaire">
-                <h4 className="org-node-title-small">
-                  <span className="org-icon"><IconPen /></span>
-                  Secrétaire
-                </h4>
-                <p className="org-node-person-small">—</p>
+            <article className="org-level-card presidency">
+              <div className="org-level-title">
+                <IconCrown />
+                <h3>Présidence</h3>
               </div>
+              <p>Dr Patience Asseko NTOGONO OKE</p>
+            </article>
 
-              <div className="org-sections-container">
-                <div className="org-node-premium org-node-section">
-                  <h4 className="org-node-title-small">Section A — Officinaux</h4>
-                </div>
-                <div className="org-node-premium org-node-section">
-                  <h4 className="org-node-title-small">Section B — Biologistes</h4>
-                </div>
-                <div className="org-node-premium org-node-section">
-                  <h4 className="org-node-title-small">Section C — Fonctionnaires</h4>
-                </div>
-                <div className="org-node-premium org-node-section">
-                  <h4 className="org-node-title-small">Section D — Fabricants / Grossistes</h4>
-                </div>
+            <div className="org-tree-connector" aria-hidden="true" />
+
+            <article className="org-level-card board">
+              <div className="org-level-title">
+                <IconBoard />
+                <h3>Conseil National</h3>
               </div>
-            </div>
+              <p>Instance de gouvernance, d’orientation et de supervision</p>
+            </article>
+          </div>
+        </div>
+      </section>
 
-            <div className="org-connector org-connector-sections">
-              <div className="connector-arrow"></div>
-            </div>
+      <section className="org-section org-section-alt">
+        <div className="org-container">
+          <header className="org-section-header">
+            <h2>Sections professionnelles</h2>
+            <p>Quatre sections pour représenter l’ensemble des modes d’exercice.</p>
+          </header>
 
-            {/* Conseillers */}
-            <div className="org-conseillers-grid">
-              {['Conseiller', 'Conseiller', 'Conseiller'].map((role, i) => (
-                <div key={i} className="org-node-premium org-node-conseiller">
-                  <h4 className="org-node-title-small">
-                    <span className="org-icon"><IconPerson /></span>
-                    {role}
-                  </h4>
-                  <p className="org-node-person-small">—</p>
+          <div className="org-sections-grid">
+            {sections.map((section) => (
+              <article key={section.code} className="org-section-card">
+                <div className="org-section-top">
+                  <div className="org-section-icon">
+                    <IconSection />
+                  </div>
+                  <span className="org-section-code">Section {section.code}</span>
                 </div>
-              ))}
+                <h3>{section.name}</h3>
+                <p>{section.detail}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="org-section">
+        <div className="org-container">
+          <header className="org-section-header">
+            <h2>Gouvernance opérationnelle</h2>
+            <p>Rôles d’appui à la coordination du Conseil National.</p>
+          </header>
+
+          <div className="org-roles-grid">
+            {operationalRoles.map((role) => (
+              <article key={role.title} className="org-role-card">
+                <div className="org-role-title">
+                  <IconUser />
+                  <h3>{role.title}</h3>
+                </div>
+                <p>{role.value}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="org-trust-strip">
+            <div className="org-trust-item">
+              <span>Source</span>
+              <strong>Ordre National des Pharmaciens du Gabon</strong>
+            </div>
+            <div className="org-trust-item">
+              <span>Dernière mise à jour</span>
+              <strong>{new Date().toLocaleDateString('fr-FR')}</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="org-cta">
+        <div className="org-container">
+          <div className="org-cta-content">
+            <h2>Poursuivre votre parcours institutionnel</h2>
+            <p>Consultez les membres et la présentation complète de l’Ordre.</p>
+            <div className="org-cta-actions">
+              <Link to="/membres/tableau-ordre" className="org-cta-btn primary">Tableau de l&apos;Ordre</Link>
+              <Link to="/ordre/a-propos" className="org-cta-btn secondary">À propos de l&apos;ONPG</Link>
+              <Link to="/pratique/contact" className="org-cta-btn secondary">Contact</Link>
             </div>
           </div>
         </div>

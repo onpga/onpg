@@ -2298,3 +2298,51 @@
     padding: 1.5rem;
   }
 }
+
+/* ============================================
+   UX HARDENING - PREMIUM SAFE POLISH
+   ============================================ */
+
+.ordre-page :where(h1, h2, h3, p, li, a, button, .nav-link, .cta-btn, .org-link) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.ordre-page :where(a, button, [role='button'], .nav-link, .cta-btn, .org-link):focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.45);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .ordre-page .hero-content {
+    padding-inline: 1rem;
+  }
+
+  .ordre-page .hero-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .ordre-page .nav-container {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .ordre-page .cta-btn,
+  .ordre-page .org-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ordre-page *,
+  .ordre-page *::before,
+  .ordre-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

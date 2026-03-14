@@ -1,645 +1,532 @@
-/* ═══════════════════════════════════════════════════════════════
-   PHARMACIES.CSS — Fichier autonome, n'impacte pas les autres pages
-   Importe Pratique.css uniquement pour le hero/filtres partagés
-   ═══════════════════════════════════════════════════════════════ */
-@import './Pratique.css';
-
-/* ─── Indicateur de saisie (debounce) ──────────────────────── */
-.search-typing-indicator {
-  position: absolute;
-  right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  color: #00A651;
-  pointer-events: none;
+.ph-page {
+  --ph-bg: #f5f7fc;
+  --ph-surface: #ffffff;
+  --ph-border: rgba(17, 36, 96, 0.14);
+  --ph-title: #0f1b4d;
+  --ph-text: #304166;
+  --ph-muted: #62709a;
+  --ph-primary: #0f8a55;
+  --ph-primary-soft: rgba(15, 138, 85, 0.12);
+  --ph-shadow: 0 14px 34px rgba(13, 24, 69, 0.14);
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f9fbff 0%, var(--ph-bg) 78%);
+  color: var(--ph-text);
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+.ph-container {
+  width: min(1240px, calc(100% - 3rem));
+  margin: 0 auto;
 }
 
-.search-spinner {
-  animation: spin 0.8s linear infinite;
-  opacity: 0.75;
+.ph-hero {
+  padding: clamp(3rem, 6vw, 5rem) 0 2rem;
 }
 
-/* Logo ONPG en fallback dans la zone photo (fond vert doux, logo centré) */
-.pharmacy-photo.no-photo {
-  background: linear-gradient(135deg, #e8f5ee 0%, #d4edda 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.ph-eyebrow {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 37, 97, 0.2);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ph-primary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.36rem 0.8rem;
 }
 
-.pharmacy-photo.no-photo img {
-  object-fit: contain !important;
-  width: 60% !important;
-  height: 60% !important;
-  filter: drop-shadow(0 2px 6px rgba(0,166,81,0.15));
+.ph-title {
+  margin: 0.95rem 0 0;
+  color: var(--ph-title);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
 }
 
-/* ─── Réduction du hero (pas besoin de 70vh pour une liste) ─── */
-.pharmacies-hero.pratique-hero {
-  min-height: 38vh;
-  padding: 2rem 0;
+.ph-lead {
+  margin: 0.85rem 0 0;
+  max-width: 70ch;
+  color: var(--ph-muted);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  line-height: 1.7;
 }
 
-/* ─── Grille compacte : 3 col sur desktop ─────────────────────
-   Objectif : la card visible d'un seul coup d'œil, ~320px max
-   ─────────────────────────────────────────────────────────── */
-.pharmacies-grid {
+.ph-kpis {
+  margin-top: 1.35rem;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   PHARMACY CARD — Design compact & lisible
-   ═══════════════════════════════════════════════════════════════ */
-.pharmacy-card-detail {
-  background: #FFFFFF;
+.ph-kpi {
   border-radius: 16px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid var(--ph-border);
+  box-shadow: var(--ph-shadow);
+  background: var(--ph-surface);
+  padding: 1rem 1.08rem;
+  display: grid;
+  gap: 0.24rem;
+}
+
+.ph-kpi strong {
+  color: var(--ph-title);
+  font-size: 1.26rem;
+  line-height: 1.1;
+}
+
+.ph-kpi span {
+  color: var(--ph-muted);
+  font-size: 0.84rem;
+}
+
+.ph-filters {
+  padding: 0.85rem 0 0.1rem;
+}
+
+.ph-filter-shell {
+  border-radius: 18px;
+  border: 1px solid var(--ph-border);
+  box-shadow: var(--ph-shadow);
+  background: #fff;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: minmax(280px, 1.4fr) repeat(2, minmax(170px, 0.8fr));
+  gap: 0.72rem;
+  align-items: end;
+}
+
+.ph-field {
+  display: grid;
+  gap: 0.34rem;
+  min-width: 0;
+}
+
+.ph-field label {
+  color: var(--ph-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.ph-field input,
+.ph-field select {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(21, 40, 102, 0.26);
+  background: #fff;
+  color: var(--ph-title);
+  font-size: 0.92rem;
+  padding: 0.64rem 0.82rem;
+}
+
+.ph-check {
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(21, 40, 102, 0.26);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.8rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.ph-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--ph-primary);
+}
+
+.ph-view-toggle {
+  display: inline-flex;
+  border-radius: 12px;
+  border: 1px solid rgba(21, 40, 102, 0.24);
   overflow: hidden;
-  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
-  border: 1.5px solid rgba(0,0,0,0.05);
+  min-height: 44px;
+}
+
+.ph-view-toggle button {
+  border: 0;
+  background: #fff;
+  color: var(--ph-text);
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 0 0.8rem;
+  cursor: pointer;
+}
+
+.ph-view-toggle button.active {
+  background: var(--ph-primary-soft);
+  color: var(--ph-primary);
+}
+
+.ph-clear {
+  min-height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(21, 40, 102, 0.24);
+  background: #f7f9ff;
+  color: var(--ph-text);
+  font-size: 0.87rem;
+  font-weight: 700;
+  padding: 0 0.9rem;
+  cursor: pointer;
+}
+
+.ph-field input:focus-visible,
+.ph-field select:focus-visible,
+.ph-check:focus-within,
+.ph-view-toggle button:focus-visible,
+.ph-clear:focus-visible,
+.ph-link:focus-visible,
+.ph-pagination button:focus-visible {
+  outline: none;
+  border-color: var(--ph-primary);
+  box-shadow: 0 0 0 3px rgba(15, 138, 85, 0.2);
+}
+
+.ph-results {
+  padding: 1rem 0 3rem;
+}
+
+.ph-results-head {
+  margin: 0 0 0.85rem;
   display: flex;
-  flex-direction: column;
-  /* Pas d'animation de base qui bloque l'affichage */
-  opacity: 1;
-  transform: none;
-  animation: cardAppear 0.35s ease both;
-  animation-delay: var(--card-delay, 0s);
-  /* Hauteur max pour éviter les cartes géantes */
-  max-height: 380px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
 }
 
-@keyframes cardAppear {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+.ph-results-head h2 {
+  margin: 0;
+  color: var(--ph-title);
+  font-size: 1.2rem;
 }
 
-.pharmacy-card-detail:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.12), 0 3px 8px rgba(0,0,0,0.06);
+.ph-results-head span {
+  color: var(--ph-muted);
+  font-size: 0.86rem;
+  font-weight: 600;
 }
 
-/* Barre colorée en haut selon statut */
-.pharmacy-card-detail.garde {
-  border-top: 3px solid #FFC107;
-}
-.pharmacy-card-detail.ouvert:not(.garde) {
-  border-top: 3px solid #00A651;
-}
-.pharmacy-card-detail.ferme:not(.garde) {
-  border-top: 3px solid #e74c3c;
-  opacity: 0.88;
+.ph-empty,
+.ph-map-placeholder {
+  border-radius: 16px;
+  border: 1px dashed rgba(20, 39, 99, 0.35);
+  background: rgba(255, 255, 255, 0.75);
+  padding: 2.2rem 1.1rem;
+  text-align: center;
 }
 
-/* ─── Photo ── compact 118px ──────────────────────────────── */
-.pharmacy-photo {
+.ph-empty h3,
+.ph-map-placeholder h3 {
+  margin: 0;
+  color: var(--ph-title);
+}
+
+.ph-empty p,
+.ph-map-placeholder p {
+  margin: 0.5rem 0 0;
+  color: var(--ph-muted);
+}
+
+.ph-map-list {
+  margin-top: 0.8rem;
+  display: grid;
+  gap: 0.32rem;
+  justify-items: center;
+  color: var(--ph-text);
+  font-size: 0.84rem;
+}
+
+.ph-loader {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #d8e0f4;
+  border-top: 3px solid var(--ph-primary);
+  border-radius: 50%;
+  margin: 0 auto 0.85rem;
+  animation: ph-spin 0.9s linear infinite;
+}
+
+@keyframes ph-spin { to { transform: rotate(360deg); } }
+
+.ph-grid.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.68rem;
+}
+
+.ph-grid.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.7rem;
+}
+
+.ph-card {
+  border-radius: 12px;
+  border: 1px solid var(--ph-border);
+  box-shadow: var(--ph-shadow);
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.ph-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(13, 24, 69, 0.14);
+}
+
+.ph-grid.list .ph-card {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+}
+
+.ph-media {
   position: relative;
   width: 100%;
-  height: 118px;
-  overflow: hidden;
-  background: #e8f5ee;
-  flex-shrink: 0;
+  aspect-ratio: 16 / 8;
+  background: #eaf0ff;
 }
 
-.pharmacy-photo img {
-  width: 100%; height: 100%;
+.ph-grid.list .ph-media { aspect-ratio: auto; height: 100%; min-height: 145px; }
+
+.ph-media img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
-}
-.pharmacy-card-detail:hover .pharmacy-photo img {
-  transform: scale(1.06);
+  display: block;
 }
 
-/* Gradient dégradé au bas de la photo → fond blanc */
-.pharmacy-photo-gradient {
+.ph-badges {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 40%,
-    rgba(255,255,255,0.55) 100%
-  );
-  pointer-events: none;
-}
-
-/* Badges sur la photo */
-.photo-overlay {
-  position: absolute;
-  top: 8px; right: 8px;
+  left: 0.55rem;
+  top: 0.55rem;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  align-items: flex-end;
-}
-
-.garde-badge-photo {
-  display: flex; align-items: center; gap: 4px;
-  background: linear-gradient(135deg, #FFC107, #FFA000);
-  color: white;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.04em;
-  box-shadow: 0 2px 8px rgba(255,193,7,0.35);
-}
-
-.ouvert-badge-photo {
-  display: flex; align-items: center; gap: 5px;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 0.7rem; font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  backdrop-filter: blur(8px);
-}
-.ouvert-badge-photo.ouvert {
-  background: rgba(0,166,81,0.88);
-  color: white;
-}
-.ouvert-badge-photo.ferme {
-  background: rgba(231,76,60,0.88);
-  color: white;
-}
-.status-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.85);
-  flex-shrink: 0;
-  animation: statusPulse 2s ease-in-out infinite;
-}
-.ouvert-badge-photo.ferme .status-dot { animation: none; }
-
-@keyframes statusPulse {
-  0%,100% { opacity: 0.7; transform: scale(1); }
-  50%      { opacity: 1;   transform: scale(1.3); }
-}
-
-/* Badge distance (bas gauche) */
-.distance-badge {
-  position: absolute;
-  bottom: 8px; left: 8px;
-  display: flex; align-items: center; gap: 4px;
-  background: rgba(0,0,0,0.72);
-  backdrop-filter: blur(6px);
-  color: white;
-  padding: 3px 9px;
-  border-radius: 20px;
-  font-size: 0.7rem; font-weight: 600;
-}
-
-/* ─── Contenu card ─────────────────────────────────────────── */
-.pharmacy-content-detail {
-  padding: 0.75rem 0.875rem 0.5rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-height: 0;
-}
-
-.pharmacy-name-detail {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #1a252f;
-  line-height: 1.25;
-  margin: 0;
-  /* Tronquer si nom très long */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Localisation */
-.pharmacy-location-detail {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.location-address-detail {
-  color: #6c757d;
-  font-size: 0.76rem;
-  line-height: 1.3;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.location-city-detail {
-  display: flex; align-items: center; gap: 4px;
-  color: #495057;
-  font-size: 0.76rem; font-weight: 500;
-}
-
-/* Contact (numéro) */
-.pharmacy-contact-detail {
-  margin-top: 0.15rem;
-}
-.contact-item-detail {
-  display: flex; align-items: center; gap: 5px;
-}
-.contact-icon-detail { color: #00A651; font-size: 0.8rem; }
-.contact-link {
-  color: #00A651;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.8rem;
-  transition: color 0.18s ease;
-}
-.contact-link:hover { color: #007a3d; text-decoration: underline; }
-
-/* Horaires */
-.pharmacy-horaires-detail {
-  background: rgba(0,166,81,0.06);
-  border-radius: 8px;
-  padding: 0.4rem 0.6rem;
-  margin-top: 0.15rem;
-}
-.horaires-today-detail {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
   flex-wrap: wrap;
-}
-.horaires-today-detail strong {
-  color: #495057;
-  font-size: 0.73rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.horaires-ouvert {
-  color: #27ae60;
-  font-weight: 700;
-  font-size: 0.73rem;
-}
-.horaires-ferme {
-  color: #e74c3c;
-  font-weight: 700;
-  font-size: 0.73rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   BARRE D'ACTIONS — Icônes style "zone partage" (inspiration
-   actualites) : cercles compacts avec tooltip CSS, sans texte
-   ═══════════════════════════════════════════════════════════════ */
-.pharmacy-icon-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.875rem 0.75rem;
-  margin-top: auto;
-  border-top: 1px solid rgba(0,0,0,0.055);
-  flex-shrink: 0;
-}
-
-/* Numéro en pill cliquable */
-.pharmacy-phone-pill {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 10px;
-  background: rgba(33,150,243,0.08);
-  border: 1px solid rgba(33,150,243,0.22);
-  border-radius: 20px;
-  color: #1976D2;
-  text-decoration: none;
-  font-size: 0.75rem; font-weight: 600;
-  transition: all 0.18s ease;
-  white-space: nowrap;
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.pharmacy-phone-pill:hover {
-  background: #1976D2;
-  color: white;
-  border-color: #1976D2;
-}
-
-/* Groupe d'icônes (poussé à droite) */
-.pharmacy-icon-group {
-  display: flex;
-  align-items: center;
   gap: 0.35rem;
-  margin-left: auto;
-  flex-shrink: 0;
 }
 
-/* Bouton icône cercle */
-.pharmacy-action-btn {
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px;
-  border-radius: 50%;
-  background: #F4FAF6;
-  border: 1.5px solid rgba(0,166,81,0.18);
-  color: #00A651;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1);
-  flex-shrink: 0;
-  /* Reset button defaults */
-  font: inherit;
-  outline: none;
-}
-.pharmacy-action-btn:hover {
-  transform: scale(1.15);
-  box-shadow: 0 4px 14px rgba(0,166,81,0.3);
-}
-
-/* ── Couleurs spécifiques au hover ── */
-.pharmacy-action-btn.nav:hover {
-  background: #00A651; color: white; border-color: #00A651;
-  box-shadow: 0 4px 14px rgba(0,166,81,0.38);
-}
-.pharmacy-action-btn.phone:hover {
-  background: #1976D2; color: white; border-color: #1976D2;
-  box-shadow: 0 4px 14px rgba(25,118,210,0.38);
-}
-.pharmacy-action-btn.email:hover {
-  background: #0284C7; color: white; border-color: #0284C7;
-  box-shadow: 0 4px 14px rgba(2,132,199,0.35);
-}
-.pharmacy-action-btn.share:hover {
-  background: #F57C00; color: white; border-color: #F57C00;
-  box-shadow: 0 4px 14px rgba(245,124,0,0.38);
-}
-
-/* ── Tooltip CSS via data-tooltip ── */
-.pharmacy-action-btn::before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 7px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  background: rgba(15,22,38,0.88);
-  backdrop-filter: blur(6px);
+.ph-badge {
+  border-radius: 999px;
+  padding: 0.16rem 0.52rem;
+  font-size: 0.69rem;
+  font-weight: 700;
   color: #fff;
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.16s ease, transform 0.16s ease;
-  z-index: 10;
-}
-.pharmacy-action-btn::after {
-  content: '';
-  position: absolute;
-  bottom: calc(100% + 3px);
-  left: 50%; transform: translateX(-50%);
-  border: 4px solid transparent;
-  border-top-color: rgba(15,22,38,0.88);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.16s ease;
-  z-index: 10;
-}
-.pharmacy-action-btn:hover::before {
-  opacity: 1; transform: translateX(-50%) translateY(0);
-}
-.pharmacy-action-btn:hover::after { opacity: 1; }
-
-/* ── Focus accessible ── */
-.pharmacy-action-btn:focus-visible {
-  outline: 2px solid #00A651;
-  outline-offset: 2px;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   VUE LISTE COMPACTE — items minces, icônes alignées à droite
-   ═══════════════════════════════════════════════════════════════ */
-.pharmacies-list-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 2rem;
-}
+.ph-badge.garde { background: rgba(229, 57, 53, 0.92); }
+.ph-badge.open { background: rgba(15, 138, 85, 0.92); }
+.ph-badge.closed { background: rgba(99, 114, 154, 0.92); }
+.ph-badge.dist { background: rgba(15, 67, 138, 0.92); }
 
-.pharmacy-list-item-compact {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 0.875rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  border: 1.5px solid transparent;
-  animation: cardAppear 0.3s ease both;
-}
-.pharmacy-list-item-compact:hover {
-  transform: translateX(3px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  border-color: rgba(0,166,81,0.15);
-}
-
-/* Colonne statut */
-.pharmacy-list-status-compact {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  min-width: 36px;
-}
-.status-indicators-compact { display: flex; flex-direction: column; gap: 3px; align-items: center; }
-.garde-indicator-compact   { font-size: 1rem; }
-.ouvert-indicator-compact  { font-size: 0.85rem; }
-.ouvert-indicator-compact.ouvert { color: #27ae60; }
-.ouvert-indicator-compact.ferme  { color: #e74c3c; }
-
-/* Contenu */
-.pharmacy-list-content-compact { flex: 1; min-width: 0; }
-.pharmacy-list-header-compact  {}
-.pharmacy-list-header-compact h3 {
-  font-size: 0.92rem; font-weight: 700;
-  color: #1a252f; margin: 0 0 2px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.pharmacy-location-compact {
-  font-size: 0.75rem; color: #6c757d;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.pharmacy-horaires-compact {
-  font-size: 0.73rem; color: #00A651; font-weight: 600; margin-top: 2px;
-}
-.distance-compact { color: #6c757d; font-weight: 500; }
-
-/* Actions en mode liste — icônes uniquement */
-.pharmacy-icon-actions.compact {
-  display: flex; gap: 0.35rem;
-  padding: 0; border-top: none; margin-top: 0;
-  align-items: center;
-}
-.pharmacy-icon-actions.compact .pharmacy-action-btn {
-  width: 32px; height: 32px;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SECTION RÉSULTATS
-   ═══════════════════════════════════════════════════════════════ */
-.pharmacies-content {
-  padding: 1.25rem 0;
-}
-.pharmacies-content .section-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   SECTION INFORMATIONS PRATIQUES
-   ═══════════════════════════════════════════════════════════════ */
-.info-section {
-  background: white;
-  padding: 2.5rem 0;
-}
-.info-section .section-container { max-width: 1400px; margin: 0 auto; padding: 0 1.5rem; }
-.info-section .section-header    { text-align: center; margin-bottom: 2rem; }
-.info-section .section-title {
-  font-size: 1.8rem; font-weight: 800; color: #1a252f;
-  display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 0.5rem;
-}
-.info-section .section-subtitle  { color: #6c757d; font-size: 1rem; }
-.info-grid {
+.ph-body {
+  padding: 0.72rem;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
+  gap: 0.3rem;
 }
-.info-card {
-  background: #f8faf9;
-  border-radius: 14px;
-  padding: 1.5rem;
-  text-align: center;
-  transition: all 0.22s ease;
-  border: 1.5px solid transparent;
-}
-.info-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.09);
-  border-color: rgba(0,166,81,0.22);
-}
-.info-icon  { font-size: 2rem; margin-bottom: 0.75rem; display: block; }
-.info-card h3 { font-size: 1rem; font-weight: 700; color: #1a252f; margin-bottom: 0.5rem; }
-.info-card p  { color: #6c757d; line-height: 1.5; font-size: 0.85rem; }
 
-/* ═══════════════════════════════════════════════════════════════
-   PAGINATION
-   ═══════════════════════════════════════════════════════════════ */
-.pagination {
+.ph-body h3 {
+  margin: 0;
+  color: var(--ph-title);
+  font-size: 0.88rem;
+  line-height: 1.3;
+}
+
+.ph-loc {
+  margin: 0;
+  color: var(--ph-muted);
+  font-size: 0.75rem;
+  line-height: 1.34;
+}
+
+.ph-hours {
+  margin: 0.08rem 0 0;
+  color: #485a87;
+  font-size: 0.72rem;
+}
+
+.ph-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.44rem;
+  margin-top: 0.1rem;
+}
+
+.ph-link {
+  border-radius: 999px;
+  border: 1px solid rgba(15, 138, 85, 0.36);
+  background: var(--ph-primary-soft);
+  color: var(--ph-primary);
+  text-decoration: none;
+  font-size: 0.69rem;
+  font-weight: 700;
+  padding: 0.14rem 0.45rem;
+}
+
+.ph-link.secondary {
+  border-color: rgba(20, 39, 99, 0.22);
+  background: #f2f6ff;
+  color: #4a5b85;
+}
+
+.ph-link.tertiary {
+  border-color: rgba(20, 39, 99, 0.22);
+  background: #fff;
+  color: #4a5b85;
+}
+
+.ph-pagination {
+  margin-top: 0.9rem;
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 0.6rem;
+}
+
+.ph-pagination button {
+  min-height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(21, 40, 102, 0.24);
+  background: #fff;
+  color: var(--ph-title);
+  font-weight: 700;
+  font-size: 0.84rem;
+  padding: 0 0.9rem;
+  cursor: pointer;
+}
+
+.ph-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10010;
+  background: rgba(9, 16, 43, 0.58);
+  backdrop-filter: blur(2px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.ph-modal {
+  width: min(900px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  border-radius: 16px;
+  border: 1px solid var(--ph-border);
+  background: #fff;
+  box-shadow: 0 22px 54px rgba(11, 20, 59, 0.28);
+  padding: 1rem;
+  position: relative;
+}
+
+.ph-modal-close {
+  position: absolute;
+  right: 0.7rem;
+  top: 0.55rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(21, 40, 102, 0.24);
+  background: #fff;
+  color: var(--ph-title);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ph-modal-head {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.ph-modal-head img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.ph-modal-head h3 {
+  margin: 0;
+  color: var(--ph-title);
+}
+
+.ph-modal-head p {
+  margin: 0.35rem 0 0;
+  color: var(--ph-muted);
+  font-size: 0.9rem;
+}
+
+.ph-modal-badges {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.35rem;
   flex-wrap: wrap;
 }
-.pagination-btn {
-  padding: 0.6rem 1.25rem;
-  background: white;
-  border: 1.5px solid rgba(0,166,81,0.22);
+
+.ph-modal-grid {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.ph-modal-grid h4 {
+  margin: 0 0 0.45rem;
+  color: var(--ph-title);
+  font-size: 0.92rem;
+}
+
+.ph-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.ph-week-grid {
   border-radius: 10px;
-  color: #00A651;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  transition: all 0.18s ease;
-}
-.pagination-btn:hover:not(:disabled) {
-  background: #00A651; color: white; border-color: #00A651;
-}
-.pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.pagination-numbers { display: flex; gap: 0.4rem; align-items: center; }
-.pagination-number {
-  width: 36px; height: 36px;
-  background: white;
-  border: 1.5px solid rgba(0,166,81,0.22);
-  border-radius: 50%;
-  color: #00A651;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  transition: all 0.18s ease;
-  display: flex; align-items: center; justify-content: center;
-}
-.pagination-number:hover,
-.pagination-number.active {
-  background: #00A651; color: white; border-color: #00A651;
+  border: 1px solid rgba(21, 40, 102, 0.18);
+  background: #f9fbff;
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.32rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ÉTATS LOADING / VIDE
-   ═══════════════════════════════════════════════════════════════ */
-.loading-state {
-  text-align: center; padding: 4rem;
-  color: #6c757d; font-size: 1rem;
+.ph-week-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  color: var(--ph-text);
+  font-size: 0.82rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   VUE CARTE (placeholder)
-   ═══════════════════════════════════════════════════════════════ */
-.map-view { margin-bottom: 2rem; }
-.map-placeholder {
-  background: white; border-radius: 16px;
-  padding: 3rem 2rem; text-align: center;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.07);
-}
-.map-icon  { font-size: 3rem; margin-bottom: 1rem; display: block; }
-.map-placeholder h3 { font-size: 1.5rem; font-weight: 700; color: #1a252f; margin-bottom: 0.75rem; }
-.map-placeholder p  { color: #6c757d; font-size: 0.95rem; margin-bottom: 1.5rem; }
-.map-preview {
-  display: flex; flex-direction: column; gap: 0.75rem;
-  max-width: 360px; margin: 0 auto;
-}
-.map-marker {
-  background: rgba(0,166,81,0.08); color: #00A651;
-  padding: 0.75rem 1rem; border-radius: 10px;
-  font-weight: 600; font-size: 0.9rem;
-  border-left: 3px solid #00A651; text-align: left;
+.ph-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
-@media (max-width: 1024px) {
-  .pharmacies-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 0.875rem;
+@media (max-width: 1080px) {
+  .ph-filter-shell { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ph-grid.cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ph-modal-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .ph-container { width: min(1240px, calc(100% - 1.5rem)); }
+  .ph-kpis, .ph-filter-shell, .ph-grid.cards { grid-template-columns: 1fr; }
+  .ph-grid.list .ph-card { grid-template-columns: 1fr; }
+  .ph-modal-head { grid-template-columns: 1fr; }
+  .ph-modal-head img { height: 160px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ph-page *,
+  .ph-page *::before,
+  .ph-page *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
-}
-
-@media (max-width: 768px) {
-  .pharmacies-hero.pratique-hero { min-height: 28vh; }
-
-  .pharmacies-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-
-  .pharmacies-content .section-container { padding: 0 0.875rem; }
-
-  .pharmacy-card-detail { max-height: none; }
-
-  /* Sur mobile une carte par ligne */
-  @media (max-width: 480px) {
-    .pharmacies-grid { grid-template-columns: 1fr; }
-  }
-
-  .pharmacy-list-item-compact { padding: 0.75rem; }
-
-  .info-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 480px) {
-  .pharmacies-grid   { grid-template-columns: 1fr; gap: 0.75rem; }
-  .info-grid         { grid-template-columns: 1fr; }
-  .pharmacy-phone-pill { font-size: 0.7rem; padding: 4px 8px; }
 }

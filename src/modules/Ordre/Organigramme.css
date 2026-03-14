@@ -677,3 +677,11 @@
     transform: translateY(-5px) scale(1.02);
   }
 }
+
+/* Extra overflow safety for very narrow devices */
+@media (max-width: 768px) {
+  .org-node-premium {
+    width: 100%;
+    min-width: 0 !important;
+  }
+}

@@ -334,15 +334,15 @@
 .missions-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
+  gap: 1.25rem;
   position: relative;
   z-index: 1;
 }
 
 .mission-card {
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border-radius: 24px;
-  padding: 3rem 2.5rem;
+  border-radius: 18px;
+  padding: 2rem 1.4rem;
   box-shadow: 
     0 10px 40px rgba(0, 0, 0, 0.08),
     0 2px 8px rgba(0, 0, 0, 0.04),
@@ -415,8 +415,8 @@
 }
 
 .mission-icon {
-  width: 85px;
-  height: 85px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -432,8 +432,8 @@
 }
 
 .mission-icon svg {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
 }
 
@@ -464,7 +464,7 @@
 }
 
 .mission-content h3 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #1a252f;
   margin-bottom: 1.2rem;
@@ -479,7 +479,7 @@
 .mission-description {
   color: #6c757d;
   line-height: 1.7;
-  font-size: 1.05rem;
+  font-size: 0.96rem;
   transition: color 0.3s ease;
 }
 
@@ -531,8 +531,8 @@
 
 .valeurs-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
   position: relative;
   z-index: 1;
 }
@@ -542,8 +542,8 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 28px;
-  padding: 3rem 2.5rem;
+  border-radius: 18px;
+  padding: 2rem 1.4rem;
   text-align: center;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   opacity: 0;
@@ -610,8 +610,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.18);
   border: 1.5px solid rgba(255, 255, 255, 0.35);
@@ -629,8 +629,8 @@
 }
 
 .icon-emoji svg {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
 }
 
 .valeur-card:hover .icon-emoji {
@@ -664,14 +664,14 @@
 }
 
 .valeur-title {
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   font-weight: 700;
   margin-bottom: 1.2rem;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .valeur-description {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   line-height: 1.7;
   opacity: 0.95;
 }
@@ -1051,11 +1051,12 @@
    RESPONSIVE - MOBILE
    ============================================ */
 
-@media (max-width: 1200px) {
-  .missions-grid {
+@media (max-width: 1100px) {
+  .missions-grid,
+  .valeurs-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .organisation-content {
     gap: 3rem;
   }
@@ -1142,5 +1143,289 @@
   .icon-emoji svg {
     width: 26px;
     height: 26px;
+  }
+}
+
+/* ============================================
+   A PROPOS - REFINEMENT UX PREMIUM (visible)
+   ============================================ */
+
+/* Hero plus sobre et plus lisible */
+.ordre-page .ordre-hero {
+  min-height: 62vh;
+  animation-duration: 22s;
+}
+
+.ordre-page .ordre-hero::after {
+  opacity: 0.45;
+  animation-duration: 30s;
+}
+
+.ordre-page .hero-bg-pattern .pattern-shape {
+  opacity: 0.55;
+  animation-duration: 12s;
+}
+
+.ordre-page .hero-description {
+  max-width: 52ch;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+}
+
+/* Highlights plus élégants, moins agressifs */
+.ordre-page .hero-highlights .highlight-item {
+  padding: 0.75rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ordre-page .hero-highlights .highlight-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+}
+
+/* Navigation interne plus nette */
+.ordre-page .ordre-nav {
+  border-bottom-color: rgba(0, 166, 81, 0.14);
+  box-shadow: 0 6px 18px rgba(26, 37, 47, 0.08);
+}
+
+.ordre-page .nav-link {
+  letter-spacing: 0.2px;
+}
+
+.ordre-page .nav-link:focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.4);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* Cartes mission/valeurs: premium plus calme */
+.mission-card,
+.valeur-card {
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease, background-color 0.28s ease;
+}
+
+.mission-card:hover {
+  transform: translateY(-8px) scale(1.015);
+}
+
+.valeur-card:hover {
+  transform: translateY(-8px) scale(1.015);
+}
+
+.mission-description,
+.valeur-description,
+.organisation-text p {
+  line-height: 1.7;
+}
+
+/* CTA final plus premium institutionnel */
+.cta-section {
+  padding: 5rem 0;
+}
+
+.cta-btn {
+  border-radius: 999px;
+}
+
+.cta-btn:focus-visible,
+.org-link:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 2px;
+}
+
+/* Mobile: lisibilité et rythme vertical */
+@media (max-width: 768px) {
+  .ordre-page .ordre-hero {
+    min-height: 60vh;
+  }
+
+  .ordre-page .hero-highlights {
+    gap: 0.6rem;
+  }
+
+  .ordre-page .hero-highlights .highlight-item {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ordre-page .section-subtitle {
+    font-size: 1.08rem;
+  }
+}
+
+/* Accessibilité mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  .ordre-page .ordre-hero,
+  .ordre-page .ordre-hero::after,
+  .ordre-page .hero-bg-pattern .pattern-shape,
+  .mission-card,
+  .valeur-card,
+  .org-link,
+  .cta-btn {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   COMPLETE PREMIUM REWORK - A PROPOS
+   ============================================ */
+
+.ordre-apropos-premium .ordre-hero {
+  min-height: 58vh;
+}
+
+.ordre-apropos-premium .hero-content {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.ordre-apropos-premium .hero-title {
+  margin-bottom: 0.9rem;
+}
+
+.ordre-apropos-premium .hero-description p {
+  margin-bottom: 1rem;
+}
+
+.ordre-apropos-premium .hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.ordre-apropos-premium .hero-highlights .highlight-item {
+  padding: 0.58rem 0.9rem;
+  font-size: 0.8rem;
+}
+
+.apropos-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1rem;
+  max-width: 760px;
+}
+
+.apropos-kpi-card {
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  padding: 0.8rem 0.9rem;
+  backdrop-filter: blur(8px);
+}
+
+.apropos-kpi-value {
+  display: block;
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.apropos-kpi-label {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ordre-apropos-premium .ordre-nav .nav-link.active {
+  color: #00a651;
+}
+
+.ordre-apropos-premium .mission-section,
+.ordre-apropos-premium .valeurs-section,
+.ordre-apropos-premium .organisation-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+.ordre-apropos-premium .missions-grid,
+.ordre-apropos-premium .valeurs-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.ordre-apropos-premium .mission-card,
+.ordre-apropos-premium .valeur-card {
+  min-height: 100%;
+}
+
+.mission-index {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(0, 166, 81, 0.55);
+  background: rgba(0, 166, 81, 0.08);
+  border: 1px solid rgba(0, 166, 81, 0.15);
+  padding: 0.12rem 0.42rem;
+  border-radius: 999px;
+}
+
+.organisation-trust-strip {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1.1rem;
+}
+
+.organisation-trust-strip .trust-item {
+  background: #f7fbf9;
+  border: 1px solid rgba(0, 166, 81, 0.16);
+  border-radius: 12px;
+  padding: 0.62rem 0.72rem;
+}
+
+.organisation-trust-strip .trust-label {
+  display: block;
+  font-size: 0.72rem;
+  color: #547062;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.organisation-trust-strip strong {
+  font-size: 0.9rem;
+  color: #1a252f;
+}
+
+.ordre-apropos-premium .cta-section {
+  padding-top: 4.2rem;
+  padding-bottom: 4.2rem;
+}
+
+@media (max-width: 980px) {
+  .ordre-apropos-premium .missions-grid,
+  .ordre-apropos-premium .valeurs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .ordre-apropos-premium .ordre-hero {
+    min-height: 54vh;
+  }
+
+  .apropos-kpi-row {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
+  .ordre-apropos-premium .missions-grid,
+  .ordre-apropos-premium .valeurs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .organisation-trust-strip {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import './Pharmacies.css';
 
@@ -9,7 +8,6 @@ const API_URL =
     ? 'https://backendonpg-production.up.railway.app/api'
     : 'http://localhost:3001/api');
 
-// Types pour les pharmacies (basé sur l'API)
 interface Pharmacy {
   _id: string;
   nom: string;
@@ -35,9 +33,23 @@ interface Pharmacy {
   ouvert?: boolean;
 }
 
+type ViewMode = 'cards' | 'list' | 'map';
+
+const PAGE_SIZE = 12;
+
+const formatDistance = (km?: number) => {
+  if (!km && km !== 0) return '';
+  if (km < 1) return `${Math.round(km * 1000)} m`;
+  return `${km.toFixed(1)} km`;
+};
+
+const getCurrentDay = (): keyof NonNullable<Pharmacy['horaires']> => {
+  const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'] as const;
+  return days[new Date().getDay()];
+};
+
 const Pharmacies = () => {
   const [pharmacies, setPharmacies] = useState<Pharmacy[]>([]);
-  const [filteredPharmacies, setFilteredPharmacies] = useState<Pharmacy[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCity, setSelectedCity] = useState('Toutes');
   const [selectedQuartier, setSelectedQuartier] = useState('Tous');
@@ -46,76 +58,69 @@ const Pharmacies = () => {
   const [prochesOnly, setProchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [currentLocation, setCurrentLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [viewMode, setViewMode] = useState<'cards' | 'list' | 'map'>('cards');
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [currentPage, setCurrentPage] = useState(1);
-  const [filtersVisible, setFiltersVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const filtersRef = useRef<HTMLDivElement>(null);
+  const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(null);
 
-  const pharmaciesPerPage = 12;
-
-  // Debounce : attend 420ms après la dernière frappe avant de déclencher la recherche API
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery.trim());
-      setCurrentPage(1); // revenir à la page 1 quand la recherche change
-    }, 420);
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery.trim()), 350);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Charger les pharmacies depuis l'API
+  useEffect(() => {
+    if (prochesOnly && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        () => {
+          setProchesOnly(false);
+          setCurrentLocation(null);
+        }
+      );
+    } else if (!prochesOnly) {
+      setCurrentLocation(null);
+    }
+  }, [prochesOnly]);
+
   useEffect(() => {
     const loadPharmacies = async () => {
       try {
         setLoading(true);
         const params = new URLSearchParams();
-        
-        if (selectedCity !== 'Toutes') {
-          params.append('ville', selectedCity);
-        }
-        if (selectedQuartier !== 'Tous') {
-          params.append('quartier', selectedQuartier);
-        }
-        if (debouncedSearch) {
-          params.append('search', debouncedSearch);
-        }
-        if (gardeOnly) {
-          params.append('garde', 'true');
-        }
+        if (selectedCity !== 'Toutes') params.append('ville', selectedCity);
+        if (selectedQuartier !== 'Tous') params.append('quartier', selectedQuartier);
+        if (debouncedSearch) params.append('search', debouncedSearch);
+        if (gardeOnly) params.append('garde', 'true');
         if (currentLocation) {
-          params.append('latitude', currentLocation.lat.toString());
-          params.append('longitude', currentLocation.lng.toString());
+          params.append('latitude', String(currentLocation.lat));
+          params.append('longitude', String(currentLocation.lng));
         }
 
-        const url = `${API_URL}/public/pharmacies?${params.toString()}`;
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        
+        const response = await fetch(`${API_URL}/public/pharmacies?${params.toString()}`);
         const data = await response.json();
-        
-        if (data.success && Array.isArray(data.data)) {
-          // Mapper les données de l'API vers le format attendu
-          const mappedPharmacies: Pharmacy[] = data.data.map((ph: any) => ({
-            _id: ph._id,
-            nom: ph.nom || '',
-            adresse: ph.adresse || '',
-            ville: ph.ville || '',
-            quartier: ph.quartier || '',
-            telephone: ph.telephone || '',
-            email: ph.email,
-            garde: ph.garde || false,
+        if (response.ok && data.success && Array.isArray(data.data)) {
+          const mapped: Pharmacy[] = data.data.map((ph: any) => ({
+            _id: String(ph._id || ''),
+            nom: String(ph.nom || ''),
+            adresse: String(ph.adresse || ''),
+            ville: String(ph.ville || ''),
+            quartier: String(ph.quartier || ''),
+            telephone: String(ph.telephone || ''),
+            email: ph.email || '',
+            garde: Boolean(ph.garde),
             latitude: ph.latitude,
             longitude: ph.longitude,
+            distance: ph.distance,
             photo: ph.photo || '',
             horaires: ph.horaires || {},
-            ouvert: ph.ouvert !== undefined ? ph.ouvert : true, // Par défaut ouvert
-            distance: ph.distance
+            ouvert: ph.ouvert !== false
           }));
-          setPharmacies(mappedPharmacies);
+          setPharmacies(mapped);
         } else {
           setPharmacies([]);
         }
@@ -130,116 +135,43 @@ const Pharmacies = () => {
     loadPharmacies();
   }, [selectedCity, selectedQuartier, debouncedSearch, gardeOnly, currentLocation]);
 
-  // Gestion du scroll pour masquer/afficher les filtres
+  const filtered = useMemo(() => {
+    let rows = [...pharmacies];
+    if (ouvertOnly) rows = rows.filter((p) => p.ouvert !== false);
+    if (prochesOnly) rows = rows.sort((a, b) => (a.distance || 9999) - (b.distance || 9999));
+    return rows;
+  }, [pharmacies, ouvertOnly, prochesOnly]);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > 100) {
-        if (currentScrollY > lastScrollY && filtersVisible) {
-          setFiltersVisible(false);
-        } else if (currentScrollY < lastScrollY && !filtersVisible) {
-          setFiltersVisible(true);
-        }
-      } else {
-        setFiltersVisible(true);
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, filtersVisible]);
-
-  // Calcul des distances
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-    const R = 6371; // Rayon de la Terre en km
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a =
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  };
-
-  // Géolocalisation
-  useEffect(() => {
-    if (prochesOnly && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        (error) => {
-          console.warn('Erreur de géolocalisation:', error);
-          setProchesOnly(false);
-        }
-      );
-    }
-  }, [prochesOnly]);
-
-  // Filtrage local (les filtres principaux sont déjà appliqués par l'API)
-  useEffect(() => {
-    let filtered = [...pharmacies];
-
-    // Filtrage ouvert uniquement (fait côté client car l'API ne le gère pas)
-    if (ouvertOnly) {
-      filtered = filtered.filter(pharmacy => pharmacy.ouvert !== false);
-    }
-
-    // Tri par distance si activé
-    if (prochesOnly && currentLocation) {
-      filtered = filtered
-        .filter(p => p.latitude && p.longitude)
-        .map(p => {
-          if (!p.distance && p.latitude && p.longitude) {
-            p.distance = calculateDistance(
-              currentLocation.lat,
-              currentLocation.lng,
-              p.latitude,
-              p.longitude
-            );
-          }
-          return p;
-        })
-        .sort((a, b) => (a.distance || 0) - (b.distance || 0));
-    }
-
-    setFilteredPharmacies(filtered);
     setCurrentPage(1);
-  }, [pharmacies, ouvertOnly, prochesOnly, currentLocation]);
+  }, [filtered.length, viewMode, selectedCity, selectedQuartier, gardeOnly, ouvertOnly, prochesOnly, debouncedSearch]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredPharmacies.length / pharmaciesPerPage);
-  const startIndex = (currentPage - 1) * pharmaciesPerPage;
-  const endIndex = startIndex + pharmaciesPerPage;
-  const currentPharmacies = filteredPharmacies.slice(startIndex, endIndex);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageStart = (safePage - 1) * PAGE_SIZE;
+  const currentPharmacies = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
-  // Statistiques
-  const stats = useMemo(() => ({
-    totalPharmacies: pharmacies.length,
-    gardePharmacies: pharmacies.filter(p => p.garde).length,
-    ouvertMaintenant: pharmacies.filter(p => p.ouvert !== false).length,
-    villesCount: new Set(pharmacies.map(p => p.ville).filter(v => v)).size,
-    quartiersCount: new Set(pharmacies.map(p => p.quartier).filter(q => q)).size
-  }), [pharmacies]);
+  const stats = useMemo(
+    () => ({
+      total: pharmacies.length,
+      garde: pharmacies.filter((p) => p.garde).length,
+      ouvertes: pharmacies.filter((p) => p.ouvert !== false).length
+    }),
+    [pharmacies]
+  );
 
-  const cities = [...new Set(pharmacies.map(p => p.ville).filter(v => v))].sort();
+  const cities = useMemo(
+    () => [...new Set(pharmacies.map((p) => p.ville).filter(Boolean))].sort(),
+    [pharmacies]
+  );
+
   const quartiers = useMemo(() => {
-    if (selectedCity === 'Toutes') {
-      return [...new Set(pharmacies.map(p => p.quartier).filter(q => q))].sort();
-    }
-    return [...new Set(pharmacies.filter(p => p.ville === selectedCity).map(p => p.quartier).filter(q => q))].sort();
+    const source =
+      selectedCity === 'Toutes'
+        ? pharmacies
+        : pharmacies.filter((p) => p.ville === selectedCity);
+    return [...new Set(source.map((p) => p.quartier).filter(Boolean))].sort();
   }, [pharmacies, selectedCity]);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
 
   const clearFilters = () => {
     setSearchQuery('');
@@ -251,546 +183,329 @@ const Pharmacies = () => {
     setCurrentPage(1);
   };
 
-  const getCurrentDay = () => {
-    const days = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
-    return days[new Date().getDay()] as keyof NonNullable<Pharmacy['horaires']>;
-  };
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedPharmacy(null);
+    };
+    window.addEventListener('keydown', onEsc);
+    return () => window.removeEventListener('keydown', onEsc);
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="pratique-page">
-        <div className="loading-state" style={{ textAlign: 'center', padding: '4rem' }}>
-          <p>Chargement des pharmacies...</p>
-        </div>
-      </div>
-    );
-  }
+  const fullWeek = (horaires?: Pharmacy['horaires']) => [
+    { key: 'lundi', label: 'Lundi' },
+    { key: 'mardi', label: 'Mardi' },
+    { key: 'mercredi', label: 'Mercredi' },
+    { key: 'jeudi', label: 'Jeudi' },
+    { key: 'vendredi', label: 'Vendredi' },
+    { key: 'samedi', label: 'Samedi' },
+    { key: 'dimanche', label: 'Dimanche' }
+  ].map((d) => ({
+    label: d.label,
+    value: horaires?.[d.key as keyof NonNullable<Pharmacy['horaires']>] || 'Non renseigne'
+  }));
+
+  const hasFilters =
+    debouncedSearch.length > 0 ||
+    selectedCity !== 'Toutes' ||
+    selectedQuartier !== 'Tous' ||
+    gardeOnly ||
+    ouvertOnly ||
+    prochesOnly;
 
   return (
-    <div className="pratique-page">
-      {/* Hero Section spécialisé pharmacies */}
-      <section className="pratique-hero pharmacies-hero">
-        <div className="hero-content">
-          <div className="hero-text">
-            <h1 className="hero-title">
-              <span className="hero-title-main">Annuaire des</span>
-              <span className="hero-title-subtitle">Pharmacies</span>
-            </h1>
-            <p className="hero-description">
-              Trouvez la pharmacie la plus proche avec horaires d'ouverture,
-              services de garde et géolocalisation en temps réel.
-            </p>
-            <div className="hero-highlights">
-              <span className="highlight-item">📍 Géolocalisation</span>
-              <span className="highlight-item">🩺 Pharmacies de garde</span>
-              <span className="highlight-item">⏰ Horaires temps réel</span>
-            </div>
-          </div>
+    <div className="ph-page">
+      <section className="ph-hero" aria-labelledby="ph-title">
+        <div className="ph-container">
+          <span className="ph-eyebrow">Pratique</span>
+          <h1 id="ph-title" className="ph-title">Annuaire des pharmacies</h1>
+          <p className="ph-lead">
+            Trouvez rapidement une pharmacie par ville, quartier, statut de garde ou proximite.
+          </p>
 
-          {/* Stats Cards spécialisées */}
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-number">{stats.totalPharmacies}</div>
-              <div className="stat-label">Pharmacies</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.gardePharmacies}</div>
-              <div className="stat-label">De garde</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-number">{stats.ouvertMaintenant}</div>
-              <div className="stat-label">Ouvertes</div>
-            </div>
+          <div className="ph-kpis">
+            <article className="ph-kpi">
+              <strong>{stats.total}</strong>
+              <span>Pharmacies</span>
+            </article>
+            <article className="ph-kpi">
+              <strong>{stats.garde}</strong>
+              <span>De garde</span>
+            </article>
+            <article className="ph-kpi">
+              <strong>{stats.ouvertes}</strong>
+              <span>Ouvertes</span>
+            </article>
           </div>
-        </div>
-
-        <div className="hero-bg-pattern">
-          <div className="pattern-shape shape-1"></div>
-          <div className="pattern-shape shape-2"></div>
-          <div className="pattern-shape shape-3"></div>
         </div>
       </section>
 
-      {/* Filtres avancés pour pharmacies */}
-      <div className="filters-wrapper">
-        <div 
-          ref={filtersRef}
-          className={`pratique-filters ${filtersVisible ? 'visible' : 'hidden'}`}
-        >
-          <div className="filters-container">
-          <div className="search-section">
-            <form onSubmit={handleSearch} className="search-form">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Rechercher une pharmacie, une adresse..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                  autoComplete="off"
-                />
-                {/* Indicateur : spinner pendant le délai, loupe sinon */}
-                {searchQuery !== debouncedSearch ? (
-                  <span className="search-typing-indicator" aria-label="En cours de saisie…">
-                    <svg className="search-spinner" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" strokeDasharray="40 20" strokeLinecap="round"/>
-                    </svg>
-                  </span>
-                ) : (
-                  <button type="submit" className="search-button" aria-label="Rechercher">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </form>
-          </div>
+      <section className="ph-filters">
+        <div className="ph-container">
+          <div className="ph-filter-shell">
+            <div className="ph-field search">
+              <label htmlFor="ph-search">Recherche</label>
+              <input
+                id="ph-search"
+                type="text"
+                placeholder="Nom, adresse, quartier..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
 
-          <div className="filters-row">
-            <div className="filter-group">
-              <label>Ville:</label>
-              <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
+            <div className="ph-field">
+              <label htmlFor="ph-city">Ville</label>
+              <select id="ph-city" value={selectedCity} onChange={(e) => setSelectedCity(e.target.value)}>
                 <option value="Toutes">Toutes les villes</option>
-                {cities.map(city => (
+                {cities.map((city) => (
                   <option key={city} value={city}>{city}</option>
                 ))}
               </select>
             </div>
 
-            <div className="filter-group">
-              <label>Quartier:</label>
-              <select
-                value={selectedQuartier}
-                onChange={(e) => setSelectedQuartier(e.target.value)}
-              >
+            <div className="ph-field">
+              <label htmlFor="ph-quartier">Quartier</label>
+              <select id="ph-quartier" value={selectedQuartier} onChange={(e) => setSelectedQuartier(e.target.value)}>
                 <option value="Tous">Tous les quartiers</option>
-                {quartiers.map(quartier => (
-                  <option key={quartier} value={quartier}>{quartier}</option>
+                {quartiers.map((q) => (
+                  <option key={q} value={q}>{q}</option>
                 ))}
               </select>
             </div>
 
-            <div className="checkbox-filters">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={gardeOnly}
-                  onChange={(e) => setGardeOnly(e.target.checked)}
-                />
-                <span className="checkmark"></span>
-                Pharmacies de garde uniquement
-              </label>
+            <label className="ph-check">
+              <input type="checkbox" checked={gardeOnly} onChange={(e) => setGardeOnly(e.target.checked)} />
+              <span>Garde uniquement</span>
+            </label>
 
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={ouvertOnly}
-                  onChange={(e) => setOuvertOnly(e.target.checked)}
-                />
-                <span className="checkmark"></span>
-                Ouvertes maintenant
-              </label>
+            <label className="ph-check">
+              <input type="checkbox" checked={ouvertOnly} onChange={(e) => setOuvertOnly(e.target.checked)} />
+              <span>Ouvertes maintenant</span>
+            </label>
 
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={prochesOnly}
-                  onChange={(e) => setProchesOnly(e.target.checked)}
-                />
-                <span className="checkmark"></span>
-                Les plus proches
-              </label>
-            </div>
+            <label className="ph-check">
+              <input type="checkbox" checked={prochesOnly} onChange={(e) => setProchesOnly(e.target.checked)} />
+              <span>Les plus proches</span>
+            </label>
 
-            <div className="view-controls">
-              <button
-                className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
-                onClick={() => setViewMode('cards')}
-              >
-                ⊞ Cartes
+            <div className="ph-view-toggle" role="group" aria-label="Mode affichage">
+              <button type="button" className={viewMode === 'cards' ? 'active' : ''} onClick={() => setViewMode('cards')}>
+                Cartes
               </button>
-              <button
-                className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                onClick={() => setViewMode('list')}
-              >
-                ☰ Liste
+              <button type="button" className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>
+                Liste
               </button>
-              <button
-                className={`view-btn ${viewMode === 'map' ? 'active' : ''}`}
-                onClick={() => setViewMode('map')}
-              >
-                🗺️ Carte
+              <button type="button" className={viewMode === 'map' ? 'active' : ''} onClick={() => setViewMode('map')}>
+                Carte
               </button>
             </div>
-          </div>
 
-          <div className="sort-section">
-            <button onClick={clearFilters} className="clear-filters-btn">
-              🗑️ Effacer les filtres
-            </button>
-          </div>
+            {hasFilters && (
+              <button type="button" className="ph-clear" onClick={clearFilters}>
+                Effacer filtres
+              </button>
+            )}
           </div>
         </div>
-        {/* Bouton pour afficher/masquer les filtres */}
-        <button 
-          className="toggle-filters-btn"
-          onClick={() => setFiltersVisible(!filtersVisible)}
-          title={filtersVisible ? 'Masquer les filtres' : 'Afficher les filtres'}
-        >
-          {filtersVisible ? '▲' : '▼'} Filtres
-        </button>
-      </div>
+      </section>
 
-      {/* Contenu principal selon la vue */}
-      <section className="pharmacies-content">
-        <div className="section-container">
-          <div className="results-header">
-            <h2 className="results-title">
-              {filteredPharmacies.length} pharmac{filteredPharmacies.length > 1 ? 'ies' : 'ie'}
-              trouvée{filteredPharmacies.length > 1 ? 's' : ''}
-              {searchQuery && ` pour "${searchQuery}"`}
-              {selectedCity !== 'Toutes' && ` à ${selectedCity}`}
-              {gardeOnly && ' (garde uniquement)'}
-              {ouvertOnly && ' (ouvertes maintenant)'}
-              {prochesOnly && ' (triées par distance)'}
+      <section className="ph-results">
+        <div className="ph-container">
+          <header className="ph-results-head">
+            <h2>
+              {loading
+                ? 'Chargement...'
+                : `${filtered.length} pharmacie${filtered.length > 1 ? 's' : ''} trouvee${filtered.length > 1 ? 's' : ''}`}
             </h2>
-            <div className="results-meta">
-              Page {currentPage} sur {totalPages}
-            </div>
-          </div>
+            <span>Page {safePage} / {totalPages}</span>
+          </header>
 
-          {viewMode === 'cards' && (
-            /* Vue cartes détaillées */
-            <div className="pharmacies-grid">
-              {currentPharmacies.map((pharmacy, index) => (
-                <div
+          {loading ? (
+            <div className="ph-empty"><div className="ph-loader"></div><p>Chargement des pharmacies...</p></div>
+          ) : filtered.length === 0 ? (
+            <div className="ph-empty">
+              <h3>Aucun resultat</h3>
+              <p>Aucune pharmacie ne correspond aux criteres actuels.</p>
+            </div>
+          ) : viewMode === 'map' ? (
+            <div className="ph-map-placeholder">
+              <h3>Vue carte</h3>
+              <p>La vue carte detaillee sera activee dans une prochaine iteration.</p>
+              <div className="ph-map-list">
+                {currentPharmacies.slice(0, 8).map((p) => (
+                  <span key={p._id}>• {p.nom} ({p.ville})</span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={viewMode === 'cards' ? 'ph-grid cards' : 'ph-grid list'}>
+              {currentPharmacies.map((pharmacy) => (
+                <article
                   key={pharmacy._id}
-                  className={`pharmacy-card-detail ${pharmacy.garde ? 'garde' : ''} ${pharmacy.ouvert !== false ? 'ouvert' : 'ferme'}`}
-                  style={{ animationDelay: `${index * 0.1}s` }}
+                  className="ph-card"
+                  onClick={() => setSelectedPharmacy(pharmacy)}
                 >
-                  <div className={`pharmacy-photo${!pharmacy.photo ? ' no-photo' : ''}`}>
+                  <div className="ph-media">
                     <img
                       src={pharmacy.photo || ONPG_IMAGES.logo}
                       alt={pharmacy.nom}
-                      onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
+                      onError={(e) => {
+                        const t = e.target as HTMLImageElement;
+                        if (t.src !== ONPG_IMAGES.logo) t.src = ONPG_IMAGES.logo;
+                      }}
                     />
-                    <div className="pharmacy-photo-gradient" />
-                    <div className="photo-overlay">
-                      {pharmacy.garde && (
-                        <span className="garde-badge-photo">
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2L9 9H2l5.5 4-2 7L12 16l6.5 4-2-7L22 9h-7z" fill="currentColor"/></svg>
-                          GARDE
-                        </span>
-                      )}
-                      <span className={`ouvert-badge-photo ${pharmacy.ouvert !== false ? 'ouvert' : 'ferme'}`}>
-                        <span className="status-dot" />
-                        {pharmacy.ouvert !== false ? 'Ouvert' : 'Fermé'}
-                      </span>
-                    </div>
-                    {pharmacy.distance && (
-                      <div className="distance-badge">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="currentColor"/></svg>
-                        {pharmacy.distance.toFixed(1)} km
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="pharmacy-content-detail">
-                    <h3 className="pharmacy-name-detail">{pharmacy.nom}</h3>
-
-                    <div className="pharmacy-location-detail">
-                      <div className="location-address-detail">{pharmacy.adresse}</div>
-                      <div className="location-city-detail">
-                        📍 {pharmacy.ville} - {pharmacy.quartier}
-                      </div>
-                    </div>
-
-                    <div className="pharmacy-contact-detail">
-                      <div className="contact-item-detail">
-                        <span className="contact-icon-detail">📞</span>
-                        <a href={`tel:${pharmacy.telephone}`} className="contact-link">
-                          {pharmacy.telephone}
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="pharmacy-horaires-detail">
-                      <div className="horaires-today-detail">
-                        <strong>Aujourd'hui ({getCurrentDay().charAt(0).toUpperCase() + getCurrentDay().slice(1)}):</strong>
-                        <span className={pharmacy.ouvert !== false ? 'horaires-ouvert' : 'horaires-ferme'}>
-                          {pharmacy.horaires?.[getCurrentDay()] || 'Non renseigné'}
-                        </span>
-                      </div>
+                    <div className="ph-badges">
+                      {pharmacy.garde && <span className="ph-badge garde">Garde</span>}
+                      {pharmacy.ouvert !== false
+                        ? <span className="ph-badge open">Ouverte</span>
+                        : <span className="ph-badge closed">Fermee</span>}
+                      {pharmacy.distance ? <span className="ph-badge dist">{formatDistance(pharmacy.distance)}</span> : null}
                     </div>
                   </div>
 
-                  <div className="pharmacy-icon-actions">
-                    {/* Numéro cliquable en pill */}
-                    <a href={`tel:${pharmacy.telephone}`} className="pharmacy-phone-pill" aria-label="Appeler">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
-                      </svg>
-                      {pharmacy.telephone}
-                    </a>
+                  <div className="ph-body">
+                    <h3>{pharmacy.nom}</h3>
+                    <p className="ph-loc">{pharmacy.adresse}, {pharmacy.ville}{pharmacy.quartier ? ` - ${pharmacy.quartier}` : ''}</p>
+                    <p className="ph-hours">
+                      <strong>Aujourd&apos;hui :</strong> {pharmacy.horaires?.[getCurrentDay()] || 'Non renseigne'}
+                    </p>
 
-                    {/* Groupe d'icônes */}
-                    <div className="pharmacy-icon-group">
-                      {/* Itinéraire */}
-                      <a
-                        href={pharmacy.latitude && pharmacy.longitude
-                          ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.latitude},${pharmacy.longitude}`
-                          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.adresse + ' ' + pharmacy.ville)}`
-                        }
-                        target="_blank" rel="noopener noreferrer"
-                        className="pharmacy-action-btn nav"
-                        data-tooltip="Itinéraire"
-                        aria-label="Voir l'itinéraire"
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
-                        </svg>
-                      </a>
-
-                      {/* Appeler */}
+                    <div className="ph-actions">
                       <a
                         href={`tel:${pharmacy.telephone}`}
-                        className="pharmacy-action-btn phone"
-                        data-tooltip="Appeler"
-                        aria-label="Appeler la pharmacie"
+                        className="ph-link"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
-                        </svg>
+                        {pharmacy.telephone}
                       </a>
-
-                      {/* Email si disponible */}
                       {pharmacy.email && (
                         <a
                           href={`mailto:${pharmacy.email}`}
-                          className="pharmacy-action-btn email"
-                          data-tooltip="Email"
-                          aria-label="Envoyer un email"
+                          className="ph-link secondary"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/>
-                          </svg>
+                          {pharmacy.email}
                         </a>
                       )}
-
-                      {/* Partager */}
-                      <button
-                        className="pharmacy-action-btn share"
-                        data-tooltip="Partager"
-                        aria-label="Partager"
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: pharmacy.nom,
-                              text: `${pharmacy.nom} — ${pharmacy.adresse}, ${pharmacy.ville}`,
-                              url: window.location.href
-                            });
-                          }
-                        }}
-                      >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z" fill="currentColor"/>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {viewMode === 'list' && (
-            /* Vue liste compacte */
-            <div className="pharmacies-list-compact">
-              {currentPharmacies.map((pharmacy, index) => (
-                <div
-                  key={pharmacy._id}
-                  className="pharmacy-list-item-compact"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div className="pharmacy-list-status-compact">
-                    <div className="status-indicators-compact">
-                      {pharmacy.garde && <span className="garde-indicator-compact">🩺</span>}
-                      <span className={`ouvert-indicator-compact ${pharmacy.ouvert ? 'ouvert' : 'ferme'}`}>
-                        {pharmacy.ouvert ? '🟢' : '🔴'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="pharmacy-list-content-compact">
-                    <div className="pharmacy-list-header-compact">
-                      <h3>{pharmacy.nom}</h3>
-                      <div className="pharmacy-location-compact">
-                        {pharmacy.adresse}, {pharmacy.ville}
-                      </div>
-                      <div className="pharmacy-horaires-compact">
-                        Aujourd'hui: {pharmacy.horaires?.[getCurrentDay()] || 'Non renseigné'}
-                        {pharmacy.distance && (
-                          <span className="distance-compact"> • {pharmacy.distance.toFixed(1)} km</span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pharmacy-icon-actions compact">
-                    <a
-                      href={pharmacy.latitude && pharmacy.longitude
-                        ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.latitude},${pharmacy.longitude}`
-                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.adresse + ' ' + pharmacy.ville)}`
-                      }
-                      target="_blank" rel="noopener noreferrer"
-                      className="pharmacy-action-btn nav"
-                      data-tooltip="Itinéraire"
-                      aria-label="Itinéraire"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
-                      </svg>
-                    </a>
-                    <a
-                      href={`tel:${pharmacy.telephone}`}
-                      className="pharmacy-action-btn phone"
-                      data-tooltip="Appeler"
-                      aria-label="Appeler"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02L6.62 10.79z" fill="currentColor"/>
-                      </svg>
-                    </a>
-                    {pharmacy.email && (
                       <a
-                        href={`mailto:${pharmacy.email}`}
-                        className="pharmacy-action-btn email"
-                        data-tooltip="Email"
-                        aria-label="Email"
+                        href={
+                          pharmacy.latitude && pharmacy.longitude
+                            ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.latitude},${pharmacy.longitude}`
+                            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.adresse + ' ' + pharmacy.ville)}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ph-link tertiary"
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="currentColor"/>
-                        </svg>
+                        Itineraire
                       </a>
-                    )}
+                    </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           )}
 
-          {viewMode === 'map' && (
-            /* Vue carte (placeholder pour l'instant) */
-            <div className="map-view">
-              <div className="map-placeholder">
-                <div className="map-icon">🗺️</div>
-                <h3>Vue Carte</h3>
-                <p>Fonctionnalité de carte interactive en cours de développement</p>
-                <div className="map-preview">
-                  {currentPharmacies.slice(0, 5).map(pharmacy => (
-                    <div key={pharmacy._id} className="map-marker">
-                      📍 {pharmacy.nom}
+          {filtered.length > PAGE_SIZE && (
+            <div className="ph-pagination">
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+              >
+                Precedent
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+              >
+                Suivant
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {selectedPharmacy && (
+        <div className="ph-modal-overlay" onClick={() => setSelectedPharmacy(null)} role="presentation">
+          <div
+            className="ph-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Details ${selectedPharmacy.nom}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="ph-modal-close"
+              onClick={() => setSelectedPharmacy(null)}
+              aria-label="Fermer"
+            >
+              ×
+            </button>
+
+            <div className="ph-modal-head">
+              <img
+                src={selectedPharmacy.photo || ONPG_IMAGES.logo}
+                alt={selectedPharmacy.nom}
+                onError={(e) => {
+                  const t = e.target as HTMLImageElement;
+                  if (t.src !== ONPG_IMAGES.logo) t.src = ONPG_IMAGES.logo;
+                }}
+              />
+              <div>
+                <h3>{selectedPharmacy.nom}</h3>
+                <p>{selectedPharmacy.adresse}, {selectedPharmacy.ville}{selectedPharmacy.quartier ? ` - ${selectedPharmacy.quartier}` : ''}</p>
+                <div className="ph-modal-badges">
+                  {selectedPharmacy.garde && <span className="ph-badge garde">Garde</span>}
+                  {selectedPharmacy.ouvert !== false
+                    ? <span className="ph-badge open">Ouverte</span>
+                    : <span className="ph-badge closed">Fermee</span>}
+                  {selectedPharmacy.distance ? <span className="ph-badge dist">{formatDistance(selectedPharmacy.distance)}</span> : null}
+                </div>
+              </div>
+            </div>
+
+            <div className="ph-modal-grid">
+              <section>
+                <h4>Contact</h4>
+                <div className="ph-modal-actions">
+                  <a href={`tel:${selectedPharmacy.telephone}`} className="ph-link">{selectedPharmacy.telephone}</a>
+                  {selectedPharmacy.email && <a href={`mailto:${selectedPharmacy.email}`} className="ph-link secondary">{selectedPharmacy.email}</a>}
+                  <a
+                    href={
+                      selectedPharmacy.latitude && selectedPharmacy.longitude
+                        ? `https://www.google.com/maps/dir/?api=1&destination=${selectedPharmacy.latitude},${selectedPharmacy.longitude}`
+                        : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedPharmacy.adresse + ' ' + selectedPharmacy.ville)}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ph-link tertiary"
+                  >
+                    Itineraire
+                  </a>
+                </div>
+              </section>
+
+              <section>
+                <h4>Horaires</h4>
+                <div className="ph-week-grid">
+                  {fullWeek(selectedPharmacy.horaires).map((d) => (
+                    <div key={d.label} className="ph-week-row">
+                      <span>{d.label}</span>
+                      <strong>{d.value}</strong>
                     </div>
                   ))}
                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                ← Précédent
-              </button>
-
-              <div className="pagination-numbers">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    className={`pagination-number ${currentPage === page ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(page)}
-                  >
-                    {page}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                className="pagination-btn"
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                Suivant →
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Section informations pratiques */}
-      <section className="info-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">
-              <span className="title-icon">ℹ️</span>
-              Informations Pratiques
-            </h2>
-            <p className="section-subtitle">
-              Tout savoir sur les pharmacies au Gabon
-            </p>
-          </div>
-
-          <div className="info-grid">
-            <div className="info-card">
-              <div className="info-icon">🩺</div>
-              <h3>Pharmacies de Garde</h3>
-              <p>
-                Les pharmacies de garde assurent la continuité des soins 24h/24.
-                Elles sont clairement signalées et alternent selon un planning établi.
-              </p>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">💊</div>
-              <h3>Médicaments</h3>
-              <p>
-                Toutes les pharmacies sont habilitées à délivrer les médicaments
-                sur prescription médicale ainsi que certains médicaments sans ordonnance.
-              </p>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">⏰</div>
-              <h3>Horaires d'Ouverture</h3>
-              <p>
-                Les pharmacies sont généralement ouvertes du lundi au vendredi
-                de 8h à 18h, le samedi de 8h à 12h. Certaines ouvrent plus tard.
-              </p>
-            </div>
-
-            <div className="info-card">
-              <div className="info-icon">🚨</div>
-              <h3>Urgences</h3>
-              <p>
-                En cas d'urgence médicale, contactez le service d'urgence
-                ou rendez-vous à la pharmacie de garde la plus proche.
-              </p>
+              </section>
             </div>
           </div>
         </div>
-      </section>
+      )}
     </div>
   );
 };
 
 export default Pharmacies;
-

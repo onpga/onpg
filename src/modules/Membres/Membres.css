@@ -1569,3 +1569,43 @@
     gap: 0.25rem;
   }
 }
+
+/* ============================================
+   UX HARDENING - PREMIUM SAFE POLISH
+   ============================================ */
+
+.membres-page :where(h1, h2, h3, p, li, a, button, .results-title, .member-card-name, .member-name-cell) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.membres-page :where(a, button, [role='button']):focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.45);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .membres-page .results-meta,
+  .membres-page .to-search-tag {
+    display: inline-block;
+    white-space: normal;
+  }
+
+  .membres-page .to-results-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .membres-page *,
+  .membres-page *::before,
+  .membres-page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

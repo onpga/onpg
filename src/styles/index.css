@@ -328,3 +328,85 @@ p {
   box-shadow: var(--onpg-shadow-sm);
 }
 
+/* ============================================
+   VISITOR PAGES UX HARDENING (EXCL. HOME)
+   Global premium safeguards for readability/responsive behavior
+   ============================================ */
+
+:is(
+  .pratique-page,
+  .formations-page,
+  .contact-pratique-page,
+  .ressources-page,
+  .ru-page,
+  .articles-page,
+  .actualites-page,
+  .videos-page,
+  .photos-page,
+  .theses-page,
+  .decrets-page,
+  .decisions-page,
+  .lois-page,
+  .commissions-page,
+  .comm-detail-page,
+  .article-detail-page,
+  .video-detail-page,
+  .photo-detail-page,
+  .trouver-pharmacie-page
+) :where(h1, h2, h3, p, li, a, button, label, .btn) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+:is(
+  .pratique-page,
+  .formations-page,
+  .contact-pratique-page,
+  .ressources-page,
+  .ru-page,
+  .articles-page,
+  .actualites-page,
+  .videos-page,
+  .photos-page,
+  .theses-page,
+  .decrets-page,
+  .decisions-page,
+  .lois-page,
+  .commissions-page,
+  .comm-detail-page,
+  .article-detail-page,
+  .video-detail-page,
+  .photo-detail-page,
+  .trouver-pharmacie-page
+) :where(a, button, input, select, textarea, [role='button']):focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.4);
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  :is(
+    .pratique-page,
+    .formations-page,
+    .contact-pratique-page,
+    .ressources-page,
+    .ru-page,
+    .articles-page,
+    .actualites-page,
+    .videos-page,
+    .photos-page,
+    .theses-page,
+    .decrets-page,
+    .decisions-page,
+    .lois-page,
+    .commissions-page,
+    .comm-detail-page,
+    .article-detail-page,
+    .video-detail-page,
+    .photo-detail-page,
+    .trouver-pharmacie-page
+  ) :where(.btn, button, .btn-primary, .btn-secondary) {
+    max-width: 100%;
+  }
+}
+

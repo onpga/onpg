@@ -790,6 +790,18 @@
   }
 }
 
+/* Extra responsive safety for dense content */
+@media (max-width: 768px) {
+  .results-title {
+    line-height: 1.3;
+  }
+
+  .to-member-avatar,
+  .to-card-avatar {
+    flex-shrink: 0;
+  }
+}
+
 /* ============================================
    TO-* COMPOSANTS UTILITAIRES
    ============================================ */

@@ -18,7 +18,7 @@ const HeroONPG = () => {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const heroRef = useRef<HTMLElement>(null);
+  const heroBackgroundRef = useRef<HTMLDivElement>(null);
 
   // Construire les slides avec les 5 images par défaut uniquement
   useEffect(() => {
@@ -99,9 +99,10 @@ const HeroONPG = () => {
   // Gestion du scroll pour parallax optimisée avec requestAnimationFrame
   useScrollAnimation(
     useCallback((scrollY: number) => {
-      if (heroRef.current) {
-        const rate = scrollY * -0.5;
-        heroRef.current.style.transform = `translateY(${rate}px)`;
+      if (heroBackgroundRef.current) {
+        // Appliquer le parallax au background uniquement pour éviter tout "espace blanc"
+        const rate = Math.max(-120, scrollY * -0.18);
+        heroBackgroundRef.current.style.transform = `translateY(${rate}px)`;
       }
     }, []),
     []
@@ -138,13 +139,12 @@ const HeroONPG = () => {
 
   return (
     <section
-      ref={heroRef}
       className="hero-onpg"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {/* Background avec parallax */}
-      <div className="hero-onpg-background">
+      <div className="hero-onpg-background" ref={heroBackgroundRef}>
         {/* Précharger toutes les images du carousel avec des img cachées */}
         {slides.map((slide, index) => (
           <img

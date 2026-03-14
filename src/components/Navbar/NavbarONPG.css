@@ -252,15 +252,17 @@
 
 /* ── Barre de progression scroll (CSS Scroll-Driven Animations) ── */
 .nav-progress-indicator {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 2px;
-  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2147483647;
   pointer-events: none;
 }
 .progress-bar {
   height: 100%;
-  width: 100%;
+  width: var(--scroll-progress, 0%);
   background: linear-gradient(
     90deg,
     rgba(255,255,255,0.4),
@@ -268,9 +270,9 @@
     rgba(255,255,255,0.4)
   );
   transform-origin: left center;
-  transform: scaleX(0);
-  animation: scrollProgress linear both;
-  animation-timeline: scroll(root block);
+  transform: none;
+  animation: none;
+  transition: width 0.08s linear;
 }
 
 .onpg-navbar-container {
@@ -492,7 +494,10 @@
     transform 0.25s cubic-bezier(0.34,1.56,0.64,1),
     visibility 0s linear 0.25s !important;
   z-index: 10001;
-  max-height: 440px; overflow-y: auto;
+  max-height: min(78vh, calc(100dvh - 150px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   box-shadow:
     0 30px 70px rgba(0,55,22,0.2),
     0 8px 24px rgba(0,0,0,0.07),
@@ -500,14 +505,15 @@
   border: 1px solid rgba(0,166,81,0.1) !important;
   backdrop-filter: blur(28px) saturate(190%);
   -webkit-backdrop-filter: blur(28px) saturate(190%);
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0,166,81,0.3) transparent;
+  scrollbar-width: auto;
+  scrollbar-color: rgba(0,166,81,0.45) transparent;
 }
 
 .onpg-dropdown.open {
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateX(-50%) translateY(0) scale(1) !important;
+  pointer-events: auto !important;
   transition:
     opacity   0.25s cubic-bezier(0.34,1.56,0.64,1),
     transform 0.25s cubic-bezier(0.34,1.56,0.64,1) !important;
@@ -667,10 +673,31 @@
 
 /* Ressources : dropdown plus large aligné à droite */
 .ressources-dropdown {
-  min-width: 330px !important;
-  max-width: 370px !important;
+  min-width: 460px !important;
+  max-width: min(520px, 92vw) !important;
   left: auto !important; right: 0 !important;
   transform: translateX(0) translateY(-10px) scale(0.96) !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px;
+  align-items: start;
+}
+
+.ressources-dropdown .dropdown-category-header,
+.ressources-dropdown .dropdown-item-featured,
+.ressources-dropdown .dropdown-section-divider {
+  grid-column: 1 / -1;
+}
+
+.ressources-dropdown .dropdown-link {
+  min-height: 38px;
+}
+
+@media (max-width: 1180px) {
+  .ressources-dropdown {
+    min-width: 400px !important;
+    max-width: min(440px, 92vw) !important;
+  }
 }
 .ressources-dropdown.open {
   transform: translateX(0) translateY(0) scale(1) !important;

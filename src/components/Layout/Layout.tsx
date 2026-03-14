@@ -4,7 +4,6 @@ import Footer from '../Footer';
 import NewsletterPopup from '../NewsletterPopup';
 import CookieBanner from '../CookieBanner';
 import Chatbot from '../Chatbot';
-import ScrollToTop from '../ScrollToTop';
 
 interface LayoutProps {
   children: ReactNode;
@@ -108,7 +107,6 @@ const Layout = ({ children }: LayoutProps) => {
       {showNewsletterPopup && <NewsletterPopup onClose={handleClosePopup} />}
       <CookieBanner />
       <Chatbot />
-      <ScrollToTop />
     </div>
   );
 };

@@ -1,0 +1,208 @@
+.pharmacien-profile-page {
+  background: linear-gradient(180deg, #f6faf8 0%, #eef4f1 100%);
+}
+
+.pharmacien-profile-content {
+  max-width: 980px;
+}
+
+.pharmacien-profile-title {
+  margin: 0 0 1.25rem;
+  color: #0f5132;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.pharmacien-profile-card {
+  background: #fff;
+  border: 1px solid #e5efe9;
+  border-radius: 14px;
+  padding: 1.25rem 1.25rem 1.4rem;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+.pharmacien-profile-card + .pharmacien-profile-card {
+  margin-top: 1.25rem;
+}
+
+.pharmacien-profile-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pharmacien-profile-section-head h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1f2937;
+}
+
+.pharmacien-profile-message {
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.pharmacien-profile-message.success {
+  background: #ecfdf3;
+  color: #05603a;
+  border: 1px solid #9ce0be;
+}
+
+.pharmacien-profile-message.error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.pharmacien-profile-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1rem;
+}
+
+.pharmacien-form-group {
+  margin: 0;
+}
+
+.pharmacien-form-group label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.92rem;
+}
+
+.pharmacien-input {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pharmacien-input:focus {
+  border-color: #00a651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.15);
+  outline: none;
+}
+
+.pharmacien-photo-upload {
+  border: 1px dashed #b7d6c6;
+  border-radius: 12px;
+  background: #f8fcfa;
+  padding: 0.75rem;
+}
+
+.pharmacien-photo-preview {
+  width: 108px;
+  height: 108px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 3px solid #00a651;
+  display: block;
+  margin-bottom: 0.65rem;
+}
+
+.pharmacien-file-input {
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.pharmacien-uploading-text {
+  margin: 0.4rem 0 0;
+  color: #6b7280;
+  font-size: 0.86rem;
+}
+
+.pharmacien-photo-upload,
+.pharmacien-form-group:first-child {
+  grid-column: 1 / -1;
+}
+
+.pharmacien-btn-row {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 0.25rem;
+  grid-column: 1 / -1;
+}
+
+.pharmacien-profile-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.pharmacien-photo-view {
+  flex-shrink: 0;
+}
+
+.pharmacien-photo-view-image {
+  width: 112px;
+  height: 112px;
+  border-radius: 999px;
+  border: 3px solid #00a651;
+  display: block;
+}
+
+.pharmacien-photo-view-image.has-photo {
+  object-fit: cover;
+  background: transparent;
+  padding: 0;
+}
+
+.pharmacien-photo-view-image.fallback-photo {
+  object-fit: contain;
+  background: #e8f5ee;
+  padding: 16px;
+}
+
+.pharmacien-profile-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 0.9rem;
+  width: 100%;
+}
+
+.pharmacien-profile-meta p {
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 0.92rem;
+}
+
+@media (max-width: 900px) {
+  .pharmacien-profile-form {
+    grid-template-columns: 1fr;
+  }
+
+  .pharmacien-profile-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pharmacien-profile-title {
+    font-size: 1.5rem;
+  }
+
+  .pharmacien-profile-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pharmacien-profile-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pharmacien-btn-row {
+    flex-direction: column;
+  }
+}

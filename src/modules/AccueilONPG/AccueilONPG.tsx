@@ -218,34 +218,70 @@ const AccueilONPG = () => {
   // Données pour les missions
   const missions = [
     {
-      icon: '🏥',
+      icon: 'health',
       title: 'Protection de la Santé Publique',
       description: 'Garantir la qualité et la sécurité des médicaments au Gabon',
       color: '#00A651',
       link: '/ordre/sante-publique'
     },
     {
-      icon: '👥',
+      icon: 'defense',
       title: 'Défense des Pharmaciens',
       description: 'Représenter et défendre les intérêts professionnels',
       color: '#008F45',
       link: '/ordre/defense-professionnelle'
     },
     {
-      icon: '🎓',
+      icon: 'formation',
       title: 'Formation Continue',
       description: 'Assurer le développement des compétences',
       color: '#2ECC71',
       link: '/pratique/formation-continue'
     },
     {
-      icon: '⚖️',
+      icon: 'ethics',
       title: 'Régulation Éthique',
       description: 'Contrôler et réguler l\'exercice professionnel',
       color: '#27AE60',
       link: '/pratique/deontologie'
     }
   ];
+
+  const renderMissionIcon = (icon: string) => {
+    switch (icon) {
+      case 'health':
+        return (
+          <svg viewBox="0 0 24 24" fill="none" className="mission-icon-svg" aria-hidden="true">
+            <path d="M12 4.2v15.6M4.2 12h15.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="8.3" stroke="currentColor" strokeWidth="1.8" />
+          </svg>
+        );
+      case 'defense':
+        return (
+          <svg viewBox="0 0 24 24" fill="none" className="mission-icon-svg" aria-hidden="true">
+            <circle cx="9" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.8" />
+            <circle cx="16" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M4.5 18.5c0-2.5 2-4.5 4.5-4.5h.2c2.5 0 4.5 2 4.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            <path d="M13.2 18.5c.2-1.9 1.8-3.5 3.8-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        );
+      case 'formation':
+        return (
+          <svg viewBox="0 0 24 24" fill="none" className="mission-icon-svg" aria-hidden="true">
+            <path d="m3.5 9 8.5-4 8.5 4-8.5 4-8.5-4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+            <path d="M7 11.5V15c0 1.1 2.2 2 5 2s5-.9 5-2v-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M20.5 9v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        );
+      default:
+        return (
+          <svg viewBox="0 0 24 24" fill="none" className="mission-icon-svg" aria-hidden="true">
+            <path d="M12 3.8 19.3 7v5.1c0 4.3-3 7.8-7.3 8.8-4.3-1-7.3-4.5-7.3-8.8V7L12 3.8Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+            <path d="m9.2 12.2 1.9 1.9 3.7-3.8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        );
+    }
+  };
 
   // Composant pour les cartes de mission (version originale conservée)
   const MissionCard = ({ mission, index }: { mission: typeof missions[0], index: number }) => (
@@ -259,7 +295,7 @@ const AccueilONPG = () => {
       } as React.CSSProperties}
       >
         <div className="mission-icon" style={{ backgroundColor: mission.color }}>
-          <span className="icon-emoji">{mission.icon}</span>
+          <span className="icon-emoji">{renderMissionIcon(mission.icon)}</span>
           <div className="icon-glow"></div>
         </div>
         <h3>{mission.title}</h3>
@@ -289,7 +325,12 @@ const AccueilONPG = () => {
           {/* Grille des 4 engagements */}
           <div className="engagements-grid">
             <div className="engagement-card">
-              <div className="engagement-icon" aria-hidden="true">🔬</div>
+              <div className="engagement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="engagement-icon-svg">
+                  <path d="M8 3.5h8M10 3.5v4.2l-4.7 7.8a3 3 0 0 0 2.6 4.5h8.2a3 3 0 0 0 2.6-4.5L14 7.7V3.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M8.5 14h7" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                </svg>
+              </div>
               <h3 className="engagement-card-title">Qualité &amp; Sécurité</h3>
               <p className="engagement-card-text">
                 Garantir l'excellence des médicaments et la sécurité des soins
@@ -298,7 +339,14 @@ const AccueilONPG = () => {
             </div>
 
             <div className="engagement-card">
-              <div className="engagement-icon" aria-hidden="true">👥</div>
+              <div className="engagement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="engagement-icon-svg">
+                  <circle cx="9" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.7"/>
+                  <circle cx="16" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.7"/>
+                  <path d="M4.5 18.5c0-2.5 2-4.5 4.5-4.5h.2c2.5 0 4.5 2 4.5 4.5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                  <path d="M13.4 18.5c.1-1.9 1.7-3.5 3.7-3.5h.2c1.2 0 2.2.5 3 1.3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                </svg>
+              </div>
               <h3 className="engagement-card-title">Protection Professionnelle</h3>
               <p className="engagement-card-text">
                 Défendre les intérêts des pharmaciens et promouvoir l'excellence
@@ -307,7 +355,13 @@ const AccueilONPG = () => {
             </div>
 
             <div className="engagement-card">
-              <div className="engagement-icon" aria-hidden="true">🎓</div>
+              <div className="engagement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="engagement-icon-svg">
+                  <path d="m3 9 9-4 9 4-9 4-9-4Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
+                  <path d="M7 11.2V15c0 1.1 2.2 2 5 2s5-.9 5-2v-3.8" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M21 9v4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                </svg>
+              </div>
               <h3 className="engagement-card-title">Formation Continue</h3>
               <p className="engagement-card-text">
                 Assurer le développement des compétences et l'adaptation permanente
@@ -316,7 +370,12 @@ const AccueilONPG = () => {
             </div>
 
             <div className="engagement-card">
-              <div className="engagement-icon" aria-hidden="true">🌍</div>
+              <div className="engagement-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="engagement-icon-svg">
+                  <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7"/>
+                  <path d="M3.8 12h16.4M12 3.8c2.5 2.3 3.9 5.2 3.9 8.2S14.5 17.9 12 20.2M12 3.8C9.5 6.1 8.1 9 8.1 12s1.4 5.9 3.9 8.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+                </svg>
+              </div>
               <h3 className="engagement-card-title">Santé Publique</h3>
               <p className="engagement-card-text">
                 Contribuer activement à l'amélioration de la santé de la population
@@ -362,7 +421,7 @@ const AccueilONPG = () => {
                       alt="Présidente ONPG - Dr Patience Asseko NTOGONO OKE"
                       className="president-photo-professional"
                       loading="eager"
-                      fetchpriority="high"
+                      fetchPriority="high"
                       onError={(e) => {
                         // Empêcher les multiples tentatives
                         const target = e.target as HTMLImageElement;
@@ -461,7 +520,7 @@ const AccueilONPG = () => {
               </p>
             ) : (
               actualites.slice(0, 3).map((actualite) => {
-                const dateFormatted = formatDate(actualite.publishedAt);
+                const dateFormatted = formatDate(actualite.publishedAt || new Date().toISOString());
                 // Utiliser l'image de l'actualité ou fallback article (PAS la présidente)
                 const imageUrl = getImageWithFallback(actualite.image, 'article');
                 return (
@@ -506,7 +565,12 @@ const AccueilONPG = () => {
           {/* Bouton voir toutes les actualités */}
           <div className="news-actions">
             <Link to="/ressources/actualites" className="btn btn-primary">
-              <span>📰</span>
+              <span className="news-btn-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="news-btn-icon-svg">
+                  <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M8 9h8M8 12h8M8 15h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
               <span>Voir toutes les actualités</span>
               <span>→</span>
             </Link>
@@ -520,7 +584,13 @@ const AccueilONPG = () => {
           {/* Header ultra-compact */}
           <div className="formation-header-ultra">
             <div className="formation-badge-ultra">
-              <span className="badge-icon-ultra">🎓</span>
+              <span className="badge-icon-ultra" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" className="formation-icon-svg">
+                  <path d="m3.5 9 8.5-4 8.5 4-8.5 4-8.5-4Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                  <path d="M7 11.5V15c0 1.1 2.2 2 5 2s5-.9 5-2v-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20.5 9v4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
               <span className="badge-text-ultra">FORMATION CONTINUE</span>
             </div>
             <h2 className="formation-title-ultra">Excellence & Innovation</h2>
@@ -538,19 +608,42 @@ const AccueilONPG = () => {
               {/* Avantages en grille compacte 2x2 */}
               <div className="formation-benefits-ultra">
                 <div className="benefit-ultra">
-                  <span className="benefit-icon-ultra">🎯</span>
+                  <span className="benefit-icon-ultra" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="formation-icon-svg">
+                      <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.8" />
+                      <circle cx="12" cy="12" r="3.2" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M17.8 6.2 14.8 9.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                  </span>
                   <span className="benefit-text-ultra">Certifiée</span>
                 </div>
                 <div className="benefit-ultra">
-                  <span className="benefit-icon-ultra">👨‍🏫</span>
+                  <span className="benefit-icon-ultra" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="formation-icon-svg">
+                      <circle cx="9" cy="8" r="2.2" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M5.2 17c0-2 1.6-3.6 3.6-3.6h.4c2 0 3.6 1.6 3.6 3.6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      <path d="M15.5 7h3.2m-3.2 3h3.2m-3.2 3h3.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                  </span>
                   <span className="benefit-text-ultra">Experts</span>
                 </div>
                 <div className="benefit-ultra">
-                  <span className="benefit-icon-ultra">💻</span>
+                  <span className="benefit-icon-ultra" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="formation-icon-svg">
+                      <rect x="4" y="5.5" width="16" height="10.5" rx="1.8" stroke="currentColor" strokeWidth="1.8" />
+                      <path d="M2.8 19h18.4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                  </span>
                   <span className="benefit-text-ultra">Hybride</span>
                 </div>
                 <div className="benefit-ultra">
-                  <span className="benefit-icon-ultra">🏆</span>
+                  <span className="benefit-icon-ultra" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="formation-icon-svg">
+                      <path d="M8 5h8v2a4 4 0 0 1-4 4 4 4 0 0 1-4-4V5Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+                      <path d="M9.5 11.2V14h5v-2.8M8 19h8M10 16.5h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      <path d="M8 7H6.5a2 2 0 0 0 0 4H8m8-4h1.5a2 2 0 1 1 0 4H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                    </svg>
+                  </span>
                   <span className="benefit-text-ultra">Qualité</span>
                 </div>
               </div>
@@ -587,13 +680,13 @@ const AccueilONPG = () => {
                 {/* Éléments flottants discrets */}
                 <div className="formation-floating-ultra">
                   <div className="floating-item-ultra">
-                    <span className="floating-icon-ultra">📚</span>
+                    <span className="floating-icon-ultra">+</span>
                   </div>
                   <div className="floating-item-ultra delay-1">
-                    <span className="floating-icon-ultra">🏆</span>
+                    <span className="floating-icon-ultra">ONPG</span>
                   </div>
                   <div className="floating-item-ultra delay-2">
-                    <span className="floating-icon-ultra">🌟</span>
+                    <span className="floating-icon-ultra">Formation continue</span>
                   </div>
                 </div>
               </div>
@@ -610,9 +703,8 @@ const AccueilONPG = () => {
             <div className="contact-header-professional">
               <h2 className="contact-title-professional">Une question ? Contactez-nous</h2>
               <p className="contact-subtitle-professional">
-                Notre équipe d'experts est à votre disposition pour répondre à toutes vos questions
-                concernant la profession pharmaceutique, les démarches administratives
-                ou toute autre information relative à l'ONPG.
+                Notre équipe est à votre écoute pour vous orienter sur les démarches, la réglementation
+                et les informations utiles relatives à l'Ordre National des Pharmaciens du Gabon.
               </p>
             </div>
 
@@ -620,7 +712,11 @@ const AccueilONPG = () => {
             <div className="contact-cta-grid-professional">
               <a href="tel:+24176502032" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
-                  <div className="contact-cta-icon-professional">📞</div>
+                  <div className="contact-cta-icon-professional" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="contact-cta-icon-svg">
+                      <path d="M6.8 3.5h2.4c.5 0 .9.3 1 .8l.6 2.6c.1.4 0 .8-.3 1.1l-1.2 1.2a15.3 15.3 0 0 0 5.5 5.5l1.2-1.2c.3-.3.7-.4 1.1-.3l2.6.6c.5.1.8.5.8 1v2.4c0 .6-.4 1.1-1 1.2-1 .1-2 .2-3 .1A16.9 16.9 0 0 1 5.6 6.6c0-1 .1-2 .2-3 .1-.6.6-1.1 1.2-1.1Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <div className="icon-glow-professional"></div>
                 </div>
                 <div className="contact-content-professional">
@@ -633,7 +729,12 @@ const AccueilONPG = () => {
 
               <a href="mailto:contact@onpg.ga" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
-                  <div className="contact-cta-icon-professional">✉️</div>
+                  <div className="contact-cta-icon-professional" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="contact-cta-icon-svg">
+                      <rect x="3.5" y="5.5" width="17" height="13" rx="2.2" stroke="currentColor" strokeWidth="1.8"/>
+                      <path d="m4.5 7 7.5 6L19.5 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
                   <div className="icon-glow-professional"></div>
                 </div>
                 <div className="contact-content-professional">
@@ -646,7 +747,12 @@ const AccueilONPG = () => {
 
               <a href="https://www.google.com/maps/search/?api=1&query=CC4J%2BWC6+Montee+Louis+Libreville+Gabon" target="_blank" rel="noopener noreferrer" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
-                  <div className="contact-cta-icon-professional">📍</div>
+                  <div className="contact-cta-icon-professional" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" className="contact-cta-icon-svg">
+                      <path d="M12 20s6-4.8 6-10a6 6 0 1 0-12 0c0 5.2 6 10 6 10Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                      <circle cx="12" cy="10" r="2.2" stroke="currentColor" strokeWidth="1.8"/>
+                    </svg>
+                  </div>
                   <div className="icon-glow-professional"></div>
                 </div>
                 <div className="contact-content-professional">
@@ -687,7 +793,7 @@ const PresidentContentBlock = () => {
   const blockRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(true);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   // Ref pour préserver la position de scroll entre les re-renders
   const scrollPosRef = useRef(0);
 
@@ -779,15 +885,35 @@ Et vive le Gabon !`;
       <div className="discourse-header">
         <div className="discourse-header-top">
           <div className="discourse-badge">
-            <span className="badge-icon">📜</span>
+            <span className="badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" className="discourse-badge-icon-svg">
+                <path d="M7 4.5h10a2 2 0 0 1 2 2V19l-2.2-1-2.3 1-2.3-1-2.2 1-2.3-1L5 19V6.5a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M9 9h6M9 12h6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
+              </svg>
+            </span>
             Discours d'investiture
           </div>
           <button 
             className={`auto-scroll-toggle ${isAutoScrolling ? 'active' : ''}`}
             onClick={() => setIsAutoScrolling(!isAutoScrolling)}
             title={isAutoScrolling ? 'Pause auto-scroll' : 'Activer auto-scroll'}
+            aria-label={isAutoScrolling ? "Mettre en pause le défilement automatique" : "Activer le défilement automatique"}
           >
-            {isAutoScrolling ? '⏸️' : '▶️'}
+            <span className="auto-scroll-toggle-icon" aria-hidden="true">
+              {isAutoScrolling ? (
+                <svg viewBox="0 0 24 24" fill="none" className="auto-scroll-toggle-svg">
+                  <rect x="7" y="6" width="3.5" height="12" rx="1" fill="currentColor" />
+                  <rect x="13.5" y="6" width="3.5" height="12" rx="1" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" className="auto-scroll-toggle-svg">
+                  <path d="M9 7.5v9l7-4.5-7-4.5Z" fill="currentColor" />
+                </svg>
+              )}
+            </span>
+            <span className="auto-scroll-toggle-text">
+              {isAutoScrolling ? 'Pause' : 'Auto'}
+            </span>
           </button>
         </div>
             <h3 className="discourse-title">Message de la Présidente</h3>
@@ -798,7 +924,6 @@ Et vive le Gabon !`;
         className={`discourse-scroll-container ${isVisible ? 'is-visible' : ''}`}
         ref={contentRef}
         onMouseEnter={() => setIsAutoScrolling(false)}
-        onMouseLeave={() => setIsAutoScrolling(true)}
       >
         <div className="discourse-content-inner">
           {discours.split('\n\n').map((paragraph, index) => (

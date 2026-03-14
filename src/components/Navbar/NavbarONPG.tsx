@@ -4,7 +4,25 @@ import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
 import { useThrottledScroll } from '../../hooks/useThrottledScroll';
 import './NavbarONPG.css';
 
-const NAV_ITEMS = [
+interface NavDropdownItem {
+  path: string;
+  label: string;
+  divider?: boolean;
+  featured?: boolean;
+}
+
+interface NavItem {
+  path: string;
+  label: string;
+  icon: string;
+  id: string;
+  hasDropdown?: boolean;
+  dropdown?: NavDropdownItem[];
+  isButton?: boolean;
+  hasPlus?: boolean;
+}
+
+const NAV_ITEMS: NavItem[] = [
   {
     path: '/',
     label: 'Accueil',
@@ -81,7 +99,7 @@ const NAV_ITEMS = [
     hasPlus: true,
     id: 'pharmacies'
   }
-] as const;
+];
 
 const NavbarONPG = () => {
   const [mobileMenuOpen, setMobileMenuOpen]           = useState(false);
@@ -111,6 +129,11 @@ const NavbarONPG = () => {
       navbarRef.current.style.zIndex     = '999';
       navbarRef.current.style.visibility = 'visible';
       navbarRef.current.style.opacity    = '1';
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      const docHeight = (document.documentElement.scrollHeight || 0) - (window.innerHeight || 0);
+      const progress = docHeight > 0 ? Math.min(1, Math.max(0, scrollTop / docHeight)) : 0;
+      navbarRef.current.style.setProperty('--scroll-progress', `${progress * 100}%`);
     }
   }, []);
 
@@ -415,9 +438,9 @@ const NavbarONPG = () => {
                       </li>
 
                       {/* Items */}
-                      {item.dropdown.map((subItem, subIndex) => {
+                      {item.dropdown.map((subItem: NavDropdownItem, subIndex: number) => {
                         // Séparateur de section
-                        if ((subItem as any).divider) {
+                        if (subItem.divider) {
                           return (
                             <li key={`divider-${subItem.label}`} className="dropdown-section-divider">
                               <span className="dropdown-section-label">{subItem.label}</span>
@@ -425,7 +448,7 @@ const NavbarONPG = () => {
                           );
                         }
                         // Lien mis en avant (Centre documentaire)
-                        if ((subItem as any).featured) {
+                        if (subItem.featured) {
                           return (
                             <li key={subItem.path} className="dropdown-item-li dropdown-item-featured" style={{ '--item-index': subIndex } as React.CSSProperties}>
                               <Link

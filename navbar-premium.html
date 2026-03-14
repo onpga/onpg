@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ONPG Navbar Premium Prototype</title>
+    <link rel="stylesheet" href="./navbar-premium.css" />
+  </head>
+  <body>
+    <header class="np-header" data-np-root>
+      <div class="np-shell np-topbar">
+        <a class="np-brand" href="/" aria-label="Accueil ONPG">
+          <span class="np-brand-mark">ONPG</span>
+          <span class="np-brand-text">
+            <strong>Ordre National des Pharmaciens</strong>
+            <small>République Gabonaise</small>
+          </span>
+        </a>
+        <a class="np-member-cta" href="/admin">Espace Membre</a>
+      </div>
+
+      <div class="np-shell np-navbar">
+        <button class="np-mobile-toggle" type="button" aria-expanded="false" aria-controls="np-nav-list">
+          <span></span><span></span><span></span>
+          <em>Menu</em>
+        </button>
+
+        <ul class="np-nav-list" id="np-nav-list">
+          <li class="np-item">
+            <a class="np-link" href="/">Accueil</a>
+          </li>
+
+          <li class="np-item has-dropdown">
+            <button class="np-link np-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              L'Ordre
+              <span class="np-caret" aria-hidden="true"></span>
+            </button>
+            <ul class="np-dropdown" role="menu">
+              <li><a href="/ordre/a-propos">À propos</a></li>
+              <li><a href="/ordre/organigramme">Organigramme</a></li>
+              <li><a href="/ordre/conseil-national">Conseil National</a></li>
+            </ul>
+          </li>
+
+          <li class="np-item has-dropdown">
+            <button class="np-link np-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              Membres
+              <span class="np-caret" aria-hidden="true"></span>
+            </button>
+            <ul class="np-dropdown" role="menu">
+              <li><a href="/membres/tableau-ordre">Tableau de l'Ordre</a></li>
+              <li><a href="/membres/section-a">Section A</a></li>
+              <li><a href="/membres/section-b">Section B</a></li>
+              <li><a href="/membres/section-c">Section C</a></li>
+              <li><a href="/membres/section-d">Section D</a></li>
+            </ul>
+          </li>
+
+          <li class="np-item has-dropdown">
+            <button class="np-link np-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              Pratique
+              <span class="np-caret" aria-hidden="true"></span>
+            </button>
+            <ul class="np-dropdown" role="menu">
+              <li><a href="/pratique/formation-continue">Formation Continue</a></li>
+              <li><a href="/pratique/deontologie">Déontologie</a></li>
+              <li><a href="/pratique/pharmacies">Pharmacies</a></li>
+              <li><a href="/pratique/contact">Contact</a></li>
+            </ul>
+          </li>
+
+          <li class="np-item has-dropdown resources">
+            <button class="np-link np-trigger" type="button" aria-expanded="false" aria-haspopup="true">
+              Ressources
+              <span class="np-caret" aria-hidden="true"></span>
+            </button>
+            <ul class="np-dropdown" role="menu">
+              <li><a href="/ressources">Centre documentaire</a></li>
+              <li class="np-divider"><span>Textes & Documents</span></li>
+              <li><a href="/ressources?tab=decrets">Décrets</a></li>
+              <li><a href="/ressources?tab=lois">Lois</a></li>
+              <li><a href="/ressources?tab=decisions">Décisions</a></li>
+              <li><a href="/ressources?tab=commissions">Commissions</a></li>
+              <li><a href="/ressources?tab=theses">Thèses</a></li>
+              <li><a href="/ressources?tab=articles">Articles</a></li>
+              <li><a href="/ressources?tab=communiques">Communiqués</a></li>
+              <li class="np-divider"><span>Médias</span></li>
+              <li><a href="/ressources/actualites">Actualités</a></li>
+              <li><a href="/ressources/photos">Photos</a></li>
+              <li><a href="/ressources/videos">Vidéos</a></li>
+            </ul>
+          </li>
+
+          <li class="np-item np-item-action">
+            <a class="np-find-pharmacy" href="/pratique/pharmacies">Trouver une pharmacie</a>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <main class="np-demo-content">
+      <section class="np-demo-card">
+        <h1>Prototype Navbar Premium ONPG</h1>
+        <p>
+          Cette navbar est totalement indépendante de l'implémentation existante.
+          Elle conserve exactement la structure de navigation demandée.
+        </p>
+      </section>
+    </main>
+
+    <script src="./navbar-premium.js"></script>
+  </body>
+</html>

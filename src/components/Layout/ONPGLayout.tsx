@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 import NavbarONPG from '../Navbar/NavbarONPG';
 import FooterONPG from '../Footer/FooterONPG';
-import ScrollToTop from '../ScrollToTop';
 
 interface ONPGLayoutProps {
   children: ReactNode;
@@ -15,7 +14,6 @@ const ONPGLayout = ({ children }: ONPGLayoutProps) => {
         {children}
       </main>
       <FooterONPG />
-      <ScrollToTop />
     </div>
   );
 };

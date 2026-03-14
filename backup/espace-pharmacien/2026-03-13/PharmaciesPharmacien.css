@@ -1,0 +1,276 @@
+.pharmacies-pharmacien-page {
+  background: linear-gradient(180deg, #f5faf7 0%, #edf3ef 100%);
+}
+
+.pharmacies-pharmacien-content {
+  max-width: 1250px;
+}
+
+.pharmacies-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbf9 100%);
+  border: 1px solid #dcebe2;
+  border-radius: 16px;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  padding: 1rem 1.1rem;
+}
+
+.pharmacies-header h1 {
+  margin: 0;
+}
+
+.pharmacies-header-subtitle {
+  margin: 0.4rem 0 0;
+  color: #5b6573;
+  font-size: 0.95rem;
+}
+
+.pharmacies-header-kpis {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.pharmacies-header-kpi {
+  border: 1px solid #cfe5d8;
+  background: #edf8f1;
+  color: #0f5132;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+}
+
+.pharmacies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1rem;
+}
+
+.pharmacie-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1rem;
+  border: 1px solid #deebe4;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pharmacie-card:hover {
+  transform: translateY(-2px);
+}
+
+.pharmacie-card.active {
+  border-color: #00a651;
+  box-shadow: 0 12px 30px rgba(0, 166, 81, 0.18);
+  transform: translateY(-3px);
+}
+
+.pharmacie-card-image {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.pharmacie-card-title {
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem;
+  color: #0f5132;
+}
+
+.pharmacie-garde-pill {
+  margin-left: 0.45rem;
+  background: #dc2626;
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.pharmacie-card-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.pharmacie-card-info-block {
+  margin-top: 0.8rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #e6eeea;
+  background: #f7fbf9;
+}
+
+.pharmacie-card-block-title {
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+.pharmacie-card-message-item {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e4ece7;
+}
+
+.pharmacie-card-message-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.65rem;
+}
+
+.pharmacie-card-message-content {
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.pharmacie-card-message-visibility {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.pharmacie-card-message-delete {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pharmacie-inline-form-card {
+  background: #fff;
+  padding: 1.25rem 1.35rem;
+  border-radius: 16px;
+  border: 1px solid #deebe4;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pharmacie-inline-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.pharmacie-inline-form-header h2 {
+  margin: 0;
+  color: #0f5132;
+  font-size: 1.35rem;
+}
+
+.pharmacie-form-input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  border: 1px solid #d2ddd7;
+  border-radius: 10px;
+}
+
+.pharmacie-form-input:focus {
+  outline: none;
+  border-color: #00a651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.12);
+}
+
+.pharmacie-form-photo-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+}
+
+.pharmacie-form-gps-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pharmacie-gps-btn {
+  padding: 0.75rem 1rem;
+  background: #00a651;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pharmacie-form-section {
+  margin-top: 1.5rem;
+}
+
+.pharmacie-form-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.9rem;
+  display: block;
+}
+
+.pharmacie-form-hours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.pharmacie-form-day-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.pharmacie-form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+
+.pharmacie-form-checkbox {
+  width: 18px;
+  height: 18px;
+}
+
+.pharmacie-form-actions-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.8rem;
+}
+
+.pharmacie-form-action-btn,
+.pharmacie-form-actions-row .btn-secondary {
+  flex: 1;
+}
+
+@media (max-width: 760px) {
+  .pharmacies-header,
+  .pharmacie-inline-form-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pharmacie-form-gps-row,
+  .pharmacie-form-actions-row {
+    flex-direction: column;
+  }
+}

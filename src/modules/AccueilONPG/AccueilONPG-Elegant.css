@@ -8427,4 +8427,22 @@
   .contact-subtitle-professional {
     font-size: 0.95rem;
   }
+
+  /* Mobile hardening: prevents horizontal overflow on long text blocks */
+  .accueil-onpg .news-title,
+  .accueil-onpg .news-excerpt,
+  .accueil-onpg .president-name-professional,
+  .accueil-onpg .president-position-professional,
+  .accueil-onpg .contact-item-title-professional,
+  .accueil-onpg .contact-info-professional,
+  .accueil-onpg .contact-note-professional {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .accueil-onpg .news-card,
+  .accueil-onpg .contact-cta-item-professional,
+  .accueil-onpg .mission-card {
+    min-width: 0;
+  }
 }

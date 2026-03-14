@@ -692,7 +692,9 @@
   }
 
   .btn-onpg-primary,
-  .btn-onpg-secondary {
+  .btn-onpg-secondary,
+  .hero-onpg-cta,
+  .hero-onpg-secondary {
     width: 100%;
     max-width: 300px;
   }
@@ -749,6 +751,8 @@
   .hero-onpg-indicator,
   .btn-onpg-primary,
   .btn-onpg-secondary,
+  .hero-onpg-cta,
+  .hero-onpg-secondary,
   .badge-accent,
   .scroll-wheel,
   .hero-onpg-scroll,

@@ -37,6 +37,7 @@ const DecisionDetailPage = () => {
           jurisdiction:data.jurisdiction || '',
           category:    data.category     || 'Général',
           summary:     data.summary      || '',
+          content:     data.content      || '',
           parties:     Array.isArray(data.parties)  ? data.parties  : [],
           outcome:     data.decision     || 'favorable',
           keywords:    Array.isArray(data.keywords) ? data.keywords : [],
@@ -145,6 +146,19 @@ const DecisionDetailPage = () => {
             <p style={{ fontSize: '1rem', color: '#334155', lineHeight: 1.75, margin: 0 }}>
               {decision.summary}
             </p>
+          </section>
+        )}
+
+        {/* Analyse detaillee */}
+        {decision.content && (
+          <section style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E2E8F0', padding: '1.75rem 2rem', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#008F45', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🧭 Analyse detaillee
+            </h2>
+            <div
+              style={{ color: '#334155', lineHeight: 1.75, fontSize: '0.97rem' }}
+              dangerouslySetInnerHTML={{ __html: decision.content }}
+            />
           </section>
         )}
 

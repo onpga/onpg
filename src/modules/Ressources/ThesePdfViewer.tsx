@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, Link, useParams } from 'react-router-dom';
+import { fetchResourceById } from '../../utils/pageMocksApi';
 import './Ressources.css';
 
 interface LocationState {
@@ -13,11 +15,37 @@ const ThesePdfViewer = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const state = (location.state || {}) as LocationState;
+  const [fallbackTitle, setFallbackTitle] = useState<string>('');
+  const [fallbackAuthor, setFallbackAuthor] = useState<string>('');
+  const [fallbackYear, setFallbackYear] = useState<number | undefined>(undefined);
 
-  const pdfUrl = state.pdfUrl;
-  const title = state.title || 'Thèse';
-  const author = state.author;
-  const year = state.year;
+  const API_URL =
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.PROD
+      ? 'https://backendonpg-production.up.railway.app/api'
+      : 'http://localhost:3001/api');
+
+  useEffect(() => {
+    const loadThesis = async () => {
+      if (!id) return;
+      try {
+        const data = await fetchResourceById('theses', id);
+        if (data) {
+          setFallbackTitle(String(data.title || 'Thèse'));
+          setFallbackAuthor(String(data.author || ''));
+          setFallbackYear(data.year ? Number(data.year) : undefined);
+        }
+      } catch {
+        // no-op: fallback values remain empty
+      }
+    };
+    loadThesis();
+  }, [id]);
+
+  const pdfUrl = state.pdfUrl || (id ? `${API_URL}/public/theses/${id}/pdf` : '');
+  const title = state.title || fallbackTitle || 'Thèse';
+  const author = state.author || fallbackAuthor;
+  const year = state.year || fallbackYear;
 
   if (!pdfUrl) {
     return (

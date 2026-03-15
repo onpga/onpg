@@ -19,6 +19,7 @@ interface LawDetail {
   language: string;
   featured: boolean;
   pdfUrl: string;
+  content: string;
 }
 
 const STATUS_CONFIG = {
@@ -59,6 +60,7 @@ const LoiDetailPage = () => {
           language:        data.language || 'fr',
           featured:        data.featured || false,
           pdfUrl:          data.pdfUrl || '',
+          content:         data.content || '',
         });
       } catch {
         navigate('/ressources/lois');
@@ -208,6 +210,19 @@ const LoiDetailPage = () => {
             <p style={{ fontSize: '1rem', color: '#334155', lineHeight: 1.75, margin: 0 }}>
               {law.summary}
             </p>
+          </section>
+        )}
+
+        {/* Analyse detaillee */}
+        {law.content && (
+          <section style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E2E8F0', padding: '1.75rem 2rem', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#008F45', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🧭 Analyse detaillee
+            </h2>
+            <div
+              style={{ color: '#334155', lineHeight: 1.75, fontSize: '0.97rem' }}
+              dangerouslySetInnerHTML={{ __html: law.content }}
+            />
           </section>
         )}
 

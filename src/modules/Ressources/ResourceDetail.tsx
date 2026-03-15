@@ -218,6 +218,23 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
               </div>
             )}
 
+            {collection === 'theses' && resource?._id && (
+              <div className="article-tags" style={{ marginTop: '1.5rem' }}>
+                <h3>Document PDF :</h3>
+                <div className="tags-list" style={{ gap: '0.75rem' }}>
+                  <Link to={`/ressources/theses/${resource._id}/pdf`} className="back-link">
+                    Ouvrir le PDF
+                  </Link>
+                  <a
+                    href={`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://backendonpg-production.up.railway.app/api' : 'http://localhost:3001/api')}/public/theses/${resource._id}/pdf?download=1`}
+                    className="back-link"
+                  >
+                    Télécharger le PDF
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* Boutons de partage */}
             <ShareButtons
               title={resource.title}

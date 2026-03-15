@@ -3,6 +3,12 @@ import { Link } from 'react-router-dom';
 import './Theses.css';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://backendonpg-production.up.railway.app/api'
+    : 'http://localhost:3001/api');
+
 interface Thesis {
   id: string;
   title: string;
@@ -69,7 +75,7 @@ const Theses = () => {
           downloads: item.downloads || 0,
           citations: item.citations || 0,
           featured: item.featured || false,
-          pdfUrl: item.pdfUrl || item.fichierUrl || ''
+          pdfUrl: item._id ? `${API_URL}/public/theses/${item._id}/pdf` : (item.pdfUrl || item.fichierUrl || '')
         }));
         setTheses(mapped);
         setFilteredTheses(mapped);
@@ -271,7 +277,11 @@ const Theses = () => {
                             <Link to={`/ressources/theses/${thesis.id}`} className="theses-btn-primary">
                               Consulter →
                             </Link>
-                            <a href={thesis.pdfUrl} download={buildDownloadFileName(thesis)} className="theses-btn-secondary">
+                            <a
+                              href={`${API_URL}/public/theses/${thesis.id}/pdf?download=1`}
+                              download={buildDownloadFileName(thesis)}
+                              className="theses-btn-secondary"
+                            >
                               ⬇️ PDF
                             </a>
                           </>

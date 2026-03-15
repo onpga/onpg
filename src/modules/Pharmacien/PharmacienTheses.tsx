@@ -518,7 +518,7 @@ const PharmacienTheses = () => {
                       {thesis.directeur && <span>Dir. {thesis.directeur}</span>}
                     </div>
                     <div className="theses-list-link">
-                      <a href={thesis.fichierUrl} target="_blank" rel="noopener noreferrer">
+                      <a href={`${API_URL}/public/theses/${thesis._id}/pdf`} target="_blank" rel="noopener noreferrer">
                         Ouvrir le PDF
                       </a>
                       <button

@@ -2,80 +2,126 @@
 
 .onpg-share-section {
   margin-top: 2rem;
-  padding: 1.75rem 2rem;
-  background: #f8f9fa;
-  border-radius: 16px;
-  border: 1.5px solid #E2E8F0;
+  padding: 1.35rem 1.5rem;
+  background: linear-gradient(140deg, #f8fbf9 0%, #f2f7f4 100%);
+  border-radius: 14px;
+  border: 1px solid #d7e8dd;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
 .onpg-share-title {
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 0.9rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: #008F45;
-  margin: 0 0 1rem;
+  letter-spacing: 0.06em;
+  color: #0b7e44;
+  margin: 0 0 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .onpg-share-title::before {
-  content: '🔗';
-  font-size: 1.1rem;
+  content: '↗';
+  font-size: 1rem;
+  font-weight: 800;
 }
 
-/* Boutons — identiques à ArticleDetail.css */
-.share-buttons {
+.onpg-share-section .share-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.share-btn {
+.onpg-share-section .share-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  border: none;
-  border-radius: 50%;
+  justify-content: flex-start;
+  gap: 0.45rem;
+  min-width: 108px;
+  height: 40px;
+  padding: 0 0.72rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   color: #fff;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.14);
 }
 
-.share-btn svg {
-  width: 24px;
-  height: 24px;
+.onpg-share-section .share-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
-.share-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.onpg-share-section .share-btn svg {
+  width: 18px;
+  height: 18px;
 }
 
-.share-btn.facebook  { background: #1877f2; }
-.share-btn.twitter   { background: #1da1f2; }
-.share-btn.linkedin  { background: #0077b5; }
-.share-btn.whatsapp  { background: #25d366; }
-.share-btn.copy      { background: #666; }
-.share-btn.copy:hover { background: #444; }
+.onpg-share-section .share-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.onpg-share-section .share-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.onpg-share-section .share-btn:focus-visible,
+.onpg-share-section .share-link-copy:focus-visible {
+  outline: 3px solid rgba(0, 166, 81, 0.35);
+  outline-offset: 2px;
+}
+
+.onpg-share-section .share-btn.facebook  { background: #1877f2; }
+.onpg-share-section .share-btn.twitter   { background: #111827; }
+.onpg-share-section .share-btn.linkedin  { background: #0077b5; }
+.onpg-share-section .share-btn.whatsapp  { background: #25d366; }
+
+.onpg-share-section .share-link-copy {
+  margin-top: 0.75rem;
+  border: 1px solid #c9d4df;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #1f2937;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+}
+
+.onpg-share-section .share-link-copy:hover {
+  background: #f4f7fb;
+}
 
 /* Responsive */
 @media (max-width: 480px) {
   .onpg-share-section {
-    padding: 1.25rem 1rem;
+    padding: 1rem;
   }
 
-  .share-btn {
-    width: 45px;
-    height: 45px;
+  .onpg-share-section .share-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0;
+    justify-content: center;
   }
 
-  .share-btn svg {
-    width: 20px;
-    height: 20px;
+  .onpg-share-section .share-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .onpg-share-section .share-label {
+    display: none;
   }
 }
 

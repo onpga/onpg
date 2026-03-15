@@ -417,6 +417,53 @@ app.post('/api/public/contact', async (req, res) => {
 });
 
 // GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
+app.get('/api/public/theses/:id/pdf', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const thesis = await db.collection('pharmacien_theses').findOne({ _id: new ObjectId(id) });
+
+    if (!thesis || !thesis.fichierUrl) {
+      return res.status(404).json({ success: false, error: 'PDF de thèse introuvable' });
+    }
+
+    const fileNameSafe = String(thesis.titre || 'these')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9\-_]+/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_+|_+$/g, '') || 'these';
+    const disposition = req.query.download === '1' ? 'attachment' : 'inline';
+    const finalName = `${fileNameSafe}.pdf`;
+
+    // Cas 1 : URL data base64 stockée en DB
+    if (typeof thesis.fichierUrl === 'string' && thesis.fichierUrl.startsWith('data:application/pdf;base64,')) {
+      const base64 = thesis.fichierUrl.slice('data:application/pdf;base64,'.length);
+      const pdfBuffer = Buffer.from(base64, 'base64');
+
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `${disposition}; filename="${finalName}"`);
+      res.setHeader('Content-Length', pdfBuffer.length);
+      return res.send(pdfBuffer);
+    }
+
+    // Cas 2 : URL HTTP (Cloudinary ou autre)
+    let targetUrl = String(thesis.fichierUrl || '');
+    if (targetUrl.includes('/image/upload/') && targetUrl.toLowerCase().includes('.pdf')) {
+      targetUrl = targetUrl.replace('/image/upload/', '/raw/upload/');
+    }
+
+    if (/^https?:\/\//i.test(targetUrl)) {
+      return res.redirect(targetUrl);
+    }
+
+    return res.status(400).json({ success: false, error: 'URL PDF invalide' });
+  } catch (error) {
+    console.error('Erreur récupération PDF thèse publique:', error);
+    return res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+// GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
 app.get('/api/public/:collection/:id', async (req, res) => {
   const { collection, id } = req.params;
   try {
@@ -448,7 +495,7 @@ app.get('/api/public/:collection/:id', async (req, res) => {
           author,
           abstract: thesis.resume || '',
           year: thesis.annee || '',
-          pdfUrl: thesis.fichierUrl || ''
+          pdfUrl: `/api/public/theses/${thesis._id}/pdf`
         };
 
         return res.json({ success: true, data: mapped });
@@ -568,7 +615,7 @@ app.get('/api/public/:collection', async (req, res) => {
             downloads: 0,
             citations: 0,
             featured: false,
-            pdfUrl: t.fichierUrl || ''
+            pdfUrl: `/api/public/theses/${t._id}/pdf`
           };
         });
 

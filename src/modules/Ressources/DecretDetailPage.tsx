@@ -38,6 +38,7 @@ const DecretDetailPage = () => {
           category:        data.category        || 'Général',
           status:          data.status          || 'active',
           summary:         data.summary         || '',
+          content:         data.content         || '',
           keyArticles:     Array.isArray(data.keyArticles) ? data.keyArticles : [],
           tags:            Array.isArray(data.tags)        ? data.tags        : [],
           language:        data.language        || 'fr',
@@ -151,6 +152,19 @@ const DecretDetailPage = () => {
             <p style={{ fontSize: '1rem', color: '#334155', lineHeight: 1.75, margin: 0 }}>
               {decret.summary}
             </p>
+          </section>
+        )}
+
+        {/* Analyse detaillee */}
+        {decret.content && (
+          <section style={{ background: '#fff', borderRadius: 16, border: '1.5px solid #E2E8F0', padding: '1.75rem 2rem', marginBottom: '1.5rem' }}>
+            <h2 style={{ fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.07em', color: '#008F45', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              🧭 Analyse detaillee
+            </h2>
+            <div
+              style={{ color: '#334155', lineHeight: 1.75, fontSize: '0.97rem' }}
+              dangerouslySetInnerHTML={{ __html: decret.content }}
+            />
           </section>
         )}
 

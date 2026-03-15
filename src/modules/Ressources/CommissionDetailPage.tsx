@@ -57,6 +57,7 @@ const CommissionDetailPage = () => {
   const creationDate = commission.creationDate || '';
   const featured    = commission.featured || false;
   const icon        = CATEGORY_ICONS[category] || '🏛️';
+  const content     = commission.content || '';
 
   return (
     <div className="comm-detail-page">
@@ -114,6 +115,17 @@ const CommissionDetailPage = () => {
           <section className="comm-detail-section">
             <h2 className="comm-detail-section-title">📋 Présentation</h2>
             <p className="comm-detail-description">{description}</p>
+          </section>
+        )}
+
+        {/* Analyse detaillee */}
+        {content && (
+          <section className="comm-detail-section">
+            <h2 className="comm-detail-section-title">🧭 Analyse detaillee</h2>
+            <div
+              className="comm-detail-description"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
           </section>
         )}
 

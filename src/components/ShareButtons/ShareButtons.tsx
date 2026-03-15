@@ -2,6 +2,7 @@
  * Boutons de partage réseaux sociaux (version premium compacte)
  * Facebook · X · LinkedIn · WhatsApp (+ action secondaire de copie)
  */
+import { useToast } from '../Toast';
 
 interface ShareButtonsProps {
   title: string;
@@ -10,6 +11,7 @@ interface ShareButtonsProps {
 }
 
 const ShareButtons = ({ title, description = '', tags = [] }: ShareButtonsProps) => {
+  const { showSuccess } = useToast();
   const items = [
     {
       id: 'facebook',
@@ -78,7 +80,7 @@ const ShareButtons = ({ title, description = '', tags = [] }: ShareButtonsProps)
   const copyLink = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-      alert('Lien copié dans le presse-papiers.');
+      showSuccess('Lien copié dans le presse-papiers.');
     }).catch(() => {
       const el = document.createElement('textarea');
       el.value = url;
@@ -86,7 +88,7 @@ const ShareButtons = ({ title, description = '', tags = [] }: ShareButtonsProps)
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      alert('Lien copié dans le presse-papiers.');
+      showSuccess('Lien copié dans le presse-papiers.');
     });
   };
 

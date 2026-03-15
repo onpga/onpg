@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useToast } from '../Toast';
 import './Chatbot.css';
 
 interface Message {
@@ -86,6 +87,7 @@ const renderMessageText = (text: string) => {
 };
 
 const Chatbot = () => {
+  const { showWarning } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -300,7 +302,7 @@ const Chatbot = () => {
 
   const toggleVoiceRecognition = () => {
     if (!recognitionRef.current) {
-      alert('La reconnaissance vocale n\'est pas supportée par votre navigateur. Veuillez utiliser Chrome ou Edge.');
+      showWarning('La reconnaissance vocale n\'est pas supportée par votre navigateur. Veuillez utiliser Chrome ou Edge.');
       return;
     }
 

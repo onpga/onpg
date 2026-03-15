@@ -155,6 +155,11 @@
   font-weight: 600;
   cursor: pointer;
   padding: 0 0.74rem;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
 }
 
 .videos-category-btn:hover,
@@ -421,6 +426,12 @@
     overflow-x: auto;
     flex-wrap: nowrap;
     padding-bottom: 0.2rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .videos-category-btn,
+  .videos-clear-btn {
+    flex: 0 0 auto;
   }
 }
 

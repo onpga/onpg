@@ -287,6 +287,50 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 // ============================================
+// SITEMAP SECONDAIRE - /sitemap/sitemap.xml
+// ============================================
+app.get('/sitemap/sitemap.xml', (req, res) => {
+  try {
+    const nestedSitemapPath = path.join(__dirname, '..', 'public', 'sitemap', 'sitemap.xml');
+
+    if (!fs.existsSync(nestedSitemapPath)) {
+      console.error('❌ Fichier sitemap/sitemap.xml introuvable:', nestedSitemapPath);
+      return res.status(404).send('Nested sitemap not found');
+    }
+
+    const nestedSitemapContent = fs.readFileSync(nestedSitemapPath, 'utf8');
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.send(nestedSitemapContent);
+  } catch (error) {
+    console.error('❌ Erreur lors de la lecture du sitemap secondaire:', error);
+    res.status(500).send('Error loading nested sitemap');
+  }
+});
+
+// ============================================
+// PAGE CRAWL-LINKS - Point d'entrée crawlable
+// ============================================
+app.get('/crawl-links.html', (req, res) => {
+  try {
+    const crawlLinksPath = path.join(__dirname, '..', 'public', 'crawl-links.html');
+
+    if (!fs.existsSync(crawlLinksPath)) {
+      console.error('❌ Fichier crawl-links.html introuvable:', crawlLinksPath);
+      return res.status(404).send('crawl-links not found');
+    }
+
+    const crawlLinksContent = fs.readFileSync(crawlLinksPath, 'utf8');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.send(crawlLinksContent);
+  } catch (error) {
+    console.error('❌ Erreur lors de la lecture de crawl-links.html:', error);
+    res.status(500).send('Error loading crawl-links');
+  }
+});
+
+// ============================================
 // ROBOTS.TXT - Route pour servir robots.txt
 // ============================================
 app.get('/robots.txt', (req, res) => {
@@ -963,7 +1007,7 @@ app.get('/api/pharmacien/pharmacies/:id', authenticatePharmacien, async (req, re
 // POST créer une nouvelle pharmacie
 // IMPORTANT: La pharmacie est automatiquement associée au pharmacien authentifié
 // Le pharmacienId est défini automatiquement depuis req.pharmacienId (middleware authenticatePharmacien)
-// Un pharmacien peut gérer plusieurs pharmacies, mais chaque pharmacie appartient à un seul pharmacien
+// Un pharmacien ne peut gérer qu'une seule pharmacie
 app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) => {
   try {
     const { nom, ville, quartier, adresse, photo, latitude, longitude, telephone, email, horaires, garde } = req.body;
@@ -981,6 +1025,24 @@ app.post('/api/pharmacien/pharmacies', authenticatePharmacien, async (req, res) 
         return req.pharmacienId; 
       } 
     })();
+
+    const pharmacienFilter = {
+      $in: [
+        req.pharmacienId,
+        (() => { try { return new ObjectId(req.pharmacienId); } catch { return null; } })()
+      ].filter(Boolean)
+    };
+
+    const existingCount = await db.collection('pharmacies').countDocuments({
+      pharmacienId: pharmacienFilter
+    });
+
+    if (existingCount > 0) {
+      return res.status(409).json({
+        success: false,
+        error: 'Vous avez déjà une pharmacie. Vous pouvez uniquement la modifier ou la supprimer.'
+      });
+    }
 
     const result = await db.collection('pharmacies').insertOne({
       nom,
@@ -1197,6 +1259,8 @@ app.get('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
         telephone: user.telephone || '',
         adresse: user.adresse || '',
         photo: user.photo || '',
+        metierExerce: user.metierExerce || user.role || '',
+        these: user.these || '',
         role: user.role || 'pharmacien'
       }
     });
@@ -1209,7 +1273,7 @@ app.get('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
 // PUT mettre à jour le profil pharmacien
 app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
   try {
-    const { email, telephone, adresse, photo } = req.body;
+    const { email, telephone, adresse, photo, metierExerce, these } = req.body;
     const currentUser = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
     
     const updateData = {};
@@ -1217,6 +1281,8 @@ app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
     if (telephone !== undefined) updateData.telephone = telephone;
     if (adresse !== undefined) updateData.adresse = adresse;
     if (photo !== undefined) updateData.photo = photo;
+    if (metierExerce !== undefined) updateData.metierExerce = metierExerce;
+    if (these !== undefined) updateData.these = these;
     
     updateData.updatedAt = new Date();
 
@@ -1226,8 +1292,8 @@ app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
       { $set: updateData }
     );
 
-    // 2) Répercuter email/téléphone/photo vers la collection "pharmaciens"
-    if (email !== undefined || telephone !== undefined || photo !== undefined) {
+    // 2) Répercuter les champs communs vers la collection "pharmaciens"
+    if (email !== undefined || telephone !== undefined || photo !== undefined || metierExerce !== undefined || these !== undefined) {
       const oldEmail = String(currentUser?.email || '').trim().toLowerCase();
       const newEmail = email !== undefined ? String(email || '').trim().toLowerCase() : oldEmail;
       const emailCandidates = new Set([oldEmail, newEmail].filter(Boolean));
@@ -1268,6 +1334,11 @@ app.put('/api/pharmacien/profile', authenticatePharmacien, async (req, res) => {
         if (email !== undefined) pharmacienUpdate.email = email || '';
         if (telephone !== undefined) pharmacienUpdate.telephone = telephone || '';
         if (photo !== undefined) pharmacienUpdate.photo = photo || '';
+        if (metierExerce !== undefined) {
+          pharmacienUpdate.metierExerce = metierExerce || '';
+          pharmacienUpdate.role = metierExerce || '';
+        }
+        if (these !== undefined) pharmacienUpdate.these = these || '';
 
         await db.collection('pharmaciens').updateMany(
           { _id: { $in: idsToUpdate } },
@@ -1797,6 +1868,7 @@ app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
       dateRetardCotisations,
       isActive,
       photo,
+      metierExerce,
       role,
       these
     } = req.body;
@@ -1817,7 +1889,8 @@ app.post('/api/admin/pharmaciens', authenticateAdmin, async (req, res) => {
       dateRetardCotisations: dateRetardCotisations || null,
       isActive: isActive !== false,
       photo: photo || '',
-      role: role || '',
+      metierExerce: metierExerce || role || '',
+      role: role || metierExerce || '',
       these: these || '',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -1848,6 +1921,7 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
       dateRetardCotisations,
       isActive,
       photo,
+      metierExerce,
       role,
       these
     } = req.body;
@@ -1867,8 +1941,10 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
     if (dateRetardCotisations !== undefined) update.dateRetardCotisations = dateRetardCotisations || null;
     if (isActive !== undefined) update.isActive = isActive;
     if (photo !== undefined) update.photo = photo;
+    if (metierExerce !== undefined) update.metierExerce = metierExerce;
     if (role !== undefined) update.role = role;
     if (these !== undefined) update.these = these;
+    if (metierExerce !== undefined && role === undefined) update.role = metierExerce;
 
     const result = await db.collection('pharmaciens').updateOne(
       { _id: new ObjectId(id) },
@@ -1879,8 +1955,8 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
       return res.status(404).json({ success: false, error: 'Pharmacien non trouvé' });
     }
 
-    // Répercuter le téléphone/email/photo vers le compte utilisateur pharmacien (collection users)
-    if (telephone !== undefined || email !== undefined || photo !== undefined) {
+    // Répercuter les champs communs vers le compte utilisateur pharmacien (collection users)
+    if (telephone !== undefined || email !== undefined || photo !== undefined || metierExerce !== undefined || these !== undefined) {
       const pharmacienDoc = await db.collection('pharmaciens').findOne({ _id: new ObjectId(id) });
       if (pharmacienDoc) {
         const oldEmail = String(existingPharmacien?.email || '').trim().toLowerCase();
@@ -1937,6 +2013,11 @@ app.put('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => {
             if (telephone !== undefined) userUpdate.telephone = telephone || '';
             if (email !== undefined) userUpdate.email = email || '';
             if (photo !== undefined) userUpdate.photo = photo || '';
+            if (metierExerce !== undefined) {
+              userUpdate.metierExerce = metierExerce || '';
+              userUpdate.role = 'pharmacien';
+            }
+            if (these !== undefined) userUpdate.these = these || '';
 
             await db.collection('users').updateMany(
               { _id: { $in: userIdsToUpdate } },

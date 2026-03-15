@@ -37,10 +37,11 @@ type ViewMode = 'cards' | 'list' | 'map';
 
 const PAGE_SIZE = 12;
 
-const formatDistance = (km?: number) => {
-  if (!km && km !== 0) return '';
-  if (km < 1) return `${Math.round(km * 1000)} m`;
-  return `${km.toFixed(1)} km`;
+const formatDistance = (meters?: number) => {
+  if (meters === undefined || meters === null || Number.isNaN(meters)) return '';
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  const km = meters / 1000;
+  return km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`;
 };
 
 const getCurrentDay = (): keyof NonNullable<Pharmacy['horaires']> => {
@@ -359,7 +360,9 @@ const Pharmacies = () => {
                       {pharmacy.ouvert !== false
                         ? <span className="ph-badge open">Ouverte</span>
                         : <span className="ph-badge closed">Fermee</span>}
-                      {pharmacy.distance ? <span className="ph-badge dist">{formatDistance(pharmacy.distance)}</span> : null}
+                      {pharmacy.distance !== undefined && pharmacy.distance !== null
+                        ? <span className="ph-badge dist">{formatDistance(pharmacy.distance)}</span>
+                        : null}
                     </div>
                   </div>
 
@@ -463,7 +466,9 @@ const Pharmacies = () => {
                   {selectedPharmacy.ouvert !== false
                     ? <span className="ph-badge open">Ouverte</span>
                     : <span className="ph-badge closed">Fermee</span>}
-                  {selectedPharmacy.distance ? <span className="ph-badge dist">{formatDistance(selectedPharmacy.distance)}</span> : null}
+                  {selectedPharmacy.distance !== undefined && selectedPharmacy.distance !== null
+                    ? <span className="ph-badge dist">{formatDistance(selectedPharmacy.distance)}</span>
+                    : null}
                 </div>
               </div>
             </div>

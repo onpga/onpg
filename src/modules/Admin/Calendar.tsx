@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 // FullCalendar CSS - Les styles sont inclus automatiquement avec les plugins
 import AdminSidebar from './components/AdminSidebar';
+import { useToast } from '../../components/Toast';
 import './Calendar.css';
 import './Dashboard.css';
 
@@ -45,6 +46,7 @@ interface Article {
 }
 
 const Calendar = () => {
+  const { showSuccess, showError, showWarning } = useToast();
   const [articles, setArticles] = useState<Article[]>([]);
   const [allArticles, setAllArticles] = useState<Article[]>([]); // Tous les articles non filtrés
   const [loading, setLoading] = useState(true);
@@ -331,7 +333,7 @@ const Calendar = () => {
     try {
       const token = localStorage.getItem('admin_token');
       if (!token) {
-        alert('❌ Vous devez être connecté');
+        showWarning('Vous devez être connecté.');
         navigate('/admin');
         return;
       }
@@ -372,17 +374,17 @@ const Calendar = () => {
         
         // Message alert uniquement si changé via Ctrl/Cmd + clic (quand newStatus n'était pas fourni)
         if (!newStatus) {
-          alert(`✅ Statut changé : ${statusLabels[finalStatus]}`);
+          showSuccess(`Statut changé : ${statusLabels[finalStatus]}`);
         }
         
         // Recharger les articles pour mettre à jour le calendrier
         await fetchArticles();
       } else {
-        alert('❌ Erreur : ' + (data.error || data.message || 'Erreur inconnue'));
+        showError(`Erreur : ${data.error || data.message || 'Erreur inconnue'}`);
       }
     } catch (error) {
       console.error('Erreur lors du changement de statut:', error);
-      alert('❌ Erreur lors du changement de statut. Veuillez réessayer.');
+      showError('Erreur lors du changement de statut. Veuillez réessayer.');
     }
   };
 
@@ -437,12 +439,12 @@ const Calendar = () => {
         // Annuler le déplacement en cas d'erreur
         dropInfo.revert();
         console.error('Erreur lors du déplacement:', data);
-        alert('❌ Erreur lors du déplacement : ' + (data.error || data.message || 'Erreur inconnue'));
+        showError(`Erreur lors du déplacement : ${data.error || data.message || 'Erreur inconnue'}`);
       }
     } catch (error) {
       console.error('Erreur lors du déplacement:', error);
       dropInfo.revert();
-      alert('❌ Erreur lors du déplacement de l\'article');
+      showError("Erreur lors du déplacement de l'article.");
     }
   };
 
@@ -474,12 +476,12 @@ const Calendar = () => {
         await fetchArticles();
       } else {
         resizeInfo.revert();
-        alert('❌ Erreur lors du redimensionnement : ' + (data.error || data.message));
+        showError(`Erreur lors du redimensionnement : ${data.error || data.message}`);
       }
     } catch (error) {
       console.error('Erreur lors du redimensionnement:', error);
       resizeInfo.revert();
-      alert('❌ Erreur lors du redimensionnement de l\'article');
+      showError("Erreur lors du redimensionnement de l'article.");
     }
   };
 
@@ -503,7 +505,7 @@ const Calendar = () => {
 
       const token = localStorage.getItem('admin_token');
       if (!token) {
-        alert('❌ Vous devez être connecté pour créer un article');
+        showWarning('Vous devez être connecté pour créer un article.');
         navigate('/admin');
         return;
       }
@@ -546,7 +548,7 @@ const Calendar = () => {
       const data = await response.json();
       
       if (data.success && data.data) {
-        alert(`✅ Article brouillon "${title}" créé avec succès !`);
+        showSuccess(`Article brouillon "${title}" créé avec succès !`);
         // Recharger les articles
         await fetchArticles();
         // Naviguer vers l'édition de l'article
@@ -554,11 +556,11 @@ const Calendar = () => {
           navigate(`/admin/articles/edit/${data.data._id}`);
         }
       } else {
-        alert('❌ Erreur lors de la création : ' + (data.error || data.message || 'Erreur inconnue'));
+        showError(`Erreur lors de la création : ${data.error || data.message || 'Erreur inconnue'}`);
       }
     } catch (error) {
       console.error('Erreur lors de la création de l\'article:', error);
-      alert('❌ Erreur lors de la création de l\'article. Veuillez réessayer.');
+      showError("Erreur lors de la création de l'article. Veuillez réessayer.");
     }
   };
 

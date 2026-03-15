@@ -153,12 +153,36 @@
 
 .pharmacie-inline-form-card {
   background: #fff;
-  padding: 1.25rem 1.35rem;
+  padding: 1.3rem 1.4rem;
   border-radius: 16px;
   border: 1px solid #deebe4;
   box-shadow: 0 14px 30px rgba(15, 23, 42, 0.06);
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.pharmacie-pro-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 1.2rem;
+}
+
+.pharmacie-pro-form .form-group {
+  margin: 0;
+}
+
+.pharmacie-pro-form .form-group label {
+  font-weight: 700;
+  color: #1c3f34;
+  font-size: 0.9rem;
+}
+
+.pharmacie-pro-form .form-group:nth-child(4),
+.pharmacie-pro-form .form-group:nth-child(5),
+.pharmacie-pro-form .form-group:nth-child(8),
+.pharmacie-pro-form .pharmacie-form-section,
+.pharmacie-pro-form .pharmacie-form-actions-row {
+  grid-column: 1 / -1;
 }
 
 .pharmacie-inline-form-header {
@@ -202,20 +226,26 @@
   display: flex;
   gap: 0.5rem;
   margin-top: 0.5rem;
+  align-items: stretch;
 }
 
 .pharmacie-gps-btn {
   padding: 0.75rem 1rem;
-  background: #00a651;
+  background: linear-gradient(135deg, #0f5c41, #00a651);
   color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
+  font-weight: 700;
 }
 
 .pharmacie-form-section {
   margin-top: 1.5rem;
+  border: 1px solid #e1ece6;
+  background: #f9fcfa;
+  border-radius: 12px;
+  padding: 0.9rem;
 }
 
 .pharmacie-form-section-title {
@@ -254,7 +284,9 @@
 .pharmacie-form-actions-row {
   display: flex;
   gap: 1rem;
-  margin-top: 1.8rem;
+  margin-top: 1.4rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e2ebe6;
 }
 
 .pharmacie-form-action-btn,
@@ -263,6 +295,18 @@
 }
 
 @media (max-width: 760px) {
+  .pharmacie-pro-form {
+    grid-template-columns: 1fr;
+  }
+
+  .pharmacie-pro-form .form-group:nth-child(4),
+  .pharmacie-pro-form .form-group:nth-child(5),
+  .pharmacie-pro-form .form-group:nth-child(8),
+  .pharmacie-pro-form .pharmacie-form-section,
+  .pharmacie-pro-form .pharmacie-form-actions-row {
+    grid-column: auto;
+  }
+
   .pharmacies-header,
   .pharmacie-inline-form-header {
     flex-direction: column;

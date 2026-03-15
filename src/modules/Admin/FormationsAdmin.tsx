@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
 
 const API_URL =
@@ -26,6 +27,7 @@ interface Formation {
 }
 
 const FormationsAdmin = () => {
+  const { showSuccess, showError } = useToast();
   const [formations, setFormations] = useState<Formation[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -101,9 +103,10 @@ const FormationsAdmin = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` }
       });
       fetchData();
+      showSuccess('Formation supprimée avec succès.');
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
-      alert('Erreur lors de la suppression');
+      showError('Erreur lors de la suppression.');
     }
   };
 
@@ -136,9 +139,10 @@ const FormationsAdmin = () => {
         content: ''
       });
       fetchData();
+      showSuccess(editingItem ? 'Formation mise à jour avec succès.' : 'Formation créée avec succès.');
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
-      alert('Erreur lors de la sauvegarde');
+      showError('Erreur lors de la sauvegarde.');
     }
   };
 
@@ -166,7 +170,7 @@ const FormationsAdmin = () => {
       <AdminSidebar currentPage="formations" />
       <main className="admin-main">
         <div className="admin-header" style={{ marginBottom: '2rem', padding: '2rem', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#00A651', margin: 0, padding: 0 }}>🎓 Gestion des Formations</h1>
+          <h1 style={{ fontSize: '2rem', fontWeight: '700', color: '#00A651', margin: 0, padding: 0 }}>Gestion des formations</h1>
           <button
             onClick={() => {
               setEditingItem(null);
@@ -192,7 +196,7 @@ const FormationsAdmin = () => {
             className="btn-primary"
             style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}
           >
-            ➕ Nouvelle formation
+            Nouvelle formation
           </button>
         </div>
 
@@ -261,7 +265,7 @@ const FormationsAdmin = () => {
                           style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
                           aria-label="Modifier"
                         >
-                          ✏️
+                          Modifier
                         </button>
                         <button
                           onClick={() => formation._id && handleDelete(formation._id)}
@@ -269,7 +273,7 @@ const FormationsAdmin = () => {
                           style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
                           aria-label="Supprimer"
                         >
-                          🗑️
+                          Supprimer
                         </button>
                       </div>
                     </td>

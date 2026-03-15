@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getImageWithFallback } from '../../utils/imageFallback';
+import { useToast } from '../../components/Toast';
 import './ArticleDetail.css';
 
 interface Article {
@@ -29,6 +30,7 @@ interface Article {
 }
 
 const ArticleDetail = () => {
+  const { showSuccess } = useToast();
   const { slug } = useParams<{ slug: string }>();
   const [article, setArticle] = useState<Article | null>(null);
   const [similarArticles, setSimilarArticles] = useState<Article[]>([]);
@@ -340,7 +342,7 @@ const ArticleDetail = () => {
   const copyLink = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-      alert('✅ Lien copié dans le presse-papiers !');
+      showSuccess('Lien copié dans le presse-papiers.');
     }).catch(() => {
       // Fallback pour navigateurs anciens
       const textArea = document.createElement('textarea');
@@ -349,7 +351,7 @@ const ArticleDetail = () => {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('✅ Lien copié dans le presse-papiers !');
+      showSuccess('Lien copié dans le presse-papiers.');
     });
   };
 

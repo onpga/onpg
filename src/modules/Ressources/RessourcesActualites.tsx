@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { SkeletonArticle } from '../../components/Skeleton';
-import { getImageWithFallback } from '../../utils/imageFallback';
+import { ImageWithFallback } from '../../utils/imageFallback';
 import { useApiCache } from '../../hooks/useApiCache';
 import { useDebounce } from '../../hooks/useDebounce';
 import './RessourcesActualites.css';
@@ -28,6 +28,12 @@ interface Article {
 
 // Layout 1 : Inspiré de Notion Blog - Épuré, cards compactes, typographie soignée
 const RessourcesActualites = () => {
+  const normalizeImageUrl = useCallback((url?: string) => {
+    if (!url || !url.trim()) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) return url;
+    return `https://res.cloudinary.com/dduvinjnu/image/upload/${url.replace(/^\/+/, '')}`;
+  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState<string>('');
@@ -47,7 +53,7 @@ const RessourcesActualites = () => {
         title: item.title || '',
         slug: item.title ? item.title.toLowerCase().replace(/\s+/g, '-') : '',
         excerpt: item.excerpt || item.summary || '',
-        image: item.image || item.featuredImage || '',
+        image: item.image || item.featuredImage || item.backgroundImage || item.photo || '',
         category: item.category || 'actualites',
         pole: item.pole || 'Général',
         publishedAt: item.date || item.publishedAt || new Date().toISOString(),
@@ -462,7 +468,7 @@ const RessourcesActualites = () => {
               {/* Actions filtres */}
               <div className="filters-actions-modern">
                 <button onClick={clearFilters} className="clear-filters-btn-modern">
-                  <span>🗑️</span> Effacer tous les filtres
+                  Effacer tous les filtres
                 </button>
                 <div className="filters-stats-modern">
                   <div className="stat-mini">
@@ -491,7 +497,6 @@ const RessourcesActualites = () => {
             </div>
           ) : filteredArticles.length === 0 ? (
             <div className="empty-state-modern">
-              <div className="empty-icon">📰</div>
               <h3>Aucun article trouvé</h3>
               <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
               <button onClick={clearFilters} className="empty-action-btn">
@@ -509,12 +514,13 @@ const RessourcesActualites = () => {
                     className={`article-card-modern ${article.featured ? 'featured' : ''}`}
                   >
                     <div className="article-card-image-modern">
-                      <img 
-                        src={getImageWithFallback(article.image, 'article')} 
+                      <ImageWithFallback
+                        src={normalizeImageUrl(article.image)}
+                        fallbackType="article"
                         alt={article.title}
                       />
                       {article.featured && (
-                        <div className="featured-badge-modern">⭐ À la une</div>
+                        <div className="featured-badge-modern">À la une</div>
                       )}
                       <div
                         className="article-category-badge-modern"
@@ -538,7 +544,7 @@ const RessourcesActualites = () => {
                       <p className="article-card-excerpt-modern">{article.excerpt}</p>
                       {article.tags && article.tags.length > 0 && (
                         <div className="article-card-tags-modern">
-                          {article.tags.slice(0, 4).map(tag => (
+                          {article.tags.slice(0, 2).map(tag => (
                             <span key={tag} className="article-tag-modern">#{tag}</span>
                           ))}
                         </div>

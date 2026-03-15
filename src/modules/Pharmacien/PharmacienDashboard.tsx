@@ -92,9 +92,9 @@ const PharmacienDashboard = () => {
       to: '/pharmacien/profile'
     },
     {
-      title: 'Mes pharmacies',
-      description: 'Gerer les informations de vos officines.',
-      button: 'Gerer mes pharmacies',
+      title: 'Ma pharmacie',
+      description: 'Gerer les informations de votre officine.',
+      button: 'Gerer ma pharmacie',
       to: '/pharmacien/pharmacies'
     },
     {
@@ -133,7 +133,7 @@ const PharmacienDashboard = () => {
 
           <section className="pharmacien-stats-grid">
             <article className="pharmacien-stat-card">
-              <h3>Mes pharmacies</h3>
+              <h3>Ma pharmacie</h3>
               <p>{loading ? '...' : stats.totalPharmacies}</p>
             </article>
             <article className="pharmacien-stat-card">

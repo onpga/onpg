@@ -143,7 +143,7 @@ const ThesesAdmin = () => {
         {/* En-tête */}
         <div className="theses-page-header">
           <div className="theses-header-left">
-            <div className="theses-header-icon">📄</div>
+            <div className="theses-header-icon">TH</div>
             <div className="theses-header-text">
               <h1>Gestion des thèses</h1>
               <p>Thèses et mémoires déposés par les pharmaciens inscrits</p>
@@ -154,7 +154,7 @@ const ThesesAdmin = () => {
         {/* Toast */}
         {message && (
           <div className={`theses-toast ${message.type}`}>
-            <span>{message.type === 'success' ? '✓' : '⚠'}</span>
+            <span>{message.type === 'success' ? 'OK' : 'ER'}</span>
             {message.text}
           </div>
         )}
@@ -163,21 +163,21 @@ const ThesesAdmin = () => {
         {!loading && (
           <div className="theses-stats-bar">
             <div className="theses-stat-chip">
-              <div className="theses-stat-chip-icon green">📄</div>
+              <div className="theses-stat-chip-icon green">TH</div>
               <div>
                 <div className="theses-stat-chip-value">{totalTheses}</div>
                 <div className="theses-stat-chip-label">thèse{totalTheses !== 1 ? 's' : ''} au total</div>
               </div>
             </div>
             <div className="theses-stat-chip">
-              <div className="theses-stat-chip-icon blue">📎</div>
+              <div className="theses-stat-chip-icon blue">PDF</div>
               <div>
                 <div className="theses-stat-chip-value">{withPdf}</div>
                 <div className="theses-stat-chip-label">avec fichier PDF</div>
               </div>
             </div>
             <div className="theses-stat-chip">
-              <div className="theses-stat-chip-icon amber">📅</div>
+              <div className="theses-stat-chip-icon amber">AN</div>
               <div>
                 <div className="theses-stat-chip-value">{uniqueYears}</div>
                 <div className="theses-stat-chip-label">année{uniqueYears !== 1 ? 's' : ''} représentée{uniqueYears !== 1 ? 's' : ''}</div>
@@ -189,7 +189,7 @@ const ThesesAdmin = () => {
         {/* Toolbar */}
         <div className="theses-toolbar">
           <div className="theses-search-wrap">
-            <span className="theses-search-icon">🔍</span>
+            <span className="theses-search-icon">RECH</span>
             <input
               type="text"
               className="theses-search-input"
@@ -239,7 +239,7 @@ const ThesesAdmin = () => {
           <div className="theses-grid">
             {filtered.length === 0 ? (
               <div className="theses-empty-state">
-                <span className="theses-empty-icon">📭</span>
+                <span className="theses-empty-icon">TH</span>
                 <h3>
                   {search || yearFilter
                     ? 'Aucune thèse ne correspond à votre recherche'
@@ -265,17 +265,17 @@ const ThesesAdmin = () => {
                           {these.titre || 'Sans titre'}
                         </h3>
                         <p className="these-card-pharmacien">
-                          👤 {these.pharmacienNomComplet || 'Pharmacien inconnu'}
+                          {these.pharmacienNomComplet || 'Pharmacien inconnu'}
                         </p>
                       </div>
                     </div>
 
                     <div className="these-badges">
                       {these.annee && (
-                        <span className="these-badge-year">📅 {these.annee}</span>
+                        <span className="these-badge-year">Annee {these.annee}</span>
                       )}
                       {these.fichierUrl
-                        ? <span className="these-badge-pdf">📎 PDF disponible</span>
+                        ? <span className="these-badge-pdf">PDF disponible</span>
                         : <span className="these-badge-no-pdf">Pas de fichier</span>
                       }
                     </div>
@@ -287,7 +287,6 @@ const ThesesAdmin = () => {
 
                     {these.createdAt && (
                       <div className="these-date">
-                        <span>🕐</span>
                         <span>Déposé le {new Date(these.createdAt).toLocaleDateString('fr-FR', {
                           day: '2-digit', month: 'long', year: 'numeric'
                         })}</span>
@@ -304,14 +303,14 @@ const ThesesAdmin = () => {
                           rel="noopener noreferrer"
                           className="these-btn these-btn-view"
                         >
-                          👁 Consulter
+                          Consulter
                         </a>
                         <a
                           href={these.fichierUrl}
                           download={buildDownloadFileName(these)}
                           className="these-btn these-btn-download"
                         >
-                          ⬇ Télécharger
+                          Telecharger
                         </a>
                       </>
                     )}
@@ -320,7 +319,7 @@ const ThesesAdmin = () => {
                       onClick={() => handleDelete(these._id)}
                       disabled={deletingId === these._id}
                     >
-                      {deletingId === these._id ? '⏳ Suppression…' : '🗑 Supprimer'}
+                      {deletingId === these._id ? 'Suppression…' : 'Supprimer'}
                     </button>
                   </div>
                 </article>

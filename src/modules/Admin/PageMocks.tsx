@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
 import TextEditor from './components/TextEditor';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
 
 const API_URL =
@@ -51,7 +52,7 @@ const ChkBox = ({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 const FormActions = ({ editing, saving, onCancel }: { editing: boolean; saving: boolean; onCancel: () => void }) => (
   <div style={{ display: 'flex', gap: '1rem', paddingTop: '0.5rem' }}>
     <button type="submit" className="btn-primary" disabled={saving}>
-      {saving ? '⏳ Enregistrement…' : `💾 ${editing ? 'Modifier' : 'Créer'}`}
+      {saving ? 'Enregistrement…' : (editing ? 'Modifier' : 'Créer')}
     </button>
     <button type="button" className="btn-secondary" onClick={onCancel}>Annuler</button>
   </div>
@@ -59,9 +60,10 @@ const FormActions = ({ editing, saving, onCancel }: { editing: boolean; saving: 
 
 /* Upload image Cloudinary */
 const useCloudinaryUpload = () => {
+  const { showWarning, showError } = useToast();
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const upload = async (file: File, key: string, cb: (url: string) => void) => {
-    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) { alert('Config Cloudinary manquante'); return; }
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) { showWarning('Configuration Cloudinary manquante.'); return; }
     setUploading(p => ({ ...p, [key]: true }));
     try {
       const fd = new FormData();
@@ -69,8 +71,8 @@ const useCloudinaryUpload = () => {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: fd });
       const data = await res.json();
       if (data.secure_url) cb(data.secure_url);
-      else alert("Erreur upload Cloudinary");
-    } catch { alert("Erreur upload Cloudinary"); }
+      else showError('Erreur upload Cloudinary.');
+    } catch { showError('Erreur upload Cloudinary.'); }
     finally { setUploading(p => ({ ...p, [key]: false })); }
   };
   return { upload, uploading };
@@ -85,7 +87,7 @@ const ImageField = ({ label: lbl2, value, onChange, uploadKey, upload, uploading
     <label style={{ fontWeight: 700, display: 'block', marginBottom: '0.4rem' }}>{lbl2}</label>
     <input type="file" accept="image/*" disabled={uploading[uploadKey]}
       onChange={e => { const f = e.target.files?.[0]; if (f) upload(f, uploadKey, onChange); }} />
-    {uploading[uploadKey] && <p style={{ color: '#666', fontSize: '0.85rem', margin: '4px 0' }}>⏳ Upload en cours…</p>}
+    {uploading[uploadKey] && <p style={{ color: '#666', fontSize: '0.85rem', margin: '4px 0' }}>Upload en cours…</p>}
     {value && (
       <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
         <img src={value} alt="" style={{ maxWidth: 160, maxHeight: 100, borderRadius: 6, objectFit: 'cover' }} />
@@ -128,8 +130,8 @@ const ActualiteForm = ({ initial, editing, onSave, onCancel }: { initial: typeof
         <div className="form-group">{lbl('Pôle')}<input style={fs} type="text" value={v.pole} onChange={e => s('pole', e.target.value)} placeholder="Pôle concerné" /></div>
       </div>
       <div style={row2}>
-        <ImageField label="🖼️ Image principale" value={v.image} onChange={u => s('image', u)} uploadKey="image" upload={upload} uploading={uploading} />
-        <ImageField label="🌄 Image d'arrière-plan" value={v.backgroundImage} onChange={u => s('backgroundImage', u)} uploadKey="bg" upload={upload} uploading={uploading} />
+        <ImageField label="Image principale" value={v.image} onChange={u => s('image', u)} uploadKey="image" upload={upload} uploading={uploading} />
+        <ImageField label="Image d'arrière-plan" value={v.backgroundImage} onChange={u => s('backgroundImage', u)} uploadKey="bg" upload={upload} uploading={uploading} />
       </div>
       <div className="form-group">{lbl('Contenu complet')}
         <TextEditor value={v.content} onChange={val => s('content', val)} placeholder="Rédigez l'actualité…" height="380px" />
@@ -140,8 +142,8 @@ const ActualiteForm = ({ initial, editing, onSave, onCancel }: { initial: typeof
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
       </div>
       <div style={{ display: 'flex', gap: '2rem' }}>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Mise en vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Publié / Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Mise en vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Publie / Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -175,9 +177,9 @@ const CommuniqueForm = ({ initial, editing, onSave, onCancel }: { initial: typeo
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.urgent} onChange={val => s('urgent', val)} label="🚨 Urgent" />
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.urgent} onChange={val => s('urgent', val)} label="Urgent" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -232,13 +234,13 @@ const ArticleScientifiqueForm = ({ initial, editing, onSave, onCancel }: { initi
 
       {/* Lien externe ou PDF */}
       <div className="form-group">
-        {lbl('🔗 Lien vers l\'article complet (URL ou PDF)')}
+        {lbl('Lien vers l\'article complet (URL ou PDF)')}
         <input style={fs} type="url" value={v.linkUrl} onChange={e => s('linkUrl', e.target.value)} placeholder="https://…/article.pdf  ou  https://pubmed.ncbi.nlm.nih.gov/…" />
         {v.linkUrl && (
           <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <a href={v.linkUrl} target="_blank" rel="noopener noreferrer"
               style={{ fontSize: '0.82rem', color: '#00A651', fontWeight: 600, textDecoration: 'none' }}>
-              ✅ Vérifier le lien ↗
+              Verifier le lien ↗
             </a>
             <button type="button" onClick={() => s('linkUrl', '')}
               style={{ padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}>
@@ -251,8 +253,8 @@ const ArticleScientifiqueForm = ({ initial, editing, onSave, onCancel }: { initi
       {/* Ordre + Vedette + Actif */}
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -288,8 +290,8 @@ const CommissionForm = ({ initial, editing, onSave, onCancel }: { initial: typeo
       <div style={{ display: 'grid', gridTemplateColumns: '80px 160px 1fr 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
         <div className="form-group">{lbl('Statut')}<select style={fs} value={v.status} onChange={e => s('status', e.target.value)}><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -301,7 +303,7 @@ const CommissionForm = ({ initial, editing, onSave, onCancel }: { initial: typeo
 ═══════════════════════════════════════════════════════ */
 const EMPTY_DECISION = { title: '', reference: '', date: '', jurisdiction: '', category: 'Général', summary: '', parties: '', decision: 'favorable', keywords: '', featured: false, isActive: true, order: 1 };
 const DEC_CATS = ['Général', 'Juridique', 'Disciplinaire', 'Administratif'];
-const DEC_RESULTS = [{ v: 'favorable', l: '✅ Favorable' }, { v: 'defavorable', l: '❌ Défavorable' }, { v: 'partiellement favorable', l: '⚖️ Partiellement favorable' }, { v: 'irrecevable', l: '🚫 Irrecevable' }];
+const DEC_RESULTS = [{ v: 'favorable', l: 'Favorable' }, { v: 'defavorable', l: 'Defavorable' }, { v: 'partiellement favorable', l: 'Partiellement favorable' }, { v: 'irrecevable', l: 'Irrecevable' }];
 
 const DecisionForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_DECISION; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -329,8 +331,8 @@ const DecisionForm = ({ initial, editing, onSave, onCancel }: { initial: typeof 
       <div className="form-group">{lbl('Mots-clés (virgules)')}<input style={fs} type="text" value={v.keywords} onChange={e => s('keywords', e.target.value)} placeholder="discipline, sanction, pharmacien…" /></div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -342,7 +344,7 @@ const DecisionForm = ({ initial, editing, onSave, onCancel }: { initial: typeof 
 ═══════════════════════════════════════════════════════ */
 const EMPTY_DECRET = { number: '', title: '', publicationDate: '', entryDate: '', ministry: '', category: 'Général', summary: '', keyArticles: '', tags: '', status: 'active', language: 'fr', featured: false, isActive: true, order: 1 };
 const DECRET_CATS = ['Général', 'Santé', 'Formation', 'Réglementation', 'Fiscalité'];
-const DECRET_STATUS = [{ v: 'active', l: '✅ En vigueur' }, { v: 'modified', l: '📝 Modifié' }, { v: 'abrogated', l: '❌ Abrogé' }];
+const DECRET_STATUS = [{ v: 'active', l: 'En vigueur' }, { v: 'modified', l: 'Modifie' }, { v: 'abrogated', l: 'Abroge' }];
 
 const DecretForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_DECRET; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -374,8 +376,8 @@ const DecretForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EM
       <div className="form-group">{lbl('Tags (virgules)')}<input style={fs} type="text" value={v.tags} onChange={e => s('tags', e.target.value)} placeholder="réglementation, santé, pharmacie…" /></div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -387,7 +389,7 @@ const DecretForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EM
 ═══════════════════════════════════════════════════════ */
 const EMPTY_LOI = { number: '', title: '', publicationDate: '', entryDate: '', category: 'Législation', summary: '', keyArticles: '', tags: '', status: 'active', language: 'fr', pdfUrl: '', featured: false, isActive: true, order: 1 };
 const LOI_CATS = ['Législation', 'Santé', 'Profession', 'Éthique', 'Formation', 'Commerce'];
-const LOI_STATUS = [{ v: 'active', l: '✅ En vigueur' }, { v: 'modified', l: '📝 Modifiée' }, { v: 'repealed', l: '❌ Abrogée' }];
+const LOI_STATUS = [{ v: 'active', l: 'En vigueur' }, { v: 'modified', l: 'Modifiee' }, { v: 'repealed', l: 'Abrogee' }];
 
 const LoiForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_LOI; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -417,13 +419,13 @@ const LoiForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY
         <div className="form-group">{lbl('Langue')}<select style={fs} value={v.language} onChange={e => s('language', e.target.value)}><option value="fr">Français</option><option value="en">Anglais</option></select></div>
       </div>
       <div className="form-group">
-        {lbl('📄 Lien PDF officiel (Journal Officiel…)')}
+        {lbl('Lien PDF officiel (Journal Officiel…)')}
         <input style={fs} type="url" value={v.pdfUrl} onChange={e => s('pdfUrl', e.target.value)} placeholder="https://jog.gouv.ga/loi-2024-001.pdf" />
         {v.pdfUrl && (
           <div style={{ marginTop: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <a href={v.pdfUrl} target="_blank" rel="noopener noreferrer"
               style={{ fontSize: '0.82rem', color: '#00A651', fontWeight: 600, textDecoration: 'none' }}>
-              ✅ Lien valide — Vérifier ↗
+              Lien valide — Verifier ↗
             </a>
             <button type="button" onClick={() => s('pdfUrl', '')}
               style={{ padding: '2px 8px', background: '#fee2e2', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}>
@@ -434,8 +436,8 @@ const LoiForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -447,7 +449,7 @@ const LoiForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY
 ═══════════════════════════════════════════════════════ */
 const EMPTY_PHOTO = { title: '', description: '', image: '', thumbnail: '', album: '', date: '', photographer: '', location: '', category: 'Général', tags: '', orientation: 'landscape', featured: false, isActive: true, order: 1 };
 const PHOTO_CATS = ['Général', 'Événements', 'Formation', 'Institution', 'Cérémonies', 'Conférences'];
-const ORIENTATIONS = [{ v: 'landscape', l: '🖼️ Paysage' }, { v: 'portrait', l: '📱 Portrait' }, { v: 'square', l: '⬛ Carré' }];
+const ORIENTATIONS = [{ v: 'landscape', l: 'Paysage' }, { v: 'portrait', l: 'Portrait' }, { v: 'square', l: 'Carre' }];
 
 const PhotoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_PHOTO; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -464,8 +466,8 @@ const PhotoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
       <div className="form-group">{lbl('Titre', true)}<input style={fs} type="text" value={v.title} onChange={e => s('title', e.target.value)} required placeholder="Titre de la photo" /></div>
       <div className="form-group">{lbl('Description')}<textarea style={{ ...fs, resize: 'vertical' }} value={v.description} onChange={e => s('description', e.target.value)} rows={3} placeholder="Description de la photo…" /></div>
       <div style={row2}>
-        <ImageField label="🖼️ Photo principale *" value={v.image} onChange={u => s('image', u)} uploadKey="photo" upload={upload} uploading={uploading} />
-        <ImageField label="🔍 Miniature (optionnel)" value={v.thumbnail} onChange={u => s('thumbnail', u)} uploadKey="thumb" upload={upload} uploading={uploading} />
+        <ImageField label="Photo principale *" value={v.image} onChange={u => s('image', u)} uploadKey="photo" upload={upload} uploading={uploading} />
+        <ImageField label="Miniature (optionnel)" value={v.thumbnail} onChange={u => s('thumbnail', u)} uploadKey="thumb" upload={upload} uploading={uploading} />
       </div>
       <div style={row3}>
         <div className="form-group">{lbl('Album')}<input style={fs} type="text" value={v.album} onChange={e => s('album', e.target.value)} placeholder="Congrès 2024, Inauguration…" /></div>
@@ -480,8 +482,8 @@ const PhotoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
       <div className="form-group">{lbl('Tags (virgules)')}<input style={fs} type="text" value={v.tags} onChange={e => s('tags', e.target.value)} placeholder="événement, formation, ONPG…" /></div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -492,7 +494,7 @@ const PhotoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
    9. THÈSES
 ═══════════════════════════════════════════════════════ */
 const EMPTY_THESE = { title: '', author: '', director: '', university: '', faculty: '', department: '', degree: 'phd', year: new Date().getFullYear(), abstract: '', keywords: '', pages: '', language: 'fr', specialty: '', defenseDate: '', juryMembers: '', pdfUrl: '', featured: false, isActive: true, order: 1 };
-const THESE_DEGREES = [{ v: 'master', l: '🎓 Master' }, { v: 'phd', l: '🎓 Doctorat/PhD' }, { v: 'doctorate', l: '🎓 Doctorat d\'État' }];
+const THESE_DEGREES = [{ v: 'master', l: 'Master' }, { v: 'phd', l: 'Doctorat/PhD' }, { v: 'doctorate', l: 'Doctorat d\'État' }];
 
 const TheseForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_THESE; editing: boolean; onSave: (d: any) => Promise<void>; onCancel: () => void }) => {
   const [v, setV] = useState(initial);
@@ -533,8 +535,8 @@ const TheseForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
         <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+        <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+        <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
       </div>
       <FormActions editing={editing} saving={saving} onCancel={onCancel} />
     </form>
@@ -554,7 +556,7 @@ const VideoPreviewCard = ({ v }: { v: typeof EMPTY_VIDEO }) => {
       <div style={{ position: 'relative', paddingTop: '56.25%', background: '#111' }}>
         {thumb ? <img src={thumb} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', fontSize: '0.85rem' }}>Miniature YouTube</div>}
         {v.duration && <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.75)', color: '#fff', padding: '2px 7px', borderRadius: 4, fontSize: '0.78rem', fontWeight: 700 }}>{v.duration}</span>}
-        {v.featured && <span style={{ position: 'absolute', top: 8, left: 8, background: '#f59e0b', color: '#fff', padding: '3px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 700 }}>⭐ Vedette</span>}
+        {v.featured && <span style={{ position: 'absolute', top: 8, left: 8, background: '#f59e0b', color: '#fff', padding: '3px 10px', borderRadius: 20, fontSize: '0.75rem', fontWeight: 700 }}>Vedette</span>}
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <div style={{ width: 48, height: 48, borderRadius: '50%', background: 'rgba(220,38,38,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z" /></svg>
@@ -566,8 +568,8 @@ const VideoPreviewCard = ({ v }: { v: typeof EMPTY_VIDEO }) => {
         <p style={{ margin: '0 0 0.4rem', fontWeight: 700, fontSize: '0.97rem', color: '#1C1917', lineHeight: 1.35 }}>{v.title || <span style={{ color: '#aaa' }}>Titre de la vidéo…</span>}</p>
         {v.description && <p style={{ margin: '0 0 0.6rem', fontSize: '0.82rem', color: '#57534E', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{v.description}</p>}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-          {v.speaker && <span style={{ fontSize: '0.78rem', color: '#78716C' }}>👤 {v.speaker}</span>}
-          {v.event && <span style={{ fontSize: '0.78rem', color: '#78716C' }}>📍 {v.event}</span>}
+          {v.speaker && <span style={{ fontSize: '0.78rem', color: '#78716C' }}>{v.speaker}</span>}
+          {v.event && <span style={{ fontSize: '0.78rem', color: '#78716C' }}>{v.event}</span>}
         </div>
         {v.tags && <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginTop: '0.5rem' }}>{v.tags.split(',').map(t => t.trim()).filter(Boolean).map(tag => <span key={tag} style={{ background: '#F5F5F4', color: '#57534E', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem' }}>#{tag}</span>)}</div>}
       </div>
@@ -576,6 +578,7 @@ const VideoPreviewCard = ({ v }: { v: typeof EMPTY_VIDEO }) => {
 };
 
 const VideoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMPTY_VIDEO; editing: boolean; onSave: (d: typeof EMPTY_VIDEO) => Promise<void>; onCancel: () => void }) => {
+  const { showWarning } = useToast();
   const [v, setV] = useState(initial);
   const [saving, setSaving] = useState(false);
   const [urlError, setUrlError] = useState('');
@@ -588,7 +591,7 @@ const VideoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
   };
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!v.youtubeId) { alert('Entrez une URL YouTube valide'); return; }
+    if (!v.youtubeId) { showWarning('Entrez une URL YouTube valide.'); return; }
     setSaving(true);
     try { await onSave(v); } finally { setSaving(false); }
   };
@@ -596,31 +599,31 @@ const VideoForm = ({ initial, editing, onSave, onCancel }: { initial: typeof EMP
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '2.5rem', alignItems: 'start' }}>
       <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
         <div className="form-group">
-          {lbl('🔗 URL YouTube', true)}
+          {lbl('URL YouTube', true)}
           <input style={{ ...fs, borderColor: urlError ? '#dc2626' : '#E7E5E0' }} type="text" value={v.youtubeUrl} onChange={e => handleUrl(e.target.value)} placeholder="https://www.youtube.com/watch?v=…" />
           {urlError && <p style={{ color: '#dc2626', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>{urlError}</p>}
-          {v.youtubeId && <p style={{ color: '#059669', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>✅ ID : <code style={{ background: '#F0FDF4', padding: '1px 6px', borderRadius: 4 }}>{v.youtubeId}</code></p>}
+          {v.youtubeId && <p style={{ color: '#059669', fontSize: '0.82rem', margin: '0.25rem 0 0' }}>ID : <code style={{ background: '#F0FDF4', padding: '1px 6px', borderRadius: 4 }}>{v.youtubeId}</code></p>}
         </div>
         <div className="form-group">{lbl('Titre', true)}<input style={fs} type="text" value={v.title} onChange={e => s('title', e.target.value)} required placeholder="Titre de la vidéo" /></div>
         <div className="form-group">{lbl('Description')}<textarea style={{ ...fs, resize: 'vertical' }} value={v.description} onChange={e => s('description', e.target.value)} rows={4} placeholder="Description de la vidéo…" /></div>
         <div style={row2}>
-          <div className="form-group">{lbl('👤 Intervenant / Auteur')}<input style={fs} type="text" value={v.speaker} onChange={e => s('speaker', e.target.value)} placeholder="Nom du conférencier" /></div>
-          <div className="form-group">{lbl('📍 Événement')}<input style={fs} type="text" value={v.event} onChange={e => s('event', e.target.value)} placeholder="Conférence, séminaire…" /></div>
+          <div className="form-group">{lbl('Intervenant / Auteur')}<input style={fs} type="text" value={v.speaker} onChange={e => s('speaker', e.target.value)} placeholder="Nom du conférencier" /></div>
+          <div className="form-group">{lbl('Evenement')}<input style={fs} type="text" value={v.event} onChange={e => s('event', e.target.value)} placeholder="Conference, seminaire…" /></div>
         </div>
         <div style={row2}>
-          <div className="form-group">{lbl('🏷️ Catégorie')}<select style={fs} value={v.category} onChange={e => s('category', e.target.value)}>{VIDEO_CATS.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
-          <div className="form-group">{lbl('⏱️ Durée (ex : 15:30)')}<input style={fs} type="text" value={v.duration} onChange={e => s('duration', e.target.value)} placeholder="mm:ss" /></div>
+          <div className="form-group">{lbl('Catégorie')}<select style={fs} value={v.category} onChange={e => s('category', e.target.value)}>{VIDEO_CATS.map(c => <option key={c} value={c}>{c}</option>)}</select></div>
+          <div className="form-group">{lbl('Durée (ex : 15:30)')}<input style={fs} type="text" value={v.duration} onChange={e => s('duration', e.target.value)} placeholder="mm:ss" /></div>
         </div>
-        <div className="form-group">{lbl('🔖 Tags (virgules)')}<input style={fs} type="text" value={v.tags} onChange={e => s('tags', e.target.value)} placeholder="ONPG, pharmacie, formation…" /></div>
+        <div className="form-group">{lbl('Tags (virgules)')}<input style={fs} type="text" value={v.tags} onChange={e => s('tags', e.target.value)} placeholder="ONPG, pharmacie, formation…" /></div>
         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', gap: '1rem', alignItems: 'end' }}>
           <div className="form-group">{lbl('Ordre')}<input style={fs} type="number" min={1} value={v.order} onChange={e => s('order', +e.target.value)} /></div>
-          <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="⭐ Vedette" />
-          <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="✅ Actif" />
+          <ChkBox checked={v.featured} onChange={val => s('featured', val)} label="Vedette" />
+          <ChkBox checked={v.isActive} onChange={val => s('isActive', val)} label="Actif" />
         </div>
         <FormActions editing={editing} saving={saving} onCancel={onCancel} />
       </form>
       <div style={{ position: 'sticky', top: '1rem' }}>
-        <p style={{ fontWeight: 700, marginBottom: '1rem', color: '#374151' }}>👁️ Aperçu de la carte</p>
+        <p style={{ fontWeight: 700, marginBottom: '1rem', color: '#374151' }}>Apercu de la carte</p>
         <VideoPreviewCard v={v} />
         {v.youtubeId && <a href={`https://www.youtube.com/watch?v=${v.youtubeId}`} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginTop: '1rem', color: '#dc2626', fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none' }}>▶ Ouvrir sur YouTube ↗</a>}
       </div>
@@ -654,61 +657,61 @@ const COLLECTION_CONFIG: Record<CollectionId, {
   FormComponent: React.FC<any>;
 }> = {
   actualites: {
-    name: 'Actualités', icon: '📰',
+    name: 'Actualités', icon: 'ACT',
     emptyData: () => ({ ...EMPTY_ACTU }),
     toInitial: (item: any) => ({ ...EMPTY_ACTU, ...item, authorName: item.author?.name || '', authorRole: item.author?.role || '', tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || '') }),
     FormComponent: ActualiteForm,
   },
   communiques: {
-    name: 'Communiqués', icon: '📢',
+    name: 'Communiqués', icon: 'COM',
     emptyData: () => ({ ...EMPTY_COMM }),
     toInitial: (item: any) => ({ ...EMPTY_COMM, ...item }),
     FormComponent: CommuniqueForm,
   },
   articles: {
-    name: 'Articles scientifiques', icon: '🔬',
+    name: 'Articles scientifiques', icon: 'ART',
     emptyData: () => ({ ...EMPTY_ART }),
     toInitial: (item: any) => ({ ...EMPTY_ART, ...item, authors: Array.isArray(item.authors) ? item.authors.join(', ') : (item.authors || ''), keywords: Array.isArray(item.keywords) ? item.keywords.join(', ') : (item.keywords || ''), content: item.content || '', linkUrl: item.linkUrl || '' }),
     FormComponent: ArticleScientifiqueForm,
   },
   commissions: {
-    name: 'Commissions', icon: '🏛️',
+    name: 'Commissions', icon: 'CMS',
     emptyData: () => ({ ...EMPTY_COMMISSION }),
     toInitial: (item: any) => ({ ...EMPTY_COMMISSION, ...item, name: item.name || item.title || '', members: Array.isArray(item.members) ? item.members.join(', ') : (item.members || ''), missions: Array.isArray(item.missions) ? item.missions.join('\n') : (item.missions || '') }),
     FormComponent: CommissionForm,
   },
   decisions: {
-    name: 'Décisions', icon: '⚖️',
+    name: 'Décisions', icon: 'DEC',
     emptyData: () => ({ ...EMPTY_DECISION }),
     toInitial: (item: any) => ({ ...EMPTY_DECISION, ...item, parties: Array.isArray(item.parties) ? item.parties.join(', ') : (item.parties || ''), keywords: Array.isArray(item.keywords) ? item.keywords.join(', ') : (item.keywords || '') }),
     FormComponent: DecisionForm,
   },
   decrets: {
-    name: 'Décrets', icon: '📜',
+    name: 'Décrets', icon: 'DCR',
     emptyData: () => ({ ...EMPTY_DECRET }),
     toInitial: (item: any) => ({ ...EMPTY_DECRET, ...item, keyArticles: Array.isArray(item.keyArticles) ? item.keyArticles.join('\n') : (item.keyArticles || ''), tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || '') }),
     FormComponent: DecretForm,
   },
   lois: {
-    name: 'Lois', icon: '📗',
+    name: 'Lois', icon: 'LOI',
     emptyData: () => ({ ...EMPTY_LOI }),
     toInitial: (item: any) => ({ ...EMPTY_LOI, ...item, keyArticles: Array.isArray(item.keyArticles) ? item.keyArticles.join('\n') : (item.keyArticles || ''), tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''), pdfUrl: item.pdfUrl || '' }),
     FormComponent: LoiForm,
   },
   photos: {
-    name: 'Photos', icon: '📷',
+    name: 'Photos', icon: 'PHT',
     emptyData: () => ({ ...EMPTY_PHOTO }),
     toInitial: (item: any) => ({ ...EMPTY_PHOTO, ...item, tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || '') }),
     FormComponent: PhotoForm,
   },
   theses: {
-    name: 'Thèses', icon: '🎓',
+    name: 'Thèses', icon: 'THS',
     emptyData: () => ({ ...EMPTY_THESE }),
     toInitial: (item: any) => ({ ...EMPTY_THESE, ...item, keywords: Array.isArray(item.keywords) ? item.keywords.join(', ') : (item.keywords || ''), juryMembers: Array.isArray(item.juryMembers) ? item.juryMembers.join(', ') : (item.juryMembers || ''), pages: item.pages?.toString() || '' }),
     FormComponent: TheseForm,
   },
   videos: {
-    name: 'Vidéos (YouTube)', icon: '🎬',
+    name: 'Vidéos (YouTube)', icon: 'VID',
     emptyData: () => ({ ...EMPTY_VIDEO }),
     toInitial: (item: any) => ({ ...EMPTY_VIDEO, ...item, youtubeUrl: item.youtubeId ? `https://www.youtube.com/watch?v=${item.youtubeId}` : '', tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || '') }),
     FormComponent: VideoForm,
@@ -719,6 +722,7 @@ const COLLECTION_CONFIG: Record<CollectionId, {
    COMPOSANT PRINCIPAL
 ═══════════════════════════════════════════════════════ */
 const PageMocks = () => {
+  const { showSuccess, showError } = useToast();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCollection, setSelectedCollection] = useState<CollectionId>('actualites');
@@ -770,8 +774,8 @@ const PageMocks = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` }
       });
       fetchData();
-      alert('✅ Supprimé avec succès !');
-    } catch { alert('❌ Erreur lors de la suppression'); }
+      showSuccess('Supprimé avec succès.');
+    } catch { showError('Erreur lors de la suppression.'); }
   };
 
   /* Sauvegarde vidéo (spécifique) */
@@ -781,7 +785,7 @@ const PageMocks = () => {
     const url = editingItem ? `${API_URL}/admin/videos/${editingItem._id}` : `${API_URL}/admin/videos`;
     await axios[editingItem ? 'put' : 'post'](url, payload, { headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } });
     setShowForm(false); setEditingItem(null); fetchData();
-    alert('✅ Vidéo enregistrée !');
+    showSuccess('Vidéo enregistrée.');
   };
 
   /* Sauvegarde générique */
@@ -789,12 +793,12 @@ const PageMocks = () => {
     const url = editingItem ? `${API_URL}/admin/${selectedCollection}/${editingItem._id}` : `${API_URL}/admin/${selectedCollection}`;
     await axios[editingItem ? 'put' : 'post'](url, payload, { headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` } });
     setShowForm(false); setEditingItem(null); fetchData();
-    alert('✅ Enregistré avec succès !');
+    showSuccess('Enregistré avec succès.');
   };
 
   const handleSave = selectedCollection === 'videos' ? handleVideoSave : handleGenericSave;
 
-  const collections = Object.entries(COLLECTION_CONFIG).map(([id, cfg]) => ({ id: id as CollectionId, name: `${cfg.icon} ${cfg.name}` }));
+  const collections = Object.entries(COLLECTION_CONFIG).map(([id, cfg]) => ({ id: id as CollectionId, name: cfg.name }));
 
   const FormComponent = config.FormComponent;
 
@@ -804,17 +808,15 @@ const PageMocks = () => {
       <main className="dashboard-main">
         <div className="dashboard-topbar">
           <div className="user-info-compact">
-            <span className="user-avatar-small">👤</span>
+            <span className="user-avatar-small">A</span>
             <span>Admin</span>
           </div>
         </div>
 
         <div className="dashboard-content">
           <div className="dashboard-header">
-            <h1>{config.icon} Gestion — {config.name}</h1>
-            <button className="btn-primary" onClick={handleNew}>
-              ➕ Nouveau
-            </button>
+            <h1>Gestion — {config.name}</h1>
+            <button className="btn-primary" onClick={handleNew}>Nouveau</button>
           </div>
 
           {/* Sélecteur de collection */}
@@ -826,7 +828,7 @@ const PageMocks = () => {
                 setEditingItem(null);
                 setShowForm(false);
               }}
-              className="filter-select"
+              className="resources-collection-select"
             >
               {collections.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
@@ -848,7 +850,7 @@ const PageMocks = () => {
                       <div style={{ position: 'relative', paddingTop: '56.25%', background: '#111' }}>
                         {thumb ? <img src={thumb} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} /> : <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>No thumb</div>}
                         {item.duration && <span style={{ position: 'absolute', bottom: 6, right: 6, background: 'rgba(0,0,0,0.75)', color: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 700 }}>{item.duration}</span>}
-                        {item.featured && <span style={{ position: 'absolute', top: 6, left: 6, background: '#f59e0b', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>⭐</span>}
+                        {item.featured && <span style={{ position: 'absolute', top: 6, left: 6, background: '#f59e0b', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>Vedette</span>}
                         {!item.isActive && <span style={{ position: 'absolute', top: 6, right: 6, background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>Inactif</span>}
                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
                           <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(220,38,38,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -859,12 +861,12 @@ const PageMocks = () => {
                       <div style={{ padding: '0.85rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                         {item.category && <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#2563EB', textTransform: 'uppercase' }}>{item.category}</span>}
                         <p style={{ margin: 0, fontWeight: 700, fontSize: '0.88rem', color: '#1C1917', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</p>
-                        {item.speaker && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>👤 {item.speaker}</p>}
+                        {item.speaker && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>{item.speaker}</p>}
                         {item.youtubeId && <a href={`https://youtu.be/${item.youtubeId}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: '#dc2626', textDecoration: 'none', fontWeight: 600 }}>▶ youtu.be/{item.youtubeId}</a>}
                       </div>
                       <div style={{ padding: '0.6rem 0.85rem', borderTop: '1px solid #F5F5F4', display: 'flex', gap: '0.5rem' }}>
-                        <button onClick={() => handleEdit(item)} className="btn-edit" style={{ flex: 1 }}>✏️ Modifier</button>
-                        <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
+                        <button onClick={() => handleEdit(item)} className="btn-edit" style={{ flex: 1 }}>Modifier</button>
+                        <button onClick={() => handleDelete(item._id)} className="btn-delete">Supprimer</button>
                       </div>
                     </div>
                   );
@@ -886,22 +888,22 @@ const PageMocks = () => {
                         {thumb
                           ? <img src={thumb} alt={item.title || ''} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
                           : <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#aaa', gap: '0.3rem' }}>
-                              <span style={{ fontSize: '2rem' }}>🖼️</span>
+                              <span style={{ fontSize: '2rem' }}>IMG</span>
                               <span style={{ fontSize: '0.75rem' }}>Pas d'image</span>
                             </div>
                         }
                         {/* Badges superposés */}
-                        {item.featured && <span style={{ position: 'absolute', top: 6, left: 6, background: '#f59e0b', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>⭐ Vedette</span>}
+                        {item.featured && <span style={{ position: 'absolute', top: 6, left: 6, background: '#f59e0b', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>Vedette</span>}
                         {!item.isActive && <span style={{ position: 'absolute', top: 6, right: 6, background: '#dc2626', color: '#fff', padding: '2px 8px', borderRadius: 20, fontSize: '0.72rem', fontWeight: 700 }}>Inactif</span>}
                         {item.orientation && <span style={{ position: 'absolute', bottom: 6, left: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '2px 7px', borderRadius: 4, fontSize: '0.7rem' }}>
-                          {item.orientation === 'landscape' ? '🖼️ Paysage' : item.orientation === 'portrait' ? '📱 Portrait' : '⬛ Carré'}
+                          {item.orientation === 'landscape' ? 'Paysage' : item.orientation === 'portrait' ? 'Portrait' : 'Carre'}
                         </span>}
                         {/* Lien pour ouvrir la photo en grand */}
                         {item.image && (
                           <a href={item.image} target="_blank" rel="noopener noreferrer"
                             style={{ position: 'absolute', bottom: 6, right: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', padding: '4px 8px', borderRadius: 6, fontSize: '0.72rem', textDecoration: 'none', fontWeight: 600 }}
                             title="Voir en plein écran">
-                            🔍 Voir
+                            Voir
                           </a>
                         )}
                       </div>
@@ -911,10 +913,10 @@ const PageMocks = () => {
                         <p style={{ margin: 0, fontWeight: 700, fontSize: '0.9rem', color: '#1C1917', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                           {item.title || '—'}
                         </p>
-                        {item.album && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>📁 {item.album}</p>}
-                        {item.photographer && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>📷 {item.photographer}</p>}
-                        {item.location && <p style={{ margin: 0, fontSize: '0.75rem', color: '#a8a29e' }}>📍 {item.location}</p>}
-                        {item.date && <p style={{ margin: 0, fontSize: '0.73rem', color: '#a8a29e' }}>🗓️ {new Date(item.date).toLocaleDateString('fr-FR')}</p>}
+                        {item.album && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>{item.album}</p>}
+                        {item.photographer && <p style={{ margin: 0, fontSize: '0.78rem', color: '#78716C' }}>{item.photographer}</p>}
+                        {item.location && <p style={{ margin: 0, fontSize: '0.75rem', color: '#a8a29e' }}>{item.location}</p>}
+                        {item.date && <p style={{ margin: 0, fontSize: '0.73rem', color: '#a8a29e' }}>{new Date(item.date).toLocaleDateString('fr-FR')}</p>}
                       </div>
                       {/* Actions */}
                       <div style={{ padding: '0.6rem 0.75rem', borderTop: '1px solid #F5F5F4', display: 'flex', gap: '0.4rem' }}>
@@ -922,10 +924,10 @@ const PageMocks = () => {
                           className="btn-edit"
                           title="Voir côté visiteur"
                           style={{ textDecoration: 'none', background: '#EFF6FF', color: '#2563EB', borderColor: '#BFDBFE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          👁️
+                          Voir
                         </a>
-                        <button onClick={() => handleEdit(item)} className="btn-edit" style={{ flex: 1 }}>✏️ Modifier</button>
-                        <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
+                        <button onClick={() => handleEdit(item)} className="btn-edit" style={{ flex: 1 }}>Modifier</button>
+                        <button onClick={() => handleDelete(item._id)} className="btn-delete">Supprimer</button>
                       </div>
                     </div>
                   );
@@ -965,26 +967,26 @@ const PageMocks = () => {
                                 ? <a href={imgSrc} target="_blank" rel="noopener noreferrer" title="Voir l'image">
                                     <img src={imgSrc} alt="" style={{ width: 56, height: 40, objectFit: 'cover', borderRadius: 6, display: 'block', border: '1px solid #E7E5E0' }} />
                                   </a>
-                                : <span style={{ display: 'inline-block', width: 56, height: 40, background: '#F5F5F4', borderRadius: 6, textAlign: 'center', lineHeight: '40px', fontSize: '1.2rem' }}>🖼️</span>
+                                : <span style={{ display: 'inline-block', width: 56, height: 40, background: '#F5F5F4', borderRadius: 6, textAlign: 'center', lineHeight: '40px', fontSize: '1.2rem' }}>IMG</span>
                               }
                             </td>
                           )}
                           <td>{item.title || item.name || item.reference || '—'}</td>
                           <td>{item.category || '—'}</td>
                           <td>{item.order || 1}</td>
-                          <td>{item.isActive ? '✅' : '❌'}</td>
-                          <td>{item.featured ? '⭐' : ''}</td>
+                          <td>{item.isActive ? 'Oui' : 'Non'}</td>
+                          <td>{item.featured ? 'Oui' : 'Non'}</td>
                           <td style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexWrap: 'nowrap' }}>
                             {visitorHref && (
                               <a href={visitorHref} target="_blank" rel="noopener noreferrer"
                                 className="btn-edit"
                                 title="Voir côté visiteur"
                                 style={{ textDecoration: 'none', background: '#EFF6FF', color: '#2563EB', borderColor: '#BFDBFE' }}>
-                                👁️
+                                Voir
                               </a>
                             )}
-                            <button onClick={() => handleEdit(item)} className="btn-edit">✏️</button>
-                            <button onClick={() => handleDelete(item._id)} className="btn-delete">🗑️</button>
+                            <button onClick={() => handleEdit(item)} className="btn-edit">Modifier</button>
+                            <button onClick={() => handleDelete(item._id)} className="btn-delete">Supprimer</button>
                           </td>
                         </tr>
                       );
@@ -1000,9 +1002,9 @@ const PageMocks = () => {
             <section ref={formRef} className="dashboard-section" style={{ marginTop: '2.5rem' }}>
               <div className="dashboard-header" style={{ marginBottom: '1.5rem' }}>
                 <h1 style={{ fontSize: '1.6rem' }}>
-                  {editingItem ? `✏️ Modifier` : `➕ Nouveau`} — {config.icon} {config.name}
+                  {editingItem ? 'Modifier' : 'Nouveau'} — {config.name}
                 </h1>
-                <button className="btn-secondary" onClick={() => setShowForm(false)}>✕ Fermer</button>
+                <button className="btn-secondary" onClick={() => setShowForm(false)}>Fermer</button>
               </div>
               <FormComponent
                 key={`${selectedCollection}-${editingItem?._id ?? 'new'}`}

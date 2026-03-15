@@ -44,28 +44,28 @@ const Settings = () => {
 
   const loadSiteImages = async () => {
     try {
-      console.log('[ADMIN SETTINGS] 🔄 Chargement des images du site...');
+      console.log('[ADMIN SETTINGS] Chargement des images du site...');
       const token = localStorage.getItem('admin_token');
       const response = await fetch(`${API_URL}/admin/site-settings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('[ADMIN SETTINGS] ✅ Réponse /admin/site-settings:', data);
+        console.log('[ADMIN SETTINGS] Réponse /admin/site-settings:', data);
         if (data.success && data.data) {
-          addLog('✅ Images chargées depuis la base (site-settings)');
+          addLog('Images chargées depuis la base (site-settings)');
           setSiteImages({
             // Si rien n'est encore enregistré en base, on garde les images par défaut
             presidentPhoto: data.data.presidentPhoto || ONPG_IMAGES.president,
             heroImage: data.data.heroImage || ONPG_IMAGES.hero1
           });
         } else {
-          addLog('ℹ️ Aucune image personnalisée trouvée, utilisation des valeurs par défaut');
-          console.log('[ADMIN SETTINGS] ℹ️ Données site-settings absentes ou invalides, images par défaut utilisées.');
+          addLog('Aucune image personnalisée trouvée, utilisation des valeurs par défaut');
+          console.log('[ADMIN SETTINGS] Données site-settings absentes ou invalides, images par défaut utilisées.');
         }
       } else {
-        console.warn('[ADMIN SETTINGS] ❌ HTTP error sur /admin/site-settings:', response.status, response.statusText);
-        addLog(`❌ Erreur HTTP ${response.status} lors du chargement des images du site`);
+        console.warn('[ADMIN SETTINGS] HTTP error sur /admin/site-settings:', response.status, response.statusText);
+        addLog(`Erreur HTTP ${response.status} lors du chargement des images du site`);
       }
     } catch (error) {
       console.error('Erreur chargement images site:', error);
@@ -80,12 +80,12 @@ const Settings = () => {
 
   const uploadToCloudinary = async (file: File, type: 'president' | 'hero'): Promise<string | null> => {
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      addLog('❌ Configuration Cloudinary manquante');
+      addLog('Configuration Cloudinary manquante');
       return null;
     }
 
     try {
-      addLog(`📤 Début upload ${type === 'president' ? 'photo président' : 'image hero'}...`);
+      addLog(`Début upload ${type === 'president' ? 'photo président' : 'image hero'}...`);
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
@@ -100,20 +100,20 @@ const Settings = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        addLog(`❌ Erreur HTTP ${response.status}: ${JSON.stringify(errorData)}`);
+        addLog(`Erreur HTTP ${response.status}: ${JSON.stringify(errorData)}`);
         return null;
       }
 
       const data = await response.json();
       if (data.secure_url) {
-        addLog(`✅ Upload réussi: ${data.secure_url.substring(0, 50)}...`);
+        addLog(`Upload réussi: ${data.secure_url.substring(0, 50)}...`);
         return data.secure_url;
       } else {
-        addLog(`❌ Pas d'URL dans la réponse: ${JSON.stringify(data)}`);
+        addLog(`Pas d'URL dans la réponse: ${JSON.stringify(data)}`);
         return null;
       }
     } catch (error: any) {
-      addLog(`❌ Erreur upload: ${error.message || error}`);
+      addLog(`Erreur upload: ${error.message || error}`);
       console.error('Erreur upload Cloudinary:', error);
       return null;
     }
@@ -124,7 +124,7 @@ const Settings = () => {
     if (!file) return;
 
     setUploadingPresident(true);
-    addLog(`📷 Sélection photo président: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+    addLog(`Sélection photo président: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
 
     const url = await uploadToCloudinary(file, 'president');
     if (url) {
@@ -140,7 +140,7 @@ const Settings = () => {
     if (!file) return;
 
     setUploadingHero(true);
-    addLog(`🖼️ Sélection image hero: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+    addLog(`Sélection image hero: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
 
     const url = await uploadToCloudinary(file, 'hero');
     if (url) {
@@ -165,14 +165,14 @@ const Settings = () => {
 
       const data = await response.json();
       if (data.success) {
-        addLog('✅ Images sauvegardées avec succès');
-        setMessage({ type: 'success', text: '✅ Images sauvegardées avec succès !' });
+        addLog('Images sauvegardées avec succès');
+        setMessage({ type: 'success', text: 'Images sauvegardées avec succès.' });
       } else {
-        addLog(`❌ Erreur sauvegarde: ${data.error || 'Erreur inconnue'}`);
+        addLog(`Erreur sauvegarde: ${data.error || 'Erreur inconnue'}`);
         setMessage({ type: 'error', text: data.error || 'Erreur lors de la sauvegarde' });
       }
     } catch (error: any) {
-      addLog(`❌ Erreur réseau: ${error.message || error}`);
+      addLog(`Erreur réseau: ${error.message || error}`);
       setMessage({ type: 'error', text: 'Erreur de connexion au serveur' });
     }
   };
@@ -211,7 +211,7 @@ const Settings = () => {
       const data = await response.json();
 
       if (data.success) {
-        setMessage({ type: 'success', text: '✅ Mot de passe modifié avec succès !' });
+        setMessage({ type: 'success', text: 'Mot de passe modifié avec succès.' });
         setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
       } else {
         setMessage({ type: 'error', text: data.error || 'Erreur lors du changement' });
@@ -230,14 +230,14 @@ const Settings = () => {
       <main className="dashboard-main">
         <header className="page-header">
           <div>
-            <h1>⚙️ Paramètres</h1>
+            <h1>Paramètres</h1>
             <p>Gestion de votre compte administrateur</p>
           </div>
         </header>
 
         <div className="settings-container">
           <div className="settings-card">
-            <h2>🖼️ Photos de la page d'accueil</h2>
+            <h2>Photos de la page d'accueil</h2>
             <p className="card-subtitle">Gérez les photos visibles sur la page d'accueil du site</p>
 
             {message && (
@@ -272,7 +272,7 @@ const Settings = () => {
                     disabled={uploadingPresident}
                     style={{ marginTop: '0.5rem' }}
                   />
-                  {uploadingPresident && <p style={{ color: '#666', fontSize: '0.9rem' }}>⏳ Upload en cours...</p>}
+                  {uploadingPresident && <p style={{ color: '#666', fontSize: '0.9rem' }}>Upload en cours...</p>}
                 </div>
               </div>
 
@@ -302,13 +302,13 @@ const Settings = () => {
                     disabled={uploadingHero}
                     style={{ marginTop: '0.5rem' }}
                   />
-                  {uploadingHero && <p style={{ color: '#666', fontSize: '0.9rem' }}>⏳ Upload en cours...</p>}
+                  {uploadingHero && <p style={{ color: '#666', fontSize: '0.9rem' }}>Upload en cours...</p>}
                 </div>
               </div>
 
               {uploadLogs.length > 0 && (
                 <div className="form-group">
-                  <label>📋 Logs d'upload</label>
+                  <label>Logs d'upload</label>
                   <div
                     style={{
                       backgroundColor: '#f5f5f5',
@@ -332,7 +332,7 @@ const Settings = () => {
           </div>
 
           <div className="settings-card">
-            <h2>🔐 Changer le mot de passe</h2>
+            <h2>Changer le mot de passe</h2>
             <p className="card-subtitle">Pour votre sécurité, changez régulièrement votre mot de passe</p>
 
             <form onSubmit={handleSubmit} className="settings-form">
@@ -375,7 +375,7 @@ const Settings = () => {
               </div>
 
               <button type="submit" className="btn-submit" disabled={loading}>
-                {loading ? '🔄 Modification...' : '💾 Changer le mot de passe'}
+                {loading ? 'Modification...' : 'Changer le mot de passe'}
               </button>
             </form>
           </div>

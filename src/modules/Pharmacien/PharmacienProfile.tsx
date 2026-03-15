@@ -22,7 +22,9 @@ const PharmacienProfile = () => {
     email: '',
     telephone: '',
     adresse: '',
-    photo: ''
+    photo: '',
+    metierExerce: '',
+    these: ''
   });
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -53,7 +55,9 @@ const PharmacienProfile = () => {
       email: userData.email || '',
       telephone: userData.telephone || '',
       adresse: userData.adresse || '',
-      photo: userData.photo || ''
+      photo: userData.photo || '',
+      metierExerce: userData.metierExerce || userData.role || '',
+      these: userData.these || ''
     });
 
     // Rafraîchir les infos depuis l'API pour refléter les modifications admin
@@ -75,7 +79,9 @@ const PharmacienProfile = () => {
             email: refreshedUser.email || '',
             telephone: refreshedUser.telephone || '',
             adresse: refreshedUser.adresse || '',
-            photo: refreshedUser.photo || ''
+            photo: refreshedUser.photo || '',
+            metierExerce: refreshedUser.metierExerce || refreshedUser.role || '',
+            these: refreshedUser.these || ''
           });
         }
       } catch (error) {
@@ -298,6 +304,30 @@ const PharmacienProfile = () => {
                   />
                 </div>
 
+                <div className="form-group pharmacien-form-group">
+                  <label htmlFor="metierExerce">Métier exercé</label>
+                  <input
+                    type="text"
+                    id="metierExerce"
+                    value={formData.metierExerce}
+                    onChange={(e) => setFormData({ ...formData, metierExerce: e.target.value })}
+                    className="pharmacien-input"
+                    placeholder="Ex: Biologiste medical"
+                  />
+                </div>
+
+                <div className="form-group pharmacien-form-group">
+                  <label htmlFor="these">Intitulé de la thèse</label>
+                  <textarea
+                    id="these"
+                    value={formData.these}
+                    onChange={(e) => setFormData({ ...formData, these: e.target.value })}
+                    rows={3}
+                    className="pharmacien-input"
+                    placeholder="Titre de la these"
+                  />
+                </div>
+
                 <div className="pharmacien-btn-row">
                   <button className="btn-primary" onClick={handleSave} disabled={saving}>
                     {saving ? 'Sauvegarde...' : 'Enregistrer'}
@@ -310,7 +340,9 @@ const PharmacienProfile = () => {
                         email: user.email || '',
                         telephone: user.telephone || '',
                         adresse: user.adresse || '',
-                        photo: user.photo || ''
+                        photo: user.photo || '',
+                        metierExerce: user.metierExerce || user.role || '',
+                        these: user.these || ''
                       });
                       setMessage(null);
                     }}
@@ -334,6 +366,8 @@ const PharmacienProfile = () => {
                   <p><strong>Email :</strong> {user.email || 'Non renseigne'}</p>
                   <p><strong>Telephone :</strong> {user.telephone || 'Non renseigne'}</p>
                   <p><strong>Adresse :</strong> {user.adresse || 'Non renseignee'}</p>
+                  <p><strong>Métier exercé :</strong> {user.metierExerce || user.role || 'Non renseigne'}</p>
+                  <p><strong>Intitulé de la thèse :</strong> {user.these || 'Non renseigne'}</p>
                   <p><strong>Role :</strong> Pharmacien</p>
                 </div>
               </div>

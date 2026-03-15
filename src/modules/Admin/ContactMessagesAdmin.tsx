@@ -119,7 +119,7 @@ const ContactMessagesAdmin = () => {
         <div className="admin-content">
           <div className="admin-header" style={{ marginBottom: '1.5rem' }}>
             <div>
-              <h1>💬 Messagerie</h1>
+              <h1>Messagerie</h1>
               <p style={{ fontSize: '1.05rem', marginTop: '0.4rem', color: '#666' }}>
                 Tous les messages reçus du site public et des pharmaciens.
               </p>

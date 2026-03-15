@@ -78,7 +78,7 @@ const PharmacienSidebar = ({ currentPage }: PharmacienSidebarProps) => {
           className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}
           onClick={() => setIsOpen(false)}
         >
-          🏥 Mes Pharmacies
+          Gérer ma pharmacie
         </Link>
       </nav>
 

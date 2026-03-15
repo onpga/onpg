@@ -143,6 +143,17 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
+.dashboard-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dashboard-refresh-btn {
+  padding: 0.58rem 1rem;
+  font-size: 0.86rem;
+}
+
 .dashboard-header {
   margin-bottom: 3rem;
   background: white;
@@ -150,6 +161,102 @@
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   border-left: 6px solid #00A651; /* Accent ONPG */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.dashboard-header-main {
+  flex: 1;
+}
+
+.dashboard-header-kpis {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dashboard-mini-kpi {
+  min-width: 120px;
+  background: #f5fbf7;
+  border: 1px solid #ddede5;
+  border-radius: 12px;
+  padding: 0.75rem 0.85rem;
+}
+
+.dashboard-mini-kpi span {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #60837a;
+  font-weight: 700;
+}
+
+.dashboard-mini-kpi strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 1.45rem;
+  color: #0f4534;
+}
+
+.dashboard-alert {
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.dashboard-alert.info {
+  background: #eff7ff;
+  border: 1px solid #cde6ff;
+  color: #1f5f92;
+}
+
+.dashboard-alert.error {
+  background: #fff2f2;
+  border: 1px solid #ffd4d4;
+  color: #b42323;
+}
+
+.dashboard-meta-note {
+  margin-bottom: 1rem;
+  color: #658078;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.dashboard-health-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+}
+
+.health-card {
+  border: 1px solid #e1ece7;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fbfffd 0%, #f2f8f4 100%);
+  padding: 0.95rem 1rem;
+}
+
+.health-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  color: #58746c;
+  font-weight: 700;
+}
+
+.health-card h3 {
+  margin: 0;
+  font-size: 1.6rem;
+  color: #0f4b38;
+}
+
+.health-card small {
+  color: #6b837c;
+  font-size: 0.78rem;
 }
 
 .dashboard-header h1 {
@@ -312,9 +419,19 @@
 }
 
 .stat-icon {
-  font-size: 3rem;
-  filter: grayscale(20%);
-  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eef7f2;
+  color: #0f6040;
+}
+
+.stat-icon svg {
+  width: 24px;
+  height: 24px;
 }
 
 .stat-info h3 {
@@ -416,12 +533,24 @@
 }
 
 .action-icon {
-  font-size: 3.5rem;
+  width: 44px;
+  height: 44px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 12px;
+  background: #edf7f2;
+  color: #0e5f3f;
   margin-bottom: 1.25rem;
-  display: block;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   z-index: 1;
+}
+
+.action-icon svg {
+  width: 22px;
+  height: 22px;
 }
 
 .action-card h3 {
@@ -523,7 +652,6 @@
 }
 
 .recent-item-icon {
-  font-size: 2rem;
   width: 56px;
   height: 56px;
   background: linear-gradient(135deg, #f0f3ff, #e3f2fd);
@@ -532,6 +660,12 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+}
+
+.recent-item-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #1d5f95;
 }
 
 .recent-item-content {
@@ -562,15 +696,17 @@
 }
 
 .recent-item-action {
-  width: 40px;
-  height: 40px;
+  min-width: 72px;
+  height: 36px;
+  padding: 0 0.65rem;
   background: var(--cips-orange);
   color: white;
-  border-radius: 8px;
+  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.3s ease;
 }
@@ -711,6 +847,25 @@
   background: #f3f4f6;
   color: #111827;
   border: 1px solid #e5e7eb;
+}
+
+/* Select dedie a la gestion des ressources admin */
+.resources-collection-select {
+  min-width: 260px;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid #d4dbe8;
+  background: #ffffff;
+  color: #0f1b4d;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(15, 27, 77, 0.08);
+}
+
+.resources-collection-select:focus {
+  outline: none;
+  border-color: #00a651;
+  box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.18);
 }
 
 /* Tables / listes admin (Ressources, Pharmacies, Pharmaciens, etc.) */
@@ -1340,6 +1495,14 @@
     margin-left: 0;
     padding: 1.5rem;
   }
+
+  .dashboard-health-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1355,6 +1518,11 @@
 
   .dashboard-header h1 {
     font-size: 2rem;
+  }
+
+  .dashboard-header-kpis {
+    width: 100%;
+    flex-wrap: wrap;
   }
 
   .messages-layout {
@@ -1376,6 +1544,16 @@
 
   .actions-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .dashboard-topbar-actions {
+    justify-content: flex-end;
   }
 
   .recent-item {

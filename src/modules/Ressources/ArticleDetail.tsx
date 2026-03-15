@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getImageWithFallback } from '../../utils/imageFallback';
+import { ImageWithFallback } from '../../utils/imageFallback';
 import './Ressources.css';
 import './Actualites.css';
 import { fetchResourceById } from '../../utils/pageMocksApi';
@@ -39,6 +39,12 @@ const ArticleDetail = () => {
   const [article, setArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [readingProgress, setReadingProgress] = useState(0);
+
+  const normalizeImageUrl = (url?: string) => {
+    if (!url || !url.trim()) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')) return url;
+    return `https://res.cloudinary.com/dduvinjnu/image/upload/${url.replace(/^\/+/, '')}`;
+  };
 
   useEffect(() => {
     const loadArticle = async () => {
@@ -284,7 +290,12 @@ const ArticleDetail = () => {
           <div className="article-meta">
             <div className="article-author">
               {article.author.avatar ? (
-                <img src={article.author.avatar} alt={article.author.name} className="author-avatar" />
+                <ImageWithFallback
+                  src={normalizeImageUrl(article.author.avatar)}
+                  fallbackType="profile"
+                  alt={article.author.name}
+                  className="author-avatar"
+                />
               ) : (
                 <div className="author-avatar" style={{
                   background: 'linear-gradient(135deg, #00A651, #008F45)',
@@ -331,10 +342,14 @@ const ArticleDetail = () => {
 
           {/* Featured Image */}
           <div className="article-hero-image">
-            <img src={getImageWithFallback(article.image, 'article')} alt={article.title} />
+            <ImageWithFallback
+              src={normalizeImageUrl(article.image)}
+              fallbackType="article"
+              alt={article.title}
+            />
             {article.featured && (
               <div className="featured-overlay">
-                <span className="featured-text">⭐ Article à la une</span>
+                <span className="featured-text">Article à la une</span>
               </div>
             )}
           </div>
@@ -401,7 +416,12 @@ const ArticleDetail = () => {
               <div className="author-bio">
                 <div className="author-bio-content">
                   {article.author.avatar ? (
-                    <img src={article.author.avatar} alt={article.author.name} className="author-bio-avatar" />
+                    <ImageWithFallback
+                      src={normalizeImageUrl(article.author.avatar)}
+                      fallbackType="profile"
+                      alt={article.author.name}
+                      className="author-bio-avatar"
+                    />
                   ) : (
                     <div className="author-bio-avatar" style={{
                       background: 'linear-gradient(135deg, #00A651, #008F45)',
@@ -442,71 +462,6 @@ const ArticleDetail = () => {
             )}
           </main>
 
-          {/* Sidebar */}
-          <aside className="article-sidebar">
-            {/* Table of Contents */}
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Sommaire</h3>
-              <nav className="table-of-contents">
-                <a href="#introduction" className="toc-link">Introduction</a>
-                <a href="#contexte" className="toc-link">Contexte et enjeux</a>
-                <a href="#mesures" className="toc-link">Mesures principales</a>
-                <a href="#impact" className="toc-link">Impact sur la profession</a>
-                <a href="#perspectives" className="toc-link">Perspectives d'avenir</a>
-              </nav>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="sidebar-section">
-              <h3 className="sidebar-title">Statistiques</h3>
-              <div className="quick-stats">
-                <div className="stat-item">
-                  <span className="stat-value">{article.views.toLocaleString()}</span>
-                  <span className="stat-label">Vues</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">{article.shares}</span>
-                  <span className="stat-label">Partages</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">{article.comments}</span>
-                  <span className="stat-label">Commentaires</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Related Articles remplacé par tags simples pour éviter les données fictives */}
-            {article.tags && article.tags.length > 0 && (
-              <div className="sidebar-section">
-                <h3 className="sidebar-title">Tags associés</h3>
-                <div className="related-articles">
-                  {article.tags.map((tag: string) => (
-                    <div key={tag} className="related-article">
-                      <div className="related-content">
-                        <h4>#{tag}</h4>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Newsletter Signup */}
-            <div className="sidebar-section newsletter-signup">
-              <h3 className="sidebar-title">Restez informé</h3>
-              <p>Recevez nos dernières actualités directement dans votre boîte mail.</p>
-              <form className="newsletter-form">
-                <input
-                  type="email"
-                  placeholder="Votre email"
-                  className="newsletter-input"
-                />
-                <button type="submit" className="newsletter-btn">
-                  S'inscrire
-                </button>
-              </form>
-            </div>
-          </aside>
         </div>
       </div>
 

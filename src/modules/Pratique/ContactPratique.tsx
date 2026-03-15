@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import './ContactPratique.css';
+import { useToast } from '../../components/Toast';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -53,14 +54,13 @@ function validate(data: FormData): Errors {
 const MSG_MAX = 1200;
 
 const ContactPratique = () => {
+  const { showSuccess, showError } = useToast();
   const [formData, setFormData] = useState<FormData>({
     name: '', email: '', phone: '', subject: '', message: ''
   });
   const [errors,   setErrors]   = useState<Errors>({});
   const [touched,  setTouched]  = useState<Touched>({});
   const [submitting, setSubmitting]   = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage,   setErrorMessage]   = useState<string | null>(null);
 
   /* Validation en live dès qu'un champ est touché */
   const handleChange = useCallback(
@@ -95,8 +95,6 @@ const ContactPratique = () => {
     setErrors(errs);
     if (Object.keys(errs).length > 0) return;
 
-    setSuccessMessage(null);
-    setErrorMessage(null);
     try {
       setSubmitting(true);
       const response = await fetch(`${API_URL}/public/contact`, {
@@ -108,13 +106,13 @@ const ContactPratique = () => {
       if (!response.ok || !data.success) {
         throw new Error(data.error || 'Erreur lors de l\'envoi du message');
       }
-      setSuccessMessage("Votre message a bien été envoyé. L'ONPG vous répondra dans les meilleurs délais.");
+      showSuccess("Votre message a bien été envoyé. L'ONPG vous répondra dans les meilleurs délais.");
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       setErrors({});
       setTouched({});
     } catch (error: any) {
       console.error('Erreur envoi contact:', error);
-      setErrorMessage("Une erreur est survenue lors de l'envoi du message. Merci de réessayer plus tard.");
+      showError("Une erreur est survenue lors de l'envoi du message. Merci de réessayer plus tard.");
     } finally {
       setSubmitting(false);
     }
@@ -222,30 +220,6 @@ const ContactPratique = () => {
                 confidentiellement par l&apos;equipe ONPG.
               </p>
             </header>
-
-            {successMessage && (
-              <div className="contact-success" role="alert">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M9 12l2 2 4-4M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                {successMessage}
-              </div>
-            )}
-            {errorMessage && (
-              <div className="contact-error" role="alert">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" />
-                  <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
-                {errorMessage}
-              </div>
-            )}
 
             <form className="contact-form" onSubmit={handleSubmit} noValidate>
               <div className="form-row">

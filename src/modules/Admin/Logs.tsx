@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminSidebar from './components/AdminSidebar';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
 import './Logs.css';
 
@@ -37,6 +38,7 @@ interface ErrorStats {
 }
 
 const Logs = () => {
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const [logLevel, setLogLevel] = useState('info');
   const [files, setFiles] = useState<LogFile[]>([]);
@@ -140,13 +142,13 @@ const Logs = () => {
       const data = await response.json();
       if (data.success) {
         setLogLevel(newLevel);
-        alert(`✅ Niveau de log changé: ${newLevel.toUpperCase()}`);
+        showSuccess(`Niveau de log changé: ${newLevel.toUpperCase()}`);
       } else {
-        alert('❌ Erreur lors du changement de niveau');
+        showError('Erreur lors du changement de niveau.');
       }
     } catch (error) {
       console.error('Erreur changement niveau log:', error);
-      alert('❌ Erreur serveur');
+      showError('Erreur serveur.');
     }
   };
 
@@ -166,18 +168,18 @@ const Logs = () => {
       
       const data = await response.json();
       if (data.success) {
-        alert('✅ Fichier supprimé');
+        showSuccess('Fichier supprimé.');
         if (selectedFile === filename) {
           setSelectedFile(null);
           setLogs([]);
         }
         fetchLogFiles();
       } else {
-        alert(`❌ ${data.message}`);
+        showError(data.message || 'Erreur lors de la suppression.');
       }
     } catch (error) {
       console.error('Erreur suppression fichier:', error);
-      alert('❌ Erreur serveur');
+      showError('Erreur serveur.');
     }
   };
 
@@ -193,14 +195,14 @@ const Logs = () => {
       
       const data = await response.json();
       if (data.success) {
-        alert(`✅ ${data.deletedCount} fichier(s) supprimé(s)`);
+        showSuccess(`${data.deletedCount} fichier(s) supprimé(s).`);
         fetchLogFiles();
       } else {
-        alert('❌ Erreur lors du nettoyage');
+        showError('Erreur lors du nettoyage.');
       }
     } catch (error) {
       console.error('Erreur nettoyage logs:', error);
-      alert('❌ Erreur serveur');
+      showError('Erreur serveur.');
     }
   };
 
@@ -270,13 +272,13 @@ const Logs = () => {
       if (data.success) {
         fetchCriticalErrors();
         fetchErrorStats();
-        alert(`✅ Statut mis à jour: ${status}`);
+        showSuccess(`Statut mis à jour: ${status}`);
       } else {
-        alert('❌ Erreur lors de la mise à jour');
+        showError('Erreur lors de la mise à jour.');
       }
     } catch (error) {
       console.error('Erreur mise à jour statut:', error);
-      alert('❌ Erreur serveur');
+      showError('Erreur serveur.');
     }
   };
 
@@ -294,13 +296,13 @@ const Logs = () => {
       if (data.success) {
         fetchCriticalErrors();
         fetchErrorStats();
-        alert('✅ Erreur supprimée');
+        showSuccess('Erreur supprimée.');
       } else {
-        alert('❌ Erreur lors de la suppression');
+        showError('Erreur lors de la suppression.');
       }
     } catch (error) {
       console.error('Erreur suppression:', error);
-      alert('❌ Erreur serveur');
+      showError('Erreur serveur.');
     }
   };
 

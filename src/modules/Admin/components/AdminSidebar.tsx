@@ -32,44 +32,44 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
 
       <nav className="sidebar-nav">
         <Link to="/admin/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
-          📊 Dashboard
+          Dashboard
         </Link>
         {/* Menu ONPG : Ressources, Pharmacies, Pharmaciens, Analytics, Logs, Paramètres */}
         <Link to="/admin/resources" className={`nav-item ${currentPage === 'resources' ? 'active' : ''}`}>
-          📚 Ressources
+          Ressources
         </Link>
         <Link to="/admin/theses" className={`nav-item ${currentPage === 'theses' ? 'active' : ''}`}>
-          📄 Thèses
+          Thèses
         </Link>
         <Link to="/admin/pharmacies" className={`nav-item ${currentPage === 'pharmacies' ? 'active' : ''}`}>
-          🏥 Pharmacies
+          Pharmacies
         </Link>
         <Link to="/admin/pharmaciens" className={`nav-item ${currentPage === 'pharmaciens' ? 'active' : ''}`}>
-          👨‍⚕️ Pharmaciens
+          Pharmaciens
         </Link>
         <Link to="/admin/formations" className={`nav-item ${currentPage === 'formations' ? 'active' : ''}`}>
-          🎓 Formations
+          Formations
         </Link>
         <Link to="/admin/deontologie" className={`nav-item ${currentPage === 'deontologie' ? 'active' : ''}`}>
-          ⚖️ Déontologie
+          Déontologie
         </Link>
         <Link to="/admin/messages" className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}>
-          💬 Messages de contact
+          Messages de contact
         </Link>
         <Link to="/admin/analytics" className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}>
-          📈 Analytics
+          Analytics
         </Link>
         <Link to="/admin/logs" className={`nav-item ${currentPage === 'logs' ? 'active' : ''}`}>
-          📋 Logs système
+          Logs système
         </Link>
         <Link to="/admin/settings" className={`nav-item ${currentPage === 'settings' ? 'active' : ''}`}>
-          ⚙️ Paramètres
+          Paramètres
         </Link>
       </nav>
 
       <div className="sidebar-footer">
         <div className="user-info">
-          <span className="user-avatar">👤</span>
+          <span className="user-avatar">A</span>
           <div>
             <p className="user-name">{user?.username || 'Admin'}</p>
           </div>

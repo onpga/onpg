@@ -1,7 +1,9 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import AdminSidebar from './components/AdminSidebar';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
+import './PharmaciesAdmin.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -35,12 +37,17 @@ interface Pharmacien {
 }
 
 const PharmaciesAdmin = () => {
+  const { showSuccess, showError, showWarning } = useToast();
   const [pharmacies, setPharmacies] = useState<Pharmacie[]>([]);
   const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
   const [loading, setLoading] = useState(true);
   const [associatingPharmacie, setAssociatingPharmacie] = useState<string | null>(null);
   const [selectedPharmacienId, setSelectedPharmacienId] = useState('');
   const [pharmacienSearch, setPharmacienSearch] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [cityFilter, setCityFilter] = useState('toutes');
+  const [gardeFilter, setGardeFilter] = useState<'toutes' | 'garde' | 'non-garde'>('toutes');
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const [showForm, setShowForm] = useState(false);
   const [editingPharmacie, setEditingPharmacie] = useState<Pharmacie | null>(null);
@@ -60,6 +67,12 @@ const PharmaciesAdmin = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3500);
+    return () => clearTimeout(timer);
+  }, [message]);
 
   const loadData = async () => {
     try {
@@ -95,7 +108,7 @@ const PharmaciesAdmin = () => {
 
   const handleAssociate = async (pharmacieId: string) => {
     if (!selectedPharmacienId) {
-      alert('Veuillez sélectionner un pharmacien');
+      showWarning('Veuillez sélectionner un pharmacien.');
       return;
     }
 
@@ -114,9 +127,13 @@ const PharmaciesAdmin = () => {
         await loadData();
         setAssociatingPharmacie(null);
         setSelectedPharmacienId('');
+        setMessage({ type: 'success', text: 'Pharmacie associée avec succès.' });
+        showSuccess('Pharmacie associée avec succès.');
       }
     } catch (error) {
       console.error('Erreur association:', error);
+      setMessage({ type: 'error', text: "Erreur lors de l'association." });
+      showError("Erreur lors de l'association.");
     }
   };
 
@@ -208,16 +225,22 @@ const PharmaciesAdmin = () => {
       const data = await response.json();
       if (!response.ok || !data.success) {
         console.error('Erreur création / édition pharmacie:', data);
-        alert(data.error || 'Erreur lors de la sauvegarde de la pharmacie');
+        setMessage({ type: 'error', text: data.error || 'Erreur lors de la sauvegarde de la pharmacie.' });
         return;
       }
 
       await loadData();
       setShowForm(false);
       setEditingPharmacie(null);
+      setMessage({
+        type: 'success',
+        text: editingPharmacie ? 'Pharmacie mise à jour avec succès.' : 'Pharmacie créée avec succès.'
+      });
+      showSuccess(editingPharmacie ? 'Pharmacie mise à jour avec succès.' : 'Pharmacie créée avec succès.');
     } catch (error) {
       console.error('Erreur sauvegarde pharmacie:', error);
-      alert('Erreur serveur lors de la sauvegarde de la pharmacie');
+      setMessage({ type: 'error', text: 'Erreur serveur lors de la sauvegarde de la pharmacie.' });
+      showError('Erreur serveur lors de la sauvegarde de la pharmacie.');
     }
   };
 
@@ -234,13 +257,16 @@ const PharmaciesAdmin = () => {
       const data = await response.json();
       if (!response.ok || !data.success) {
         console.error('Erreur suppression pharmacie:', data);
-        alert(data.error || 'Erreur lors de la suppression de la pharmacie');
+        setMessage({ type: 'error', text: data.error || 'Erreur lors de la suppression de la pharmacie.' });
         return;
       }
       await loadData();
+      setMessage({ type: 'success', text: 'Pharmacie supprimée.' });
+      showSuccess('Pharmacie supprimée.');
     } catch (error) {
       console.error('Erreur suppression pharmacie:', error);
-      alert('Erreur serveur lors de la suppression de la pharmacie');
+      setMessage({ type: 'error', text: 'Erreur serveur lors de la suppression de la pharmacie.' });
+      showError('Erreur serveur lors de la suppression de la pharmacie.');
     }
   };
 
@@ -252,105 +278,201 @@ const PharmaciesAdmin = () => {
     return fullName.includes(q) || username.includes(q);
   });
 
+  const uniqueCities = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          pharmacies
+            .map((p) => (p.ville || '').trim())
+            .filter(Boolean)
+        )
+      ).sort((a, b) => a.localeCompare(b)),
+    [pharmacies]
+  );
+
+  const visiblePharmacies = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return pharmacies.filter((p) => {
+      const haystack = `${p.nom || ''} ${p.ville || ''} ${p.quartier || ''} ${p.adresse || ''} ${p.telephone || ''}`.toLowerCase();
+      const searchMatch = q ? haystack.includes(q) : true;
+      const cityMatch = cityFilter === 'toutes' ? true : p.ville === cityFilter;
+      const gardeMatch =
+        gardeFilter === 'toutes'
+          ? true
+          : gardeFilter === 'garde'
+            ? p.garde === true
+            : p.garde !== true;
+      return searchMatch && cityMatch && gardeMatch;
+    });
+  }, [pharmacies, searchQuery, cityFilter, gardeFilter]);
+
+  const stats = useMemo(() => {
+    const total = pharmacies.length;
+    const garde = pharmacies.filter((p) => p.garde === true).length;
+    const nonGarde = total - garde;
+    const associees = pharmacies.filter((p) => !!p.pharmacienId).length;
+    const nonAssociees = total - associees;
+    return { total, garde, nonGarde, associees, nonAssociees };
+  }, [pharmacies]);
+
+  const hasFilters = searchQuery.trim() !== '' || cityFilter !== 'toutes' || gardeFilter !== 'toutes';
+
+  const resetFilters = () => {
+    setSearchQuery('');
+    setCityFilter('toutes');
+    setGardeFilter('toutes');
+  };
+
   return (
     <div className="admin-layout">
       <AdminSidebar currentPage="pharmacies" />
       <main className="admin-main">
         <div className="admin-content">
-          <h1>🏥 Gestion des Pharmacies</h1>
-          <p style={{ fontSize: '1.1rem', marginBottom: '2rem', color: '#666' }}>
-            Liste de toutes les pharmacies enregistrées. Vous pouvez créer, modifier, supprimer et associer
-            chaque pharmacie à un pharmacien de l’Ordre.
+          <h1 className="pharmacies-title">Gestion des pharmacies</h1>
+          <p className="pharmacies-subtitle">
+            Création, association et suivi des pharmacies.
           </p>
 
-          <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
-            <button
-              className="btn-primary"
-              style={{ padding: '0.6rem 1.4rem', fontSize: '1rem' }}
-              onClick={openCreateForm}
-            >
-              ➕ Nouvelle pharmacie
-            </button>
-          </div>
+          {message && (
+            <div className={`pharmacies-toast ${message.type}`}>
+              {message.text}
+            </div>
+          )}
+
+          <section className="dashboard-section pharmacies-kpis">
+            <article className="pharmacy-kpi"><span>Total</span><strong>{stats.total}</strong></article>
+            <article className="pharmacy-kpi"><span>De garde</span><strong>{stats.garde}</strong></article>
+            <article className="pharmacy-kpi"><span>Hors garde</span><strong>{stats.nonGarde}</strong></article>
+            <article className="pharmacy-kpi"><span>Associées</span><strong>{stats.associees}</strong></article>
+            <article className="pharmacy-kpi"><span>Non associées</span><strong>{stats.nonAssociees}</strong></article>
+          </section>
+
+          <section className="dashboard-section pharmacies-toolbar">
+            <div className="pharmacies-toolbar-row">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher par nom, ville, quartier, adresse..."
+                className="pharmacies-search"
+              />
+              <select value={cityFilter} onChange={(e) => setCityFilter(e.target.value)} className="pharmacies-select">
+                <option value="toutes">Toutes les villes</option>
+                {uniqueCities.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
+              <select
+                value={gardeFilter}
+                onChange={(e) => setGardeFilter(e.target.value as 'toutes' | 'garde' | 'non-garde')}
+                className="pharmacies-select"
+              >
+                <option value="toutes">Toutes (garde)</option>
+                <option value="garde">Pharmacies de garde</option>
+                <option value="non-garde">Pharmacies hors garde</option>
+              </select>
+              {hasFilters && (
+                <button type="button" className="btn-secondary" onClick={resetFilters}>
+                  Réinitialiser
+                </button>
+              )}
+              <button className="btn-primary" onClick={openCreateForm} type="button">
+                Nouvelle pharmacie
+              </button>
+            </div>
+            <p className="pharmacies-count">
+              {visiblePharmacies.length} affichee(s) • {stats.total} total
+            </p>
+          </section>
 
           {loading ? (
-            <p>Chargement...</p>
+            <p className="pharmacies-loading">Chargement...</p>
           ) : (
             <div className="table-container">
-              <table className="data-table" style={{ fontSize: '1rem' }}>
+              <table className="data-table pharmacies-table">
                 <thead>
                   <tr>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Photo</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Nom</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Ville</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Quartier</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Adresse</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Pharmacien</th>
-                    <th style={{ padding: '1rem', fontSize: '1.1rem' }}>Actions</th>
+                    <th>Photo</th>
+                    <th>Nom</th>
+                    <th>Ville</th>
+                    <th>Quartier</th>
+                    <th>Adresse</th>
+                    <th>Garde</th>
+                    <th>Pharmacien</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pharmacies.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '2rem', fontSize: '1.1rem' }}>
+                      <td colSpan={8} className="pharmacies-empty">
                         Aucune pharmacie enregistrée
                       </td>
                     </tr>
+                  ) : visiblePharmacies.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="pharmacies-empty">
+                        Aucune pharmacie ne correspond aux filtres
+                      </td>
+                    </tr>
                   ) : (
-                    pharmacies.map((pharmacie) => (
+                    visiblePharmacies.map((pharmacie) => (
                       <tr key={pharmacie._id}>
-                        <td style={{ padding: '1rem' }}>
+                        <td>
                           <img
                             src={pharmacie.photo || ONPG_IMAGES.logo}
                             alt={pharmacie.nom}
                             onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
-                            style={{
-                              width: '60px', height: '60px',
-                              objectFit: pharmacie.photo ? 'cover' : 'contain',
-                              borderRadius: '8px',
-                              background: pharmacie.photo ? 'transparent' : '#e8f5ee',
-                              padding: pharmacie.photo ? '0' : '8px'
-                            }}
+                            className={`pharmacies-avatar ${pharmacie.photo ? 'has-photo' : 'is-fallback'}`}
                           />
                         </td>
-                        <td style={{ padding: '1rem', fontWeight: '600' }}>{pharmacie.nom}</td>
-                        <td style={{ padding: '1rem' }}>{pharmacie.ville}</td>
-                        <td style={{ padding: '1rem' }}>{pharmacie.quartier || '—'}</td>
-                        <td style={{ padding: '1rem' }}>{pharmacie.adresse}</td>
-                        <td style={{ padding: '1rem' }}>
+                        <td className="pharmacies-name">{pharmacie.nom}</td>
+                        <td>{pharmacie.ville}</td>
+                        <td>{pharmacie.quartier || '—'}</td>
+                        <td>{pharmacie.adresse}</td>
+                        <td>
+                          {pharmacie.garde ? (
+                            <span className="pharmacies-badge guard">De garde</span>
+                          ) : (
+                            <span className="pharmacies-badge neutral">Hors garde</span>
+                          )}
+                        </td>
+                        <td>
                           {pharmacie.pharmacienId ? (
-                            <span style={{ color: '#00A651', fontWeight: '500' }}>
+                            <span className="pharmacies-badge linked">
                               {getPharmacienName(pharmacie.pharmacienId)}
                             </span>
                           ) : (
-                            <span style={{ color: '#999' }}>— Non associée</span>
+                            <span className="pharmacies-muted">— Non associee</span>
                           )}
                         </td>
-                        <td style={{ padding: '1rem' }}>
+                        <td>
+                          <div className="pharmacies-actions">
                           <button
+                            type="button"
                             onClick={() => openEditForm(pharmacie)}
-                            className="btn-secondary"
-                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', marginRight: '0.5rem' }}
+                            className="pharmacies-action-btn edit"
                           >
-                            ✏️ Modifier
+                            Modifier
                           </button>
                           <button
+                            type="button"
                             onClick={() => {
                               setAssociatingPharmacie(pharmacie._id);
                               setSelectedPharmacienId(pharmacie.pharmacienId || '');
                             }}
-                            className="btn-secondary"
-                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', marginRight: '0.5rem' }}
+                            className="pharmacies-action-btn associate"
                           >
-                            🔗 Associer
+                            Associer
                           </button>
                           <button
+                            type="button"
                             onClick={() => handleDeletePharmacie(pharmacie)}
-                            className="btn-secondary"
-                            style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem', color: '#b91c1c' }}
+                            className="pharmacies-action-btn delete"
                           >
-                            🗑 Supprimer
+                            Supprimer
                           </button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -362,34 +484,11 @@ const PharmaciesAdmin = () => {
 
           {/* Modal association */}
           {associatingPharmacie && (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'rgba(0, 0, 0, 0.5)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000
-              }}
-              onClick={() => setAssociatingPharmacie(null)}
-            >
-              <div
-                style={{
-                  background: 'white',
-                  padding: '2rem',
-                  borderRadius: '12px',
-                  maxWidth: '500px',
-                  width: '90%'
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Associer une pharmacie</h2>
+            <div className="pharmacies-associate-overlay" onClick={() => setAssociatingPharmacie(null)}>
+              <div className="pharmacies-associate-modal" onClick={(e) => e.stopPropagation()}>
+                <h2 className="pharmacies-associate-title">Associer une pharmacie</h2>
                 <div className="form-group">
-                  <label style={{ fontSize: '1.1rem', marginBottom: '0.5rem', display: 'block' }}>
+                  <label className="pharmacies-associate-label">
                     Sélectionner un pharmacien
                   </label>
                   <input
@@ -397,18 +496,12 @@ const PharmaciesAdmin = () => {
                     placeholder="Rechercher par nom ou pseudo..."
                     value={pharmacienSearch}
                     onChange={(e) => setPharmacienSearch(e.target.value)}
-                    style={{
-                      width: '100%',
-                      padding: '0.6rem 0.75rem',
-                      fontSize: '0.95rem',
-                      marginTop: '0.25rem',
-                      marginBottom: '0.5rem'
-                    }}
+                    className="pharmacies-associate-search"
                   />
                   <select
                     value={selectedPharmacienId}
                     onChange={(e) => setSelectedPharmacienId(e.target.value)}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', marginTop: '0.5rem' }}
+                    className="pharmacies-associate-select"
                   >
                     <option value="">— Aucun —</option>
                     {filteredPharmaciens.map((p) => (
@@ -418,18 +511,18 @@ const PharmaciesAdmin = () => {
                     ))}
                   </select>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
+                <div className="pharmacies-associate-actions">
                   <button
                     onClick={() => handleAssociate(associatingPharmacie)}
                     className="btn-primary"
-                    style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                    type="button"
                   >
                     Associer
                   </button>
                   <button
                     onClick={() => setAssociatingPharmacie(null)}
                     className="btn-secondary"
-                    style={{ flex: 1, padding: '0.75rem', fontSize: '1rem' }}
+                    type="button"
                   >
                     Annuler
                   </button>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
 
 const API_URL =
@@ -24,6 +25,7 @@ interface Deontologie {
 }
 
 const DeontologieAdmin = () => {
+  const { showSuccess, showError, showWarning } = useToast();
   const [deontologie, setDeontologie] = useState<Deontologie | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -132,7 +134,7 @@ const DeontologieAdmin = () => {
     if (!deontologie?._id) return;
     
     const confirmed = window.confirm(
-      '⚠️ Attention : Cette action est irréversible.\n\n' +
+      'Attention : Cette action est irréversible.\n\n' +
       'Êtes-vous sûr de vouloir supprimer définitivement ce document de déontologie ?\n\n' +
       'Le PDF et toutes les informations associées seront supprimés.'
     );
@@ -148,6 +150,7 @@ const DeontologieAdmin = () => {
       });
       
       setMessage({ type: 'success', text: 'Document de déontologie supprimé avec succès.' });
+      showSuccess('Document de déontologie supprimé avec succès.');
       setDeontologie(null);
       setFormData({
         title: '',
@@ -164,6 +167,7 @@ const DeontologieAdmin = () => {
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
       setMessage({ type: 'error', text: 'Erreur lors de la suppression du document.' });
+      showError('Erreur lors de la suppression du document.');
     } finally {
       setDeleting(false);
     }
@@ -172,7 +176,7 @@ const DeontologieAdmin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.pdfUrl) {
-      alert('Veuillez uploader un PDF');
+      showWarning('Veuillez uploader un PDF.');
       return;
     }
 
@@ -193,6 +197,7 @@ const DeontologieAdmin = () => {
         });
       }
       setMessage({ type: 'success', text: 'Document de déontologie sauvegardé avec succès.' });
+      showSuccess('Document de déontologie sauvegardé avec succès.');
       await fetchData();
       
       // Effacer le message après 3 secondes
@@ -202,6 +207,7 @@ const DeontologieAdmin = () => {
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
       setMessage({ type: 'error', text: 'Erreur lors de la sauvegarde. Veuillez réessayer.' });
+      showError('Erreur lors de la sauvegarde. Veuillez réessayer.');
     }
   };
 
@@ -211,7 +217,7 @@ const DeontologieAdmin = () => {
       <main className="admin-main">
         <div className="admin-header">
           <div>
-            <h1>📋 Gestion de la Déontologie</h1>
+            <h1>Gestion de la deontologie</h1>
             <p style={{ fontSize: '1.05rem', marginTop: '0.4rem', color: '#666' }}>
               Gérez le document de déontologie pharmaceutique visible par les visiteurs
             </p>
@@ -243,7 +249,7 @@ const DeontologieAdmin = () => {
                     gap: '0.5rem'
                   }}
                 >
-                  <span>{message.type === 'success' ? '✅' : '❌'}</span>
+                  <span>{message.type === 'success' ? 'OK' : 'ER'}</span>
                   <span>{message.text}</span>
                 </div>
               )}
@@ -261,7 +267,7 @@ const DeontologieAdmin = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                     <div>
                       <h3 style={{ fontSize: '1.3rem', fontWeight: '700', marginBottom: '0.5rem', color: '#111827' }}>
-                        📄 Document actuel
+                        Document actuel
                       </h3>
                       <p style={{ fontSize: '0.95rem', color: '#6b7280', marginBottom: '0.5rem' }}>
                         Document publié sur le site
@@ -283,7 +289,7 @@ const DeontologieAdmin = () => {
                         whiteSpace: 'nowrap'
                       }}
                     >
-                      {deleting ? '⏳ Suppression...' : '🗑️ Supprimer le document'}
+                      {deleting ? 'Suppression...' : 'Supprimer le document'}
                     </button>
                   </div>
 
@@ -331,7 +337,7 @@ const DeontologieAdmin = () => {
                           onMouseOver={(e) => e.currentTarget.style.background = '#008F45'}
                           onMouseOut={(e) => e.currentTarget.style.background = '#00A651'}
                         >
-                          👁️ Voir le PDF
+                          Voir le PDF
                         </a>
                         <span style={{
                           padding: '0.5rem 1rem',
@@ -345,13 +351,13 @@ const DeontologieAdmin = () => {
                         </span>
                         {deontologie.lastUpdated && (
                           <span style={{ color: '#6b7280', fontSize: '0.9rem' }}>
-                            📅 Mis à jour : {new Date(deontologie.lastUpdated).toLocaleDateString('fr-FR')}
+                            Mis a jour : {new Date(deontologie.lastUpdated).toLocaleDateString('fr-FR')}
                           </span>
                         )}
                       </div>
                     ) : (
                       <p style={{ color: '#ef4444', fontSize: '0.95rem', fontWeight: '600' }}>
-                        ⚠️ Aucun PDF associé
+                        Aucun PDF associé
                       </p>
                     )}
                   </div>
@@ -375,7 +381,7 @@ const DeontologieAdmin = () => {
                   alignItems: 'center',
                   gap: '0.5rem'
                 }}>
-                  {deontologie ? '✏️ Modifier le document' : '➕ Créer un nouveau document'}
+                  {deontologie ? 'Modifier le document' : 'Creer un nouveau document'}
                 </h2>
 
                 <form onSubmit={handleSubmit}>
@@ -480,7 +486,7 @@ const DeontologieAdmin = () => {
                               gap: '0.5rem'
                             }}
                           >
-                            {uploading ? '⏳ Upload en cours...' : '📄 Choisir un fichier PDF'}
+                            {uploading ? 'Upload en cours...' : 'Choisir un fichier PDF'}
                           </button>
                           {formData.pdfUrl && (
                             <>
@@ -501,7 +507,7 @@ const DeontologieAdmin = () => {
                                   fontSize: '0.95rem'
                                 }}
                               >
-                                👁️ Prévisualiser
+                                Previsualiser
                               </a>
                               <button
                                 type="button"
@@ -517,7 +523,7 @@ const DeontologieAdmin = () => {
                                   cursor: 'pointer'
                                 }}
                               >
-                                🗑️ Retirer
+                                Retirer
                               </button>
                             </>
                           )}
@@ -532,7 +538,7 @@ const DeontologieAdmin = () => {
                             fontWeight: '600',
                             marginTop: '0.5rem'
                           }}>
-                            ❌ {uploadError}
+                            Erreur : {uploadError}
                           </div>
                         )}
                         {formData.pdfUrl && !uploadError && (
@@ -548,11 +554,11 @@ const DeontologieAdmin = () => {
                             alignItems: 'center',
                             gap: '0.5rem'
                           }}>
-                            ✅ PDF sélectionné et prêt à être sauvegardé
+                            PDF sélectionné et prêt à être sauvegardé
                           </div>
                         )}
                         <p style={{ fontSize: '0.85rem', color: '#6b7280', marginTop: '0.75rem' }}>
-                          📌 Format accepté : PDF uniquement (max 10 Mo)
+                          Format accepté : PDF uniquement (max 10 Mo)
                         </p>
                       </div>
                     </div>
@@ -630,7 +636,7 @@ const DeontologieAdmin = () => {
                           maxWidth: '300px'
                         }}
                       >
-                        {deontologie ? '💾 Enregistrer les modifications' : '➕ Créer le document'}
+                        {deontologie ? 'Enregistrer les modifications' : 'Creer le document'}
                       </button>
                     </div>
                   </div>

@@ -25,10 +25,26 @@ interface Actualite {
   featured?: boolean;
 }
 
+type NewsTabKey = 'actualites' | 'communiques' | 'lois';
+
+interface NewsHubItem {
+  _id: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  category: string;
+  publishedAt: string;
+  author: string;
+  readTime: number;
+}
+
 const AccueilONPG = () => {
   // État pour les actualités réelles
   const [actualites, setActualites] = useState<Actualite[]>([]);
+  const [communiques, setCommuniques] = useState<NewsHubItem[]>([]);
+  const [lois, setLois] = useState<NewsHubItem[]>([]);
   const [loadingActualites, setLoadingActualites] = useState(true);
+  const [activeNewsTab, setActiveNewsTab] = useState<NewsTabKey>('actualites');
   
   // État pour le carousel avec 3 blocs et défilement subtil
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -74,50 +90,63 @@ const AccueilONPG = () => {
 
   // Charger les actualités depuis l'API
   useEffect(() => {
-    const loadActualites = async () => {
+    const mapSorted = (rows: any[], categoryLabel: string): NewsHubItem[] =>
+      rows
+        .map((item: any) => ({
+          _id: String(item._id || ''),
+          title: String(item.title || item.name || item.reference || ''),
+          excerpt: String(item.excerpt || item.summary || item.description || ''),
+          image: getImageWithFallback(item.backgroundImage || item.image || item.featuredImage, 'article'),
+          category: String(item.category || categoryLabel),
+          publishedAt: String(item.publishedAt || item.date || item.publicationDate || item.createdAt || new Date().toISOString()),
+          author: typeof item.author === 'object' && item.author !== null
+            ? String(item.author.name || 'ONPG')
+            : String(item.author || 'ONPG'),
+          readTime: Number(item.readTime || 3)
+        }))
+        .filter((item) => item._id && item.title)
+        .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+
+    const loadNewsHub = async () => {
       try {
         setLoadingActualites(true);
-        const data = await fetchResourceData('actualites');
-        
-        if (data) {
-          const rawArray = Array.isArray(data) ? data : [data];
-          // Trier par date (plus récentes en premier) et limiter à 6 pour le carousel
-          const sorted = rawArray
-            .map((item: any) => {
-              // Priorité: backgroundImage > image > fallback article (PAS la présidente)
-              const imageUrl = getImageWithFallback(
-                item.backgroundImage || item.image || item.featuredImage,
-                'article'
-              );
-              return {
-                _id: String(item._id || ''),
-                title: item.title || '',
-                excerpt: item.excerpt || item.summary || '',
-                content: item.content || '',
-                image: imageUrl,
-                category: item.category || 'ACTUALITÉS',
-                publishedAt: item.publishedAt || item.date || item.createdAt || new Date().toISOString(),
-                author: typeof item.author === 'object' && item.author !== null
-                  ? (item.author.name || 'ONPG')
-                  : (item.author || 'ONPG'),
-                readTime: item.readTime || 3,
-                featured: item.featured || false
-              };
-            })
-            .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-            .slice(0, 6);
-          
-          setActualites(sorted);
-        }
+        const [actualitesData, communiquesData, loisData] = await Promise.all([
+          fetchResourceData('actualites'),
+          fetchResourceData('communiques'),
+          fetchResourceData('lois')
+        ]);
+
+        const actualitesRows = Array.isArray(actualitesData) ? actualitesData : (actualitesData ? [actualitesData] : []);
+        const communiquesRows = Array.isArray(communiquesData) ? communiquesData : (communiquesData ? [communiquesData] : []);
+        const loisRows = Array.isArray(loisData) ? loisData : (loisData ? [loisData] : []);
+
+        const sortedActualites = mapSorted(actualitesRows, 'ACTUALITÉS');
+        const sortedCommuniques = mapSorted(communiquesRows, 'COMMUNIQUÉS');
+        const sortedLois = mapSorted(loisRows, 'LOIS');
+
+        setActualites(sortedActualites.map((item) => ({
+          _id: item._id,
+          title: item.title,
+          excerpt: item.excerpt,
+          image: item.image,
+          category: item.category,
+          publishedAt: item.publishedAt,
+          author: item.author,
+          readTime: item.readTime
+        })));
+        setCommuniques(sortedCommuniques);
+        setLois(sortedLois);
       } catch (error) {
         console.error('Erreur chargement actualités:', error);
         setActualites([]);
+        setCommuniques([]);
+        setLois([]);
       } finally {
         setLoadingActualites(false);
       }
     };
     
-    loadActualites();
+    loadNewsHub();
   }, []);
 
   // Auto-défilement naturel avec séquence logique
@@ -168,6 +197,32 @@ const AccueilONPG = () => {
     const month = months[date.getMonth()];
     return { day: day.toString(), month };
   };
+
+  const newsHubConfig: Record<NewsTabKey, { title: string; subtitle: string; route: string }> = {
+    actualites: {
+      title: 'Actualités',
+      subtitle: "Restez informés des dernières actualités de l'ONPG",
+      route: '/ressources/actualites'
+    },
+    communiques: {
+      title: 'Communiqués',
+      subtitle: 'Informations officielles et annonces institutionnelles',
+      route: '/ressources?tab=communiques'
+    },
+    lois: {
+      title: 'Lois',
+      subtitle: 'Textes réglementaires essentiels pour la profession',
+      route: '/ressources?tab=lois'
+    }
+  };
+
+  const activeNewsItems = (
+    activeNewsTab === 'actualites'
+      ? actualites
+      : activeNewsTab === 'communiques'
+        ? communiques
+        : lois
+  ) as NewsHubItem[];
 
   // Pause élégante au survol
   const [isHovered] = useState(false);
@@ -487,19 +542,47 @@ const AccueilONPG = () => {
         </div>
       </section>
 
-      {/* Actualites - 3 articles simples sans hero */}
+      {/* Hub editorial compact a onglets */}
       <section className="onpg-news news-section section" data-animate>
         <div className="container">
-          {/* Header simple */}
+          <div className="news-hub-tabs" role="tablist" aria-label="Categories editoriales accueil">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeNewsTab === 'actualites'}
+              className={`news-hub-tab ${activeNewsTab === 'actualites' ? 'active' : ''}`}
+              onClick={() => setActiveNewsTab('actualites')}
+            >
+              Actualités
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeNewsTab === 'communiques'}
+              className={`news-hub-tab ${activeNewsTab === 'communiques' ? 'active' : ''}`}
+              onClick={() => setActiveNewsTab('communiques')}
+            >
+              Communiqués
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeNewsTab === 'lois'}
+              className={`news-hub-tab ${activeNewsTab === 'lois' ? 'active' : ''}`}
+              onClick={() => setActiveNewsTab('lois')}
+            >
+              Lois
+            </button>
+          </div>
+
           <div className="news-header-professional">
             <div className="news-header-accent"></div>
-            <h2 className="news-title-professional">Actualités</h2>
+            <h2 className="news-title-professional">{newsHubConfig[activeNewsTab].title}</h2>
             <p className="news-subtitle-professional">
-              Restez informés des dernières actualités de l'ONPG
+              {newsHubConfig[activeNewsTab].subtitle}
             </p>
           </div>
 
-          {/* Grille avec seulement 3 articles */}
           <div className="news-grid">
             {loadingActualites ? (
               // Skeleton loading
@@ -514,21 +597,20 @@ const AccueilONPG = () => {
                   </div>
                 </div>
               ))
-            ) : actualites.length === 0 ? (
+            ) : activeNewsItems.length === 0 ? (
               <p style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem', color: '#666' }}>
-                Aucune actualité disponible pour le moment.
+                Aucun contenu disponible pour cette catégorie.
               </p>
             ) : (
-              actualites.slice(0, 3).map((actualite) => {
-                const dateFormatted = formatDate(actualite.publishedAt || new Date().toISOString());
-                // Utiliser l'image de l'actualité ou fallback article (PAS la présidente)
-                const imageUrl = getImageWithFallback(actualite.image, 'article');
+              activeNewsItems.slice(0, 3).map((item) => {
+                const dateFormatted = formatDate(item.publishedAt || new Date().toISOString());
+                const imageUrl = getImageWithFallback(item.image, 'article');
                 return (
-                  <div key={actualite._id} className="news-card">
+                  <div key={item._id} className="news-card">
                     <div className="news-image">
                       <img 
                         src={imageUrl} 
-                        alt={actualite.title} 
+                        alt={item.title} 
                         onError={(e) => {
                           // Si l'image échoue, utiliser le fallback article
                           (e.target as HTMLImageElement).src = getImageWithFallback(null, 'article');
@@ -540,19 +622,19 @@ const AccueilONPG = () => {
                         <span className="date-month">{dateFormatted.month}</span>
                       </div>
                       <div className="news-category" style={{ backgroundColor: '#27ae60' }}>
-                        <span className="category-text">{actualite.category || 'ACTUALITÉS'}</span>
+                        <span className="category-text">{item.category || newsHubConfig[activeNewsTab].title.toUpperCase()}</span>
                       </div>
                     </div>
                     <div className="news-content">
-                      <h3 className="news-title">{actualite.title}</h3>
-                      <p className="news-excerpt">{actualite.excerpt || 'Découvrez les dernières nouvelles et informations importantes de l\'ONPG...'}</p>
+                      <h3 className="news-title">{item.title}</h3>
+                      <p className="news-excerpt">{item.excerpt || "Consultez les informations importantes de l'ONPG."}</p>
                       <div className="news-meta">
-                        <span className="meta-author">{actualite.author || 'ONPG'}</span>
+                        <span className="meta-author">{item.author || 'ONPG'}</span>
                         <span className="meta-separator">•</span>
-                        <span className="meta-read-time">{actualite.readTime || 3} min</span>
+                        <span className="meta-read-time">{item.readTime || 3} min</span>
                       </div>
-                      <Link to={`/ressources/actualites/${actualite._id}`} className="news-link">
-                        <span className="link-text">Lire l'article</span>
+                      <Link to={newsHubConfig[activeNewsTab].route} className="news-link">
+                        <span className="link-text">Voir dans ressources</span>
                         <span className="link-arrow">→</span>
                       </Link>
                     </div>
@@ -562,16 +644,15 @@ const AccueilONPG = () => {
             )}
           </div>
 
-          {/* Bouton voir toutes les actualités */}
           <div className="news-actions">
-            <Link to="/ressources/actualites" className="btn btn-primary">
+            <Link to={newsHubConfig[activeNewsTab].route} className="btn btn-primary">
               <span className="news-btn-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" className="news-btn-icon-svg">
                   <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth="1.8" />
                   <path d="M8 9h8M8 12h8M8 15h5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               </span>
-              <span>Voir toutes les actualités</span>
+              <span>Voir tout {newsHubConfig[activeNewsTab].title.toLowerCase()}</span>
               <span>→</span>
             </Link>
           </div>

@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import AdminSidebar from './components/AdminSidebar';
 import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { useToast } from '../../components/Toast';
 import './Dashboard.css';
+import './PharmaciensAdmin.css';
 
 const API_URL =
   import.meta.env.VITE_API_URL ||
@@ -29,11 +31,13 @@ interface Pharmacien {
   dateRetardCotisations?: string | null;
   isActive?: boolean;
   photo?: string;
+  metierExerce?: string;
   role?: string;
   these?: string;
 }
 
 const PharmaciensAdmin = () => {
+  const { showSuccess, showError, showWarning } = useToast();
   const [pharmaciens, setPharmaciens] = useState<Pharmacien[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -59,9 +63,16 @@ const PharmaciensAdmin = () => {
     dateRetardCotisations: null,
     isActive: true,
     photo: '',
+    metierExerce: '',
     role: '',
     these: ''
   });
+
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3500);
+    return () => clearTimeout(timer);
+  }, [message]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -85,14 +96,18 @@ const PharmaciensAdmin = () => {
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const filteredPharmaciens = normalizedQuery
-    ? pharmaciens.filter((p) => {
-        const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.telephone || ''} ${p.numeroOrdre || ''} ${p.nationalite || ''} ${
-          p.section || ''
-        }`.toLowerCase();
-        return haystack.includes(normalizedQuery);
-      })
-    : pharmaciens;
+  const filteredPharmaciens = useMemo(
+    () =>
+      normalizedQuery
+        ? pharmaciens.filter((p) => {
+            const haystack = `${p.nom || ''} ${p.prenom || ''} ${p.telephone || ''} ${p.numeroOrdre || ''} ${
+              p.nationalite || ''
+            } ${p.section || ''}`.toLowerCase();
+            return haystack.includes(normalizedQuery);
+          })
+        : pharmaciens,
+    [normalizedQuery, pharmaciens]
+  );
 
   const isGabonais = (nationalite?: string) => {
     if (!nationalite) return false;
@@ -100,25 +115,28 @@ const PharmaciensAdmin = () => {
     return n.includes('gabon');
   };
 
-  const visiblePharmaciens = filteredPharmaciens.filter((p) => {
-    let okCotisation = true;
-    if (cotisationFilter === 'ajour') {
-      okCotisation = p.cotisationsAJour !== false;
-    } else if (cotisationFilter === 'retard') {
-      okCotisation = p.cotisationsAJour === false;
-    }
+  const visiblePharmaciens = useMemo(
+    () =>
+      filteredPharmaciens.filter((p) => {
+        let okCotisation = true;
+        if (cotisationFilter === 'ajour') {
+          okCotisation = p.cotisationsAJour !== false;
+        } else if (cotisationFilter === 'retard') {
+          okCotisation = p.cotisationsAJour === false;
+        }
 
-    let okNat = true;
-    if (nationaliteFilter === 'gabonais') {
-      okNat = isGabonais(p.nationalite);
-    } else if (nationaliteFilter === 'etrangers') {
-      okNat = !!p.nationalite && !isGabonais(p.nationalite);
-    }
+        let okNat = true;
+        if (nationaliteFilter === 'gabonais') {
+          okNat = isGabonais(p.nationalite);
+        } else if (nationaliteFilter === 'etrangers') {
+          okNat = !!p.nationalite && !isGabonais(p.nationalite);
+        }
 
-    const okSection = sectionFilter === 'toutes' ? true : (p.section || '') === sectionFilter;
-
-    return okCotisation && okNat && okSection;
-  });
+        const okSection = sectionFilter === 'toutes' ? true : (p.section || '') === sectionFilter;
+        return okCotisation && okNat && okSection;
+      }),
+    [filteredPharmaciens, cotisationFilter, nationaliteFilter, sectionFilter]
+  );
 
   const totalPharmaciens = pharmaciens.length;
   const totalCotisationsAjour = pharmaciens.filter(p => p.cotisationsAJour !== false).length;
@@ -131,6 +149,28 @@ const PharmaciensAdmin = () => {
   const totalEtrangers = pharmaciens.filter(
     p => p.nationalite && !isGabonais(p.nationalite)
   ).length;
+  const hasFilters =
+    searchQuery.trim() !== '' ||
+    cotisationFilter !== 'tous' ||
+    nationaliteFilter !== 'toutes' ||
+    sectionFilter !== 'toutes';
+
+  const resetFilters = () => {
+    setSearchQuery('');
+    setCotisationFilter('tous');
+    setNationaliteFilter('toutes');
+    setSectionFilter('toutes');
+  };
+
+  const getStatusLabel = (p: Pharmacien) => {
+    if (p.isActive === false) return 'Inactif';
+    return p.cotisationsAJour === false ? 'Cotisation en retard' : 'Actif';
+  };
+
+  const getStatusClass = (p: Pharmacien) => {
+    if (p.isActive === false) return 'inactive';
+    return p.cotisationsAJour === false ? 'warning' : 'success';
+  };
 
   const handleEdit = (pharmacien: Pharmacien) => {
     setEditingItem(pharmacien);
@@ -146,6 +186,7 @@ const PharmaciensAdmin = () => {
       dateRetardCotisations: pharmacien.dateRetardCotisations || null,
       isActive: pharmacien.isActive !== undefined ? pharmacien.isActive : true,
       photo: pharmacien.photo || '',
+      metierExerce: pharmacien.metierExerce || pharmacien.role || '',
       role: pharmacien.role || '',
       these: pharmacien.these || ''
     });
@@ -153,7 +194,7 @@ const PharmaciensAdmin = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce pharmacien ?')) {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce pharmacien ?')) {
       return;
     }
     try {
@@ -161,9 +202,11 @@ const PharmaciensAdmin = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem('admin_token')}` }
       });
       fetchData();
+      showSuccess('Pharmacien supprimé avec succès.');
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
-      alert('Erreur lors de la suppression');
+      setMessage({ type: 'error', text: 'Erreur lors de la suppression.' });
+      showError('Erreur lors de la suppression.');
     }
   };
 
@@ -181,6 +224,7 @@ const PharmaciensAdmin = () => {
       dateRetardCotisations: null,
       isActive: true,
       photo: '',
+      metierExerce: '',
       role: '',
       these: ''
     });
@@ -205,12 +249,14 @@ const PharmaciensAdmin = () => {
         type: 'success',
         text: editingItem ? 'Pharmacien mis à jour avec succès.' : 'Pharmacien créé avec succès.'
       });
+      showSuccess(editingItem ? 'Pharmacien mis à jour avec succès.' : 'Pharmacien créé avec succès.');
       setShowForm(false);
       setEditingItem(null);
       fetchData();
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
       setMessage({ type: 'error', text: 'Erreur lors de la sauvegarde du pharmacien.' });
+      showError('Erreur lors de la sauvegarde du pharmacien.');
     }
   };
 
@@ -229,6 +275,7 @@ const PharmaciensAdmin = () => {
       dateRetardCotisations: null,
       isActive: true,
       photo: '',
+      metierExerce: '',
       role: '',
       these: ''
     });
@@ -236,7 +283,7 @@ const PharmaciensAdmin = () => {
 
   const handlePhotoUpload = async (file: File) => {
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      alert(
+      showWarning(
         "Configuration d'upload image manquante. Veuillez définir VITE_CLOUDINARY_CLOUD_NAME et VITE_CLOUDINARY_UPLOAD_PRESET."
       );
       return;
@@ -278,95 +325,78 @@ const PharmaciensAdmin = () => {
     <div className="dashboard-page">
       <AdminSidebar currentPage="pharmaciens" />
       <main className="dashboard-main">
-        <div className="dashboard-header">
-          <h1>👨‍⚕️ Gestion des pharmaciens</h1>
-          <p>Gérez la liste des pharmaciens inscrits à l&apos;Ordre</p>
+        <div className="dashboard-header pharmaciens-header">
+          <h1>Gestion des pharmaciens</h1>
+          <p>Suivi des inscriptions, des statuts et des cotisations des pharmaciens.</p>
         </div>
 
+        <section className="dashboard-section pharmaciens-kpis">
+          <article className="pharma-kpi">
+            <span>Total</span>
+            <strong>{totalPharmaciens}</strong>
+          </article>
+          <article className="pharma-kpi">
+            <span>À jour</span>
+            <strong>{totalCotisationsAjour}</strong>
+          </article>
+          <article className="pharma-kpi">
+            <span>Retard cotisation</span>
+            <strong>{totalCotisationsRetard}</strong>
+          </article>
+          <article className="pharma-kpi">
+            <span>Nationaux / Étrangers</span>
+            <strong>{totalGabonais} / {totalEtrangers}</strong>
+          </article>
+          <article className="pharma-kpi">
+            <span>Sections A/B/C/D</span>
+            <strong>{sectionA} / {sectionB} / {sectionC} / {sectionD}</strong>
+          </article>
+        </section>
+
         <section className="dashboard-section">
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '1.5rem',
-              gap: '1.5rem',
-              flexWrap: 'wrap'
-            }}
-          >
-            <div>
+          <div className="pharmaciens-toolbar">
+            <div className="pharmaciens-toolbar-head">
               <h2>Liste des pharmaciens</h2>
-              <p style={{ margin: '0.25rem 0', color: '#666', fontSize: '0.95rem' }}>
-                {visiblePharmaciens.length} pharmacien(s) affiché(s)
-                {totalPharmaciens > 0 && ` • sur ${totalPharmaciens} au total`}
-                {cotisationFilter === 'retard' && ` • ${totalCotisationsRetard} en retard de cotisation`}
-              </p>
-              <p style={{ margin: 0, color: '#888', fontSize: '0.85rem' }}>
-                Sections A:{' '}{sectionA} • B:{' '}{sectionB} • C:{' '}{sectionC} • D:{' '}{sectionD}
-                {' • '}Cotisations à jour:{' '}{totalCotisationsAjour}{' • '}En retard:{' '}{totalCotisationsRetard}
-                {totalGabonais + totalEtrangers > 0 && (
-                  <>
-                    {' • '}Nationaux:{' '}{totalGabonais}{' • '}Étrangers:{' '}{totalEtrangers}
-                  </>
-                )}
+              <p>
+                {visiblePharmaciens.length} affiché(s) • {totalPharmaciens} total
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+
+            <div className="pharmaciens-toolbar-controls">
               <input
                 type="text"
                 placeholder="Rechercher par nom, prénom ou n° d'ordre..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  minWidth: '260px',
-                  padding: '0.7rem 0.9rem',
-                  fontSize: '1rem',
-                  borderRadius: '999px',
-                  border: '2px solid #ddd'
-                }}
+                className="pharma-search"
               />
+
               <select
                 value={cotisationFilter}
                 onChange={(e) => setCotisationFilter(e.target.value as 'tous' | 'ajour' | 'retard')}
-                style={{
-                  padding: '0.55rem 0.9rem',
-                  borderRadius: '999px',
-                  border: '2px solid #ddd',
-                  fontSize: '0.95rem',
-                  minWidth: '180px'
-                }}
+                className="pharma-select"
               >
                 <option value="tous">Toutes les cotisations</option>
                 <option value="ajour">Cotisations à jour uniquement</option>
                 <option value="retard">Cotisations en retard</option>
               </select>
+
               <select
                 value={nationaliteFilter}
                 onChange={(e) =>
                   setNationaliteFilter(e.target.value as 'toutes' | 'gabonais' | 'etrangers')
                 }
-                style={{
-                  padding: '0.55rem 0.9rem',
-                  borderRadius: '999px',
-                  border: '2px solid #ddd',
-                  fontSize: '0.95rem',
-                  minWidth: '180px'
-                }}
+                className="pharma-select"
               >
                 <option value="toutes">Toutes les nationalités</option>
                 <option value="gabonais">Nationaux (Gabon)</option>
                 <option value="etrangers">Étrangers</option>
               </select>
+
               <select
                 value={sectionFilter}
                 onChange={(e) => setSectionFilter(e.target.value as 'toutes' | 'A' | 'B' | 'C' | 'D')}
-                style={{
-                  padding: '0.55rem 0.9rem',
-                  borderRadius: '999px',
-                  border: '2px solid #ddd',
-                  fontSize: '0.95rem',
-                  minWidth: '180px'
-                }}
+                className="pharma-select"
               >
                 <option value="toutes">Toutes les sections</option>
                 <option value="A">Section A</option>
@@ -374,18 +404,25 @@ const PharmaciensAdmin = () => {
                 <option value="C">Section C</option>
                 <option value="D">Section D</option>
               </select>
+
+              {hasFilters && (
+                <button type="button" onClick={resetFilters} className="btn-secondary">
+                  Réinitialiser
+                </button>
+              )}
+
               <button
+                type="button"
                 onClick={handleNew}
                 className="btn-primary"
-                style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}
               >
-                ➕ Nouveau pharmacien
+                Nouveau pharmacien
               </button>
             </div>
           </div>
 
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>Chargement...</div>
+            <div className="pharmaciens-loading">Chargement...</div>
           ) : (
             <div className="table-container">
               <table className="data-table">
@@ -395,21 +432,22 @@ const PharmaciensAdmin = () => {
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>N° d&apos;ordre</th>
+                    <th>Section</th>
                     <th>Nationalité</th>
-                    <th>Cotisations à jour</th>
+                    <th>Statut</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pharmaciens.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
+                      <td colSpan={8} className="pharmaciens-empty">
                         Aucun pharmacien enregistré
                       </td>
                     </tr>
                   ) : visiblePharmaciens.length === 0 ? (
                     <tr>
-                      <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
+                      <td colSpan={8} className="pharmaciens-empty">
                         Aucun pharmacien ne correspond aux critères de recherche / filtrage
                       </td>
                     </tr>
@@ -421,56 +459,53 @@ const PharmaciensAdmin = () => {
                             <img
                               src={pharmacien.photo}
                               alt={`${pharmacien.prenom} ${pharmacien.nom}`}
-                              style={{
-                                width: '50px',
-                                height: '50px',
-                                borderRadius: '50%',
-                                objectFit: 'cover'
-                              }}
+                              className="pharmaciens-avatar"
                             />
                           ) : (
-                            <span style={{ color: '#999' }}>—</span>
+                            <span className="pharmaciens-muted">—</span>
                           )}
                         </td>
                         <td>{pharmacien.nom || '—'}</td>
                         <td>{pharmacien.prenom || '—'}</td>
                         <td>{pharmacien.numeroOrdre || '—'}</td>
+                        <td>{pharmacien.section || '—'}</td>
                         <td>{pharmacien.nationalite || '—'}</td>
                         <td>
-                          {pharmacien.cotisationsAJour ? (
-                            <span style={{ color: '#27ae60' }}>✅</span>
-                          ) : (
-                            <span style={{ color: '#e74c3c' }}>❌</span>
-                          )}
+                          <span className={`pharmaciens-badge ${getStatusClass(pharmacien)}`}>
+                            {getStatusLabel(pharmacien)}
+                          </span>
                         </td>
                         <td>
-                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                          <div className="pharmaciens-actions">
                             <button
+                              type="button"
                               onClick={() => {
                                 setViewingItem(pharmacien);
                                 setShowViewModal(true);
                               }}
-                              className="btn-primary"
-                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              className="pharmaciens-action-btn view"
                               aria-label="Voir le détail"
+                              title="Voir"
                             >
-                              👁️
+                              Voir
                             </button>
                             <button
+                              type="button"
                               onClick={() => handleEdit(pharmacien)}
-                              className="btn-edit"
-                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              className="pharmaciens-action-btn edit"
                               aria-label="Modifier"
+                              title="Modifier"
                             >
-                              ✏️
+                              Modifier
                             </button>
                             <button
+                              type="button"
                               onClick={() => pharmacien._id && handleDelete(pharmacien._id)}
-                              className="btn-delete"
-                              style={{ fontSize: '1rem', padding: '0.35rem 0.6rem' }}
+                              className="pharmaciens-action-btn delete"
                               aria-label="Supprimer"
+                              title="Supprimer"
                             >
-                              🗑️
+                              Supprimer
                             </button>
                           </div>
                         </td>
@@ -485,131 +520,80 @@ const PharmaciensAdmin = () => {
 
         {/* Formulaire en modal */}
         {showForm && (
-          <div
-            className="pharmaciens-modal-overlay"
-            onClick={handleCancel}
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(2, 6, 23, 0.55)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1200,
-              padding: '1rem'
-            }}
-          >
+          <div className="pharmaciens-modal-overlay" onClick={handleCancel}>
             <section
               className="dashboard-section pharmaciens-form-modal"
               onClick={(e) => e.stopPropagation()}
-              style={{
-                width: 'min(980px, 96vw)',
-                maxHeight: '92vh',
-                overflow: 'auto',
-                margin: 0,
-                background: '#fff',
-                borderRadius: '14px',
-                boxShadow: '0 20px 48px rgba(15, 23, 42, 0.3)'
-              }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h2 style={{ margin: 0 }}>{editingItem ? '✏️ Modifier un pharmacien' : '➕ Nouveau pharmacien'}</h2>
+              <div className="pharmaciens-modal-header">
+                <h2>{editingItem ? 'Modifier un pharmacien' : 'Nouveau pharmacien'}</h2>
                 <button
                   type="button"
                   onClick={handleCancel}
                   className="pharmaciens-modal-close"
                   aria-label="Fermer le formulaire"
-                  style={{
-                    background: 'transparent',
-                    border: 0,
-                    fontSize: '1.35rem',
-                    cursor: 'pointer',
-                    padding: '0.25rem 0.5rem'
-                  }}
                 >
                   ✕
                 </button>
               </div>
-              <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              <form onSubmit={handleSubmit} className="pharmaciens-form-grid">
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Nom *
-                  </label>
+                  <label>Nom *</label>
                   <input
                     type="text"
                     value={formData.nom}
                     onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
                     required
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Prénom *
-                  </label>
+                  <label>Prénom *</label>
                   <input
                     type="text"
                     value={formData.prenom}
                     onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
                     required
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    N° d&apos;ordre
-                  </label>
+                  <label>N° d&apos;ordre</label>
                   <input
                     type="number"
                     value={formData.numeroOrdre || ''}
                     onChange={(e) => setFormData({ ...formData, numeroOrdre: e.target.value ? parseInt(e.target.value) : undefined })}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Nationalité
-                  </label>
+                  <label>Nationalité</label>
                   <input
                     type="text"
                     value={formData.nationalite || ''}
                     onChange={(e) => setFormData({ ...formData, nationalite: e.target.value })}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Email
-                  </label>
+                  <label>Email</label>
                   <input
                     type="email"
                     value={formData.email || ''}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="Ex: nom@exemple.com"
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Téléphone
-                  </label>
+                  <label>Téléphone</label>
                   <input
                     type="text"
                     value={formData.telephone || ''}
                     onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
                     placeholder="Ex: 07 12 34 56"
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Section
-                  </label>
+                  <label>Section</label>
                   <select
                     value={formData.section || ''}
                     onChange={(e) => setFormData({ ...formData, section: e.target.value })}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   >
                     <option value="">— Non assignée —</option>
                     <option value="A">Section A - Officinaux</option>
@@ -619,93 +603,50 @@ const PharmaciensAdmin = () => {
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Cotisations à jour
-                  </label>
+                  <label>Cotisations à jour</label>
                   <select
                     value={formData.cotisationsAJour ? 'true' : 'false'}
                     onChange={(e) => setFormData({ ...formData, cotisationsAJour: e.target.value === 'true' })}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   >
                     <option value="true">✅ Oui</option>
                     <option value="false">❌ Non</option>
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Date retard cotisations (si non à jour)
-                  </label>
+                  <label>Date retard cotisations (si non à jour)</label>
                   <input
                     type="date"
                     value={formData.dateRetardCotisations ? new Date(formData.dateRetardCotisations).toISOString().split('T')[0] : ''}
                     onChange={(e) => setFormData({ ...formData, dateRetardCotisations: e.target.value || null })}
                     disabled={formData.cotisationsAJour}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px', opacity: formData.cotisationsAJour ? 0.5 : 1 }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Actif
-                  </label>
+                  <label>Actif</label>
                   <select
                     value={formData.isActive ? 'true' : 'false'}
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.value === 'true' })}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   >
                     <option value="true">✅ Actif</option>
                     <option value="false">❌ Inactif</option>
                   </select>
                 </div>
-                <div>
-                  <label
-                    style={{
-                      display: 'block',
-                      marginBottom: '0.5rem',
-                      fontSize: '1.1rem',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    Photo du pharmacien
-                  </label>
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '0.75rem'
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div
-                        style={{
-                          width: '64px',
-                          height: '64px',
-                          borderRadius: '50%',
-                          overflow: 'hidden',
-                          border: '2px solid #ddd',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor: '#f5f5f5'
-                        }}
-                      >
+                <div className="pharmaciens-form-full">
+                  <label>Photo du pharmacien</label>
+                  <div className="pharmaciens-photo-upload">
+                    <div className="pharmaciens-photo-row">
+                      <div className="pharmaciens-photo-preview">
                         <img
                           src={formData.photo || ONPG_IMAGES.logo}
                           alt="Aperçu"
                           onError={(e) => { (e.target as HTMLImageElement).src = ONPG_IMAGES.logo; }}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: formData.photo ? 'cover' : 'contain',
-                            padding: formData.photo ? '0' : '6px',
-                            background: formData.photo ? 'transparent' : '#e8f5ee'
-                          }}
+                          className={formData.photo ? '' : 'logo-fallback'}
                         />
                       </div>
                       {formData.photo && (
                         <button
                           type="button"
                           className="btn-secondary"
-                          style={{ fontSize: '0.95rem', padding: '0.4rem 0.9rem' }}
                           onClick={() => setFormData({ ...formData, photo: '' })}
                         >
                           Supprimer la photo
@@ -722,63 +663,47 @@ const PharmaciensAdmin = () => {
                           handlePhotoUpload(file);
                         }
                       }}
-                      style={{ fontSize: '0.95rem' }}
                     />
                     {uploadingPhoto && (
-                      <span style={{ fontSize: '0.9rem', color: '#666' }}>Envoi de la photo...</span>
+                      <span className="pharmaciens-upload-info">Envoi de la photo...</span>
                     )}
                     {uploadError && (
-                      <span style={{ fontSize: '0.9rem', color: '#e74c3c' }}>{uploadError}</span>
+                      <span className="pharmaciens-upload-error">{uploadError}</span>
                     )}
                     <input
                       type="text"
                       value={formData.photo || ''}
                       onChange={(e) => setFormData({ ...formData, photo: e.target.value })}
                       placeholder="Ou collez une URL d'image (https://...)"
-                      style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '1rem',
-                        border: '2px solid #ddd',
-                        borderRadius: '4px'
-                      }}
                     />
                   </div>
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Rôle
-                  </label>
+                  <label>Métier exercé</label>
                   <input
                     type="text"
-                    value={formData.role || ''}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    value={formData.metierExerce || ''}
+                    onChange={(e) => setFormData({ ...formData, metierExerce: e.target.value, role: e.target.value })}
                     placeholder="Ex: Pharmacien titulaire, Biologiste médical..."
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px' }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                    Thèse
-                  </label>
+                  <label>Thèse</label>
                   <textarea
                     value={formData.these || ''}
                     onChange={(e) => setFormData({ ...formData, these: e.target.value })}
                     placeholder="Titre de la thèse..."
                     rows={3}
-                    style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', border: '2px solid #ddd', borderRadius: '4px', resize: 'vertical' }}
                   />
                 </div>
-              </div>
-
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
-                <button type="button" onClick={handleCancel} className="btn-secondary" style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}>
+                <div className="pharmaciens-form-actions pharmaciens-form-full">
+                  <button type="button" onClick={handleCancel} className="btn-secondary">
                   Annuler
-                </button>
-                <button type="submit" className="btn-primary" style={{ fontSize: '1.1rem', padding: '0.75rem 1.5rem' }}>
-                  {editingItem ? '💾 Enregistrer les modifications' : '➕ Créer le pharmacien'}
-                </button>
-              </div>
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    {editingItem ? 'Enregistrer les modifications' : 'Créer le pharmacien'}
+                  </button>
+                </div>
               </form>
             </section>
           </div>
@@ -795,154 +720,116 @@ const PharmaciensAdmin = () => {
 
         {/* Modal de visualisation */}
         {showViewModal && viewingItem && (
-          <div 
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 1000
-            }}
-            onClick={() => setShowViewModal(false)}
-          >
-            <div 
-              style={{
-                backgroundColor: 'white',
-                padding: '2rem',
-                borderRadius: '8px',
-                maxWidth: '600px',
-                width: '90%',
-                maxHeight: '90vh',
-                overflow: 'auto'
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <h2 style={{ margin: 0 }}>👁️ Détails du pharmacien</h2>
+          <div className="pharmaciens-modal-overlay" onClick={() => setShowViewModal(false)}>
+            <div className="pharmaciens-view-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="pharmaciens-modal-header">
+                <h2>Détails du pharmacien</h2>
                 <button
+                  type="button"
                   onClick={() => setShowViewModal(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '1.5rem',
-                    cursor: 'pointer',
-                    padding: '0.5rem'
-                  }}
+                  className="pharmaciens-modal-close"
                 >
                   ✕
                 </button>
               </div>
 
-              <div style={{ display: 'grid', gap: '1rem' }}>
+              <div className="pharmaciens-view-grid">
+                {viewingItem.photo && (
+                  <div className="pharmaciens-view-avatar-wrap">
+                    <img
+                      src={viewingItem.photo}
+                      alt={`${viewingItem.prenom} ${viewingItem.nom}`}
+                      className="pharmaciens-view-avatar"
+                    />
+                  </div>
+                )}
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Nom:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.nom || '—'}</p>
+                  <strong>Nom:</strong>
+                  <p>{viewingItem.nom || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Prénom:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.prenom || '—'}</p>
+                  <strong>Prénom:</strong>
+                  <p>{viewingItem.prenom || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>N° d&apos;ordre:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.numeroOrdre || '—'}</p>
+                  <strong>N° d&apos;ordre:</strong>
+                  <p>{viewingItem.numeroOrdre || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Nationalité:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.nationalite || '—'}</p>
+                  <strong>Nationalité:</strong>
+                  <p>{viewingItem.nationalite || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Email:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.email || '—'}</p>
+                  <strong>Email:</strong>
+                  <p>{viewingItem.email || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Téléphone:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.telephone || '—'}</p>
+                  <strong>Téléphone:</strong>
+                  <p>{viewingItem.telephone || '—'}</p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Section:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
-                    {viewingItem.section || <span style={{ color: '#999' }}>— Non assignée</span>}
+                  <strong>Section:</strong>
+                  <p>
+                    {viewingItem.section || <span className="pharmaciens-muted">— Non assignée</span>}
                   </p>
                 </div>
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Cotisations à jour:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                  <strong>Cotisations à jour:</strong>
+                  <p>
                     {viewingItem.cotisationsAJour ? (
-                      <span style={{ color: '#27ae60' }}>✅ Oui</span>
+                      <span className="pharmaciens-badge success">Oui</span>
                     ) : (
-                      <span style={{ color: '#e74c3c' }}>❌ Non</span>
+                      <span className="pharmaciens-badge warning">Non</span>
                     )}
                   </p>
                 </div>
                 {!viewingItem.cotisationsAJour && viewingItem.dateRetardCotisations && (
                   <div>
-                    <strong style={{ fontSize: '1.1rem' }}>Date retard cotisations:</strong>
-                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                    <strong>Date retard cotisations:</strong>
+                    <p>
                       {new Date(viewingItem.dateRetardCotisations).toLocaleDateString('fr-FR')}
                     </p>
                   </div>
                 )}
                 <div>
-                  <strong style={{ fontSize: '1.1rem' }}>Statut:</strong>
-                  <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>
+                  <strong>Statut:</strong>
+                  <p>
                     {viewingItem.isActive ? (
-                      <span style={{ color: '#27ae60' }}>✅ Actif</span>
+                      <span className="pharmaciens-badge success">Actif</span>
                     ) : (
-                      <span style={{ color: '#999' }}>❌ Inactif</span>
+                      <span className="pharmaciens-badge inactive">Inactif</span>
                     )}
                   </p>
                 </div>
-                {viewingItem.photo && (
+                {(viewingItem.metierExerce || viewingItem.role) && (
                   <div>
-                    <strong style={{ fontSize: '1.1rem' }}>Photo:</strong>
-                    <div style={{ margin: '0.5rem 0' }}>
-                      <img
-                        src={viewingItem.photo}
-                        alt={`${viewingItem.prenom} ${viewingItem.nom}`}
-                        style={{
-                          width: '100px',
-                          height: '100px',
-                          borderRadius: '50%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-                {viewingItem.role && (
-                  <div>
-                    <strong style={{ fontSize: '1.1rem' }}>Rôle:</strong>
-                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.role}</p>
+                    <strong>Métier exercé:</strong>
+                    <p>{viewingItem.metierExerce || viewingItem.role}</p>
                   </div>
                 )}
                 {viewingItem.these && (
                   <div>
-                    <strong style={{ fontSize: '1.1rem' }}>Thèse:</strong>
-                    <p style={{ margin: '0.5rem 0', fontSize: '1rem' }}>{viewingItem.these}</p>
+                    <strong>Thèse:</strong>
+                    <p>{viewingItem.these}</p>
                   </div>
                 )}
               </div>
 
-              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '2rem' }}>
+              <div className="pharmaciens-form-actions">
                 <button
+                  type="button"
                   onClick={() => {
                     setShowViewModal(false);
                     handleEdit(viewingItem);
                   }}
                   className="btn-edit"
-                  style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}
                 >
-                  ✏️ Modifier
+                  Modifier
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowViewModal(false)}
                   className="btn-secondary"
-                  style={{ fontSize: '1rem', padding: '0.75rem 1.5rem' }}
                 >
                   Fermer
                 </button>

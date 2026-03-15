@@ -1,3 +1,49 @@
+.news-hub-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.28rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 39, 99, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  margin: 0 0 1rem;
+}
+
+.news-hub-tab {
+  min-height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #445481;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 0.78rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.news-hub-tab:hover {
+  background: rgba(15, 138, 85, 0.1);
+  color: #0f8a55;
+}
+
+.news-hub-tab.active {
+  background: #0f8a55;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 138, 85, 0.32);
+}
+
+@media (max-width: 680px) {
+  .news-hub-tabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .news-hub-tab {
+    flex: 1;
+    padding: 0 0.4rem;
+    font-size: 0.78rem;
+  }
+}
 /* ============================================
    DESIGN INSTITUTIONNEL PROFESSIONNEL
    Style Ordre National - Sobre et Raffiné

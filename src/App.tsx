@@ -68,7 +68,6 @@ const WikiSettings = lazy(() => import('./modules/Wiki/WikiSettings'));
 // Lazy loading des routes Admin (plus lourdes)
 const Login = lazy(() => import('./modules/Admin/Login'));
 const Dashboard = lazy(() => import('./modules/Admin/Dashboard'));
-const Analytics = lazy(() => import('./modules/Admin/Analytics'));
 const PharmaciesAdmin = lazy(() => import('./modules/Admin/PharmaciesAdmin'));
 const PharmaciensAdmin = lazy(() => import('./modules/Admin/PharmaciensAdmin'));
 const FormationsAdmin = lazy(() => import('./modules/Admin/FormationsAdmin'));
@@ -86,6 +85,7 @@ const ArticleForm = lazy(() => import('./modules/Admin/ArticleForm'));
 const Calendar = lazy(() => import('./modules/Admin/Calendar'));
 const IdeaBlocks = lazy(() => import('./modules/Admin/IdeaBlocks'));
 const Settings = lazy(() => import('./modules/Admin/Settings'));
+const ConseilNationalSettings = lazy(() => import('./modules/Admin/ConseilNationalSettings'));
 const Jobs = lazy(() => import('./modules/Admin/Jobs'));
 const JobForm = lazy(() => import('./modules/Admin/JobForm'));
 const Logs = lazy(() => import('./modules/Admin/Logs'));
@@ -125,7 +125,6 @@ function App() {
             {/* Routes Admin (sans Layout) */}
             <Route path="/admin" element={<Login />} />
             <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/analytics" element={<Analytics />} />
             <Route path="/admin/pharmacies" element={<PharmaciesAdmin />} />
             <Route path="/admin/pharmaciens" element={<PharmaciensAdmin />} />
             <Route path="/admin/formations" element={<FormationsAdmin />} />
@@ -153,6 +152,7 @@ function App() {
             <Route path="/admin/logs" element={<Logs />} />
             <Route path="/admin/theses" element={<ThesesAdmin />} />
             <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/admin/settings/conseil" element={<ConseilNationalSettings />} />
             <Route path="/admin/resources" element={<PageMocks />} />
             
             {/* Documentation Admin - redirection directe vers HTML */}

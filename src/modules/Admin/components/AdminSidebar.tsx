@@ -8,6 +8,7 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
   const navigate = useNavigate();
+  const inSettingsSection = currentPage.startsWith('settings');
   
   const logout = () => {
     localStorage.removeItem('admin_token');
@@ -34,7 +35,7 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         <Link to="/admin/dashboard" className={`nav-item ${currentPage === 'dashboard' ? 'active' : ''}`}>
           Dashboard
         </Link>
-        {/* Menu ONPG : Ressources, Pharmacies, Pharmaciens, Analytics, Logs, Paramètres */}
+        {/* Menu ONPG : Ressources, Pharmacies, Pharmaciens, Logs, Paramètres */}
         <Link to="/admin/resources" className={`nav-item ${currentPage === 'resources' ? 'active' : ''}`}>
           Ressources
         </Link>
@@ -56,15 +57,21 @@ const AdminSidebar = ({ currentPage }: AdminSidebarProps) => {
         <Link to="/admin/messages" className={`nav-item ${currentPage === 'messages' ? 'active' : ''}`}>
           Messages de contact
         </Link>
-        <Link to="/admin/analytics" className={`nav-item ${currentPage === 'analytics' ? 'active' : ''}`}>
-          Analytics
-        </Link>
         <Link to="/admin/logs" className={`nav-item ${currentPage === 'logs' ? 'active' : ''}`}>
           Logs système
         </Link>
-        <Link to="/admin/settings" className={`nav-item ${currentPage === 'settings' ? 'active' : ''}`}>
-          Paramètres
-        </Link>
+        <div className={`nav-group ${inSettingsSection ? 'open' : ''}`}>
+          <span className="nav-group-title">Paramètres</span>
+          <Link to="/admin/settings" className={`nav-sub-item ${currentPage === 'settings' ? 'active' : ''}`}>
+            Accueil (photos)
+          </Link>
+          <Link
+            to="/admin/settings/conseil"
+            className={`nav-sub-item ${currentPage === 'settings-conseil' ? 'active' : ''}`}
+          >
+            Conseil national
+          </Link>
+        </div>
       </nav>
 
       <div className="sidebar-footer">

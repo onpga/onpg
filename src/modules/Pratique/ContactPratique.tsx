@@ -178,7 +178,7 @@ const ContactPratique = () => {
               <span className="cp-card-icon" aria-hidden="true">✉️</span>
               <h2>Email</h2>
               <p className="cp-card-main">
-                <a href="mailto:contact@onpg.ga">contact@onpg.ga</a>
+                <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a>
               </p>
               <p className="cp-card-note">Reponse sous 24h ouvrables</p>
             </article>

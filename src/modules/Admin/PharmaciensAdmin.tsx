@@ -401,8 +401,8 @@ const PharmaciensAdmin = () => {
                 <option value="toutes">Toutes les sections</option>
                 <option value="A">Section A</option>
                 <option value="B">Section B</option>
-                <option value="C">Section C</option>
-                <option value="D">Section D</option>
+                <option value="C">Section C - Fabricants/Grossistes</option>
+                <option value="D">Section D - Fonctionnaires</option>
               </select>
 
               {hasFilters && (
@@ -598,8 +598,8 @@ const PharmaciensAdmin = () => {
                     <option value="">— Non assignée —</option>
                     <option value="A">Section A - Officinaux</option>
                     <option value="B">Section B - Biologistes</option>
-                    <option value="C">Section C - Fonctionnaires</option>
-                    <option value="D">Section D - Fabricants/Grossistes</option>
+                    <option value="C">Section C - Fabricants/Grossistes</option>
+                    <option value="D">Section D - Fonctionnaires</option>
                   </select>
                 </div>
                 <div>

@@ -186,19 +186,6 @@ const Photos = () => {
             }))];
   }, [photos]);
 
-  // Gestion du scroll pour effets parallax
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolled = window.pageYOffset;
-      if (heroRef.current) {
-        heroRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   // Gestionnaire de soumission du formulaire de recherche
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -342,6 +329,8 @@ const Photos = () => {
                       alt={album.name}
                       className="album-cover"
                       loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
                     />
                       <div className="album-overlay">
                         <div className="album-info">

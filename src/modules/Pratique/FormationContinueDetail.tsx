@@ -79,10 +79,11 @@ const FormationContinueDetail = () => {
   };
 
   return (
-    <div className="pratique-page">
-      <section className="pratique-hero" style={{ background: 'linear-gradient(135deg, #2ECC71 0%, #27AE60 100%)' }}>
+    <div className="pratique-page formation-detail-page premium-page">
+      <section className="pratique-hero fc-hero fc-detail-hero">
         <div className="hero-content">
           <div className="hero-text">
+            <span className="hero-eyebrow">Pratique professionnelle</span>
             <p className="formation-detail-breadcrumb">
               <button type="button" onClick={handleBack} className="formation-detail-back">
                 ← Retour au catalogue

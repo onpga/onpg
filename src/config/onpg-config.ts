@@ -47,7 +47,7 @@ export const ONPG_CONFIG = {
 
   // Contact
   contact: {
-    email: 'contact@onpg.ga',
+    email: 'onpg2025@gmail.com',
     phone: '+241 XX XX XX XX',
     address: 'Libreville, Gabon'
   },

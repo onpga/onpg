@@ -112,15 +112,6 @@
   }
 }
 
-.hero-onpg-preload {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-  z-index: -10;
-}
-
 /* Overlay avec glassmorphism */
 .hero-onpg-overlay {
   position: absolute;
@@ -666,6 +657,14 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .hero-onpg-bg-image,
+  .hero-onpg-bg-image.active,
+  .hero-onpg-bg-image.hidden {
+    animation: none;
+    transition-duration: 0.7s;
+    filter: brightness(0.85) contrast(1.05);
+  }
+
   .hero-onpg {
     height: 78vh;
     min-height: 560px;

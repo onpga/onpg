@@ -82,6 +82,47 @@
   box-shadow: 0 4px 12px rgba(0, 166, 81, 0.4);
 }
 
+.nav-group {
+  margin: 0.45rem 0.5rem 0.2rem;
+  padding: 0.55rem 0.6rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-group-title {
+  display: block;
+  padding: 0 0.3rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.nav-sub-item {
+  display: block;
+  padding: 0.5rem 0.65rem;
+  margin: 0.12rem 0;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+  font-size: 0.83rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.nav-sub-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.nav-sub-item.active {
+  background: #ffffff;
+  color: #0a6d41;
+  font-weight: 700;
+}
+
 .sidebar-footer {
   padding: 0.75rem 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);

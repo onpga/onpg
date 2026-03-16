@@ -563,16 +563,144 @@ app.get('/api/public/:collection/:id', async (req, res) => {
   }
 });
 
-// Route publique pour récupérer les paramètres du site (photos d'accueil)
+function getDefaultCouncilMembers(presidentPhoto = '') {
+  const presidentFallback =
+    presidentPhoto ||
+    'https://res.cloudinary.com/dduvinjnu/image/upload/v1772385445/pnbqq9jnq8rm0cpvqnj2.jpg';
+
+  return [
+    {
+      id: 'council-1',
+      fullName: 'Dr Patience Asseko NTOGONO OKE',
+      roleLabel: 'Présidente',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: presidentFallback,
+      section: 'Gouvernance',
+      mission: 'Pilotage stratégique et représentation institutionnelle.',
+      order: 1
+    },
+    {
+      id: 'council-2',
+      fullName: '',
+      roleLabel: 'Secrétaire général',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: '',
+      section: 'Bureau',
+      mission: '',
+      order: 2
+    },
+    {
+      id: 'council-3',
+      fullName: '',
+      roleLabel: 'Vice-président',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: '',
+      section: 'Bureau',
+      mission: '',
+      order: 3
+    },
+    {
+      id: 'council-4',
+      fullName: '',
+      roleLabel: 'Trésorier général',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: '',
+      section: 'Bureau',
+      mission: '',
+      order: 4
+    },
+    {
+      id: 'council-5',
+      fullName: '',
+      roleLabel: 'Secrétaire général adjoint',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: '',
+      section: 'Bureau',
+      mission: '',
+      order: 5
+    },
+    {
+      id: 'council-6',
+      fullName: '',
+      roleLabel: 'Trésorier général adjoint',
+      roleType: 'bureau',
+      pharmacienId: '',
+      photo: '',
+      section: 'Bureau',
+      mission: '',
+      order: 6
+    },
+    ...Array.from({ length: 6 }, (_, index) => ({
+      id: `council-${index + 7}`,
+      fullName: '',
+      roleLabel: `Membre conseiller ${index + 1}`,
+      roleType: 'conseiller',
+      pharmacienId: '',
+      photo: '',
+      section: 'Conseil',
+      mission: '',
+      order: index + 7
+    }))
+  ];
+}
+
+function getDefaultSiteSettings() {
+  return {
+    presidentPhoto: '',
+    heroImage: '',
+    councilMembers: getDefaultCouncilMembers('')
+  };
+}
+
+function sanitizeCouncilMembers(input, presidentPhoto = '') {
+  if (!Array.isArray(input)) {
+    return getDefaultCouncilMembers(presidentPhoto);
+  }
+
+  const sanitized = input
+    .map((member, index) => {
+      const safeRoleType = member?.roleType === 'conseiller' ? 'conseiller' : 'bureau';
+      const fallbackRole = safeRoleType === 'conseiller' ? 'Membre conseiller' : 'Membre du bureau';
+      const rawId = typeof member?.id === 'string' ? member.id.trim() : '';
+
+      return {
+        id: rawId || `council-${index + 1}`,
+        fullName: typeof member?.fullName === 'string' ? member.fullName.trim() : '',
+        roleLabel:
+          typeof member?.roleLabel === 'string' && member.roleLabel.trim()
+            ? member.roleLabel.trim()
+            : fallbackRole,
+        roleType: safeRoleType,
+        pharmacienId: typeof member?.pharmacienId === 'string' ? member.pharmacienId.trim() : '',
+        photo: typeof member?.photo === 'string' ? member.photo.trim() : '',
+        section: typeof member?.section === 'string' ? member.section.trim() : '',
+        mission: typeof member?.mission === 'string' ? member.mission.trim() : '',
+        order: Number.isFinite(Number(member?.order)) ? Number(member.order) : index + 1
+      };
+    })
+    .sort((a, b) => a.order - b.order);
+
+  return sanitized.length > 0 ? sanitized : getDefaultCouncilMembers(presidentPhoto);
+}
+
+// Route publique pour récupérer les paramètres du site (photos d'accueil + conseil national)
 app.get('/api/public/site-settings', async (req, res) => {
   try {
     const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+    const merged = {
+      ...getDefaultSiteSettings(),
+      ...(settings || {})
+    };
+    merged.councilMembers = sanitizeCouncilMembers(merged.councilMembers, merged.presidentPhoto);
+
     res.json({ 
       success: true, 
-      data: settings || { 
-        presidentPhoto: '', 
-        heroImage: '' 
-      } 
+      data: merged
     });
   } catch (error) {
     console.error('Erreur chargement site-settings:', error);
@@ -747,12 +875,15 @@ app.get('/api/admin/:collection', authenticateAdmin, async (req, res) => {
     if (collection === 'site-settings') {
       try {
         const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+        const merged = {
+          ...getDefaultSiteSettings(),
+          ...(settings || {})
+        };
+        merged.councilMembers = sanitizeCouncilMembers(merged.councilMembers, merged.presidentPhoto);
+
         return res.json({
           success: true,
-          data: settings || {
-            presidentPhoto: '',
-            heroImage: ''
-          }
+          data: merged
         });
       } catch (err) {
         console.error('Erreur chargement admin site-settings via route générique:', err);
@@ -2061,12 +2192,15 @@ app.delete('/api/admin/pharmaciens/:id', authenticateAdmin, async (req, res) => 
 app.get('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
   try {
     const settings = await db.collection('site_settings').findOne({ _id: 'main' });
+    const merged = {
+      ...getDefaultSiteSettings(),
+      ...(settings || {})
+    };
+    merged.councilMembers = sanitizeCouncilMembers(merged.councilMembers, merged.presidentPhoto);
+
     res.json({ 
       success: true, 
-      data: settings || { 
-        presidentPhoto: '', 
-        heroImage: '' 
-      } 
+      data: merged
     });
   } catch (error) {
     console.error('Erreur chargement site-settings:', error);
@@ -2077,14 +2211,29 @@ app.get('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
 // PUT mettre à jour les paramètres du site
 app.put('/api/admin/site-settings', authenticateAdmin, async (req, res) => {
   try {
-    const { presidentPhoto, heroImage } = req.body;
-    
+    const { presidentPhoto, heroImage, councilMembers } = req.body || {};
+    const current = await db.collection('site_settings').findOne({ _id: 'main' });
+
+    const nextPresidentPhoto =
+      typeof presidentPhoto === 'string'
+        ? presidentPhoto
+        : (current?.presidentPhoto || '');
+    const nextHeroImage =
+      typeof heroImage === 'string'
+        ? heroImage
+        : (current?.heroImage || '');
+    const nextCouncilMembers = sanitizeCouncilMembers(
+      councilMembers ?? current?.councilMembers,
+      nextPresidentPhoto
+    );
+
     await db.collection('site_settings').updateOne(
       { _id: 'main' },
       { 
         $set: { 
-          presidentPhoto: presidentPhoto || '',
-          heroImage: heroImage || '',
+          presidentPhoto: nextPresidentPhoto,
+          heroImage: nextHeroImage,
+          councilMembers: nextCouncilMembers,
           updatedAt: new Date()
         } 
       },

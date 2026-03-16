@@ -12,6 +12,18 @@ interface HeroSlide {
   buttonLink: string;
 }
 
+const optimizeHeroImageUrl = (url: string): string => {
+  if (!url.includes('res.cloudinary.com') || !url.includes('/image/upload/')) {
+    return url;
+  }
+
+  // Injecter des transformations Cloudinary légères pour réduire le poids des images hero.
+  return url.replace(
+    '/image/upload/',
+    '/image/upload/f_auto,q_auto,w_1920,c_limit,dpr_auto/'
+  );
+};
+
 const HeroONPG = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -77,6 +89,27 @@ const HeroONPG = () => {
       }
     };
   }, [isAutoPlaying, slides.length]);
+
+  // Précharger uniquement la prochaine image pour limiter la charge initiale
+  useEffect(() => {
+    if (slides.length <= 1) return;
+
+    const nextIndex = (currentSlide + 1) % slides.length;
+    const nextImage = slides[nextIndex]?.image;
+    const optimizedNextImage = nextImage ? optimizeHeroImageUrl(nextImage) : '';
+
+    if (!nextImage || !optimizedNextImage || failedImages.has(nextImage)) return;
+
+    const imagePreloader = new Image();
+    imagePreloader.src = optimizedNextImage;
+    imagePreloader.onerror = () => {
+      setFailedImages((prev) => {
+        const updated = new Set(prev);
+        updated.add(nextImage);
+        return updated;
+      });
+    };
+  }, [currentSlide, slides, failedImages]);
 
   // Gestionnaire de slide manuel
   const goToSlide = (index: number) => {
@@ -145,35 +178,16 @@ const HeroONPG = () => {
     >
       {/* Background avec parallax */}
       <div className="hero-onpg-background" ref={heroBackgroundRef}>
-        {/* Précharger toutes les images du carousel avec des img cachées */}
-        {slides.map((slide, index) => (
-          <img
-            key={`preload-${index}`}
-            src={slide.image}
-            alt=""
-            className="hero-onpg-preload"
-            aria-hidden="true"
-            role="presentation"
-            onError={(e) => {
-              // Empêcher les multiples tentatives
-              const target = e.target as HTMLImageElement;
-              if (!target.dataset.errorHandled) {
-                target.dataset.errorHandled = 'true';
-                setFailedImages(prev => new Set(prev).add(slide.image));
-                console.warn('Image hero introuvable:', slide.image);
-              }
-            }}
-          />
-        ))}
         {/* Afficher l'image actuelle */}
         {slides.map((slide, index) => {
           const imageFailed = failedImages.has(slide.image);
+          const optimizedImage = optimizeHeroImageUrl(slide.image);
           return (
             <div
               key={`bg-${index}`}
               className={`hero-onpg-bg-image ${index === currentSlide ? 'active' : 'hidden'}`}
               style={{ 
-                backgroundImage: imageFailed ? 'none' : `url(${slide.image})`,
+                backgroundImage: imageFailed ? 'none' : `url(${optimizedImage})`,
                 backgroundColor: imageFailed ? '#27ae60' : 'transparent'
               }}
             />

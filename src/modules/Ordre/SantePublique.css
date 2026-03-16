@@ -1,25 +1,55 @@
 /* ============================================
-   SANTÉ PUBLIQUE - DESIGN ÉPOUSTOUFLANT PREMIUM
+   SANTÉ PUBLIQUE - DESIGN PREMIUM
+   Inspiré Conseil National — fluide, lisible
    ============================================ */
 
 @import './AProposOrdre.css';
 @import '../Pratique/Pratique.css';
 
+.sante-publique-page {
+  --premium-ink: #0f2e22;
+  --premium-muted: #5c7268;
+  --premium-green: #00a651;
+  --premium-bg: #fafcfb;
+  --premium-surface: #ffffff;
+  --premium-line: rgba(0, 166, 81, 0.12);
+}
+
 /* ============================================
    HERO SECTION - PREMIUM
    ============================================ */
 
-.pratique-hero {
+.sante-publique-page .pratique-hero.sp-hero {
   position: relative;
-  min-height: 50vh;
-  padding: 4rem 2rem 3rem;
+  min-height: 55vh;
+  padding: 4.5rem 2rem 4rem;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #00A651 0%, #008F45 30%, #2ECC71 60%, #00A651 100%) !important;
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background: linear-gradient(160deg, #062a1c 0%, #0a3d28 25%, #0e5a38 60%, #0c4a2f 100%);
   color: white;
+}
+
+.sante-publique-page .pratique-hero.sp-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(0, 166, 81, 0.15) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.sante-publique-page .hero-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 @keyframes gradientShift {
@@ -75,17 +105,15 @@
   gap: 2.5rem;
 }
 
-.pratique-hero .hero-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
+.sante-publique-page .pratique-hero .hero-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
   margin-bottom: 1rem;
-  line-height: 1.1;
-  text-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.3),
-    0 0 40px rgba(255, 255, 255, 0.1);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
 }
 
-.pratique-hero .hero-title-main {
+.sante-publique-page .pratique-hero .hero-title-main {
   display: block;
   background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.95) 50%, #ffffff 100%);
   -webkit-background-clip: text;
@@ -102,19 +130,18 @@
   margin-top: 0.5rem;
 }
 
-.pratique-hero .hero-description {
-  font-size: 1.2rem;
+.sante-publique-page .pratique-hero .hero-description {
+  font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 0;
-  opacity: 0.95;
-  max-width: 800px;
+  opacity: 0.92;
+  max-width: 42ch;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.pratique-hero .hero-highlights {
+.sante-publique-page .pratique-hero .hero-highlights {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -169,323 +196,265 @@
   margin: 0 auto;
 }
 
-.pratique-hero .stat-card {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 1.8rem 1.5rem;
-  border-radius: 20px;
+.sante-publique-page .pratique-hero .stat-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  padding: 1.75rem 1.5rem;
+  border-radius: 18px;
   text-align: center;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
 }
 
-.pratique-hero .stat-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 
-    0 15px 40px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+.sante-publique-page .pratique-hero .stat-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
-.pratique-hero .stat-number {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.9));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.sante-publique-page .pratique-hero .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  display: block;
+  letter-spacing: -0.02em;
 }
 
-.pratique-hero .stat-label {
-  font-size: 0.95rem;
+.sante-publique-page .pratique-hero .stat-label {
+  font-size: 0.7rem;
   opacity: 0.95;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.1em;
   font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sante-publique-page .pratique-hero .highlight-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sante-publique-page .pratique-hero .highlight-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.95;
 }
 
 /* ============================================
    CONTENT SECTION - PREMIUM
    ============================================ */
 
-.section-content {
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f3f4 100%);
+.sante-publique-page .section-content {
+  padding: 3.5rem 2rem 4rem;
+  background: var(--premium-bg);
   position: relative;
-  overflow: hidden;
 }
 
-.section-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 166, 81, 0.2), transparent);
-}
-
-.section-content .section-container {
-  max-width: 1200px;
+.sante-publique-page .section-content .section-container {
+  max-width: min(900px, 100% - 2rem);
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
 }
 
-.sante-publique-card {
-  max-width: 900px;
-  margin: 0 auto;
+.sante-publique-page .sante-publique-card {
   padding: 3rem 2.5rem;
-  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  background: var(--premium-surface);
   border-radius: 24px;
-  box-shadow: 
-    0 15px 50px rgba(0, 0, 0, 0.1),
-    0 5px 20px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border: 2px solid rgba(0, 166, 81, 0.1);
+  box-shadow: 0 4px 32px rgba(15, 46, 34, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--premium-line);
   position: relative;
   overflow: hidden;
 }
 
-.sante-publique-card::before {
+.sante-publique-page .sante-publique-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #00A651, #008F45, #2ECC71, #00A651);
+  background: linear-gradient(90deg, #00a651, #0e5a38, #00a651);
   background-size: 200% 100%;
-  animation: gradientShift 3s ease infinite;
 }
 
-.sante-publique-title {
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-  color: #00A651;
+.sp-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.sp-action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.12), rgba(0, 166, 81, 0.06));
+  border: 1px solid rgba(0, 166, 81, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: var(--premium-green);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.sp-action-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.sante-publique-page .sante-publique-action-card:hover .sp-action-icon {
+  transform: scale(1.08);
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.18), rgba(0, 166, 81, 0.1));
+}
+
+.sante-publique-page .sante-publique-title {
+  font-size: 1.75rem;
+  margin-bottom: 1.25rem;
+  color: var(--premium-ink) !important;
   font-weight: 700;
-  background: linear-gradient(135deg, #00A651, #008F45);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.3;
-}
-
-.sante-publique-description {
-  font-size: 1.15rem;
-  color: #1a252f;
-  margin-bottom: 2rem;
-  line-height: 1.8;
-}
-
-.sante-publique-subtitle {
-  font-size: 1.7rem;
-  margin-top: 2.5rem;
-  margin-bottom: 1.5rem;
-  color: #00A651;
-  font-weight: 600;
-  background: linear-gradient(135deg, #00A651, #008F45);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.sante-publique-action-card {
-  padding: 2rem 1.8rem;
-  margin-bottom: 1.2rem;
-  background: linear-gradient(135deg, #f8f9fa, #ffffff);
-  border-radius: 18px;
-  border-left: 5px solid #00A651;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  letter-spacing: -0.02em;
   position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 4px 15px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  padding-bottom: 0.75rem;
 }
 
-.sante-publique-action-card::before {
+.sante-publique-page .sante-publique-title::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(0, 166, 81, 0.1), transparent);
-  transition: left 0.6s ease;
+  bottom: 0;
+  left: 0;
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--premium-green), transparent);
+  border-radius: 2px;
 }
 
-.sante-publique-action-card:hover {
-  transform: translateX(8px) translateY(-4px);
-  box-shadow: 
-    0 10px 30px rgba(0, 166, 81, 0.15),
-    0 5px 15px rgba(0, 0, 0, 0.1);
-  border-left-color: #008F45;
-  border-left-width: 6px;
-}
-
-.sante-publique-action-card:hover::before {
-  left: 100%;
-}
-
-.sante-publique-action-title {
-  font-size: 1.3rem;
-  margin-bottom: 0.9rem;
-  color: #00A651;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.sante-publique-action-card:hover .sante-publique-action-title {
-  color: #008F45;
-}
-
-.sante-publique-action-description {
-  font-size: 1.05rem;
-  color: #495057;
+.sante-publique-page .sante-publique-description {
+  font-size: 1rem;
+  color: var(--premium-muted) !important;
+  margin-bottom: 2rem;
   line-height: 1.7;
+}
+
+.sante-publique-page .sante-publique-subtitle {
+  font-size: 1.15rem;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+  color: var(--premium-ink) !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sante-publique-page .sante-publique-action-card {
+  padding: 1.75rem 1.5rem;
+  background: var(--premium-surface);
+  border-radius: 18px;
+  border: 1px solid var(--premium-line);
+  border-left: 4px solid var(--premium-green);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 2px 16px rgba(15, 46, 34, 0.05);
+}
+
+.sante-publique-page .sante-publique-action-card:hover {
+  transform: translateY(-4px) translateX(4px);
+  box-shadow: 0 12px 28px rgba(15, 46, 34, 0.1);
+  border-color: rgba(0, 166, 81, 0.25);
+}
+
+.sante-publique-page .sante-publique-action-title {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  color: var(--premium-ink) !important;
+  font-weight: 600;
+}
+
+.sante-publique-page .sante-publique-action-description {
+  font-size: 0.95rem;
+  color: var(--premium-muted) !important;
+  line-height: 1.65;
   margin: 0;
 }
 
-.sante-publique-engagement {
-  padding: 2.5rem;
-  background: linear-gradient(135deg, #f0f9f4, #e8f5e9);
+.sante-publique-page .sante-publique-engagement {
+  padding: 2.25rem;
+  background: linear-gradient(135deg, rgba(0, 166, 81, 0.08), rgba(0, 166, 81, 0.04));
   border-radius: 18px;
-  border: 2px solid #00A651;
+  border: 1px solid var(--premium-line);
   margin-top: 2.5rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    0 8px 25px rgba(0, 166, 81, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.sante-publique-engagement::before {
+.sante-publique-page .sante-publique-engagement::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #00A651, #008F45, #2ECC71, #00A651);
-  background-size: 200% 100%;
-  animation: gradientShift 3s ease infinite;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--premium-green), #0e5a38);
+  border-radius: 4px 0 0 4px;
 }
 
-.sante-publique-engagement-text {
-  font-size: 1.15rem;
-  color: #1a252f;
-  line-height: 1.8;
+.sante-publique-page .sante-publique-engagement-text {
+  font-size: 1rem;
+  color: var(--premium-ink) !important;
+  line-height: 1.7;
   margin: 0;
-  font-weight: 500;
 }
 
 /* ============================================
    NAVIGATION - PREMIUM
    ============================================ */
 
-.sante-publique-nav {
-  padding: 3rem 2rem;
+.sante-publique-page .sante-publique-nav {
+  padding: 2.5rem 2rem;
   text-align: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  position: relative;
+  background: var(--premium-surface);
+  border-top: 1px solid var(--premium-line);
 }
 
-.sante-publique-nav-buttons {
+.sante-publique-page .sante-publique-nav-buttons {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
-  max-width: 800px;
+  max-width: 640px;
   margin: 0 auto;
 }
 
-.sante-publique-nav-btn {
-  padding: 1rem 2rem;
-  border-radius: 12px;
+.sante-publique-page .sante-publique-nav-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
   font-weight: 600;
+  font-size: 0.9rem;
   text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  position: relative;
-  overflow: hidden;
-  font-size: 1rem;
 }
 
-.sante-publique-nav-btn.secondary {
-  background: white;
-  color: #00A651;
-  border: 2px solid #00A651;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+.sante-publique-page .sante-publique-nav-btn.secondary {
+  background: transparent;
+  color: var(--premium-green);
+  border: 2px solid var(--premium-line);
 }
 
-.sante-publique-nav-btn.secondary::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(0, 166, 81, 0.1);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s ease, height 0.6s ease;
+.sante-publique-page .sante-publique-nav-btn.secondary:hover {
+  background: rgba(0, 166, 81, 0.06);
+  border-color: var(--premium-green);
 }
 
-.sante-publique-nav-btn.secondary:hover::before {
-  width: 300px;
-  height: 300px;
-}
-
-.sante-publique-nav-btn.secondary:hover {
-  background: #00A651;
+.sante-publique-page .sante-publique-nav-btn.primary {
+  background: var(--premium-green);
   color: white;
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 
-    0 8px 25px rgba(0, 166, 81, 0.3),
-    0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--premium-green);
 }
 
-.sante-publique-nav-btn.primary {
-  background: linear-gradient(135deg, #00A651, #008F45);
-  color: white;
-  border: 2px solid transparent;
-  box-shadow: 
-    0 6px 20px rgba(0, 166, 81, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.sante-publique-nav-btn.primary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
-}
-
-.sante-publique-nav-btn.primary:hover::before {
-  left: 100%;
-}
-
-.sante-publique-nav-btn.primary:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 
-    0 10px 30px rgba(0, 166, 81, 0.4),
-    0 5px 15px rgba(0, 0, 0, 0.15);
+.sante-publique-page .sante-publique-nav-btn.primary:hover {
+  background: #008f45;
+  border-color: #008f45;
+  transform: translateY(-1px);
 }
 
 /* ============================================
@@ -493,88 +462,50 @@
    ============================================ */
 
 @media (max-width: 1024px) {
-  .pratique-hero {
+  .sante-publique-page .pratique-hero {
     min-height: 45vh;
     padding: 3rem 2rem 2.5rem;
-  }
-  
-  .pratique-hero .hero-stats {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .pratique-hero {
+  .sante-publique-page .pratique-hero {
     min-height: 40vh;
     padding: 2.5rem 1.5rem 2rem;
   }
   
-  .pratique-hero .hero-title {
-    font-size: clamp(2rem, 5vw, 3rem);
-  }
-  
-  .pratique-hero .hero-stats {
+  .sante-publique-page .pratique-hero .hero-stats {
     grid-template-columns: 1fr;
-    gap: 1rem;
-    max-width: 300px;
+    max-width: 280px;
   }
   
-  .section-content {
-    padding: 3rem 1.5rem;
+  .sante-publique-page .section-content {
+    padding: 2.5rem 1.5rem;
   }
   
-  .sante-publique-card {
-    padding: 2.5rem 2rem;
+  .sante-publique-page .sante-publique-card {
+    padding: 2rem 1.5rem;
   }
   
-  .sante-publique-title {
-    font-size: 1.8rem;
-  }
-  
-  .sante-publique-subtitle {
-    font-size: 1.5rem;
-  }
-  
-  .sante-publique-action-card {
-    padding: 1.8rem 1.5rem;
-  }
-  
-  .sante-publique-nav-buttons {
+  .sante-publique-page .sante-publique-nav-buttons {
     flex-direction: column;
     align-items: stretch;
   }
   
-  .sante-publique-nav-btn {
+  .sante-publique-page .sante-publique-nav-btn {
     width: 100%;
     justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
-  .pratique-hero {
+  .sante-publique-page .pratique-hero {
     min-height: 35vh;
     padding: 2rem 1rem 1.5rem;
   }
   
-  .pratique-hero .hero-title {
-    font-size: 1.8rem;
-  }
-  
-  .sante-publique-card {
-    padding: 2rem 1.5rem;
-  }
-  
-  .sante-publique-title {
-    font-size: 1.6rem;
-  }
-  
-  .sante-publique-action-title {
-    font-size: 1.15rem;
-  }
-  
-  .sante-publique-action-description {
-    font-size: 1rem;
+  .sante-publique-page .sante-publique-card {
+    padding: 1.5rem 1.25rem;
   }
 }
 
@@ -583,15 +514,8 @@
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
-  .pratique-hero,
-  .pratique-hero::after,
-  .pratique-hero .stat-card,
-  .sante-publique-action-card {
-    animation: none;
-  }
-  
-  .sante-publique-action-card:hover {
-    transform: translateX(4px);
+  .sante-publique-page .sante-publique-action-card:hover {
+    transform: none;
   }
 }
 

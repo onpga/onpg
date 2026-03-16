@@ -1,10 +1,11 @@
-﻿import './Legal.css';
+import './Legal.css';
 
 const MentionsLegales = () => {
   return (
     <div className="legal-page">
       <section className="legal-hero">
-        <div className="container">
+        <div className="legal-hero-content">
+          <span className="legal-eyebrow">Documents légaux</span>
           <h1>Mentions Légales</h1>
         </div>
       </section>
@@ -17,7 +18,7 @@ const MentionsLegales = () => {
             <p><strong>Forme juridique :</strong> Ordre professionnel régi par la loi gabonaise</p>
             <p><strong>Siège social :</strong> CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
             <p><strong>Téléphone :</strong> <a href="tel:+24176502032">076 50 20 32</a></p>
-            <p><strong>Adresse e-mail :</strong> <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p><strong>Adresse e-mail :</strong> <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
             <p><strong>Site web :</strong> <a href="https://www.onpg.ga" target="_blank" rel="noopener noreferrer">https://www.onpg.ga</a></p>
           </div>
 
@@ -31,11 +32,11 @@ const MentionsLegales = () => {
           <div className="legal-section">
             <h2>Développement et conception</h2>
             <p>
-              Ce site web a été développé et conçu par <strong>Hexahub</strong>, société spécialisée dans le développement
+              Ce site web a été développé et conçu par <strong>HEXAHUB</strong>, société spécialisée dans le développement
               web et les solutions numériques pour les organisations professionnelles.
             </p>
             <p>
-              Pour toute question technique concernant le site, vous pouvez contacter Hexahub à l'adresse :
+              Pour toute question technique concernant le site, vous pouvez contacter HEXAHUB à l'adresse :
               <a href="mailto:contact@hexahub.ga"> contact@hexahub.ga</a>
             </p>
           </div>
@@ -59,7 +60,7 @@ const MentionsLegales = () => {
               quel que soit le moyen ou le procédé utilisé, est interdite sans l'autorisation écrite préalable de l'ONPG.
             </p>
             <p>
-              Le design et le développement technique du site sont la propriété d'<strong>Hexahub</strong>.
+              Le design et le développement technique du site sont la propriété d'<strong>HEXAHUB</strong>.
             </p>
           </div>
 
@@ -87,7 +88,7 @@ const MentionsLegales = () => {
               vos données personnelles.
             </p>
             <p>
-              Pour exercer ce droit, vous pouvez écrire à : <a href="mailto:contact@onpg.ga">contact@onpg.ga</a>
+              Pour exercer ce droit, vous pouvez écrire à : <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a>
             </p>
             <p>
               Pour plus d'informations, consultez notre <a href="/politique-confidentialite">Politique de Confidentialité</a>.
@@ -125,7 +126,7 @@ const MentionsLegales = () => {
             <p><strong>Ordre National des Pharmaciens du Gabon</strong></p>
             <p>CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
             <p>Téléphone : <a href="tel:+24176502032">076 50 20 32</a></p>
-            <p>Email : <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p>Email : <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
           </div>
 
           <div className="legal-update-date">

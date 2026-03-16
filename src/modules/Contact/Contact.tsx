@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './Contact.css';
-import { trackContactSubmit } from '../../utils/analytics';
 import { useAutoSave } from '../../hooks/useAutoSave';
 import { useToast } from '../../components/Toast';
 
@@ -51,9 +50,6 @@ const Contact = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Track conversion Google Analytics
-        trackContactSubmit();
-        
         // Effacer le brouillon après envoi réussi
         clearDraft();
         

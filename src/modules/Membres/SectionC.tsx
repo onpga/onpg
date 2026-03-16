@@ -13,29 +13,29 @@ interface Pharmacien {
 const mockPharmaciens: Pharmacien[] = [
   {
     _id: 'mock1',
-    nom: 'Leroy',
-    prenom: 'Antoine',
+    nom: 'Garcia',
+    prenom: 'Carlos',
     section: 'C',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face',
-    role: 'Pharmacien fonctionnaire',
-    these: 'Thèse sur la pharmacie publique'
+    photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200&h=200&fit=crop&crop=face',
+    role: 'Fabricant',
+    these: 'Thèse sur la fabrication pharmaceutique'
   },
   {
     _id: 'mock2',
-    nom: 'Moreau',
-    prenom: 'Alain',
+    nom: 'Rodriguez',
+    prenom: 'Maria',
     section: 'C',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face',
-    role: 'Pharmacien fonctionnaire',
-    these: 'Thèse sur la santé publique'
+    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face',
+    role: 'Grossiste',
+    these: 'Thèse sur la distribution pharmaceutique'
   }
 ];
 
 const SectionC = () => (
   <SectionTemplate
     section="C"
-    subtitle="Fonctionnaires"
-    description="Pharmaciens de la fonction publique impliqués dans la régulation et la santé publique."
+    subtitle="Fabricants & Grossistes"
+    description="Professionnels de la fabrication, de la distribution et de la logistique pharmaceutique."
     accentClass="is-c"
     mockPharmaciens={mockPharmaciens}
   />

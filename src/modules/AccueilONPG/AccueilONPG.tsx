@@ -808,7 +808,7 @@ const AccueilONPG = () => {
                 <div className="contact-decoration-professional"></div>
               </a>
 
-              <a href="mailto:contact@onpg.ga" className="contact-cta-item-professional contact-link">
+              <a href="mailto:onpg2025@gmail.com" className="contact-cta-item-professional contact-link">
                 <div className="contact-icon-frame-professional">
                   <div className="contact-cta-icon-professional" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" className="contact-cta-icon-svg">
@@ -820,7 +820,7 @@ const AccueilONPG = () => {
                 </div>
                 <div className="contact-content-professional">
                   <h3 className="contact-item-title-professional">Par email</h3>
-                  <p className="contact-info-professional">contact@onpg.ga</p>
+                  <p className="contact-info-professional">onpg2025@gmail.com</p>
                   <small className="contact-note-professional">Réponse sous 24h</small>
                 </div>
                 <div className="contact-decoration-professional"></div>
@@ -884,7 +884,7 @@ Distingués invités,
 
 En ce jour solennel, c'est avec une immense gratitude et une profonde humilité que nous acceptons la charge de présider l'Ordre National des Pharmaciens du Gabon.
 
-Nous remercions nos pairs pour la confiance qu'ils nous ont témoignée et rendons hommage au bureau sortant pour le travail accompli. C'est en tenant compte de vos échecs et vos succès que nous allons mieux nous orienter et bâtir ensemble une nouvelle dynamique, tournée vers l'avenir.
+Nous remercions nos pairs pour la confiance qu'ils nous ont témoignée et rendons hommage au bureau sortant pour le travail accompli. C'est en tenant compte de nos échecs et nos succès que nous allons mieux nous orienter et bâtir ensemble une nouvelle dynamique, tournée vers l'avenir.
 
 Notre mandat se reposera sur 4 priorités :
 

@@ -518,6 +518,9 @@ const RessourcesActualites = () => {
                         src={normalizeImageUrl(article.image)}
                         fallbackType="article"
                         alt={article.title}
+                        loading="lazy"
+                        decoding="async"
+                        fetchPriority="low"
                       />
                       {article.featured && (
                         <div className="featured-badge-modern">À la une</div>

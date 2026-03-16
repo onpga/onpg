@@ -1,13 +1,39 @@
 import { Link } from 'react-router-dom';
 import './SantePublique.css';
 
+const IconShield = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+const IconCheck = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M20 6L9 17l-5-5" />
+  </svg>
+);
+const IconEye = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" />
+  </svg>
+);
+const IconBook = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /><path d="M8 7h8" /><path d="M8 11h8" />
+  </svg>
+);
+const IconScale = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" /><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" /><path d="M7 21h10" /><path d="M12 3v18" /><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+  </svg>
+);
+
 const SantePublique = () => {
   return (
-    <div className="pratique-page">
-      {/* Hero Section - Style similaire à Déontologie */}
-      <section className="pratique-hero">
+    <div className="pratique-page premium-page sante-publique-page">
+      <section className="pratique-hero sp-hero">
         <div className="hero-content">
           <div className="hero-text">
+            <span className="hero-eyebrow">Ordre National des Pharmaciens</span>
             <h1 className="hero-title">
               <span className="hero-title-main">Protection de la</span>
               <span className="hero-title-subtitle">Santé Publique</span>
@@ -18,9 +44,9 @@ const SantePublique = () => {
               et la régulation de la profession pharmaceutique.
             </p>
             <div className="hero-highlights">
-              <span className="highlight-item">🏥 Qualité des médicaments</span>
-              <span className="highlight-item">🛡️ Sécurité sanitaire</span>
-              <span className="highlight-item">📋 Réglementation</span>
+              <span className="highlight-item"><IconShield /> Qualité des médicaments</span>
+              <span className="highlight-item"><IconEye /> Sécurité sanitaire</span>
+              <span className="highlight-item"><IconScale /> Réglementation</span>
             </div>
           </div>
 
@@ -63,11 +89,10 @@ const SantePublique = () => {
             <h3 className="sante-publique-subtitle">
               Nos Actions
             </h3>
-            <div>
+            <div className="sp-actions-grid">
               <div className="sante-publique-action-card">
-                <h4 className="sante-publique-action-title">
-                  Contrôle de la qualité des médicaments
-                </h4>
+                <div className="sp-action-icon"><IconCheck /></div>
+                <h4 className="sante-publique-action-title">Contrôle de la qualité des médicaments</h4>
                 <p className="sante-publique-action-description">
                   Veiller à ce que tous les médicaments commercialisés respectent les normes 
                   de qualité et de sécurité établies.
@@ -75,9 +100,8 @@ const SantePublique = () => {
               </div>
 
               <div className="sante-publique-action-card">
-                <h4 className="sante-publique-action-title">
-                  Lutte contre les médicaments falsifiés
-                </h4>
+                <div className="sp-action-icon"><IconShield /></div>
+                <h4 className="sante-publique-action-title">Lutte contre les médicaments falsifiés</h4>
                 <p className="sante-publique-action-description">
                   Mettre en place des mécanismes de détection et de prévention contre 
                   les médicaments contrefaits ou falsifiés.
@@ -85,9 +109,8 @@ const SantePublique = () => {
               </div>
 
               <div className="sante-publique-action-card">
-                <h4 className="sante-publique-action-title">
-                  Surveillance pharmaceutique
-                </h4>
+                <div className="sp-action-icon"><IconEye /></div>
+                <h4 className="sante-publique-action-title">Surveillance pharmaceutique</h4>
                 <p className="sante-publique-action-description">
                   Assurer une veille active sur les effets indésirables et les problèmes 
                   de sécurité liés aux médicaments.
@@ -95,9 +118,8 @@ const SantePublique = () => {
               </div>
 
               <div className="sante-publique-action-card">
-                <h4 className="sante-publique-action-title">
-                  Formation et sensibilisation
-                </h4>
+                <div className="sp-action-icon"><IconBook /></div>
+                <h4 className="sante-publique-action-title">Formation et sensibilisation</h4>
                 <p className="sante-publique-action-description">
                   Informer les professionnels de santé et le public sur les bonnes pratiques 
                   d'utilisation des médicaments.
@@ -105,9 +127,8 @@ const SantePublique = () => {
               </div>
 
               <div className="sante-publique-action-card">
-                <h4 className="sante-publique-action-title">
-                  Réglementation
-                </h4>
+                <div className="sp-action-icon"><IconScale /></div>
+                <h4 className="sante-publique-action-title">Réglementation</h4>
                 <p className="sante-publique-action-description">
                   Participer à l'élaboration et à l'application des textes réglementaires 
                   relatifs à la pharmacie et aux médicaments.

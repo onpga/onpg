@@ -410,3 +410,97 @@ p {
   }
 }
 
+/* ============================================
+   RESSOURCES - PREMIUM COMPACT OVERRIDES
+   Harmonise les pages non-unifiees et garde des cartes raisonnables
+   ============================================ */
+
+:is(.decrets-page, .decisions-page, .lois-page, .commissions-page, .theses-page, .trouver-pharmacie-page, .videos-page, .photos-page, .actualites-page, .communiques-page, .articles-page) {
+  --res-premium-ink: #0f2e22;
+  --res-premium-muted: #5c7268;
+  --res-premium-green: #00a651;
+  --res-premium-line: rgba(0, 166, 81, 0.12);
+}
+
+:is(.decrets-hero, .decisions-hero, .lois-hero, .comm-hero, .theses-hero) {
+  background: linear-gradient(160deg, #062a1c 0%, #0a3d28 25%, #0e5a38 60%, #0c4a2f 100%) !important;
+  padding: 4.2rem 1.5rem 3.2rem !important;
+}
+
+:is(.decrets-hero-badge, .decisions-hero-badge, .lois-hero-badge, .comm-hero-badge, .theses-hero-badge) {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  letter-spacing: 0.12em !important;
+  font-size: 0.68rem !important;
+  text-transform: uppercase !important;
+  border-radius: 999px !important;
+  padding: 0.42rem 0.92rem !important;
+}
+
+:is(.decrets-hero-title, .decisions-hero-title, .lois-hero-title, .comm-hero-title, .theses-hero-title) {
+  letter-spacing: -0.01em !important;
+  line-height: 1.12 !important;
+}
+
+:is(.decrets-list, .decisions-list, .lois-list, .comm-list, .theses-list) {
+  gap: 0.95rem !important;
+}
+
+:is(.decrets-card, .decisions-card, .lois-card, .comm-card, .theses-card) {
+  border-radius: 14px !important;
+  border: 1px solid var(--res-premium-line) !important;
+  box-shadow: 0 4px 18px rgba(15, 46, 34, 0.07) !important;
+  padding: 1rem 1.1rem !important;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:is(.decrets-card-title, .decisions-card-title, .lois-card-title, .comm-card-name, .theses-card-title) {
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+}
+
+:is(.decrets-card-summary, .decisions-card-summary, .lois-card-summary, .comm-card-desc, .theses-card-abstract) {
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+  margin-bottom: 0.6rem !important;
+}
+
+:is(.article-card-modern, .article-card, .communique-card, .ru-card, .video-card, .tp-card, .album-card) {
+  border-radius: 14px !important;
+  box-shadow: 0 4px 18px rgba(15, 46, 34, 0.07) !important;
+}
+
+:is(.article-card-content-modern, .article-card-body-modern, .video-card-content, .tp-card-body, .ru-card-inner) {
+  padding: 1rem !important;
+}
+
+:is(.article-card-title-modern, .video-card-title, .tp-card-body h3, .ru-card-title) {
+  font-size: 1.02rem !important;
+  line-height: 1.35 !important;
+}
+
+:is(.article-card-excerpt-modern, .video-card-description, .tp-card-address, .ru-card-summary) {
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+}
+
+:is(.articles-grid-modern, .actualites-grid-modern, .videos-grid, .tp-cards-grid, .ru-grid, .albums-grid) {
+  gap: 0.95rem !important;
+}
+
+:is(.articles-page .stat-card, .actualites-page .stat-card, .videos-kpi-card, .tp-kpi-card) {
+  padding: 0.95rem 0.9rem !important;
+}
+
+@media (max-width: 900px) {
+  :is(.articles-grid-modern, .actualites-grid-modern, .videos-grid, .tp-cards-grid, .ru-grid, .albums-grid) {
+    grid-template-columns: 1fr !important;
+  }
+
+  :is(.decrets-card, .decisions-card, .lois-card, .comm-card, .theses-card) {
+    padding: 0.9rem !important;
+  }
+}
+

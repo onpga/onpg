@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Simulateur.css';
-import { trackSimulationComplete } from '../../utils/analytics';
 import FormProgress from '../../components/FormProgress';
 import { useToast } from '../../components/Toast';
 
@@ -367,9 +366,7 @@ const Simulateur = () => {
     const recommendation = calculerRecommandation();
     setResultat(recommendation);
     setShowResults(true);
-    
-    trackSimulationComplete(recommendation.nom);
-    
+
     try {
       const response = await fetch('/api/simulations/save', {
         method: 'POST',

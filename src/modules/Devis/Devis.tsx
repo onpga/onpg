@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import './Devis.css';
-import { trackDevisSubmit } from '../../utils/analytics';
 import { useAutoSave } from '../../hooks/useAutoSave';
 import FormProgress from '../../components/FormProgress';
 import { useToast } from '../../components/Toast';
@@ -184,7 +183,6 @@ const Devis = () => {
       const data = await response.json();
 
       if (response.ok) {
-        trackDevisSubmit(formData.poles[0]);
         clearDraft();
         
         const successMessage = 'Votre demande de devis a été envoyée avec succès ! Nous vous contacterons sous 48h.';

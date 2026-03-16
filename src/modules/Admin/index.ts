@@ -1,6 +1,5 @@
 export { default as Login } from './Login';
 export { default as Dashboard } from './Dashboard';
-export { default as Analytics } from './Analytics';
 export { default as Simulations } from './Simulations';
 export { default as Articles } from './Articles';
 export { default as ArticleForm } from './ArticleForm';

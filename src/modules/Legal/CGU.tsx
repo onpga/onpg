@@ -1,10 +1,11 @@
-﻿import './Legal.css';
+import './Legal.css';
 
 const CGU = () => {
   return (
     <div className="legal-page">
       <section className="legal-hero">
-        <div className="container">
+        <div className="legal-hero-content">
+          <span className="legal-eyebrow">Documents légaux</span>
           <h1>Conditions Générales d'Utilisation</h1>
           <p className="legal-subtitle">du site de l'Ordre National des Pharmaciens du Gabon</p>
         </div>
@@ -18,10 +19,10 @@ const CGU = () => {
               Le site <a href="https://www.onpg.ga" target="_blank" rel="noopener noreferrer">https://www.onpg.ga</a> est
               édité par l'<strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong>, dont le siège social est situé à
               CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon, et joignable
-              par e-mail à <a href="mailto:contact@onpg.ga">contact@onpg.ga</a> ou par téléphone au <a href="tel:+24176502032">076 50 20 32</a>.
+              par e-mail à <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a> ou par téléphone au <a href="tel:+24176502032">076 50 20 32</a>.
             </p>
             <p>
-              Ce site web a été développé et est maintenu par <strong>Hexahub</strong>, société spécialisée dans le développement web.
+              Ce site web a été développé et est maintenu par <strong>HEXAHUB</strong>, société spécialisée dans le développement web.
             </p>
             <p>
               L'accès au site et son utilisation sont soumis aux présentes conditions générales d'utilisation. En accédant au Site,
@@ -49,7 +50,7 @@ const CGU = () => {
               problèmes techniques ou à des cas de force majeure (panne, cyberattaque, catastrophe naturelle, etc.).
             </p>
             <p>
-              L'ONPG et <strong>Hexahub</strong> s'efforcent d'assurer une disponibilité maximale du site, mais ne peuvent garantir
+              L'ONPG et <strong>HEXAHUB</strong> s'efforcent d'assurer une disponibilité maximale du site, mais ne peuvent garantir
               un accès ininterrompu.
             </p>
           </div>
@@ -138,7 +139,7 @@ const CGU = () => {
               autorisation d'utilisation.
             </p>
             <p>
-              Le design et le développement technique du site sont la propriété d'<strong>Hexahub</strong>.
+              Le design et le développement technique du site sont la propriété d'<strong>HEXAHUB</strong>.
             </p>
             <p>Toute reproduction ou utilisation sans autorisation préalable de l'ONPG est strictement interdite.</p>
           </div>
@@ -180,12 +181,12 @@ const CGU = () => {
             <p><strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong></p>
             <p>CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
             <p>Téléphone : <a href="tel:+24176502032">076 50 20 32</a></p>
-            <p>Email : <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p>Email : <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
           </div>
 
           <div className="legal-update-date">
             <p><em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
-            <p><em>Site développé par <strong>Hexahub</strong></em></p>
+            <p><em>Site développé par <strong>HEXAHUB</strong></em></p>
           </div>
         </div>
       </section>

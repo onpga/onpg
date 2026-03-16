@@ -1,5 +1,19 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import './OrganigrammePremium.css';
+
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? 'https://backendonpg-production.up.railway.app/api'
+    : 'http://localhost:3001/api');
+
+interface CouncilMember {
+  fullName: string;
+  roleLabel: string;
+  roleType: string;
+  order: number;
+}
 
 const IconCrown = () => (
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -34,18 +48,69 @@ const IconUser = () => (
 const sections = [
   { code: 'A', name: 'Officinaux', detail: 'Pharmacies d’officine' },
   { code: 'B', name: 'Biologistes', detail: 'Biologie médicale' },
-  { code: 'C', name: 'Fonctionnaires', detail: 'Secteur public' },
-  { code: 'D', name: 'Fabricants / Grossistes', detail: 'Industrie & distribution' }
+  { code: 'C', name: 'Fabricants / Grossistes', detail: 'Industrie & distribution' },
+  { code: 'D', name: 'Fonctionnaires', detail: 'Secteur public' }
 ];
 
-const operationalRoles = [
-  { title: 'Secrétariat', value: 'Poste en cours de mise à jour' },
-  { title: 'Conseiller 1', value: 'Poste en cours de mise à jour' },
-  { title: 'Conseiller 2', value: 'Poste en cours de mise à jour' },
-  { title: 'Conseiller 3', value: 'Poste en cours de mise à jour' }
-];
+const getPole = (roleLabel: string): string => {
+  const r = roleLabel.toLowerCase();
+  if (r.includes('secrétaire') || r.includes('secretaire')) return r.includes('adjoint') ? 'Secrétariat' : 'Secrétariat';
+  if (r.includes('trésorier') || r.includes('tresorier')) return 'Trésorerie';
+  if (r.includes('vice-président') || r.includes('vice-president')) return 'Bureau';
+  if (r.includes('présidente') || r.includes('président')) return 'Présidence';
+  return 'Conseillers';
+};
 
 const Organigramme = () => {
+  const [councilMembers, setCouncilMembers] = useState<CouncilMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${API_URL}/public/site-settings`);
+        const data = await res.json();
+        if (data?.success && Array.isArray(data?.data?.councilMembers)) {
+          setCouncilMembers(
+            data.data.councilMembers
+              .filter((m: any) => m?.roleLabel)
+              .map((m: any) => ({
+                fullName: m.fullName || '',
+                roleLabel: m.roleLabel || '',
+                roleType: m.roleType || 'bureau',
+                order: m.order ?? 0
+              }))
+              .sort((a: CouncilMember, b: CouncilMember) => a.order - b.order)
+          );
+        }
+      } catch {
+        // fallback vide
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  const byPole = councilMembers.reduce<Record<string, { role: string; name: string }[]>>((acc, m) => {
+    const pole = getPole(m.roleLabel);
+    if (!acc[pole]) acc[pole] = [];
+    acc[pole].push({ role: m.roleLabel, name: m.fullName || 'Poste à pourvoir' });
+    return acc;
+  }, {});
+
+  const president = councilMembers.find(
+    (m) =>
+      m.roleLabel.toLowerCase().includes('présidente') ||
+      m.roleLabel.toLowerCase().includes('président')
+  );
+
+  const poles = [
+    { key: 'Secrétariat', icon: 'Secrétariat' },
+    { key: 'Trésorerie', icon: 'Trésorerie' },
+    { key: 'Bureau', icon: 'Bureau' },
+    { key: 'Conseillers', icon: 'Conseillers' }
+  ].filter((p) => (byPole[p.key]?.length ?? 0) > 0);
   return (
     <div className="ordre-page organigramme-premium-page">
       <section className="org-hero" aria-labelledby="org-title">
@@ -59,15 +124,33 @@ const Organigramme = () => {
           </p>
 
           <div className="org-kpi-grid">
-            <article className="org-kpi-card">
+            <article
+              className="org-kpi-card org-kpi-clickable"
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById('hierarchie')?.scrollIntoView({ behavior: 'smooth' })}
+              onKeyDown={(e) => e.key === 'Enter' && document.getElementById('hierarchie')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               <strong>1</strong>
               <span>Présidence</span>
             </article>
-            <article className="org-kpi-card">
-              <strong>25</strong>
+            <article
+              className="org-kpi-card org-kpi-clickable"
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById('conseil-national')?.scrollIntoView({ behavior: 'smooth' })}
+              onKeyDown={(e) => e.key === 'Enter' && document.getElementById('conseil-national')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              <strong>{loading ? '…' : Math.max(councilMembers.length, 1)}</strong>
               <span>Membres du Conseil National</span>
             </article>
-            <article className="org-kpi-card">
+            <article
+              className="org-kpi-card org-kpi-clickable"
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById('sections')?.scrollIntoView({ behavior: 'smooth' })}
+              onKeyDown={(e) => e.key === 'Enter' && document.getElementById('sections')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               <strong>4</strong>
               <span>Sections professionnelles</span>
             </article>
@@ -75,7 +158,7 @@ const Organigramme = () => {
         </div>
       </section>
 
-      <section className="org-section">
+      <section id="hierarchie" className="org-section">
         <div className="org-container">
           <header className="org-section-header">
             <h2>Hiérarchie institutionnelle</h2>
@@ -90,17 +173,29 @@ const Organigramme = () => {
 
             <div className="org-tree-connector" aria-hidden="true" />
 
-            <article className="org-level-card presidency">
+            <article
+              className="org-level-card presidency org-level-clickable"
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById('hierarchie')?.scrollIntoView({ behavior: 'smooth' })}
+              onKeyDown={(e) => e.key === 'Enter' && document.getElementById('hierarchie')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               <div className="org-level-title">
                 <IconCrown />
                 <h3>Présidence</h3>
               </div>
-              <p>Dr Patience Asseko NTOGONO OKE</p>
+              <p>{president?.fullName || 'Dr Patience Asseko NTOGONO OKE'}</p>
             </article>
 
             <div className="org-tree-connector" aria-hidden="true" />
 
-            <article className="org-level-card board">
+            <article
+              className="org-level-card board org-level-clickable"
+              role="button"
+              tabIndex={0}
+              onClick={() => document.getElementById('conseil-national')?.scrollIntoView({ behavior: 'smooth' })}
+              onKeyDown={(e) => e.key === 'Enter' && document.getElementById('conseil-national')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               <div className="org-level-title">
                 <IconBoard />
                 <h3>Conseil National</h3>
@@ -111,7 +206,7 @@ const Organigramme = () => {
         </div>
       </section>
 
-      <section className="org-section org-section-alt">
+      <section id="sections" className="org-section org-section-alt">
         <div className="org-container">
           <header className="org-section-header">
             <h2>Sections professionnelles</h2>
@@ -135,23 +230,41 @@ const Organigramme = () => {
         </div>
       </section>
 
-      <section className="org-section">
+      <section id="conseil-national" className="org-section">
         <div className="org-container">
           <header className="org-section-header">
-            <h2>Gouvernance opérationnelle</h2>
-            <p>Rôles d’appui à la coordination du Conseil National.</p>
+            <h2>Composition du Conseil National</h2>
+            <p>Vue synthétique par pôle. Voir la composition détaillée sur la page Conseil national.</p>
           </header>
 
-          <div className="org-roles-grid">
-            {operationalRoles.map((role) => (
-              <article key={role.title} className="org-role-card">
-                <div className="org-role-title">
-                  <IconUser />
-                  <h3>{role.title}</h3>
-                </div>
-                <p>{role.value}</p>
-              </article>
-            ))}
+          {loading ? (
+            <div className="org-roles-loading">Chargement…</div>
+          ) : (
+            <div className="org-poles-grid">
+              {poles.map(({ key }) => {
+                const items = byPole[key] || [];
+                if (items.length === 0) return null;
+                return (
+                  <article key={key} className="org-pole-card">
+                    <h3 className="org-pole-title">{key}</h3>
+                    <ul className="org-pole-list">
+                      {items.map((item, i) => (
+                        <li key={i}>
+                          <span className="org-pole-role">{item.role}</span>
+                          <span className="org-pole-name">{item.name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="org-cta-inline">
+            <Link to="/ordre/conseil-national" className="org-link-conseil">
+              Voir la composition complète →
+            </Link>
           </div>
 
           <div className="org-trust-strip">

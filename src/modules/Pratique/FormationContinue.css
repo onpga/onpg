@@ -1,28 +1,64 @@
 /* ============================================
-   FORMATION CONTINUE PAGE - DESIGN ÉLÉGANT & ÉPOUSTOUFLANT
-   CSS 100% ISOLÉ - Préfixe .formations-page
+   FORMATION CONTINUE - DESIGN PREMIUM
+   Inspiré Conseil National — fluide, lisible
    ============================================ */
 
 .formations-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  background: #fafcfb;
   overflow-x: hidden;
+  --premium-ink: #0f2e22;
+  --premium-muted: #5c7268;
+  --premium-green: #00a651;
+  --premium-bg: #fafcfb;
+  --premium-surface: #ffffff;
+  --premium-line: rgba(0, 166, 81, 0.12);
 }
 
-/* Hero Section */
-.formations-page .pratique-hero {
+/* Hero Section - Premium épuré */
+.formations-page .pratique-hero.fc-hero {
   position: relative;
-  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
-  padding: 6rem 2rem 4rem;
+  min-height: 55vh;
+  background: linear-gradient(160deg, #062a1c 0%, #0a3d28 25%, #0e5a38 60%, #0c4a2f 100%);
+  padding: 4.5rem 2rem 4rem;
   color: #ffffff;
   overflow: hidden;
+}
+
+.formations-page .pratique-hero.fc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(0, 166, 81, 0.15) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+.formations-page .hero-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .formations-page .hero-content {
   max-width: 1400px;
   margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2.5rem;
 }
 
 .formations-page .hero-text {
@@ -31,15 +67,17 @@
 }
 
 .formations-page .hero-title {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
   line-height: 1.1;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .formations-page .hero-title-main {
   display: block;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.9) 100%);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.95) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -48,70 +86,93 @@
 .formations-page .hero-title-subtitle {
   display: block;
   font-size: 0.6em;
-  font-weight: 400;
-  opacity: 0.9;
+  font-weight: 600;
+  opacity: 0.92;
   margin-top: 0.5rem;
+  letter-spacing: 0.02em;
 }
 
 .formations-page .hero-description {
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  line-height: 1.7;
-  max-width: 700px;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 42ch;
   margin: 0 auto 1.5rem;
-  opacity: 0.95;
+  opacity: 0.92;
 }
 
 .formations-page .hero-highlights {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .formations-page .highlight-item {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 100px;
+  padding: 1rem 1.8rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.formations-page .highlight-item svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.formations-page .highlight-item:hover {
+  background: rgba(255,255,255,0.28);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .formations-page .hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 .formations-page .stat-card {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 16px;
-  padding: 1.5rem 2rem;
+  border-radius: 18px;
+  padding: 1.75rem 1.5rem;
   text-align: center;
-  min-width: 120px;
-  transition: transform 0.3s ease;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
 }
 
 .formations-page .stat-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255,255,255,0.22);
+  transform: translateY(-5px);
+  background: rgba(255,255,255,0.2);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15);
 }
 
 .formations-page .stat-number {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
   display: block;
 }
 
 .formations-page .stat-label {
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   opacity: 0.9;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 /* Background Pattern */
@@ -151,12 +212,12 @@
 
 /* Toolbar */
 .formations-page .formations-toolbar {
-  background: #ffffff;
+  background: var(--premium-surface);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2.5rem;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 24px rgba(15,46,34,0.06);
+  border: 1px solid var(--premium-line);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -165,15 +226,16 @@
 }
 
 .formations-page .formations-toolbar-left h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--premium-ink);
   margin: 0 0 0.5rem;
+  letter-spacing: -0.01em;
 }
 
 .formations-page .formations-toolbar-left p {
   font-size: 0.95rem;
-  color: #64748b;
+  color: var(--premium-muted);
   margin: 0;
   max-width: 500px;
   line-height: 1.6;
@@ -215,8 +277,8 @@
 
 .formations-page .formations-filter select:focus {
   outline: none;
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+  border-color: var(--premium-green);
+  box-shadow: 0 0 0 3px rgba(0,166,81,0.1);
 }
 
 .formations-page .featured-toggle {
@@ -235,10 +297,10 @@
 .formations-page .featured-toggle:hover { background: #e2e8f0; }
 
 .formations-page .featured-toggle.active {
-  background: linear-gradient(135deg, #059669, #10B981);
+  background: linear-gradient(135deg, #00a651, #00c55e);
   color: #fff;
-  border-color: #059669;
-  box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+  border-color: var(--premium-green);
+  box-shadow: 0 2px 8px rgba(0,166,81,0.25);
 }
 
 /* Empty filter state */
@@ -287,7 +349,20 @@
   border: 1px solid #e2e8f0;
 }
 
-.formations-page .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
+.formations-page .empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formations-page .empty-icon svg {
+  width: 4rem;
+  height: 4rem;
+  color: var(--premium-green);
+}
 
 .formations-page .formations-empty h2 {
   font-size: 1.75rem;
@@ -313,31 +388,31 @@
 
 /* Carte Formation */
 .formations-page .formation-card {
-  background: #ffffff;
-  border-radius: 16px;
+  background: var(--premium-surface);
+  border-radius: 18px;
   overflow: hidden;
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+  border: 1px solid var(--premium-line);
+  box-shadow: 0 4px 20px rgba(15,46,34,0.06);
   display: flex;
   flex-direction: column;
   position: relative;
 }
 
 .formations-page .formation-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.12);
-  border-color: #059669;
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(15,46,34,0.12);
+  border-color: var(--premium-green);
 }
 
 .formations-page .formation-card.featured {
-  border-color: #059669;
-  box-shadow: 0 4px 16px rgba(5,150,105,0.15);
+  border-color: var(--premium-green);
+  box-shadow: 0 4px 20px rgba(0,166,81,0.12);
 }
 
 .formations-page .formation-card-accent {
   height: 4px;
-  background: linear-gradient(90deg, #059669, #10B981);
+  background: linear-gradient(90deg, #00a651, #00c55e);
 }
 
 .formations-page .formation-badge {
@@ -346,14 +421,20 @@
   right: 1.25rem;
   background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: #000;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 0.65rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
   font-weight: 700;
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.35rem;
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+}
+
+.formations-page .formation-badge svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .formations-page .formation-card-body {
@@ -411,19 +492,29 @@
 }
 
 .formations-page .formation-info-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: #1e293b;
 }
 
+.formations-page .formation-info-value svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--premium-green);
+}
+
 .formations-page .formation-price {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #059669;
-  background: rgba(5,150,105,0.08);
+  color: var(--premium-green);
+  background: rgba(0,166,81,0.08);
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
-  border: 1px solid rgba(5,150,105,0.15);
+  border: 1px solid rgba(0,166,81,0.15);
   display: inline-block;
 }
 
@@ -431,12 +522,12 @@
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
-  background: rgba(5,150,105,0.08);
-  color: #059669;
+  background: rgba(0,166,81,0.08);
+  color: var(--premium-green);
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
-  border: 1px solid rgba(5,150,105,0.15);
+  border: 1px solid rgba(0,166,81,0.15);
 }
 
 /* Footer de la carte */
@@ -448,46 +539,59 @@
 .formations-page .formation-detail-link {
   display: block;
   width: 100%;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #059669, #10B981);
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, #00a651, #00c55e);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   text-align: center;
 }
 
 .formations-page .formation-detail-link:hover {
-  box-shadow: 0 4px 12px rgba(5,150,105,0.3);
-  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,166,81,0.35);
+  transform: translateY(-2px);
 }
 
 /* Modal */
 .formations-page .formation-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
+  animation: fcModalFadeIn 0.3s ease;
+}
+
+@keyframes fcModalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .formations-page .formation-modal {
-  background: #ffffff;
-  border-radius: 20px;
+  background: var(--premium-surface);
+  border-radius: 24px;
   padding: 2.5rem;
   max-width: 680px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  box-shadow: 0 32px 80px rgba(15,46,34,0.18);
+  border: 1px solid var(--premium-line);
+  animation: fcModalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fcModalSlideIn {
+  from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .formations-page .formation-modal-close {
@@ -522,18 +626,26 @@
 
 .formations-page .formation-detail-chip {
   padding: 0.3rem 0.75rem;
-  background: rgba(5,150,105,0.1);
-  color: #059669;
+  background: rgba(0,166,81,0.1);
+  color: var(--premium-green);
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
-  border: 1px solid rgba(5,150,105,0.15);
+  border: 1px solid rgba(0,166,81,0.15);
 }
 
 .formations-page .formation-detail-chip.featured {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   background: rgba(251,191,36,0.15);
   color: #b45309;
   border-color: rgba(251,191,36,0.3);
+}
+
+.formations-page .formation-detail-chip.featured svg {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .formations-page .formation-modal-title {
@@ -568,8 +680,8 @@
 }
 
 .formations-page .formation-detail-meta-item.highlight {
-  background: rgba(5,150,105,0.06);
-  border-color: rgba(5,150,105,0.2);
+  background: rgba(0,166,81,0.06);
+  border-color: rgba(0,166,81,0.2);
 }
 
 .formations-page .formation-detail-meta-item .label {
@@ -588,7 +700,7 @@
 
 .formations-page .formation-detail-meta-item.highlight .value {
   font-size: 1.15rem;
-  color: #059669;
+  color: var(--premium-green);
 }
 
 .formations-page .formation-detail-body {
@@ -606,6 +718,40 @@
   white-space: pre-line;
 }
 
+.formation-detail-page .section-container {
+  max-width: 980px;
+}
+
+.formation-detail-page .formation-detail {
+  background: var(--premium-surface);
+  border: 1px solid var(--premium-line);
+  border-radius: 22px;
+  box-shadow: 0 6px 28px rgba(15, 46, 34, 0.08);
+  padding: 2rem;
+}
+
+.formation-detail-page .formation-detail-breadcrumb {
+  margin-bottom: 0.8rem;
+}
+
+.formation-detail-page .formation-detail-back {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.formation-detail-page .formation-detail-back:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
   .formations-page .formations-grid {
@@ -615,12 +761,12 @@
 }
 
 @media (max-width: 768px) {
-  .formations-page .pratique-hero { padding: 4rem 1.5rem 3rem; }
+  .formations-page .pratique-hero.fc-hero { padding: 3rem 1.5rem 2.5rem; min-height: 50vh; }
   .formations-page .section-content { padding: 2rem 1rem; }
   .formations-page .formations-toolbar { flex-direction: column; padding: 1.5rem; }
   .formations-page .formations-grid { grid-template-columns: 1fr; gap: 1.5rem; }
-  .formations-page .hero-stats { gap: 1rem; }
-  .formations-page .stat-card { padding: 1rem 1.5rem; min-width: 100px; }
+  .formations-page .hero-stats { grid-template-columns: 1fr; max-width: 300px; gap: 1rem; }
+  .formations-page .stat-card { padding: 1.25rem 1.5rem; }
   .formations-page .formation-info-grid { grid-template-columns: 1fr; }
 }
 
@@ -629,4 +775,5 @@
   .formations-page .stat-number { font-size: 2rem; }
   .formations-page .formation-modal { padding: 1.5rem; }
   .formations-page .formation-detail-meta { grid-template-columns: 1fr; }
+  .formation-detail-page .formation-detail { padding: 1.25rem; border-radius: 16px; }
 }

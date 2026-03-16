@@ -2,6 +2,23 @@ import { useState, useEffect } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './Deontologie.css';
 
+const IconScale = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" /><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z" />
+    <path d="M7 21h10" /><path d="M12 3v18" /><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2" />
+  </svg>
+);
+const IconShield = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+const IconFile = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" />
+  </svg>
+);
+
 interface Deontologie {
   _id?: string;
   title: string;
@@ -62,10 +79,11 @@ const Deontologie = () => {
   }, []);
 
   return (
-    <div className="pratique-page">
-      <section className="pratique-hero">
+    <div className="pratique-page premium-page deontologie-page">
+      <section className="pratique-hero deo-hero">
         <div className="hero-content">
           <div className="hero-text">
+            <span className="hero-eyebrow">Pratique professionnelle</span>
             <h1 className="hero-title">
               <span className="hero-title-main">Déontologie</span>
               <span className="hero-title-subtitle">Pharmaceutique</span>
@@ -75,9 +93,9 @@ const Deontologie = () => {
               les principes éthiques et les jurisprudences.
             </p>
             <div className="hero-highlights">
-              <span className="highlight-item">⚖️ Code déontologique</span>
-              <span className="highlight-item">🛡️ Éthique professionnelle</span>
-              <span className="highlight-item">📋 Jurisprudence</span>
+              <span className="highlight-item"><IconScale /> Code déontologique</span>
+              <span className="highlight-item"><IconShield /> Éthique professionnelle</span>
+              <span className="highlight-item"><IconFile /> Jurisprudence</span>
             </div>
           </div>
 

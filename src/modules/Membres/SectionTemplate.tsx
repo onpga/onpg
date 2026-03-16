@@ -126,7 +126,6 @@ const SectionTemplate = ({
 
           <div className="section-premium-results">
             <h2>{filteredPharmaciens.length} pharmacien{filteredPharmaciens.length > 1 ? 's' : ''}</h2>
-            <span>Données mock conservées en fallback automatique.</span>
           </div>
 
           {loading ? (

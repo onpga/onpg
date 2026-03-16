@@ -227,6 +227,8 @@ const Videos = () => {
                         src={video.thumbnail || ONPG_IMAGES.fallbackArticle}
                         alt={video.title}
                         loading="lazy"
+                        decoding="async"
+                        fetchPriority="low"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           if (target.src !== ONPG_IMAGES.fallbackArticle) {

@@ -1,68 +1,68 @@
 /* ============================================
-   DÉONTOLOGIE - DESIGN ÉPOUSTOUFLANT PREMIUM
+   DÉONTOLOGIE - DESIGN PREMIUM
+   Inspiré Conseil National — fluide, lisible
    ============================================ */
 
 @import './Pratique.css';
 
+.deontologie-page {
+  --premium-ink: #0f2e22;
+  --premium-muted: #5c7268;
+  --premium-green: #00a651;
+  --premium-bg: #fafcfb;
+  --premium-surface: #ffffff;
+  --premium-line: rgba(0, 166, 81, 0.12);
+}
+
 /* ============================================
-   HERO SECTION - PREMIUM
+   HERO SECTION - PREMIUM ÉPURÉ
    ============================================ */
 
-.pratique-hero {
+.deontologie-page .pratique-hero.deo-hero {
   position: relative;
-  min-height: 50vh;
-  padding: 4rem 2rem 3rem;
+  min-height: 55vh;
+  padding: 4.5rem 2rem 4rem;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #00CC60 0%, #009A48 30%, #007535 60%, #00CC60 100%) !important;
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  background: linear-gradient(160deg, #062a1c 0%, #0a3d28 25%, #0e5a38 60%, #0c4a2f 100%);
   color: white;
 }
 
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.deontologie-page .pratique-hero.deo-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% -20%, rgba(0, 166, 81, 0.15) 0%, transparent 55%);
+  pointer-events: none;
 }
 
-.pratique-hero::before {
+.deontologie-page .hero-eyebrow {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.deontologie-page .pratique-hero::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.08) 0%, transparent 60%);
   pointer-events: none;
 }
 
-.pratique-hero::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 2px,
-    rgba(255, 255, 255, 0.03) 2px,
-    rgba(255, 255, 255, 0.03) 4px
-  );
-  animation: patternMove 20s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes patternMove {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(50px, 50px); }
-}
-
-.pratique-hero .hero-content {
+.deontologie-page .pratique-hero .hero-content {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 2rem;
@@ -71,6 +71,8 @@
   z-index: 2;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   gap: 2.5rem;
 }
 
@@ -93,27 +95,27 @@
   filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.3));
 }
 
-.pratique-hero .hero-title-subtitle {
+.deontologie-page .pratique-hero .hero-title-subtitle {
   display: block;
   font-size: 0.6em;
-  opacity: 0.9;
+  opacity: 0.92;
   font-weight: 600;
   margin-top: 0.5rem;
+  letter-spacing: 0.02em;
 }
 
-.pratique-hero .hero-description {
-  font-size: 1.2rem;
+.deontologie-page .pratique-hero .hero-description {
+  font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 0;
-  opacity: 0.95;
-  max-width: 800px;
+  opacity: 0.92;
+  max-width: 42ch;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.pratique-hero .hero-highlights {
+.deontologie-page .pratique-hero .hero-highlights {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -121,7 +123,10 @@
   justify-content: center;
 }
 
-.pratique-hero .highlight-item {
+.deontologie-page .pratique-hero .highlight-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -135,6 +140,13 @@
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   overflow: hidden;
+}
+
+.deontologie-page .pratique-hero .highlight-item svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  opacity: 0.95;
 }
 
 .pratique-hero .highlight-item::before {
@@ -168,113 +180,82 @@
   margin: 0 auto;
 }
 
-.pratique-hero .stat-card {
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 1.8rem 1.5rem;
-  border-radius: 20px;
+.deontologie-page .pratique-hero .stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 1.5rem 1.5rem;
+  border-radius: 16px;
   text-align: center;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.pratique-hero .stat-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 
-    0 15px 40px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+.deontologie-page .pratique-hero .stat-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.pratique-hero .stat-number {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.9));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.pratique-hero .stat-label {
-  font-size: 0.95rem;
-  opacity: 0.95;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.deontologie-page .pratique-hero .stat-number {
+  font-size: 1.75rem;
   font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.deontologie-page .pratique-hero .stat-label {
+  font-size: 0.72rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 /* ============================================
    CONTENT SECTION - PREMIUM
    ============================================ */
 
-.section-content {
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f1f3f4 100%);
-  position: relative;
-  overflow: hidden;
+.deontologie-page .section-content {
+  padding: 3.5rem 2rem 4rem;
+  background: var(--premium-bg);
 }
 
-.section-content::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 166, 81, 0.2), transparent);
-}
-
-.section-content .section-container {
+.deontologie-page .section-content .section-container {
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
 }
 
 /* ============================================
    DÉONTOLOGIE CARD - PREMIUM
    ============================================ */
 
-.deontologie-card {
+.deontologie-page .deontologie-card {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
-  background: white;
-  border-radius: 24px;
-  box-shadow: 
-    0 20px 60px rgba(0, 0, 0, 0.12),
-    0 8px 25px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 166, 81, 0.15);
+  background: var(--premium-surface);
+  border-radius: 20px;
+  box-shadow: 0 2px 24px rgba(15, 46, 34, 0.06);
+  border: 1px solid var(--premium-line);
   position: relative;
   overflow: hidden;
 }
 
-.deontologie-card::before {
+.deontologie-page .deontologie-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 5px;
-  background: linear-gradient(90deg, #00A651, #007535, #005A28, #00A651);
-  background-size: 200% 100%;
-  animation: gradientShift 3s ease infinite;
+  height: 3px;
+  background: linear-gradient(90deg, #00a651, #0e5a38);
+  border-radius: 20px 20px 0 0;
 }
 
-.deontologie-header {
+.deontologie-page .deontologie-header {
   padding: 2.5rem 3rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-bottom: 2px solid rgba(0, 166, 81, 0.1);
+  background: var(--premium-surface);
+  border-bottom: 1px solid var(--premium-line);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -287,16 +268,13 @@
   min-width: 300px;
 }
 
-.deontologie-title {
-  font-size: 2.4rem;
+.deontologie-page .deontologie-title {
+  font-size: 1.6rem;
   margin-bottom: 1rem;
-  color: #1a252f;
-  font-weight: 800;
-  background: linear-gradient(135deg, #00A651, #005A28);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.2;
+  color: var(--premium-ink) !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 .deontologie-meta {
@@ -339,29 +317,28 @@
   white-space: nowrap;
 }
 
-.deontologie-download-btn-header {
-  background: linear-gradient(135deg, #00A651, #007535);
+.deontologie-page .deontologie-download-btn-header {
+  background: var(--premium-green);
   color: white;
-  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.3);
+  box-shadow: 0 2px 12px rgba(0, 166, 81, 0.2);
 }
 
-.deontologie-download-btn-header:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.4);
-  background: linear-gradient(135deg, #007535, #00A651);
-}
-
-.deontologie-view-btn-header {
-  background: white;
-  color: #00A651;
-  border: 2px solid #00A651;
-}
-
-.deontologie-view-btn-header:hover {
-  background: #00A651;
-  color: white;
+.deontologie-page .deontologie-download-btn-header:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.25);
+  background: #008f45;
+}
+
+.deontologie-page .deontologie-view-btn-header {
+  background: transparent;
+  color: var(--premium-green);
+  border: 2px solid var(--premium-line);
+}
+
+.deontologie-page .deontologie-view-btn-header:hover {
+  background: rgba(0, 166, 81, 0.06);
+  border-color: var(--premium-green);
+  transform: translateY(-2px);
 }
 
 .btn-icon {
@@ -463,49 +440,28 @@
   overflow: hidden;
 }
 
-.deontologie-download-btn-footer {
-  background: linear-gradient(135deg, #00A651, #007535);
+.deontologie-page .deontologie-download-btn-footer {
+  background: var(--premium-green);
   color: white;
-  box-shadow: 
-    0 6px 20px rgba(0, 166, 81, 0.3),
-    0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px rgba(0, 166, 81, 0.2);
 }
 
-.deontologie-download-btn-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.6s ease;
+.deontologie-page .deontologie-download-btn-footer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 166, 81, 0.25);
+  background: #008f45;
 }
 
-.deontologie-download-btn-footer:hover::before {
-  left: 100%;
+.deontologie-page .deontologie-view-btn-footer {
+  background: transparent;
+  color: var(--premium-green);
+  border: 2px solid var(--premium-line);
 }
 
-.deontologie-download-btn-footer:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: 
-    0 10px 30px rgba(0, 166, 81, 0.4),
-    0 5px 15px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #007535, #00A651);
-}
-
-.deontologie-view-btn-footer {
-  background: white;
-  color: #00A651;
-  border: 2px solid #00A651;
-  box-shadow: 0 4px 15px rgba(0, 166, 81, 0.2);
-}
-
-.deontologie-view-btn-footer:hover {
-  background: #00A651;
-  color: white;
-  transform: translateY(-4px);
-  box-shadow: 0 6px 20px rgba(0, 166, 81, 0.3);
+.deontologie-page .deontologie-view-btn-footer:hover {
+  background: rgba(0, 166, 81, 0.06);
+  border-color: var(--premium-green);
+  transform: translateY(-2px);
 }
 
 .deontologie-loading {
@@ -700,14 +656,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pratique-hero,
-  .pratique-hero::after,
-  .pratique-hero .stat-card,
-  .deontologie-download-btn {
-    animation: none;
-  }
-  
-  .deontologie-download-btn:hover {
-    transform: translateY(-2px) scale(1.02);
+  .deontologie-page .deontologie-download-btn-footer:hover,
+  .deontologie-page .deontologie-view-btn-footer:hover {
+    transform: none;
   }
 }

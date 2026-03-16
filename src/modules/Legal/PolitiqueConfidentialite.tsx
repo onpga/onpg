@@ -1,10 +1,11 @@
-﻿import './Legal.css';
+import './Legal.css';
 
 const PolitiqueConfidentialite = () => {
   return (
     <div className="legal-page">
       <section className="legal-hero">
-        <div className="container">
+        <div className="legal-hero-content">
+          <span className="legal-eyebrow">Documents légaux</span>
           <h1>Politique de Confidentialité</h1>
           <p className="legal-subtitle">et de gestion des cookies</p>
         </div>
@@ -24,7 +25,7 @@ const PolitiqueConfidentialite = () => {
               la sécurité de vos données conformément à la législation gabonaise en vigueur en matière de protection des données personnelles.
             </p>
             <p>
-              Ce site web a été développé par <strong>Hexahub</strong>, qui assure le développement technique et la maintenance du site.
+              Ce site web a été développé par <strong>HEXAHUB</strong>, qui assure le développement technique et la maintenance du site.
             </p>
           </div>
 
@@ -33,7 +34,7 @@ const PolitiqueConfidentialite = () => {
             <p><strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong></p>
             <p><strong>Siège social :</strong> CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
             <p><strong>Téléphone :</strong> <a href="tel:+24176502032">076 50 20 32</a></p>
-            <p><strong>E-mail :</strong> <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p><strong>E-mail :</strong> <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
           </div>
 
           <div className="legal-section">
@@ -81,7 +82,7 @@ const PolitiqueConfidentialite = () => {
             <p>Les données collectées par l'ONPG ne sont jamais vendues ni louées.</p>
             <p>Elles peuvent être partagées uniquement avec :</p>
             <ul>
-              <li>Des prestataires techniques intervenant pour le compte de l'ONPG (hébergeur, maintenance, développement — notamment Hexahub).</li>
+              <li>Des prestataires techniques intervenant pour le compte de l'ONPG (hébergeur, maintenance, développement — notamment HEXAHUB).</li>
               <li>Les autorités administratives ou judiciaires, uniquement lorsque la loi l'exige.</li>
               <li>Les organismes professionnels partenaires, dans le cadre des missions de l'Ordre.</li>
             </ul>
@@ -95,7 +96,7 @@ const PolitiqueConfidentialite = () => {
               tout accès, divulgation, altération ou destruction non autorisés.
             </p>
             <p>
-              Le site bénéficie des mesures de sécurité techniques mises en place par <strong>Hexahub</strong> dans le cadre du développement
+              Le site bénéficie des mesures de sécurité techniques mises en place par <strong>HEXAHUB</strong> dans le cadre du développement
               et de la maintenance du site.
             </p>
             <p>Cependant, l'ONPG ne peut garantir une sécurité absolue en cas de cyberattaque ou de faille sur Internet.</p>
@@ -111,7 +112,7 @@ const PolitiqueConfidentialite = () => {
               <li>Droit d'opposition au traitement de vos données pour des motifs légitimes ;</li>
               <li>Droit à la limitation du traitement dans certaines situations.</li>
             </ul>
-            <p>Pour exercer ces droits, envoyez un e-mail à : <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p>Pour exercer ces droits, envoyez un e-mail à : <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
           </div>
 
           <div className="legal-section">
@@ -162,12 +163,12 @@ const PolitiqueConfidentialite = () => {
             <p><strong>Ordre National des Pharmaciens du Gabon (ONPG)</strong></p>
             <p>CC4J+WC6, Après le Ministère de la Promotion de la Bonne Gouvernance, Montée Louis, Libreville, Gabon</p>
             <p>Téléphone : <a href="tel:+24176502032">076 50 20 32</a></p>
-            <p>📧 <a href="mailto:contact@onpg.ga">contact@onpg.ga</a></p>
+            <p>📧 <a href="mailto:onpg2025@gmail.com">onpg2025@gmail.com</a></p>
           </div>
 
           <div className="legal-update-date">
             <p><em>Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</em></p>
-            <p><em>Site développé par <strong>Hexahub</strong></em></p>
+            <p><em>Site développé par <strong>HEXAHUB</strong></em></p>
           </div>
         </div>
       </section>

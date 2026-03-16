@@ -34,12 +34,11 @@ const CookieBanner = () => {
   };
 
   const handleSavePreferences = () => {
-    const analyticsCheckbox = document.getElementById('analytics-cookies') as HTMLInputElement;
     const marketingCheckbox = document.getElementById('marketing-cookies') as HTMLInputElement;
     
     const preferences = {
       essential: true,
-      analytics: analyticsCheckbox?.checked || false,
+      analytics: false,
       marketing: marketingCheckbox?.checked || false
     };
     
@@ -67,7 +66,7 @@ const CookieBanner = () => {
         <div className="cookie-content">
           <h3>🍪 Gestion des cookies</h3>
           <p>
-            Nous utilisons des cookies pour améliorer votre expérience sur notre site, analyser notre trafic et personnaliser le contenu. 
+            Nous utilisons des cookies pour améliorer votre expérience sur notre site et personnaliser certains contenus. 
             En cliquant sur "Accepter tout", vous consentez à notre utilisation des cookies.
           </p>
           <p className="cookie-link">
@@ -85,18 +84,6 @@ const CookieBanner = () => {
                 </div>
                 <p className="cookie-category-desc">
                   Nécessaires au bon fonctionnement du site (navigation, sécurité, formulaires).
-                </p>
-              </div>
-
-              <div className="cookie-category">
-                <div className="cookie-category-header">
-                  <input type="checkbox" id="analytics-cookies" defaultChecked />
-                  <label htmlFor="analytics-cookies">
-                    <strong>Cookies analytiques</strong>
-                  </label>
-                </div>
-                <p className="cookie-category-desc">
-                  Nous aident à comprendre comment vous utilisez le site pour l'améliorer (Google Analytics).
                 </p>
               </div>
 

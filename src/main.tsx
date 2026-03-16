@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import App from './App';
 import './styles/index.css';
-import detailedAnalytics from './utils/detailedAnalytics';
 import errorLogger from './utils/errorLogger';
 
 // Composant pour scroll en haut à chaque changement de route
@@ -16,9 +15,6 @@ function ScrollToTop() {
 
   return null;
 }
-
-// Initialiser le système de tracking détaillé
-detailedAnalytics.init();
 
 // Initialiser le système de logging des erreurs
 errorLogger.init();

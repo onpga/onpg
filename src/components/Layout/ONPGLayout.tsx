@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import NavbarONPG from '../Navbar/NavbarONPG';
 import FooterONPG from '../Footer/FooterONPG';
+import ONPGChatbot from '../ONPGChatbot';
 
 interface ONPGLayoutProps {
   children: ReactNode;
@@ -14,6 +15,7 @@ const ONPGLayout = ({ children }: ONPGLayoutProps) => {
         {children}
       </main>
       <FooterONPG />
+      <ONPGChatbot />
     </div>
   );
 };

@@ -22,6 +22,9 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id, x-user-data');
+  // Safe security headers with very low break risk
+  res.header('X-Content-Type-Options', 'nosniff');
+  res.header('Referrer-Policy', 'strict-origin-when-cross-origin');
 
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);

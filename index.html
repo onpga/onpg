@@ -31,7 +31,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="dns-prefetch" href="//res.cloudinary.com">
-    <link rel="dns-prefetch" href="//www.chatbase.co">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Analytics (optionnel) -->
@@ -75,64 +74,6 @@
     </nav>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <script>
-      (function () {
-        if (!window.chatbase || window.chatbase("getState") !== "initialized") {
-          window.chatbase = (...args) => {
-            if (!window.chatbase.q) {
-              window.chatbase.q = [];
-            }
-            window.chatbase.q.push(args);
-          };
-          window.chatbase = new Proxy(window.chatbase, {
-            get(target, prop) {
-              if (prop === "q") return target.q;
-              return (...args) => target(prop, ...args);
-            },
-          });
-        }
-
-        let chatbaseLoaded = false;
-        const interactionEvents = ["pointerdown", "scroll", "keydown", "touchstart"];
-
-        const loadChatbase = () => {
-          if (chatbaseLoaded) return;
-          chatbaseLoaded = true;
-
-          interactionEvents.forEach((eventName) => {
-            window.removeEventListener(eventName, loadChatbase, { passive: true });
-          });
-
-          const script = document.createElement("script");
-          script.src = "https://www.chatbase.co/embed.min.js";
-          script.id = "K_K2Pjr1la_eExVOEnYqb";
-          script.domain = "www.chatbase.co";
-          script.defer = true;
-          document.body.appendChild(script);
-        };
-
-        const scheduleIdleLoad = () => {
-          if ("requestIdleCallback" in window) {
-            window.requestIdleCallback(() => loadChatbase(), { timeout: 8000 });
-          } else {
-            window.setTimeout(loadChatbase, 5000);
-          }
-        };
-
-        const setupDeferredLoad = () => {
-          interactionEvents.forEach((eventName) => {
-            window.addEventListener(eventName, loadChatbase, { passive: true, once: true });
-          });
-          scheduleIdleLoad();
-        };
-
-        if (document.readyState === "complete") {
-          setupDeferredLoad();
-        } else {
-          window.addEventListener("load", setupDeferredLoad, { once: true });
-        }
-      })();
-    </script>
 
     <!-- Loading fallback -->
     <noscript>

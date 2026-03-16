@@ -1058,6 +1058,14 @@
   background: #095195;
 }
 
+.article-detail-page .share-btn.whatsapp {
+  background: #25d366;
+}
+
+.article-detail-page .share-btn.whatsapp:hover {
+  background: #1fb85a;
+}
+
 .article-detail-page .share-btn.copy {
   background: #666;
 }

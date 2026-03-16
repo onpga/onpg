@@ -25,11 +25,11 @@ const ShareButtons = ({ title, description = '', tags = [] }: ShareButtonsProps)
     },
     {
       id: 'twitter',
-      label: 'X',
+      label: 'Twitter',
       className: 'twitter',
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.901 2H22.58l-8.033 9.183L24 22h-7.406l-5.8-6.59L5.027 22H1.347l8.592-9.823L0 2h7.594l5.243 5.962L18.901 2zm-1.29 17.8h2.039L6.486 4.108H4.3L17.611 19.8z"/>
+          <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
         </svg>
       ),
     },
@@ -62,7 +62,7 @@ const ShareButtons = ({ title, description = '', tags = [] }: ShareButtonsProps)
 
     const urls: Record<string, string> = {
       facebook:  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(title + (description ? ' - ' + description : ''))}`,
-      twitter:   `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}${hashtagStr ? '&hashtags=' + hashtagStr : ''}`,
+      twitter:   `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}${hashtagStr ? '&hashtags=' + hashtagStr : ''}`,
       linkedin:  `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
       whatsapp:  `https://api.whatsapp.com/send?text=${encodeURIComponent('📰 ' + title + (description ? '\n\n' + description : '') + '\n\n👉 ' + url)}`,
     };

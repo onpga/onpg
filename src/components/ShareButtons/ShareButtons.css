@@ -36,17 +36,16 @@
 .onpg-share-section .share-btn {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 0.45rem;
-  min-width: 108px;
-  height: 40px;
-  padding: 0 0.72rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 999px;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
   color: #fff;
-  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .onpg-share-section .share-icon {
@@ -64,9 +63,7 @@
 }
 
 .onpg-share-section .share-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1;
+  display: none;
 }
 
 .onpg-share-section .share-btn:hover {
@@ -81,9 +78,14 @@
 }
 
 .onpg-share-section .share-btn.facebook  { background: #1877f2; }
-.onpg-share-section .share-btn.twitter   { background: #111827; }
+.onpg-share-section .share-btn.twitter   { background: #1DA1F2; }
 .onpg-share-section .share-btn.linkedin  { background: #0077b5; }
 .onpg-share-section .share-btn.whatsapp  { background: #25d366; }
+
+.onpg-share-section .share-btn.facebook:hover { background: #166FE5; }
+.onpg-share-section .share-btn.twitter:hover { background: #1A91DA; }
+.onpg-share-section .share-btn.linkedin:hover { background: #095195; }
+.onpg-share-section .share-btn.whatsapp:hover { background: #1FB85A; }
 
 .onpg-share-section .share-link-copy {
   margin-top: 0.75rem;
@@ -109,10 +111,8 @@
   }
 
   .onpg-share-section .share-btn {
-    min-width: 38px;
+    width: 38px;
     height: 38px;
-    padding: 0;
-    justify-content: center;
   }
 
   .onpg-share-section .share-btn svg {
@@ -120,8 +120,5 @@
     height: 16px;
   }
 
-  .onpg-share-section .share-label {
-    display: none;
-  }
 }
 

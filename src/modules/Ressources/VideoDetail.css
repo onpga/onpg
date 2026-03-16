@@ -346,6 +346,14 @@
   background: #095195;
 }
 
+.share-btn.whatsapp {
+  background: #25d366;
+}
+
+.share-btn.whatsapp:hover {
+  background: #1fb85a;
+}
+
 .share-btn.copy {
   background: #64748b;
 }

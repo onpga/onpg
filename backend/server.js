@@ -510,6 +510,38 @@ app.get('/api/public/theses/:id/pdf', async (req, res) => {
   }
 });
 
+function firstNonEmptyString(...vals) {
+  for (const v of vals) {
+    if (v === undefined || v === null) continue;
+    const s = String(v).trim();
+    if (s) return s;
+  }
+  return '';
+}
+
+/**
+ * Même document thèse peut avoir des clés différentes (saisie FR, imports, anciennes versions).
+ */
+function normalizePharmacienTheseFields(t) {
+  if (!t || typeof t !== 'object') {
+    return { university: '', director: '', abstract: '', keywords: [] };
+  }
+  const university = firstNonEmptyString(t.universite, t.university, t.Universite);
+  const director = firstNonEmptyString(t.directeur, t.director);
+  const abstract = firstNonEmptyString(t.resume, t.abstract);
+  const rawKw = t.motsCles ?? t.keywords ?? t.mots_cles ?? t.tags;
+  let keywords = [];
+  if (rawKw) {
+    keywords =
+      typeof rawKw === 'string'
+        ? rawKw.split(',').map((k) => k.trim()).filter(Boolean)
+        : Array.isArray(rawKw)
+          ? rawKw.map(String).map((k) => k.trim()).filter(Boolean)
+          : [];
+  }
+  return { university, director, abstract, keywords };
+}
+
 // GET une donnée spécifique par ID (route publique) - DOIT ÊTRE AVANT /api/public/:collection
 app.get('/api/public/:collection/:id', async (req, res) => {
   const { collection, id } = req.params;
@@ -536,12 +568,19 @@ app.get('/api/public/:collection/:id', async (req, res) => {
           // En cas d'erreur, on garde l'auteur par défaut
         }
 
+        const currentYear = new Date().getFullYear();
+        const parsedYear = thesis.annee ? parseInt(String(thesis.annee), 10) : currentYear;
+        const meta = normalizePharmacienTheseFields(thesis);
+
         const mapped = {
           _id: thesis._id,
           title: thesis.titre || '',
           author,
-          abstract: thesis.resume || '',
-          year: thesis.annee || '',
+          abstract: meta.abstract,
+          year: Number.isNaN(parsedYear) ? currentYear : parsedYear,
+          university: meta.university,
+          director: meta.director,
+          keywords: meta.keywords,
           pdfUrl: `/api/public/theses/${thesis._id}/pdf`
         };
 
@@ -761,27 +800,20 @@ app.get('/api/public/:collection', async (req, res) => {
 
           const currentYear = new Date().getFullYear();
           const parsedYear = t.annee ? parseInt(String(t.annee), 10) : currentYear;
-          
-          // Convertir mots-clés string en array si nécessaire
-          let keywords = [];
-          if (t.motsCles) {
-            keywords = typeof t.motsCles === 'string' 
-              ? t.motsCles.split(',').map(k => k.trim()).filter(k => k)
-              : Array.isArray(t.motsCles) ? t.motsCles : [];
-          }
+          const meta = normalizePharmacienTheseFields(t);
 
           return {
             _id: t._id,
             title: t.titre || '',
             author,
-            director: t.directeur || '',
-            university: t.universite || '',
+            director: meta.director,
+            university: meta.university,
             faculty: '',
             department: '',
             degree: 'phd',
             year: Number.isNaN(parsedYear) ? currentYear : parsedYear,
-            abstract: t.resume || '',
-            keywords: keywords,
+            abstract: meta.abstract,
+            keywords: meta.keywords,
             pages: 0,
             language: 'fr',
             specialty: 'Pharmacie',
@@ -1649,6 +1681,75 @@ app.post('/api/pharmacien/theses', authenticatePharmacien, async (req, res) => {
     res.json({ success: true, data: { _id: result.insertedId, ...doc } });
   } catch (error) {
     console.error('Erreur création thèse pharmacien:', error);
+    res.status(500).json({ success: false, error: 'Erreur serveur' });
+  }
+});
+
+app.put('/api/pharmacien/theses/:id', authenticatePharmacien, async (req, res) => {
+  try {
+    let thesisObjectId;
+    try {
+      thesisObjectId = new ObjectId(req.params.id);
+    } catch {
+      return res.status(400).json({ success: false, error: 'Identifiant de thèse invalide' });
+    }
+
+    const { titre, resume, annee, universite, motsCles, directeur, fichierUrl } = req.body;
+
+    if (!titre || !annee || !universite) {
+      return res.status(400).json({ success: false, error: 'Titre, année et université requis' });
+    }
+
+    const ownerIds = [
+      req.pharmacienId,
+      (() => {
+        try {
+          return new ObjectId(req.pharmacienId);
+        } catch {
+          return null;
+        }
+      })()
+    ].filter(Boolean);
+
+    const existing = await db.collection('pharmacien_theses').findOne({
+      _id: thesisObjectId,
+      pharmacienId: { $in: ownerIds }
+    });
+
+    if (!existing) {
+      return res.status(404).json({ success: false, error: 'Thèse non trouvée' });
+    }
+
+    const nextFichierUrl =
+      fichierUrl && String(fichierUrl).trim() ? fichierUrl : existing.fichierUrl;
+    if (!nextFichierUrl) {
+      return res.status(400).json({ success: false, error: 'Fichier PDF requis' });
+    }
+
+    const pharmacien = await db.collection('users').findOne({ _id: new ObjectId(req.pharmacienId) });
+
+    const $set = {
+      titre,
+      resume: resume || '',
+      annee,
+      universite,
+      directeur: directeur || '',
+      motsCles: motsCles || '',
+      fichierUrl: nextFichierUrl,
+      pharmacienNom: pharmacien?.nom || '',
+      pharmacienPrenoms: pharmacien?.prenoms || '',
+      pharmacienUsername: pharmacien?.username || '',
+      updatedAt: new Date()
+    };
+
+    await db.collection('pharmacien_theses').updateOne({ _id: thesisObjectId }, { $set });
+
+    res.json({
+      success: true,
+      data: { ...existing, ...$set }
+    });
+  } catch (error) {
+    console.error('Erreur mise à jour thèse pharmacien:', error);
     res.status(500).json({ success: false, error: 'Erreur serveur' });
   }
 });

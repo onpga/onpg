@@ -26,6 +26,7 @@ const PharmacienTheses = () => {
   const [loadingTheses, setLoadingTheses] = useState(false);
   const [thesisSaving, setThesisSaving] = useState(false);
   const [deletingThesisId, setDeletingThesisId] = useState<string | null>(null);
+  const [editingThesisId, setEditingThesisId] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [thesisForm, setThesisForm] = useState({
     titre: '',
@@ -175,8 +176,12 @@ const PharmacienTheses = () => {
             const currentUser = user || JSON.parse(localStorage.getItem('admin_user') || '{}');
             const userId = currentUser._id;
 
-            const response = await fetch(`${API_URL}/pharmacien/theses`, {
-              method: 'POST',
+            const isEdit = !!editingThesisId;
+            const url = isEdit
+              ? `${API_URL}/pharmacien/theses/${editingThesisId}`
+              : `${API_URL}/pharmacien/theses`;
+            const response = await fetch(url, {
+              method: isEdit ? 'PUT' : 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
@@ -188,8 +193,23 @@ const PharmacienTheses = () => {
             const saveData = await response.json();
             if (saveData.success) {
               console.log('[THESE UPLOAD] ✅ Thèse enregistrée en base');
-              setMessage({ type: 'success', text: 'Thèse uploadée et enregistrée avec succès.' });
-              setThesisForm({ titre: '', resume: '', annee: '', universite: '', motsCles: '', directeur: '', fichierUrl: '' });
+              setMessage({
+                type: 'success',
+                text: isEdit
+                  ? 'Nouveau PDF enregistré pour votre thèse.'
+                  : 'Thèse uploadée et enregistrée avec succès.'
+              });
+              if (!isEdit) {
+                setThesisForm({
+                  titre: '',
+                  resume: '',
+                  annee: '',
+                  universite: '',
+                  motsCles: '',
+                  directeur: '',
+                  fichierUrl: ''
+                });
+              }
               await loadTheses();
             } else {
               console.log('[THESE UPLOAD] ❌ Erreur enregistrement:', saveData.error);
@@ -257,14 +277,19 @@ const PharmacienTheses = () => {
         apiUrl: API_URL
       });
 
+      const isEdit = !!editingThesisId;
+      const saveUrl = isEdit
+        ? `${API_URL}/pharmacien/theses/${editingThesisId}`
+        : `${API_URL}/pharmacien/theses`;
+
       console.log('[THESE SAVE] 🌐 Appel API:', {
-        url: `${API_URL}/pharmacien/theses`,
-        method: 'POST',
+        url: saveUrl,
+        method: isEdit ? 'PUT' : 'POST',
         body: thesisForm
       });
 
-      const response = await fetch(`${API_URL}/pharmacien/theses`, {
-        method: 'POST',
+      const response = await fetch(saveUrl, {
+        method: isEdit ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -285,7 +310,11 @@ const PharmacienTheses = () => {
 
       if (data.success) {
         console.log('[THESE SAVE] ✅ Thèse enregistrée avec succès');
-        setMessage({ type: 'success', text: 'Thèse enregistrée avec succès.' });
+        setMessage({
+          type: 'success',
+          text: isEdit ? 'Thèse mise à jour avec succès.' : 'Thèse enregistrée avec succès.'
+        });
+        setEditingThesisId(null);
         setThesisForm({
           titre: '',
           resume: '',
@@ -313,6 +342,35 @@ const PharmacienTheses = () => {
     }
   };
 
+  const startEditThesis = (thesis: any) => {
+    setMessage(null);
+    setEditingThesisId(String(thesis._id));
+    setThesisForm({
+      titre: thesis.titre || '',
+      resume: thesis.resume || '',
+      annee: thesis.annee != null ? String(thesis.annee) : '',
+      universite: thesis.universite || '',
+      motsCles: thesis.motsCles || '',
+      directeur: thesis.directeur || '',
+      fichierUrl: thesis.fichierUrl || ''
+    });
+    document.getElementById('thesisTitre')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const cancelEditThesis = () => {
+    setEditingThesisId(null);
+    setThesisForm({
+      titre: '',
+      resume: '',
+      annee: '',
+      universite: '',
+      motsCles: '',
+      directeur: '',
+      fichierUrl: ''
+    });
+    setMessage(null);
+  };
+
   const handleDeleteThesis = async (id: string) => {
     const confirmed = window.confirm('Supprimer cette thèse ? Cette action est irréversible.');
     if (!confirmed) return;
@@ -320,6 +378,9 @@ const PharmacienTheses = () => {
     try {
       setDeletingThesisId(id);
       setMessage(null);
+      if (editingThesisId === id) {
+        cancelEditThesis();
+      }
       const token = localStorage.getItem('admin_token');
       const userId = user?._id;
 
@@ -391,110 +452,134 @@ const PharmacienTheses = () => {
             </div>
           )}
 
-          <section className="theses-card">
-            <h2>Ajouter ou mettre a jour une these</h2>
-            <div className="theses-form">
-              <div className="form-group">
-                <label htmlFor="thesisTitre">Titre de la thèse *</label>
-                <input
-                  type="text"
-                  id="thesisTitre"
-                  value={thesisForm.titre}
-                  onChange={(e) => setThesisForm({ ...thesisForm, titre: e.target.value })}
-                  className="theses-input"
-                />
-              </div>
+          <section className="theses-card theses-card--form-premium">
+            <header className="theses-form-head">
+              <h2 className="theses-form-title">
+                {editingThesisId ? 'Modifier une thèse' : 'Ajouter une nouvelle thèse'}
+              </h2>
+              {editingThesisId ? (
+                <p className="theses-edit-hint">
+                  Les champs sont préremplis. Vous pouvez corriger le texte sans changer le PDF, ou choisir un
+                  nouveau fichier pour le remplacer.
+                </p>
+              ) : (
+                <p className="theses-form-subtitle">
+                  Renseignez les informations ci-dessous puis joignez le PDF de votre mémoire.
+                </p>
+              )}
+            </header>
+            <div className="theses-form-body">
+              <div className="theses-form">
+                <div className="form-group">
+                  <label htmlFor="thesisTitre">Titre de la thèse *</label>
+                  <input
+                    type="text"
+                    id="thesisTitre"
+                    value={thesisForm.titre}
+                    onChange={(e) => setThesisForm({ ...thesisForm, titre: e.target.value })}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="thesisAnnee">Année *</label>
-                <input
-                  type="text"
-                  id="thesisAnnee"
-                  placeholder="Ex: 2024"
-                  value={thesisForm.annee}
-                  onChange={(e) => setThesisForm({ ...thesisForm, annee: e.target.value })}
-                  className="theses-input"
-                />
-              </div>
+                <div className="form-group">
+                  <label htmlFor="thesisAnnee">Année *</label>
+                  <input
+                    type="text"
+                    id="thesisAnnee"
+                    placeholder="Ex: 2024"
+                    value={thesisForm.annee}
+                    onChange={(e) => setThesisForm({ ...thesisForm, annee: e.target.value })}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="thesisUniversite">Université *</label>
-                <input
-                  type="text"
-                  id="thesisUniversite"
-                  placeholder="Ex: Université Omar Bongo"
-                  value={thesisForm.universite}
-                  onChange={(e) => setThesisForm({ ...thesisForm, universite: e.target.value })}
-                  className="theses-input"
-                />
-              </div>
+                <div className="form-group">
+                  <label htmlFor="thesisUniversite">Université *</label>
+                  <input
+                    type="text"
+                    id="thesisUniversite"
+                    placeholder="Ex: Université Omar Bongo"
+                    value={thesisForm.universite}
+                    onChange={(e) => setThesisForm({ ...thesisForm, universite: e.target.value })}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="thesisDirecteur">Directeur de thèse (optionnel)</label>
-                <input
-                  type="text"
-                  id="thesisDirecteur"
-                  placeholder="Ex: Pr. Jean Dupont"
-                  value={thesisForm.directeur}
-                  onChange={(e) => setThesisForm({ ...thesisForm, directeur: e.target.value })}
-                  className="theses-input"
-                />
-              </div>
+                <div className="form-group">
+                  <label htmlFor="thesisDirecteur">Directeur de thèse (optionnel)</label>
+                  <input
+                    type="text"
+                    id="thesisDirecteur"
+                    placeholder="Ex: Pr. Jean Dupont"
+                    value={thesisForm.directeur}
+                    onChange={(e) => setThesisForm({ ...thesisForm, directeur: e.target.value })}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="thesisMotsCles">Mots-clés (optionnel)</label>
-                <input
-                  type="text"
-                  id="thesisMotsCles"
-                  placeholder="Ex: pharmacie, médicament, santé"
-                  value={thesisForm.motsCles}
-                  onChange={(e) => setThesisForm({ ...thesisForm, motsCles: e.target.value })}
-                  className="theses-input"
-                />
-              </div>
+                <div className="form-group">
+                  <label htmlFor="thesisMotsCles">Mots-clés (optionnel)</label>
+                  <input
+                    type="text"
+                    id="thesisMotsCles"
+                    placeholder="Ex: pharmacie, médicament, santé"
+                    value={thesisForm.motsCles}
+                    onChange={(e) => setThesisForm({ ...thesisForm, motsCles: e.target.value })}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group theses-form-full">
-                <label htmlFor="thesisResume">Résumé (optionnel)</label>
-                <textarea
-                  id="thesisResume"
-                  value={thesisForm.resume}
-                  onChange={(e) => setThesisForm({ ...thesisForm, resume: e.target.value })}
-                  rows={3}
-                  className="theses-input"
-                />
-              </div>
+                <div className="form-group theses-form-full">
+                  <label htmlFor="thesisResume">Résumé (optionnel)</label>
+                  <textarea
+                    id="thesisResume"
+                    value={thesisForm.resume}
+                    onChange={(e) => setThesisForm({ ...thesisForm, resume: e.target.value })}
+                    rows={3}
+                    className="theses-input"
+                  />
+                </div>
 
-              <div className="form-group theses-form-full">
-                <label>Fichier PDF de la thèse * (max. {MAX_THESE_PDF_SIZE_MB} Mo)</label>
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={handleThesisUpload}
-                  disabled={thesisSaving}
-                  className="theses-file-input"
-                />
-                {thesisForm.fichierUrl && (
-                  <p className="theses-file-ready">
-                    Fichier pret : <a href={thesisForm.fichierUrl} target="_blank" rel="noopener noreferrer">ouvrir le PDF</a>
-                  </p>
-                )}
-              </div>
+                <div className="form-group theses-form-full">
+                  <label>
+                    {editingThesisId
+                      ? `Remplacer le PDF (optionnel, max. ${MAX_THESE_PDF_SIZE_MB} Mo)`
+                      : `Fichier PDF de la thèse * (max. ${MAX_THESE_PDF_SIZE_MB} Mo)`}
+                  </label>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleThesisUpload}
+                    disabled={thesisSaving}
+                    className="theses-file-input"
+                  />
+                  {thesisForm.fichierUrl && (
+                    <p className="theses-file-ready">
+                      Fichier pret : <a href={thesisForm.fichierUrl} target="_blank" rel="noopener noreferrer">ouvrir le PDF</a>
+                    </p>
+                  )}
+                </div>
 
-              <div className="theses-actions">
-                <button
-                  className="btn-primary"
-                  onClick={handleThesisSave}
-                  disabled={thesisSaving}
-                >
-                  {thesisSaving ? 'Sauvegarde...' : 'Enregistrer la these'}
-                </button>
-                <button
-                  className="btn-secondary"
-                  type="button"
-                  onClick={() => setThesisForm({ titre: '', resume: '', annee: '', universite: '', motsCles: '', directeur: '', fichierUrl: '' })}
-                >
-                  Réinitialiser
-                </button>
+                <div className="theses-actions">
+                  <button
+                    className="btn-primary"
+                    onClick={handleThesisSave}
+                    disabled={thesisSaving}
+                  >
+                    {thesisSaving
+                      ? 'Sauvegarde...'
+                      : editingThesisId
+                        ? 'Mettre à jour la thèse'
+                        : 'Enregistrer la thèse'}
+                  </button>
+                  <button
+                    className="btn-secondary"
+                    type="button"
+                    onClick={cancelEditThesis}
+                  >
+                    {editingThesisId ? 'Annuler la modification' : 'Réinitialiser'}
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -521,14 +606,24 @@ const PharmacienTheses = () => {
                       <a href={`${API_URL}/public/theses/${thesis._id}/pdf`} target="_blank" rel="noopener noreferrer">
                         Ouvrir le PDF
                       </a>
-                      <button
-                        type="button"
-                        className="theses-delete-btn"
-                        onClick={() => handleDeleteThesis(thesis._id)}
-                        disabled={deletingThesisId === thesis._id}
-                      >
-                        {deletingThesisId === thesis._id ? 'Suppression...' : 'Supprimer'}
-                      </button>
+                      <div className="theses-list-actions">
+                        <button
+                          type="button"
+                          className="theses-edit-btn"
+                          onClick={() => startEditThesis(thesis)}
+                          disabled={!!deletingThesisId}
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          className="theses-delete-btn"
+                          onClick={() => handleDeleteThesis(String(thesis._id))}
+                          disabled={deletingThesisId === String(thesis._id)}
+                        >
+                          {deletingThesisId === String(thesis._id) ? 'Suppression...' : 'Supprimer'}
+                        </button>
+                      </div>
                     </div>
                   </li>
                 ))}

@@ -73,6 +73,17 @@
   color: #991b1b;
 }
 
+.theses-edit-hint {
+  margin: 0.75rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  color: #166534;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .theses-card {
   background: #fff;
   border: 1px solid #deebe4;
@@ -82,16 +93,65 @@
   margin-bottom: 1rem;
 }
 
-.theses-card h2 {
+.theses-card > h2 {
   margin: 0 0 0.9rem;
   color: #1f2937;
   font-size: 1.2rem;
 }
 
+/* Carte formulaire thèse : hiérarchie visuelle type « premium » */
+.theses-card--form-premium {
+  padding: 1.5rem 1.5rem 1.35rem;
+  border-radius: 18px;
+  border-color: #d4e8dc;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 18px 40px rgba(15, 23, 42, 0.07);
+  background: linear-gradient(165deg, #ffffff 0%, #fafdfb 55%, #f6faf7 100%);
+}
+
+.theses-form-head {
+  padding-bottom: 1.35rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(15, 118, 74, 0.12);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.theses-form-title {
+  margin: 0;
+  color: #0f291f;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+}
+
+.theses-form-subtitle {
+  margin: 0.65rem 0 0;
+  max-width: 42rem;
+  color: #5c6b63;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.theses-form-body {
+  padding-top: 1.65rem;
+  margin-top: 0;
+}
+
 .theses-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem 1rem;
+  gap: 1.05rem 1.15rem;
+}
+
+.theses-form .form-group label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  letter-spacing: 0.01em;
+  color: #374151;
 }
 
 .theses-form-full,
@@ -181,12 +241,36 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+.theses-list-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .theses-list-link a {
   color: #0b6b44;
   font-weight: 600;
+}
+
+.theses-edit-btn {
+  border: 1px solid #a7d7c4;
+  background: #ecfdf5;
+  color: #0f5132;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.theses-edit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .theses-delete-btn {
@@ -208,5 +292,17 @@
 @media (max-width: 900px) {
   .theses-form {
     grid-template-columns: 1fr;
+  }
+
+  .theses-card--form-premium {
+    padding: 1.2rem 1.05rem 1.1rem;
+  }
+
+  .theses-form-body {
+    padding-top: 1.35rem;
+  }
+
+  .theses-form-title {
+    font-size: 1.2rem;
   }
 }

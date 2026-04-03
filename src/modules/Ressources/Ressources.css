@@ -5957,3 +5957,280 @@
 .urgent-stat-mini .stat-mini-value {
   color: #e74c3c;
 }
+
+/* —— Thèses : consultation PDF (métadonnées pharmacien, sans ID) —— */
+.these-pdf-meta {
+  margin-top: 1.25rem;
+  padding: 1.1rem 1.25rem;
+  background: linear-gradient(145deg, #f8fdf9 0%, #f0f7f2 100%);
+  border: 1px solid #d4e8dc;
+  border-radius: 12px;
+  max-width: 52rem;
+}
+
+.these-pdf-meta-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 10rem) 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0 0 0.65rem;
+  align-items: baseline;
+  font-size: 0.95rem;
+}
+
+.these-pdf-meta-row:last-child {
+  margin-bottom: 0;
+}
+
+.these-pdf-meta-row--block {
+  display: block;
+}
+
+.these-pdf-meta-row--block .these-pdf-meta-label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.these-pdf-meta-label {
+  font-weight: 700;
+  color: #0f5132;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.these-pdf-meta-value {
+  color: #1f2937;
+  line-height: 1.45;
+}
+
+.these-pdf-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.these-pdf-keyword {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  background: #ecfdf3;
+  border: 1px solid #b6e4c9;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: #14532d;
+}
+
+.these-pdf-abstract {
+  margin: 0;
+  color: #374151;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 600px) {
+  .these-pdf-meta-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* —— Thèses : page détail publique —— */
+.thesis-public-inline-meta {
+  flex-wrap: wrap;
+}
+
+.thesis-public-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f5132;
+  margin: 0 0 0.5rem;
+}
+
+.thesis-public-block {
+  margin-bottom: 1.5rem;
+}
+
+.thesis-public-abstract {
+  margin-top: 0;
+}
+
+.thesis-public-keywords-block {
+  margin-bottom: 1.5rem;
+}
+
+/* Carte actions PDF (fiche thèse) — boutons explicites, lisibles */
+.thesis-public-pdf-card {
+  margin: 1.75rem 0 2rem;
+  padding: 1.35rem 1.5rem 1.45rem;
+  background: linear-gradient(160deg, #f6fbf8 0%, #ffffff 45%, #f3faf6 100%);
+  border: 1px solid #c8e6d4;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(15, 81, 50, 0.08);
+}
+
+.thesis-public-pdf-lead {
+  margin: 0 0 1.1rem;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+  max-width: 40rem;
+}
+
+/* Contraste : titre sur bandeau sombre (règle .article-title plus bas imposait du gris foncé) */
+.article-detail-page .article-header .article-title {
+  color: #ffffff;
+}
+
+/* Boutons PDF thèse */
+.thesis-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+a.thesis-pdf-btn,
+button.thesis-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.78rem 1.4rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  line-height: 1.25;
+  font-family: inherit;
+}
+
+button.thesis-pdf-btn {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.thesis-pdf-btn-ico {
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.thesis-pdf-btn--primary {
+  background: linear-gradient(145deg, #00b359 0%, #008f45 55%, #007a3d 100%);
+  color: #ffffff !important;
+  border-color: #006633;
+  box-shadow: 0 4px 16px rgba(0, 120, 60, 0.38);
+}
+
+.thesis-pdf-btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 120, 60, 0.48);
+  color: #ffffff !important;
+}
+
+.thesis-pdf-btn--secondary {
+  background: #ffffff;
+  color: #0f291f !important;
+  border-color: #00a651;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.thesis-pdf-btn--secondary:hover {
+  background: #ecfdf5;
+  color: #052e16 !important;
+  border-color: #008f45;
+  transform: translateY(-1px);
+}
+
+/* Bouton discret sur fond sombre (viewer PDF) */
+.thesis-pdf-btn--ghost {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+}
+
+.thesis-pdf-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+/* Page viewer PDF plein écran — barre d’actions + cadre */
+.these-pdf-page.these-pdf-page {
+  background: linear-gradient(180deg, #eef5f0 0%, #f8faf9 40%, #ffffff 100%);
+}
+
+.these-pdf-header-nav {
+  margin-top: 1.25rem;
+}
+
+.these-pdf-content.these-pdf-content {
+  margin-top: 0;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -8px 36px rgba(15, 23, 42, 0.08);
+}
+
+.these-pdf-content-inner {
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 1.5rem 1.5rem 2.5rem !important;
+  display: block !important;
+  width: 100%;
+}
+
+.these-pdf-main {
+  max-width: 100%;
+}
+
+.these-pdf-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem 1.15rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f4fbf7 100%);
+  border: 1px solid #d8ebe0;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(15, 81, 50, 0.06);
+}
+
+.these-pdf-frame {
+  height: min(78vh, 900px);
+  min-height: 420px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #d1e7dd;
+  box-shadow:
+    0 18px 48px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: #1a252f;
+}
+
+.these-pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .these-pdf-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .these-pdf-toolbar .thesis-pdf-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .thesis-public-pdf-card {
+    padding: 1.1rem 1.15rem;
+  }
+}

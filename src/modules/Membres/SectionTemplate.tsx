@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import { useApiCache } from '../../hooks/useApiCache';
@@ -31,6 +31,8 @@ const getPhotoUrl = (photo?: string) => {
 
 const normalizeSection = (value?: string) => (value || '').trim().toUpperCase();
 
+const getPharmacienKey = (p: Pharmacien) => String(p._id || `${p.nom}-${p.prenom}`);
+
 const SectionTemplate = ({
   section,
   subtitle,
@@ -39,6 +41,7 @@ const SectionTemplate = ({
   mockPharmaciens
 }: SectionTemplateProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
   const { data, loading } = useApiCache<Pharmacien[]>(
@@ -64,6 +67,21 @@ const SectionTemplate = ({
   );
 
   const pharmaciens = data || mockPharmaciens;
+
+  const selectedPharmacien = useMemo(
+    () =>
+      selectedKey ? pharmaciens.find((p) => getPharmacienKey(p) === selectedKey) ?? null : null,
+    [pharmaciens, selectedKey]
+  );
+
+  useEffect(() => {
+    if (!selectedKey) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedKey(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedKey]);
 
   const filteredPharmaciens = useMemo(() => {
     const q = debouncedSearchQuery.trim().toLowerCase();
@@ -142,8 +160,18 @@ const SectionTemplate = ({
             <div className="section-premium-grid">
               {filteredPharmaciens.map((pharmacien) => (
                 <article
-                  key={pharmacien._id || `${pharmacien.nom}-${pharmacien.prenom}`}
+                  key={getPharmacienKey(pharmacien)}
                   className="section-premium-card"
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => setSelectedKey(getPharmacienKey(pharmacien))}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedKey(getPharmacienKey(pharmacien));
+                    }
+                  }}
+                  aria-label={`Voir la fiche de ${pharmacien.prenom} ${pharmacien.nom}`}
                 >
                   <img
                     src={getPhotoUrl(pharmacien.photo)}
@@ -164,6 +192,59 @@ const SectionTemplate = ({
           )}
         </div>
       </section>
+
+      {selectedPharmacien && (
+        <div
+          className="sp-modal-overlay"
+          onClick={() => setSelectedKey(null)}
+          role="presentation"
+        >
+          <div
+            className="sp-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="sp-modal-title"
+          >
+            <button
+              type="button"
+              className="sp-modal-close"
+              onClick={() => setSelectedKey(null)}
+              aria-label="Fermer"
+            >
+              ×
+            </button>
+            <img
+              src={getPhotoUrl(selectedPharmacien.photo)}
+              alt={`${selectedPharmacien.prenom} ${selectedPharmacien.nom}`}
+              className="sp-modal-photo"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== ONPG_IMAGES.logo) target.src = ONPG_IMAGES.logo;
+              }}
+            />
+            <h2 id="sp-modal-title">
+              Dr. {selectedPharmacien.prenom} {selectedPharmacien.nom}
+            </h2>
+            <div className="sp-modal-badge-row">
+              <span className="sp-modal-badge">Section {section}</span>
+            </div>
+            {selectedPharmacien.role && (
+              <p className="sp-modal-meta">
+                <strong>Fonction :</strong> {selectedPharmacien.role}
+              </p>
+            )}
+            {selectedPharmacien.these && (
+              <p className="sp-modal-meta">
+                <strong>Thèse :</strong> {selectedPharmacien.these}
+              </p>
+            )}
+            {!selectedPharmacien.role && !selectedPharmacien.these && (
+              <p className="sp-modal-meta">Membre de la section {section}.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

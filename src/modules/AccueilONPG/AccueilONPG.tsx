@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import HeroONPG from './components/HeroONPG';
 import AnimatedSection from '../../components/AnimatedSection';
 import ONPG_CONFIG from '../../config/onpg-config';
-import { ONPG_IMAGES } from '../../utils/cloudinary-onpg';
+import { ONPG_IMAGES, cloudinaryUrlWithTransform } from '../../utils/cloudinary-onpg';
 import { getImageWithFallback } from '../../utils/imageFallback';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import './AccueilONPG.css';
@@ -55,6 +55,28 @@ const AccueilONPG = () => {
     presidentPhoto: ONPG_IMAGES.president,
     heroImage: ONPG_IMAGES.hero1
   });
+
+  // Source du tableau ONPG 2026 :
+  // - si `VITE_ONPG_TABLEAU_PUBLIC_ID` est renseigné => Cloudinary (plus léger + optimisé)
+  // - sinon => fallback sur l'image locale `public/tableau-onpg-2026.jpg`
+  const tableauLocalUrl = `${import.meta.env.BASE_URL}tableau-onpg-2026.jpg`;
+  const tableauCloudPublicId = "Tableau_ONPG-05_v1xoht";
+  const tableauSrcVitrine = tableauCloudPublicId
+    ? cloudinaryUrlWithTransform(tableauCloudPublicId, {
+        width: 1200,
+        crop: 'limit',
+        quality: 'auto:best',
+        format: 'auto'
+      })
+    : tableauLocalUrl;
+  const tableauSrcLightbox = tableauCloudPublicId
+    ? cloudinaryUrlWithTransform(tableauCloudPublicId, {
+        width: 2400,
+        crop: 'limit',
+        quality: 'auto:best',
+        format: 'auto'
+      })
+    : tableauLocalUrl;
 
   // Mise à jour du canonical pour la page d'accueil ONPG
   useEffect(() => {
@@ -224,6 +246,8 @@ const AccueilONPG = () => {
         : lois
   ) as NewsHubItem[];
 
+  const [tableauLightboxOpen, setTableauLightboxOpen] = useState(false);
+
   // Pause élégante au survol
   const [isHovered] = useState(false);
 
@@ -243,6 +267,20 @@ const AccueilONPG = () => {
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, [isHovered]);
+
+  useEffect(() => {
+    if (!tableauLightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setTableauLightboxOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [tableauLightboxOpen]);
 
   // Animations de révélation au scroll - Version simplifiée et plus fiable
   useEffect(() => {
@@ -364,6 +402,94 @@ const AccueilONPG = () => {
     <div className="accueil-onpg">
       {/* Hero Section */}
       <HeroONPG />
+
+      {/* Tableau de l'Ordre 2026 — vitrine premium */}
+      <section
+        className="onpg-tableau-showcase section"
+        data-animate
+        aria-labelledby="tableau-ordre-heading"
+      >
+        <div className="container onpg-tableau-showcase__inner">
+          <header className="onpg-tableau-showcase__header">
+            <span className="onpg-tableau-showcase__eyebrow">Membres de l&apos;Ordre</span>
+            <h2 id="tableau-ordre-heading">Tableau de l&apos;Ordre 2026</h2>
+            <p className="onpg-tableau-showcase__lede">
+              Vitrine institutionnelle : le Tableau de l&apos;Ordre 2026 rassemble les membres inscrits, reflet de l&apos;exigence
+              et de la solidarité au service de la santé publique gabonaise.
+            </p>
+          </header>
+
+          <button
+            type="button"
+            className="onpg-tableau-showcase__frame"
+            onClick={() => setTableauLightboxOpen(true)}
+            aria-haspopup="dialog"
+            aria-label="Agrandir le tableau de l'Ordre 2026"
+          >
+            <span className="onpg-tableau-showcase__frame-inner">
+              <img
+                src={tableauSrcVitrine}
+                alt="Tableau officiel 2026 de l'Ordre National des Pharmaciens du Gabon, mosaïque des portraits des pharmaciens inscrits"
+                decoding="async"
+                loading="lazy"
+                className="onpg-tableau-showcase__img"
+              />
+            </span>
+            <span className="onpg-tableau-showcase__zoom-hint" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+                <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M20 20l-4.2-4.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <path d="M11 8v6M8 11h6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              Agrandir
+            </span>
+          </button>
+
+          <div className="onpg-tableau-showcase__actions">
+            <Link to="/membres/tableau-ordre" className="onpg-tableau-showcase__cta-primary">
+              Consulter le tableau détaillé
+            </Link>
+            <button
+              type="button"
+              className="onpg-tableau-showcase__cta-ghost"
+              onClick={() => setTableauLightboxOpen(true)}
+            >
+              Vue plein écran
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {tableauLightboxOpen ? (
+        <div
+          className="onpg-tableau-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tableau de l'Ordre 2026 — plein écran"
+        >
+          <button
+            type="button"
+            className="onpg-tableau-lightbox__backdrop"
+            aria-label="Fermer"
+            onClick={() => setTableauLightboxOpen(false)}
+          />
+          <div className="onpg-tableau-lightbox__content">
+            <button
+              type="button"
+              className="onpg-tableau-lightbox__close"
+              onClick={() => setTableauLightboxOpen(false)}
+              aria-label="Fermer la vue plein écran"
+            >
+              ×
+            </button>
+            <img
+              src={tableauSrcLightbox}
+              alt="Tableau officiel 2026 de l'Ordre National des Pharmaciens du Gabon"
+              className="onpg-tableau-lightbox__img"
+            />
+          </div>
+        </div>
+      ) : null}
 
       {/* Section de transition - Nos Engagements Institutionnels */}
       <section className="nos-engagements-transition section" data-animate>

@@ -64,7 +64,12 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
       if (imageUrl && !imageUrl.startsWith('http')) {
         imageUrl = `https://res.cloudinary.com/dduvinjnu/image/upload/${imageUrl}`;
       }
-      const description = resource.excerpt || resource.summary || resource.content?.substring(0, 200) || `Découvrez ${resource.title} sur le site de l'ONPG`;
+      const description =
+        resource.excerpt ||
+        resource.summary ||
+        resource.abstract ||
+        resource.content?.substring(0, 200) ||
+        `Découvrez ${resource.title} sur le site de l'ONPG`;
 
       // Title et description
       document.title = `${resource.title} | ONPG - ${title}`;
@@ -154,6 +159,8 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
     );
   }
 
+  const isThesis = collection === 'theses';
+
   return (
     <div className="article-detail-page">
       <header className="article-header">
@@ -168,78 +175,151 @@ const ResourceDetail = ({ collection, backPath, title }: ResourceDetailProps) =>
             <span className="current">Détail</span>
           </nav>
 
-          {resource.category && (
+          {!isThesis && resource.category && (
             <div className="article-category-badge">{resource.category}</div>
           )}
 
           <h1 className="article-title">{resource.title}</h1>
 
-          <div className="article-meta">
-            {resource.date && (
-              <span className="meta-item">
-                📅 {new Date(resource.date).toLocaleDateString('fr-FR', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric'
-                })}
-              </span>
-            )}
-            {resource.readTime && (
-              <span className="meta-item">⏱️ {resource.readTime} min de lecture</span>
-            )}
-          </div>
+          {isThesis ? (
+            <div className="article-meta thesis-public-inline-meta">
+              {resource.author && (
+                <span className="meta-item">👤 {resource.author}</span>
+              )}
+              {resource.year != null && String(resource.year).trim() !== '' && (
+                <span className="meta-item">📅 {resource.year}</span>
+              )}
+              {resource.university && (
+                <span className="meta-item">🏛️ {resource.university}</span>
+              )}
+              {resource.director && (
+                <span className="meta-item">📚 Directeur de thèse : {resource.director}</span>
+              )}
+            </div>
+          ) : (
+            <div className="article-meta">
+              {resource.date && (
+                <span className="meta-item">
+                  📅 {new Date(resource.date).toLocaleDateString('fr-FR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              )}
+              {resource.readTime && (
+                <span className="meta-item">⏱️ {resource.readTime} min de lecture</span>
+              )}
+            </div>
+          )}
 
-          <div className="article-hero-image">
-            <img src={getImageWithFallback(resource.image, 'article')} alt={resource.title} />
-          </div>
+          {!isThesis && (
+            <div className="article-hero-image">
+              <img src={getImageWithFallback(resource.image, 'article')} alt={resource.title} />
+            </div>
+          )}
         </div>
       </header>
 
       <div className="article-content-wrapper">
         <div className="article-content-container">
           <main className="article-main">
-            {resource.excerpt && (
-              <p className="article-lead">{resource.excerpt}</p>
+            {isThesis ? (
+              <>
+                {resource.abstract && (
+                  <div className="thesis-public-block">
+                    <h2 className="thesis-public-heading">Résumé</h2>
+                    <p className="article-lead thesis-public-abstract">{resource.abstract}</p>
+                  </div>
+                )}
+                {Array.isArray(resource.keywords) && resource.keywords.length > 0 && (
+                  <div className="article-tags thesis-public-keywords-block">
+                    <h3 className="thesis-public-heading">Mots-clés</h3>
+                    <div className="tags-list">
+                      {resource.keywords.map((tag: string, idx: number) => (
+                        <span key={`${tag}-${idx}`} className="tag">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {resource?._id && (
+                  <div className="thesis-public-pdf-card">
+                    <h3 className="thesis-public-heading">Document PDF</h3>
+                    <p className="thesis-public-pdf-lead">
+                      Consultez le document dans le navigateur ou enregistrez une copie sur votre appareil.
+                    </p>
+                    <div className="thesis-pdf-actions">
+                      <Link
+                        to={`/ressources/theses/${resource._id}/pdf`}
+                        state={{
+                          pdfUrl: `${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://backendonpg-production.up.railway.app/api' : 'http://localhost:3001/api')}/public/theses/${resource._id}/pdf`,
+                          title: resource.title,
+                          author: resource.author,
+                          year: resource.year,
+                          university: resource.university,
+                          director: resource.director,
+                          abstract: resource.abstract,
+                          keywords: resource.keywords
+                        }}
+                        className="thesis-pdf-btn thesis-pdf-btn--primary"
+                      >
+                        <span className="thesis-pdf-btn-ico" aria-hidden>▶</span>
+                        Ouvrir le PDF
+                      </Link>
+                      <a
+                        href={`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://backendonpg-production.up.railway.app/api' : 'http://localhost:3001/api')}/public/theses/${resource._id}/pdf?download=1`}
+                        className="thesis-pdf-btn thesis-pdf-btn--secondary"
+                      >
+                        <span className="thesis-pdf-btn-ico" aria-hidden>⬇</span>
+                        Télécharger le PDF
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {resource.excerpt && (
+                  <p className="article-lead">{resource.excerpt}</p>
+                )}
+
+                <div
+                  className="article-body"
+                  dangerouslySetInnerHTML={{ __html: resource.content || '' }}
+                />
+
+                {resource.tags && resource.tags.length > 0 && (
+                  <div className="article-tags">
+                    <h3>Tags associés :</h3>
+                    <div className="tags-list">
+                      {resource.tags.map((tag: string) => (
+                        <span key={tag} className="tag">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
-            <div
-              className="article-body"
-              dangerouslySetInnerHTML={{ __html: resource.content || '' }}
-            />
-
-            {resource.tags && resource.tags.length > 0 && (
-              <div className="article-tags">
-                <h3>Tags associés :</h3>
-                <div className="tags-list">
-                  {resource.tags.map((tag: string) => (
-                    <span key={tag} className="tag">#{tag}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {collection === 'theses' && resource?._id && (
-              <div className="article-tags" style={{ marginTop: '1.5rem' }}>
-                <h3>Document PDF :</h3>
-                <div className="tags-list" style={{ gap: '0.75rem' }}>
-                  <Link to={`/ressources/theses/${resource._id}/pdf`} className="back-link">
-                    Ouvrir le PDF
-                  </Link>
-                  <a
-                    href={`${import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://backendonpg-production.up.railway.app/api' : 'http://localhost:3001/api')}/public/theses/${resource._id}/pdf?download=1`}
-                    className="back-link"
-                  >
-                    Télécharger le PDF
-                  </a>
-                </div>
-              </div>
-            )}
-
-            {/* Boutons de partage */}
             <ShareButtons
               title={resource.title}
-              description={resource.excerpt || resource.summary || ''}
-              tags={Array.isArray(resource.tags) ? resource.tags : []}
+              description={
+                resource.excerpt ||
+                resource.summary ||
+                resource.abstract ||
+                ''
+              }
+              tags={
+                Array.isArray(resource.tags)
+                  ? resource.tags
+                  : Array.isArray(resource.keywords)
+                    ? resource.keywords
+                    : []
+              }
             />
           </main>
         </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchResourceData } from '../../utils/pageMocksApi';
 import { useApiCache } from '../../hooks/useApiCache';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -38,6 +38,7 @@ const TableauOrdre = () => {
   const [sortBy, setSortBy] = useState<SortMode>('nom');
   const [viewMode, setViewMode] = useState<ViewMode>('table');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 250);
 
@@ -60,6 +61,20 @@ const TableauOrdre = () => {
   );
 
   const members = membersRaw || [];
+
+  const selectedMember = useMemo(
+    () => (selectedMemberId ? members.find((m) => m.id === selectedMemberId) ?? null : null),
+    [members, selectedMemberId]
+  );
+
+  useEffect(() => {
+    if (!selectedMemberId) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelectedMemberId(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selectedMemberId]);
 
   const filteredMembers = useMemo(() => {
     const q = debouncedSearchQuery.trim().toLowerCase();
@@ -229,7 +244,18 @@ const TableauOrdre = () => {
                 </thead>
                 <tbody>
                   {pageMembers.map((member) => (
-                    <tr key={member.id}>
+                    <tr
+                      key={member.id}
+                      tabIndex={0}
+                      onClick={() => setSelectedMemberId(member.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedMemberId(member.id);
+                        }
+                      }}
+                      aria-label={`Voir la fiche de ${member.prenom} ${member.nom}`}
+                    >
                       <td>
                         <img
                           src={getPhotoUrl(member.photo)}
@@ -255,7 +281,20 @@ const TableauOrdre = () => {
           ) : (
             <div className="tb-cards-grid">
               {pageMembers.map((member) => (
-                <article key={member.id} className="tb-card">
+                <article
+                  key={member.id}
+                  className="tb-card"
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => setSelectedMemberId(member.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedMemberId(member.id);
+                    }
+                  }}
+                  aria-label={`Voir la fiche de ${member.prenom} ${member.nom}`}
+                >
                   <img
                     src={getPhotoUrl(member.photo)}
                     alt={`${member.prenom} ${member.nom}`}
@@ -314,6 +353,47 @@ const TableauOrdre = () => {
           )}
         </div>
       </section>
+
+      {selectedMember && (
+        <div
+          className="tb-modal-overlay"
+          onClick={() => setSelectedMemberId(null)}
+          role="presentation"
+        >
+          <div
+            className="tb-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tb-modal-title"
+          >
+            <button
+              type="button"
+              className="tb-modal-close"
+              onClick={() => setSelectedMemberId(null)}
+              aria-label="Fermer"
+            >
+              ×
+            </button>
+            <img
+              src={getPhotoUrl(selectedMember.photo)}
+              alt={`${selectedMember.prenom} ${selectedMember.nom}`}
+              className="tb-modal-photo"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== ONPG_IMAGES.logo) target.src = ONPG_IMAGES.logo;
+              }}
+            />
+            <h2 id="tb-modal-title">
+              {selectedMember.prenom} {selectedMember.nom}
+            </h2>
+            <div className="tb-modal-badge-row">
+              <span className="tb-modal-badge">Section {selectedMember.section || '—'}</span>
+            </div>
+            <p className="tb-modal-meta">Membre inscrit au tableau de l&apos;Ordre.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

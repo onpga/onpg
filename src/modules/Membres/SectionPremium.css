@@ -204,12 +204,24 @@
   border-radius: 16px;
   border: 1px solid var(--sp-border);
   background: #fff;
-  box-shadow: var(--sp-shadow);
+  box-shadow: 0 2px 12px rgba(12, 23, 67, 0.04);
   padding: 1rem;
   text-align: center;
   display: grid;
   justify-items: center;
   gap: 0.45rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-premium-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(12, 23, 67, 0.1);
+}
+
+.section-premium-card:focus-visible {
+  outline: 2px solid var(--sp-primary);
+  outline-offset: 2px;
 }
 
 .section-premium-avatar {
@@ -257,6 +269,95 @@
 .section-premium-empty p {
   margin: 0.5rem 0 0;
   color: var(--sp-muted);
+}
+
+/* Modale fiche — même principe que Conseil national */
+.sp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 27, 77, 0.4);
+  backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.sp-modal {
+  width: min(440px, 100%);
+  border-radius: 20px;
+  background: var(--sp-surface);
+  box-shadow: 0 24px 64px rgba(12, 23, 67, 0.22);
+  padding: 2rem;
+  position: relative;
+}
+
+.sp-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: var(--sp-bg);
+  color: var(--sp-title);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sp-modal-close:hover {
+  background: color-mix(in srgb, var(--sp-primary) 14%, var(--sp-bg));
+}
+
+.sp-modal-photo {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid var(--sp-primary-soft);
+}
+
+.sp-modal h2 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sp-title);
+  text-align: center;
+  line-height: 1.35;
+}
+
+.sp-modal-badge-row {
+  display: flex;
+  justify-content: center;
+}
+
+.sp-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: 999px;
+  background: var(--sp-primary-soft);
+  color: var(--sp-primary);
+}
+
+.sp-modal-meta {
+  margin: 0.75rem 0 0;
+  font-size: 0.9rem;
+  color: var(--sp-muted);
+  line-height: 1.55;
+  text-align: center;
+}
+
+.sp-modal-close:focus-visible {
+  outline: 2px solid var(--sp-primary);
+  outline-offset: 2px;
 }
 
 @media (max-width: 900px) {
